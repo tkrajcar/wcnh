@@ -10,3 +10,7 @@ game/txt/events.txt
 game/txt/news.txt
 hdrs/svninfo.h
 hdrs/buildinf.h
+game/log/*.log
+game/data/*.gz
+game/data/chunkswap
+game/netmush.pid
