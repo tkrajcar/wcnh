@@ -12,7 +12,7 @@
 ####
 
 # Name of your MUSH. Please change this.
-mud_name PennMUSH
+mud_name Wing Commander: New Horizon
 
 # The web address of your MUSH. If this is nonempty, then all login
 # screens will be prefixed with <!--  and suffixed with -->
@@ -21,7 +21,7 @@ mud_name PennMUSH
 mud_url
 
 # The port it's running on. See also ssl_port, later.
-port 4201
+port 2199
 
 # Should we listen only on a specific IP address? If your host has
 # multiple IP addresses, put the ip address to listen on here
@@ -222,8 +222,8 @@ socket_file data/netmush.sock
 # name of the monetary units. Uncomment before changing. By leaving it
 # commented, the translated value will be used.
 # OPTIONAL
-# money_singular Penny
-# money_plural Pennies
+money_singular Jeff Goldblum Bobble Head
+money_plural Jeff Goldblum Bobble Heads
 
 # How many times in a 10 minute period should a given IP address be
 # allowed to attempt to log in before being rejected?
@@ -275,10 +275,10 @@ max_logins 120
 max_guests -1
 
 # How much MUSH money do players get when they're created?
-starting_money 150
+starting_money 10000
 
 # How much MUSH money do non-guest players get each day they log in?
-paycheck 50
+paycheck 500
 
 # How much MUSH money do guests get each day they log in?
 guest_paycheck 0
@@ -290,7 +290,7 @@ max_pennies 100000
 max_guest_pennies 1000
 
 # If quotas are enforced, how much players get by default
-starting_quota 20
+starting_quota 0
 
 # number of commands a player can have queued. Prevents runaway machines
 # from getting out of hand.
@@ -338,7 +338,7 @@ max_channels 200
 
 # What's the maximum length a player's @channel/title can be?
 # This does not include ansi/markup.
-chan_title_len 80
+chan_title_len 40
 
 # How many channels can each non-admin create? Set this to some number
 # higher than zero to allow mortals to create channels.
@@ -423,7 +423,7 @@ float_precision 6
 
 # The password that must be given to do an @logwipe. You must also
 # be God, of course. CHANGE THIS.
-log_wipe_passwd zap!
+log_wipe_passwd ZingoBingo
 
 # The maximum length of player names. Lowering this won't change
 # current player names. This number should be one greater than the
@@ -578,7 +578,7 @@ guests yes
 # If you turn this off, neither "create" nor "register" will work.
 # Use access.cnf if you want to disable creation for specific sites
 # or disable creation but enable registration for everyone.
-player_creation yes
+player_creation no
 
 # If you use the shs password system, and your database was created
 # on a little-endian hardware architecture (such as an intel PC),
@@ -637,7 +637,7 @@ noisy_whisper no
 noisy_cemit no
 
 # is possessive get (get players's object) allowed?
-possessive_get yes
+possessive_get no
 
 # what if the player is disconnected?
 possessive_get_d no
@@ -754,13 +754,13 @@ count_all no
 
 # are rooms with any exits considered connected, and thus not required
 # to have the FLOATING flag set on them?
-exits_connect_rooms no
+exits_connect_rooms yes
 
 # Prefixes for various broadcast messages
 # Leaving these commented lets the game use the translated default messages.
 # OPTIONAL
-# wizwall_prefix Broadcast:
-# rwall_prefix Admin:
+wizwall_prefix WIZARDS:
+rwall_prefix ADMIN:
 # wall_prefix Announcement:
 
 # Should we announce connections/disconnections to rooms and on channels?
@@ -772,7 +772,7 @@ exits_connect_rooms no
 announce_connects yes
 
 # can players have names with spaces in them?
-player_name_spaces no
+player_name_spaces yes
 
 # show expanded flag name list when you examine an object?
 flags_on_examine yes
@@ -784,7 +784,7 @@ ex_public_attribs yes
 # Should we show the pager's alias, in parentheses, after their name?
 # That is, should recipients see:
 # Javelin (Jav) paged: ...
-page_aliases no
+page_aliases yes
 
 # Should +whatever "hi! strip the initial quote and produce <whatever> X says,
 # "hi!", or not (producing <whatever> X says, ""hi!"). This also affects
