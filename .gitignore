@@ -1,1 +1,12 @@
 config.log
+src/*.o
+src/netmud
+src/info_slave
+game/info_slave
+game/netmush
+game/ssl_slave
+game/txt/help.txt
+game/txt/events.txt
+game/txt/news.txt
+hdrs/svninfo.h
+hdrs/buildinf.h
