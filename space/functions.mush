@@ -1,0 +1,12 @@
+# Command: plot
+# Displays the help file for the plot command
+&CMD.PLOT #204=$plot:@pemit %#=[switch(1,
+  /@@ Game staff has better things to do! @@/
+  [orflags(%#,Wr)], Quit goofing around in space staffer!,
+
+  [spacesys(plot)]
+)]
+-
+# Function: plot
+# Displays the help file for the plot command
+&FN.PLOT #208=You typed the plot command! Hooray! Have a donut.
