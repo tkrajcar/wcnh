@@ -3,7 +3,7 @@
 ## File & Directory Organization
 
 * Create a directory for your system (faction, chargen, globals, etc).
-* Create one file per object in that directory using the `.sc` extension (`chargen/functions.sc`).
+* Create one file per object in that directory using the `.mush` extension (`chargen/functions.mush`).
 * In general, commits should be made against `master` which is assumed to be identical to code running on the game. If you are doing some serious heavy lifting and need to make multiple pushed commits that will break existing functionality, set up a separate testbed game (see Rince for a fresh DB) and use a branch so that we can still make urgent fixes to the game without accidentally incorporating your unfinished work!
 
 ## Tabs and line endings
