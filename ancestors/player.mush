@@ -1,0 +1,18 @@
+@ADESCRIBE #8=th [ansi(c,>>>)] [ansi(h,%n)] looked at your description.
+-
+@DESCFORMAT #8=
+  [titlebar(
+    [if(
+      v(title),
+      v(title)%b
+      )]
+    [name(me)]
+    )]
+  %r
+  [if(
+    %0,
+    %0,
+    [name(me)] doesn't have a description quite yet.
+    )]
+  %r
+  [footerbar()]
