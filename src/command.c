@@ -39,6 +39,9 @@
 #include "cmds.h"
 #include "confmagic.h"
 
+#include "json/json-config.h"
+#include "json/json-call.h"
+
 PTAB ptab_command;      /**< Prefix table for command names. */
 PTAB ptab_command_perms;        /**< Prefix table for command permissions */
 
@@ -274,6 +277,9 @@ COMLIST commands[] = {
   {"@RETRY", NULL, cmd_retry,
    CMD_T_ANY | CMD_T_EQSPLIT | CMD_T_RS_ARGS | CMD_T_RS_NOPARSE |
    CMD_T_NOGAGGED, 0, 0},
+#ifdef JSON_SERVER
+  {"@RPC", NULL, cmd_json_rpc, CMD_T_ANY, "WIZARD", 0},
+#endif /* JSON_SERVER */
   {"@RWALL", "NOEVAL EMIT", cmd_rwall, CMD_T_ANY, "WIZARD ROYALTY", 0},
   {"@SCAN", "ROOM SELF ZONE GLOBALS", cmd_scan,
    CMD_T_ANY | CMD_T_NOGAGGED, 0, 0},

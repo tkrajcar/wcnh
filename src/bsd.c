@@ -135,6 +135,9 @@
 #include "intmap.h"
 #include "confmagic.h"
 
+#include "json/json-config.h"
+#include "json/json-net.h"
+
 #if defined(SSL_SLAVE) && !defined(WIN32)
 #define LOCAL_SOCKET 1
 #endif
@@ -673,6 +676,9 @@ main(int argc, char **argv)
   close_sockets();
   sql_shutdown();
 
+#ifdef JSON_SERVER
+  json_server_shutdown(0);
+#endif /* def JSON_SERVER */
 #ifdef INFO_SLAVE
   kill_info_slave();
 #endif
@@ -953,6 +959,9 @@ shovechars(Port_t port, Port_t sslport __attribute__ ((__unused__)))
 #ifdef INFO_SLAVE
   avail_descriptors -= 2;       /* reserve some more for setting up the slave */
 #endif
+#ifdef JSON_SERVER
+  avail_descriptors -= 2;       /* reserve even more for one JSON server */
+#endif /* undef JSON_SERVER */
 
   /* done. print message to the log */
   do_rawlog(LT_ERR, "%d file descriptors available.", avail_descriptors);
@@ -1090,6 +1099,9 @@ shovechars(Port_t port, Port_t sslport __attribute__ ((__unused__)))
     if (info_slave_state == INFO_SLAVE_PENDING)
       FD_SET(info_slave, &input_set);
 #endif
+#ifdef JSON_SERVER
+    json_server_setfd(&input_set);
+#endif /* def JSON_SERVER */
     for (d = descriptor_list; d; d = d->next) {
       if (d->input.head) {
         timeout.tv_sec = slice_timeout.tv_sec;
@@ -1186,6 +1198,9 @@ shovechars(Port_t port, Port_t sslport __attribute__ ((__unused__)))
         setup_desc(localsock, CS_LOCAL_SOCKET);
 #endif
 #endif
+#ifdef JSON_SERVER
+      json_server_issetfd(&input_set);
+#endif /* def JSON_SERVER */
 
       if (notify_fd >= 0 && FD_ISSET(notify_fd, &input_set))
         file_watch_event(notify_fd);
@@ -5579,6 +5594,9 @@ do_reboot(dbref player, int flag)
 #endif                          /* WIN32 */
 #endif                          /* PROFILING */
   dump_reboot_db();
+#ifdef JSON_SERVER
+  json_server_shutdown(1);
+#endif /* def JSON_SERVER */
 #ifdef INFO_SLAVE
   kill_info_slave();
 #endif
