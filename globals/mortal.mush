@@ -1,0 +1,43 @@
+@set #15/cmd.+check=regexp
+-
+&cmd.+check #15=$^\+check(/private)? (.*):
+  @swi/first 
+    [t(setr(0,
+      grab(attribute.reason attribute.perception attribute.willpower 
+           attribute.strength attribute.agility attribute.health 
+           [lattr(#111/skill.*)],
+           *.%2*
+      )
+    ))]
+    =0,{@pemit %#=[ansi(hb,>)] That's not a valid skill or attribute.},
+    {th [u(fn.check,
+           switch(%1,
+                  ,
+                  public,
+                  %1),
+           %#,
+           before(%q0,.),
+           after(%q0,.)
+        )]}
+-
+&cmd.+sheet #15=$+sheet:@pemit %#=[chargen(sheet,%#)]
+-
+&cmd.+values #15=$+values:@pemit %#=[titlebar(Adjective Values)]%r%b%b>= [ansi(h,7)]: [num2adj(7)]%r[space(5)][ansi(h,6)]: [num2adj(6)]%r[space(5)][ansi(h,5)]: [num2adj(5)]%r[space(5)][ansi(h,4)]: [num2adj(4)]%r[space(5)][ansi(h,3)]: [num2adj(3)]%r[space(5)][ansi(h,2)]: [num2adj(2)]%r[space(5)][ansi(h,1)]: [num2adj(1)]%r%b%b<= [ansi(h,0)]: [num2adj(0)]%r[footerbar()]
+-
+&cmd.+where #15=$+where:@pemit %#=[titlebar(+where)]%r[iter(u(fn.rooms_with_connected_players),ansi(h,name(##)): [u(fn.connected_players_in_room,##)], ,%r)]%r[footerbar(words(mwho()) players)]
+-
+@set #15/cmd.+who=regexp
+-
+&cmd.+who #15=$^[\+@]?who$:@nspemit %#=[titlebar(+who)]%r%b[ansi(y,align(3 35 5 >8 >8,Sex,Title\, Name\, & Clan,Alias,Idle,On For))]%r%b[ansi(r,--- [repeat(-,35)] ----- [repeat(-,8)] [repeat(-,8)])]%r[map(map.+who,mwho(), ,%r)]%r[footerbar(words(mwho()) players online)]
+-
+&filter.isconnected #15=[hasflag(%0,connected)]
+-
+&fn.check #15=[setq(m,[ansi(hb,>)] [ansi(h,[name(%1)])] [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1,%qm),nsremit(loc(%1),%qm))]
+-
+&fn.connected_players_in_room #15=[itemize(iter(filter(filter.isconnected,lcon(%0)),name(##), ,|),|)]
+-
+&fn.rooms_with_connected_players #15=[setunion(iter(mwho(),loc(##)),)]
+-
+&map.+who #15=%b[align(-3 35 5 >8 >8,\([switch(left(default(%0/sex,?),1),M,ansi(b,M),F,ansi(m,F),ansi(hx,?))]\),[if(hasattr(%0,title),get(%0/title)%b)][ansi(ifelse(orflags(%0,Wr),hy,h),name(%0))][if(hasattr(%0,clan),%bnar [get(%0/clan)])],get(%0/alias),ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),extract(timestring(conn(%0)),1,2))]
+-
+&cmd.ooc #15=$ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<OOC>) %q0))]

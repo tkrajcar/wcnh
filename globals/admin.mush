@@ -1,0 +1,4 @@
+&cmd.+sheet #115 = $+sheet *:
+  @switch t(pmatch(%0))=
+    0,{@pemit %#=[ansi(hb,>)] Who?},
+    {@pemit %#=chargen(sheet,pmatch(%0))}
