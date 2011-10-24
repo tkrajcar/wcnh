@@ -3,40 +3,29 @@
 <!-- Saved on Friday, October 28, 2005, 10:01 PM -->
 
 <!--
-     Version 1.0 of MUSHClient Unformat.
-     requires unformat_vb.xml for frontend interface
+     Version 2.0 of MUSHClient Unformat.
 -->
 
 <muclient>
 <plugin
    name="Upload"
-   author="Rick Bird"
+   author="Rick Bird and Tim Krajcar"
    language="PerlScript"
    purpose="Utilize MPP and Adam Dray's Unformat in MUSHClient"
-   date_written="2005-10-28 21:59:57"
+   date_written="2011-10-24 12:00:00"
    requires="3.65"
-   id="000000000001234567891234"
+   id="000000000001234567891235"
    version="1.0"
    >
 
    <description trim="y">
-	   Preprocessor Upload 1.0 for MUSHClient
+	   Preprocessor Upload 2.0 for MUSHClient
 	   This script requires perlscript, recommended use with ActivePerl
-
-	   For frontend use the script requires upload_vb.xml for the
-	   file open dialog
 
 	   Use
 	   =========================================================
-	   #upload - File Open Dialog Opens to look for file to 
+	   #up 'file' - Uploads a file.
 	   #upload_format 'fileformat' - Valid choices are 'mpp' and 'unformat' without the quotes.
-
-	   For detailed information on unformat file formatting rules read
-	   supplied txt file that came with this package.
-
-	   This MUSHClient plugin in its entirety its located at my ftp site
-	   ftp://nveid.com/pub/mush_utilities/mushclient_upload.zip
-
    </description>
 
 </plugin>
@@ -45,6 +34,11 @@
 
 <!-- Alias -->
 <aliases>
+	<alias script="Upload" 
+		name="up"
+		match="^#up (.*)$" 
+		enabled="y" 
+		regexp ="y" />
 	<alias script="DoSetUploadFormat" 
 		name="uploadformat"
 		match="^#upload_format (.*)$" 
@@ -59,10 +53,8 @@
 <![CDATA[
 
 
-# Command to notify user at end. Comment-out all but one.
-#
-
 $donecommand = "think Upload Complete.";
+$code_directory = "c:\\wcnh\\softcode\\";
 
 # Command to postpone end notification by some queue-cycles.
 # Useful if you have @dolists or somesuch at the end of your code.
@@ -75,13 +67,11 @@ $postpone_command = "\@wait 0 = \@wait 0 = \@wait 0 = ";
 #############################################################################
 
 $header1 = "Adam Dray's 'Unformat' and Alan Schwartz 'MPP' Processors.";
-$header3 = "MUSHClient Modifications by Nveid - RLB.";
+$header2 = "Using code directory: " . $code_directory;
+$header3 = "MUSHClient Modifications by Nveid - RLB and Tim Krajcar.";
 
 
-$vbcompanion_file = "upload_vb.xml";
-$vbcompanion = "111111111111234567891234";
-
-$DEBUG_DEFINES = 1;
+$DEBUG_DEFINES = 0;
 
 # $filetable is a global associative array of files that have been visited
 
@@ -91,16 +81,7 @@ sub OnPluginInstall {
   &client_output($header1);
   &client_output($header2);
   &client_output($header3);
-
-# Load vbscript companion plugin as well
-  if($world->IsPluginInstalled($vbcompanion)) {
-      &client_output("Reloading Unformat VB Companion.");
-      $world->ReloadPlugin($vbcompanion);
-   } else {
-       &client_output("Loading Upload VB Companion.");
-       $world->loadplugin($vbcompanion_file);
-    }
-   $world->SetVariable("UploadFormat", "unformat");
+  $world->SetVariable("UploadFormat", "unformat");
 }
 
 sub OnPluginClose {
@@ -125,14 +106,13 @@ sub DoSetUploadFormat {
 }
 
 sub Upload {
-  my ($filename) = @_;
-  my $output = "";
-
-  if(!$world->IsPluginInstalled($vbcompanion)) {
-     &client_output("VBScript companion plugin not loaded.  Load that first.");
-     exit -1;
+  my ($sName, $theoutput, $wildcards) = @_;
+  $filename = $code_directory . $world->trim($world->GetAliasInfo ($sName, 101));
+  if ($filename !~ m/\.mush$/ ) {
+    $filename = $filename . ".mush";
   }
-
+  my $output = "";
+  
   &client_output("Uploading/" . $world->GetVariable("UploadFormat")  .": ". $filename);
   if($world->GetVariable("UploadFormat") eq "unformat") {
      &fmt_unformat($filename, "filehandle00");
