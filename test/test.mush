@@ -1,0 +1,30 @@
+# Command: @TEST
+#
+# This command tells the user if they are a Wizard.
+# 
+&CMD-TEST me = $@test: 
+  @switch hasflag(%#, wizard) = 1, {
+    @pemit %# = Test worked. You're a wizard.
+  }, {
+    @pemit %# = You ain't no wizard!
+  }
+-
+
+# Command: @TEST player
+#
+# This command tells the user is another player is a Wizard.
+# 
+&CMD-TEST-PLAYER me = $@test *: 
+  think setq(0, pmatch(%0)); 
+  @switch/first 0 = 
+    isdbref(%q0), {
+      @pemit %# = I don't know who you mean ('%0').
+    }, 
+    hasflag(%#, wizard), {
+      @pemit %# = No, [name(%0)] is not a wizard.
+    }, 
+#   else
+    {
+      @pemit %# = Yes, [name(%0)] is a wizard.
+    }
+-
