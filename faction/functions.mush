@@ -161,6 +161,30 @@
     111,set(v(data),fac.%0:[squish(edit(setr(a,get(v(data)/fac.%0)),setr(b,extract(%qa,3,1,|)),remove(%qb,%q1)))])
     )]
 -
+&fn.roster.parse #114=
+  [titlebar(Member Roster for [first(setr(0,get(v(data)/fac.%0)),|)])]%r
+  %b[ansi(y,align(16 15 15 >10 18,Name\(alias\),Position,Assignment,Last,Location))]%r
+  %b[ansi(r,[repeat(-,16)]%b[repeat(-,15)]%b[repeat(-,15)]%b[repeat(-,10)]%b[repeat(-,18)])]%r
+  [iter(
+      sort(setr(1,u(fn.roster,%0)),name),
+      %b[align(
+            16 15 15 >10 18,
+            [name(itext(0))]\([alias(itext(0))]\),
+            get(itext(0)/fac`%0`position),
+            get(itext(0)/fac`%0`assignment),
+            ifelse(hasflag(itext(0),connected),ansi(gh,Online),timefmt($m/$d/$Y,convtime(get(itext(0)/last)))),
+            ifelse(t(setr(0,zone(loc(itext(0))))),name(%q0),OOC Area),
+            )],
+      ,%r)]%r
+   [footerbar([words(%q1)] members)]
+-
+&fn.roster #114=
+  [ifelse(
+      t(member(u(fn.list.factions),ucstr(%0))),
+      u(fn.list.members,%0),
+      #-1 INVALID FACTION
+      )]
+-
 &fn.fwho.parse #114=
     [titlebar(Connected Members of [first(setr(0,get(v(data)/fac.%0)),|)])]%r
     %b[ansi(y,align(16 15 15 >9 19,Name\(alias\),Position,Assignment,Idle,Location))]%r
