@@ -19,9 +19,30 @@
 
 ### FUNCTIONS
 ## Systems
-&CHARGEN.FN #25=[switch([orflags(%@,Wr)][hasattr(#112,fn.%0)],0*,#-1 PERMISSION DENIED,10,#-1 INVALID CHARGEN\(\) SUBFUNCTION,11,[ulocal(#112/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)])]
+&CHARGEN.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#112,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID CHARGEN\(\) SUBFUNCTION,
+    11,ulocal(#112/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+  )
 -
-&FACTION.FN #25=[switch([orflags(%@,Wr)][hasattr(#114,fn.%0)],0*,#-1 PERMISSION DENIED,10,#-1 INVALID FACTION\(\) SUBFUNCTION,11,[ulocal(#114/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)])]
+&FACTION.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#114,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID FACTION\(\) SUBFUNCTION,
+    11,ulocal(#114/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+-
+&SPACESYS.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#208,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID SPACESYS\(\) SUBFUNCTION,
+    11,ulocal(#208/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
 -
 
 
