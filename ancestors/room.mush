@@ -20,7 +20,7 @@
   [iter(
     lnum(max(words(%q0),words(%0))),
     %r
-    [ljust(switch(extract(%0,#@,1),,,ansi(v(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))],39))),39)][ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[v(COLOR.EXIT)],\<)][ansi(edit(v(COLOR.EXIT),h,),name(#$))][ansi(h[v(COLOR.EXIT)],\>)],%q1)] [ansi(edit(v(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,Out of the ship,name(%q9)))]),39)],
+    [ljust(switch(extract(%0,#@,1),,,ansi(v(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))],39))),39)][ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[v(COLOR.EXIT)],\<)][ansi(edit(v(COLOR.EXIT),h,),name(#$))][ansi(h[v(COLOR.EXIT)],\>)],%q1)] [ansi(edit(v(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],
     %b,
     )]
 -

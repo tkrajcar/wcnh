@@ -47,6 +47,24 @@
 -
 &DB.FN #25=[default(#30/db.%0,#-1)]
 -
+# destination() is a replacement for loc() for the room parent for exits.
+# If the exit is non-variable, it will return loc(exit) as normal.
+# If the exit is variable, it evaluates the destination().
+# This function is only callable by rooms, and will only work on exits in
+# the calling room, for security.
+&DESTINATION.FN #25=
+  switch(
+    locate(%@,%0,EFc),
+    #-*,#$,
+    switch(
+      loc(#$),
+      #-2,
+      udefault(%$1/destination,
+        udefault(%$1/exitto,#-1)
+        ),
+      %$0)
+    )
+-
 &ISADMIN.FN #25=cand(if(strmatch(%0,me),%#,pmatch(%0)),isoadmin(%0))
 -
 &ISCONN.FN #25=[if(isadmin(%1),gte(conn(%0),1),and(gte(conn(%0),1),not(hasflag(%0,dark))))]
