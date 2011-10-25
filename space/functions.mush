@@ -7,7 +7,7 @@
 &CMD.PLOT #204=$plot:[pemit(%#,
   [switch(0,
     /@@ Only the ship's captain and crew can use a console @@/
-    [u(#208/subfn.iscrew,%!,%#)], Console access denied.,
+    [spacesys(iscrew,%#,%!)], Console access denied.,
 
     /@@ Looks good... @@/
     [spacesys(plot)]
@@ -33,9 +33,9 @@
 # Function: shuttle()
 &FN.SHUTTLE #208=You typed the shuttle command! Have a sticker!
 -
-# Subfunction: iscrew(console DBREF, player DBREF)
+# Function: iscrew(player DBREF, console DBREF)
 # Returns true if the enactor (%#) is a member of a ship's roster
-&SUBFN.ISCREW #208=[t([member([get(%0/data.roster)],%1)])]
+&FN.ISCREW #208=[t([member([get(%1/data.roster)],%0)])]
 -
 # Subfunction: actors()
 # Debug subfunction used to determine enactor, executor and caller
