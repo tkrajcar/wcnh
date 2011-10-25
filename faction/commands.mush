@@ -57,6 +57,20 @@
 &cmd.+fac/list #191=$+fac/list:
   @nspemit %#=[faction(list.factiontree)]
 -
+&cmd.+fac/roster #191=$+fac/roster*:@nspemit %#=
+  [switch(
+        [t(setr(0,faction(list.memberof,%#)))]
+        [t(%0)]
+        [gt(words(%q0),1)]
+        [t(match(%q0,trim(%0)))],
+
+        0*,You're not a member of any factions.,
+        101?,Specify one of the following: %q0,
+        11?0,You're not a member of that faction.,
+        1111,faction(roster.parse,trim(%0)),
+        faction(roster.parse,trim(%q0))
+        )]
+-
 &cmd.+fwho #191=$+fwho*:@nspemit %#=
   [switch(
         [t(setr(0,faction(list.memberof,%#)))]
