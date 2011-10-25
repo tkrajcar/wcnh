@@ -22,7 +22,43 @@
 -
 &DOC.LIST.LEADERS #114=abbrev|Return list of faction leaders.
 -
+&DOC.ADDLEADER #114=fac abbrev:member|Make a member a leader.
+-
+&DOC.REMLEADER #114=fac abbrev:leader|Demote a leader back to a regular member.
+-
 &DATA #114=#116
+-
+&fn.error #114=
+  [syslog(
+        FACTION,
+        Failure in [ansi(wh,%0)] by [name(%#)]\(%#\) with [words(setr(0,squish(%1 %2 %3 %4 %5 %6 %7 %8 %9)))] args. [iter(%q0,\%[dec(inum(0))] = [itext(0)],,\,%b)]
+        )]
+-
+&fn.remleader #114=
+  [switch(
+    [t(member(u(fn.list.factions),ucstr(%0)))]
+    [t(setr(1,pmatch(%1)))]
+    [t(member(setr(0,u(fn.list.leaders,%0)),%q1))],
+
+    0??,#-1 INVALID FACTION,
+    10?,#-1 INVALID PLAYER,
+    110,#-1 INVALID LEADER,
+    111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),5,squish(remove(%q0,%q1)),|)])
+    )]
+-
+&fn.addleader #114=
+  [switch(
+      [t(member(u(fn.list.factions),ucstr(%0)))]
+      [t(setr(1,pmatch(%1)))]
+      [t(member(u(fn.list.members,%0),%q1))]
+      [not(t(member(setr(0,u(fn.list.leaders,%0)),%q1)))],
+
+      0???,#-1 INVALID FACTION,
+      10??,#-1 INVALID PLAYER,
+      110?,#-1 INVALID MEMBER,
+      1110,#-1 EXISTING LEADER,
+      1111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),5,squish(%q0 %q1),|)])
+      )]
 -
 &fn.channel #114=
   [ifelse(
@@ -141,24 +177,24 @@
   [switch(
     [t(member(u(fn.list.factions),ucstr(%0)))]
     [t(setr(1,pmatch(%1)))]
-    [not(t(member(u(fn.list.members,%0),%q1)))],
+    [not(t(member(setr(0,u(fn.list.members,%0)),%q1)))],
 
     0??,#-1 INVALID FACTION,
     10?,#-1 INVALID PLAYER,
     110,#-1 EXISTING MEMBER,
-    111,set(v(data),fac.%0:[squish(edit(setr(a,get(v(data)/fac.%0)),setr(b,extract(%qa,3,1,|)),%qb %q1))])
+    111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),3,squish(%q0 %q1),|)])
     )]
 -
 &fn.remmember #114=
   [switch(
     [t(member(u(fn.list.factions),ucstr(%0)))]
     [t(setr(1,pmatch(%1)))]
-    [t(member(u(fn.list.members,%0),%q1))],
+    [t(member(setr(0,u(fn.list.members,%0)),%q1))],
 
     0??,#-1 INVALID FACTION,
     10?,#-1 INVALID PLAYER,
     110,#-1 EXISTING MEMBER,
-    111,set(v(data),fac.%0:[squish(edit(setr(a,get(v(data)/fac.%0)),setr(b,extract(%qa,3,1,|)),remove(%qb,%q1)))])
+    111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),3,squish(remove(%q0,%q1)),|)])
     )]
 -
 &fn.roster.parse #114=
@@ -191,14 +227,20 @@
     %b[ansi(r,[repeat(-,16)]%b[repeat(-,15)]%b[repeat(-,15)]%b[repeat(-,9)]%b[repeat(-,19)])]%r
     [iter(
         setr(1,u(fn.fwho,%0)),
-        %b[align(
-            16 15 15 >9 19,
-            [name(itext(0))]\([alias(itext(0))]\),
-            get(itext(0)/fac`%0`position),
-            get(itext(0)/fac`%0`assignment),
-            ansi(switch(idlesecs(itext(0)),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(itext(0))),1,2)),
-            ifelse(t(setr(0,zone(loc(itext(0))))),name(%q0),OOC Area),
-            )],
+        [setq(2,t(member(u(fn.list.leaders,%0),itext(0))))]
+        [ansi(
+            ifelse(%q2,y,n),
+            [ifelse(t(%q2),>,%b)]
+            [align(
+                 16 15 15 >9 19,
+                 [name(itext(0))]\([alias(itext(0))]\),
+                 get(itext(0)/fac`%0`position),
+                 get(itext(0)/fac`%0`assignment),
+                 ansi(switch(idlesecs(itext(0)),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(itext(0))),1,2)),
+                 ifelse(t(setr(0,zone(loc(itext(0))))),name(%q0),OOC Area),
+                 )]
+            )]
+            [setq(2,)],
         ,%r)]%r
     [footerbar([words(%q1)] connected members)]
 -
