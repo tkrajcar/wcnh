@@ -27,7 +27,8 @@
 &fn.channel #114=
   [ifelse(
       t(setr(0,lattr(v(data)/FAC.%0))),
-      extract(get(v(data)/%q0),5,1,|)
+      extract(get(v(data)/%q0),5,1,|),
+      #-1 NO CHANNEL
       )]
 -
 &trig.aconnect #114=
