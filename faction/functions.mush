@@ -111,7 +111,7 @@
 &fn.list.members #114=
   [ifelse(
     setr(0,lattr(v(data)/fac.%0)),
-    extract(get(v(data)/%q0),3,1,|),
+    squish(extract(get(v(data)/%q0),3,1,|)),
     #-1 INVALID FACTION
     )]
 -
