@@ -1,5 +1,3 @@
-&DATA #114=#116
--
 &DOC.LIST.FACTIONTREE #114=|Return the ansi hierarchy of factions.
 -
 &DOC.REMMEMBER #114=fac abbrev:player|Remove a faction member.
@@ -23,28 +21,14 @@
 &DOC.FWHO.PARSE #114=abbrev|Return ansi printout of connected members.
 -
 &DOC.LIST.LEADERS #114=abbrev|Return list of faction leaders.
--  
+-
+&DATA #114=#116
+-
 &fn.channel #114=
   [ifelse(
       t(setr(0,lattr(v(data)/FAC.%0))),
       extract(get(v(data)/%q0),5,1,|)
       )]
--
-&cmd.+fac/join #191=$+fac/join *:
-  @switch [t(member(setr(0,get(%#/fac`invites)),lcstr(%0)))]=
-
-          1,{@nspemit %#=[ansi(c,<Faction>)] You have joined [ansi(wh,setr(2,faction(name,%0)))]!;
-             think [set(%#,fac`invites:[squish(remove(%q0,%0))])];
-             think [if(t(setr(1,faction(channel,%0))),nscemit([ansi(wh,name(%#))] has joined [ansi(wh,%q2)]!)];
-             think [faction(addmember,
--
-&cmd.+fac/reject #191=$+fac/reject *:
-  @switch [t(member(setr(0,get(%#/fac`invites)),lcstr(%0)))]=
-  
-          1,{@nspemit %#=[ansi(c,<Faction>)] You have rejected your invitation to join [ucstr(%0)].;
-             think [set(%#,fac`invites:[squish(remove(%q0,%0))])]
-            },
-            @nspemit %#=[ansi(c,<Faction>)] You don't have any invitations to join that faction.
 -
 &trig.aconnect #114=
    @wait 1={think [if(
@@ -62,34 +46,12 @@
     #-1 INVALID FACTION.
     )]
 -
-&cmd.+fac/invite #191=$+fac/invite * to *:
-  @switch [t(setr(0,pmatch(%0)))]
-    [t(setr(2,faction(name,%1)))]
-    [or(orflags(%#,Wr),t(member(faction(list.leaders,%1),%#)))]
-    [not(t(member(setr(1,get(%q0/fac`invites)),lcstr(%1))))]
-    [not(t(member(faction(list.members,%1),%q0)))]=
-    
-    0*,@nspemit %#=[ansi(c,<Faction>)] No such player.,
-    10*,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
-    110*,@nspemit %#=[ansi(c,<Faction>)] You must be a faction leader.,
-    1110?,@nspemit %#=[ansi(c,<Faction>)] They already have a pending invitation to [ucstr(%1)].,
-    11110,@nspemit %#=[ansi(c,<Faction>)] They are already a member of [ucstr(%1)].,
-    11111,{@nspemit %#=[ansi(c,<Faction>)] You have invited [name(%q0)] to join [ucstr(%1)].;
-           @nspemit %#=[ansi(c,<Faction>)] [ansi(wh,name(%#))] has invited you to join [ansi(wh,faction(name,%1))].%r
-            [space(10)]Use [ansi(yh,+fac/join [ucstr(%1)])] to accept the invitation or 
-            [ansi(yh,+fac/reject [ucstr(%1)])] to reject it.;
-           think [set(%q0,fac`invites:[squish(edit(%q1,$,%b%1))])]
-          }
--
 &fn.list.leaders #114=
   [ifelse(
     setr(0,lattr(v(data)/FAC.%0)),
     extract(get(v(data)/%q0),5,1,|),
     #-1 INVALID FACTION
     )]
--
-&cmd.+fac/list #191=$+fac/list:
-  @nspemit %#=[faction(list.factiontree)]
 -
 &fn.list.factiontree #114=
   [titlebar(Faction Hierarchy)]%r
@@ -214,20 +176,6 @@
             )],
         ,%r)]%r
     [footerbar([words(%q1)] connected members)]
--
-&cmd.+fwho #191=$+fwho*:@nspemit %#=
-  [switch(
-        [t(setr(0,faction(list.memberof,%#)))]
-        [t(%0)]
-        [gt(words(%q0),1)]
-        [t(match(%q0,trim(%0)))],
-
-        0*,You're not a member of any factions.,
-        101?,Specify one of the following: %q0,
-        11?0,You're not a member of that faction.,
-        1111,faction(fwho.parse,trim(%0)),
-        faction(fwho.parse,trim(%q0))
-        )]
 -
 &fn.fwho #114=
     [ifelse(
