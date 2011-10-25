@@ -19,9 +19,30 @@
 
 ### FUNCTIONS
 ## Systems
-&CHARGEN.FN #25=[switch([orflags(%@,Wr)][hasattr(#112,fn.%0)],0*,#-1 PERMISSION DENIED,10,#-1 INVALID CHARGEN\(\) SUBFUNCTION,11,[ulocal(#112/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)])]
+&CHARGEN.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#112,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID CHARGEN\(\) SUBFUNCTION,
+    11,ulocal(#112/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+  )
 -
-&FACTION.FN #25=[switch([orflags(%@,Wr)][hasattr(#114,fn.%0)],0*,#-1 PERMISSION DENIED,10,#-1 INVALID FACTION\(\) SUBFUNCTION,11,[ulocal(#114/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)])]
+&FACTION.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#114,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID FACTION\(\) SUBFUNCTION,
+    11,ulocal(#114/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+-
+&SPACESYS.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#208,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID SPACESYS\(\) SUBFUNCTION,
+    11,ulocal(#208/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
 -
 
 
@@ -47,6 +68,24 @@
 -
 &DB.FN #25=[default(#30/db.%0,#-1)]
 -
+# destination() is a replacement for loc() for the room parent for exits.
+# If the exit is non-variable, it will return loc(exit) as normal.
+# If the exit is variable, it evaluates the destination().
+# This function is only callable by rooms, and will only work on exits in
+# the calling room, for security.
+&DESTINATION.FN #25=
+  switch(
+    locate(%@,%0,EFc),
+    #-*,#$,
+    switch(
+      loc(#$),
+      #-2,
+      udefault(%$1/destination,
+        udefault(%$1/exitto,#-1)
+        ),
+      %$0)
+    )
+-
 &ISADMIN.FN #25=cand(if(strmatch(%0,me),%#,pmatch(%0)),isoadmin(%0))
 -
 &ISCONN.FN #25=[if(isadmin(%1),gte(conn(%0),1),and(gte(conn(%0),1),not(hasflag(%0,dark))))]
@@ -60,7 +99,7 @@
 &MYWHO.FN #25=objeval(%#,lwho())
 -
 &SYSLOG.FN #25=[if(cor(isadmin(%#),isoadmin(%@)),[cemit(syslog,[ansi(hb,\[)]SysLog[ansi(hb,\])] [ansi(hw,%0)]: {%1})],[pemit(%#,#-1 PERMISSION DENIED)])]
-
+-
 
 ### ACTUAL MAKE-IT-GO-NESS
 &DESCRIBE #25=Global @functions go here, in the format 'funname.fn'%rAlso global attributes, in the format 'funname.attr', with the contents of the attribute being the list of attribute flags assigned.%r%r[AttribReport(%!)]%r
