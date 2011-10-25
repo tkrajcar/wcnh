@@ -1,9 +1,15 @@
+&cmd.+fac/invites #191=$+fac/invites:
+  @switch [t(setr(0,get(%#/fac`invites)))]=
+
+          1,@nspemit %#=[ansi(c,<Faction>)] You have pending invitations to join: [itemize(ucstr(%q0))],
+          @nspemit %#=[ansi(c,<Faction>)] You have no pending invitations.
+-
 &cmd.+fac/join #191=$+fac/join *:
   @switch [t(member(setr(0,get(%#/fac`invites)),lcstr(%0)))]=
 
           1,{@nspemit %#=[ansi(c,<Faction>)] You have joined [ansi(wh,setr(2,faction(name,%0)))]!;
              think [set(%#,fac`invites:[squish(remove(%q0,%0))])];
-             think [if(t(setr(1,faction(channel,%0))),nscemit(%q1,[ansi(wh,name(%#))] has joined [ansi(wh,%q2)]!)];
+             think [if(t(setr(1,faction(channel,%0))),nscemit(%q1,[ansi(wh,name(%#))] has joined [ansi(wh,%q2)]!))];
              think [faction(addmember,%0,%#)]
             },
             @nspemit %#=[ansi(c,<Faction>)] You don't have a pending invitation to join that faction.
