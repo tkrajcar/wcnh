@@ -40,3 +40,4 @@ game/restrict.cnf
 game/data/
 game/log/
 game/txt/
+game/save/
