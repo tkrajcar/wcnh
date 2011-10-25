@@ -99,7 +99,7 @@
 &MYWHO.FN #25=objeval(%#,lwho())
 -
 &SYSLOG.FN #25=[if(cor(isadmin(%#),isoadmin(%@)),[cemit(syslog,[ansi(hb,\[)]SysLog[ansi(hb,\])] [ansi(hw,%0)]: {%1})],[pemit(%#,#-1 PERMISSION DENIED)])]
-
+-
 
 ### ACTUAL MAKE-IT-GO-NESS
 &DESCRIBE #25=Global @functions go here, in the format 'funname.fn'%rAlso global attributes, in the format 'funname.attr', with the contents of the attribute being the list of attribute flags assigned.%r%r[AttribReport(%!)]%r
