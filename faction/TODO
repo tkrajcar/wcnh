@@ -5,3 +5,7 @@
     - +fac/assign 
     - +fac/position
     - +fac/boot
+- admin tools
+    - +fac/set <fac>/<option>=<value>
+    - +fac/create
+    - +fac/destroy
