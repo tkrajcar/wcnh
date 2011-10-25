@@ -1,4 +1,3 @@
-- +fac/roster 
 - leadership functionality
     - +fac/promote 
     - +fac/demote
@@ -6,6 +5,7 @@
     - +fac/position
     - +fac/boot
 - admin tools
+    - admin seeable fwho/roster regardless of membership
     - +fac/set <fac>/<option>=<value>
     - +fac/create
     - +fac/destroy
