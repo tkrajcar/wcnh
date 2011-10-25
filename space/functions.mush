@@ -1,12 +1,39 @@
-# Command: plot
-# Displays the help file for the plot command
-&CMD.PLOT #204=$plot:@pemit %#=[switch(1,
-  /@@ Game staff has better things to do! @@/
-  [orflags(%#,Wr)], Quit goofing around in space staffer!,
+##################################
+### MASTER: Command Console (#204)
+##################################
 
-  [spacesys(plot)]
+# Command: plot
+# Display the plot commands and their syntax
+&CMD.PLOT #204=$plot:[pemit(%#,
+  [switch(0,
+    [u(#208/subfn.iscrew,%!,%#)], Console access denied.,
+    [spacesys(plot)]
+  )]
 )]
 -
-# Function: plot
-# Displays the help file for the plot command
+################################
+### MASTER: Shuttle Kiosk (#203)
+################################
+
+# Command: shuttle
+# Displays a list of shuttle commands
+&CMD.SHUTTLE #203=$shuttle:@pemit %#=[spacesys(shuttle)]
+-
+###########################
+### FUNCTIONS: Space (#208)
+###########################
+
+# Function: plot()
+# Display the plot commands and their syntax
 &FN.PLOT #208=You typed the plot command! Hooray! Have a donut.
+-
+# Function: shuttle
+&FN.SHUTTLE #208=You type the shuttle command! Have a sticker!
+-
+# Subfunction: iscrew(console DBREF, player DBREF)
+# Returns true if the enactor (%#) is a member of a ship's roster
+&SUBFN.ISCREW #208=[t([member([get(%0/data.roster)],%1)])]
+-
+# Subfunction: actors()
+&SUBFN.ACTORS #208=[pemit(%#,\%#: [name(%#)](%#) \%!: [name(%!)](%!) \%@: [name(%@)](%@))]
+-
