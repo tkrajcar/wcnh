@@ -1,3 +1,36 @@
+&cmd.+fac/demote #191=$+fac/demote *=*:
+  @break [not(or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#))))]=
+         @nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.;
+             
+  @switch [faction(remleader,%0,%1)]=                                                                    
+
+          #-1 INVALID FACTION,@nspemit %#=[ansi(c,<Faction>)] No such faction.,                                    
+          #-1 INVALID PLAYER,@nspemit %#=[ansi(c,<Faction>)] No such player.,
+          #-1 INVALID LEADER,@nspemit %#=[ansi(c,<Faction>)] They are not a leader of [ucstr(%0)].,
+          ,{@nspemit %#=[ansi(c,<Faction>)] You have removed [name(setr(0,pmatch(%1)))] as a leader of [ucstr(%0)].;
+            @nspemit %q0=[ansi(c,<Faction>)] [name(%#)] has removed you as a leader of [ucstr(%0)].
+           },
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported to the administration.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
+&cmd.+fac/promote #191=$+fac/promote *=*:
+  @break [not(or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#))))]=
+         @nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.;
+
+  @switch [faction(addleader,%0,%1)]=
+
+          #-1 INVALID FACTION,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
+          #-1 INVALID PLAYER,@nspemit %#=[ansi(c,<Faction>)] No such player.,
+          #-1 INVALID MEMBER,@nspemit %#=[ansi(c,<Faction>)] They are not a member of [ucstr(%0)].,
+          #-1 EXISTING LEADER,@nspemit %#=[ansi(c,<Faction>)] [name(pmatch(%1))] is already a leader of [ucstr(%0)].,
+          ,{@nspemit %#=[ansi(c,<Faction>)] You have made [name(setr(0,pmatch(%1)))] a leader of [ucstr(%0)].;
+            @nspemit %q0=[ansi(c,<Faction)] [name(%#)] has made you a [ansi(yh,leader)] of [ucstr(%0)].
+           },
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported to the administration.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
 &cmd.+fac/leave #191=$+fac/leave *:
   @switch [t(member(faction(list.members,%0),%#))]
           [not(t(member(faction(list.leaders,%0),%#)))]=
