@@ -1,0 +1,5 @@
+# on player connect, trigger everything that's waiting...
+&player`connect #13 =
+  /@@ %0 = objid, %1 = number of connections, %2 = descriptor @@/
+  @trigger #114/trig.aconnect=%0;
+

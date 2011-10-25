@@ -1,0 +1,190 @@
+&DOC.LIST.FACTIONTREE #114=|Return the ansi hierarchy of factions.
+-
+&DOC.REMMEMBER #114=fac abbrev:player|Remove a faction member.
+-
+&DOC.ADDMEMBER #114=fac abbrev:player|Add a member to a faction.
+-
+&DOC.LIST.FACTIONS #114=tier|Return faction list by tier level.  No args returns all factions.
+-
+&DOC.LIST.LEVELS #114=|Returns a list of tier levels.
+-
+&DOC.LIST.MEMBEROF #114=player|Return list of factions that player is in.
+-
+&DOC.LIST.MEMBERS #114=abbrev|Return list of faction members.
+-
+&DOC.FWHO #114=abbrev|Return list of connected members.
+-
+&DOC.NAME #114=abbrev|Return the full name of the faction.
+-
+&DOC.CHANNEL #114=abbrev|Returns the faction channel name, if applicable.
+-
+&DOC.FWHO.PARSE #114=abbrev|Return ansi printout of connected members.
+-
+&DOC.LIST.LEADERS #114=abbrev|Return list of faction leaders.
+-
+&DATA #114=#116
+-
+&fn.channel #114=
+  [ifelse(
+      t(setr(0,lattr(v(data)/FAC.%0))),
+      extract(get(v(data)/%q0),5,1,|),
+      #-1 NO CHANNEL
+      )]
+-
+&trig.aconnect #114=
+   @wait 1={think [if(
+                    hasattrval(%0,fac`invites),
+                    nspemit(%0,[ansi(c,<Faction>)] [ansi(rh,Reminder:)] You have pending invitations to join: 
+                     [iter(get(%0/fac`invites),[faction(name,itext(0))]\([ucstr(itext(0))]\),,\,%b)]
+                     )
+                     )]
+           }
+-
+&fn.name #114=
+  [ifelse(
+    setr(0,lattr(v(data)/FAC.%0)),
+    first(get(v(data)/%q0),|),
+    #-1 INVALID FACTION.
+    )]
+-
+&fn.list.leaders #114=
+  [ifelse(
+    setr(0,lattr(v(data)/FAC.%0)),
+    extract(get(v(data)/%q0),5,1,|),
+    #-1 INVALID FACTION
+    )]
+-
+&fn.list.factiontree #114=
+  [titlebar(Faction Hierarchy)]%r
+  [iter(
+    filter(filter.list.factiontree,lattr(v(data)/FAC.*)),
+    u(fn.list.factiontree.loop,itext(0),1),,%r
+    )]%r%r
+  [ansi(wh,Key:)] [ansi(c,Government)]\, [ansi(g,Military)]\, [ansi(r,Corporation)]\, [ansi(y,Industry)]\, [ansi(m,Organization)]%r
+  [footerbar()]
+-
+&fn.list.factiontree.regrep #114=
+  regrep(v(data),FAC.*,\\|%0\\||\\|%0\\b)
+-
+&fn.list.factiontree.parse #114=
+  [if(gt(%1,2),|)]
+  [space(switch(%1,3,5,4,10,5,15,0))]
+  [if(gt(%1,1),|[repeat(_,5)])]
+  [ansi(
+    switch(
+      extract(setr(0,get(v(data)/%0)),2,1,|),
+      Government,c,
+      Military,g,
+      Corporation,r,
+      Industry,y,m
+      ),
+    [after(%0,.)] [ansi(n,-)] [first(%q0,|)]
+    )] 
+  \[[words(extract(%q0,3,1,|))] members\]
+-
+&fn.list.factiontree.loop #114=
+  [u(fn.list.factiontree.parse,%0,%1)]
+  [iter(
+    u(fn.list.factiontree.regrep,after(%0,.)),
+    %r[u(fn.list.factiontree.loop,itext(0),inc(%1))]
+    )]
+-
+&filter.list.factiontree #114=
+  ifelse(
+    strmatch(extract(get(v(data)/%0),4,1,|),),
+    1,0
+    )
+-
+&fn.list.factionsbylevel #114=
+  [switch(
+    grepi(v(data),fac.*,|%0|),
+    ,#-1 INVALID FACTION LEVEL,
+    edit(stext(0),FAC.,)
+    )]
+-
+&fn.list.factions #114=
+  [ifelse(
+    strmatch(%0,),
+    edit(lattr(v(data)/fac.*),FAC.,),
+    u(fn.list.factionsbylevel,%0)
+    )]
+-
+&fn.list.members #114=
+  [ifelse(
+    setr(0,lattr(v(data)/fac.%0)),
+    squish(extract(get(v(data)/%q0),3,1,|)),
+    #-1 INVALID FACTION
+    )]
+-
+@desc #114=
+  [center(Factions System\(\) Documentation,79,-)]%r
+  %b%b+[repeat(-,73)]+%r
+  [align(2 20 18 33 2,,[ansi(c,SUBFUNCTION)],[ansi(c,ARGUMENTS)],[ansi(c,DESCRIPTION)],,,|)]%r
+  [map(map.doc,[lattr(me/doc.*)], ,%r)]%r
+  %b%b+[repeat(-,73)]+%r
+  [repeat(-,79)]
+-
+&fn.list.levels #114=
+  [iter(get(v(data)/factions_levels),itext(0),|,%b)]
+-
+&map.doc #114=
+  [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
+-
+&fn.list.memberof #114=
+  [ifelse(
+    t(setr(0,pmatch(%0))),
+    squish(edit(grepi(v(data),fac.*,%q0),FAC.,)),
+    #-1 INVALID PLAYER
+    )]
+-
+&fn.addmember #114=
+  [switch(
+    [t(member(u(fn.list.factions),ucstr(%0)))]
+    [t(setr(1,pmatch(%1)))]
+    [not(t(member(u(fn.list.members,%0),%q1)))],
+
+    0??,#-1 INVALID FACTION,
+    10?,#-1 INVALID PLAYER,
+    110,#-1 EXISTING MEMBER,
+    111,set(v(data),fac.%0:[squish(edit(setr(a,get(v(data)/fac.%0)),setr(b,extract(%qa,3,1,|)),%qb %q1))])
+    )]
+-
+&fn.remmember #114=
+  [switch(
+    [t(member(u(fn.list.factions),ucstr(%0)))]
+    [t(setr(1,pmatch(%1)))]
+    [t(member(u(fn.list.members,%0),%q1))],
+
+    0??,#-1 INVALID FACTION,
+    10?,#-1 INVALID PLAYER,
+    110,#-1 EXISTING MEMBER,
+    111,set(v(data),fac.%0:[squish(edit(setr(a,get(v(data)/fac.%0)),setr(b,extract(%qa,3,1,|)),remove(%qb,%q1)))])
+    )]
+-
+&fn.fwho.parse #114=
+    [titlebar(Connected Members of [first(setr(0,get(v(data)/fac.%0)),|)])]%r
+    %b[ansi(y,align(16 15 15 >9 19,Name\(alias\),Position,Assignment,Idle,Location))]%r
+    %b[ansi(r,[repeat(-,16)]%b[repeat(-,15)]%b[repeat(-,15)]%b[repeat(-,9)]%b[repeat(-,19)])]%r
+    [iter(
+        setr(1,u(fn.fwho,%0)),
+        %b[align(
+            16 15 15 >9 19,
+            [name(itext(0))]\([alias(itext(0))]\),
+            get(itext(0)/fac`%0`position),
+            get(itext(0)/fac`%0`assignment),
+            ansi(switch(idlesecs(itext(0)),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(itext(0))),1,2)),
+            ifelse(t(setr(0,zone(loc(itext(0))))),name(%q0),OOC Area),
+            )],
+        ,%r)]%r
+    [footerbar([words(%q1)] connected members)]
+-
+&fn.fwho #114=
+    [ifelse(
+        t(member(u(fn.list.factions),ucstr(%0))),
+        filter(filter.fwho,u(fn.list.members,%0)),
+        #-1 INVALID FACTION
+        )]
+-
+&filter.fwho #114=
+    ifelse(eq(conn(%0),-1),-1,1)
+-
