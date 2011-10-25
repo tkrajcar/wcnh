@@ -18,15 +18,11 @@
 -
 
 &cmd.+setrace #40=$+set race *:
-  @swi t(setr(0,chargen(race,%0,name)))=
-    0,{
-      @pemit %#=[ansi(hb,>)] That's not a valid race.
-      },
-    1,{
-      @pemit %#=[ansi(hb,>)] Setting race to [ansi(h,%q0)].;
-      think [chargen(set.race,%#,%q0)][chargen(set.init,%#)];
-      @pemit %#=[ansi(hb,>)] Blank character sheet initialized.;
-     }
+  @assert setr(0,chargen(race,%0,name))=
+    @pemit %#=[ansi(hb,>)] That's not a valid race.;
+  @pemit %#=[ansi(hb,>)] Setting race to [ansi(h,%q0)].;
+  think [chargen(set.race,%#,%q0)][chargen(set.init,%#)];
+  @pemit %#=[ansi(hb,>)] Blank character sheet initialized.;
 -
 
 &cmd.+setage #40=$+set age *:
