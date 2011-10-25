@@ -30,7 +30,7 @@
       extract(get(v(data)/%q0),5,1,|)
       )]
 -
-&cmd.+fac/join #15=$+fac/join *:
+&cmd.+fac/join #191=$+fac/join *:
   @switch [t(member(setr(0,get(%#/fac`invites)),lcstr(%0)))]=
 
           1,{@nspemit %#=[ansi(c,<Faction>)] You have joined [ansi(wh,setr(2,faction(name,%0)))]!;
@@ -38,7 +38,7 @@
              think [if(t(setr(1,faction(channel,%0))),nscemit([ansi(wh,name(%#))] has joined [ansi(wh,%q2)]!)];
              think [faction(addmember,
 -
-&cmd.+fac/reject #15=$+fac/reject *:
+&cmd.+fac/reject #191=$+fac/reject *:
   @switch [t(member(setr(0,get(%#/fac`invites)),lcstr(%0)))]=
   
           1,{@nspemit %#=[ansi(c,<Faction>)] You have rejected your invitation to join [ucstr(%0)].;
@@ -62,7 +62,7 @@
     #-1 INVALID FACTION.
     )]
 -
-&cmd.+fac/invite #15=$+fac/invite * to *:
+&cmd.+fac/invite #191=$+fac/invite * to *:
   @switch [t(setr(0,pmatch(%0)))]
     [t(setr(2,faction(name,%1)))]
     [or(orflags(%#,Wr),t(member(faction(list.leaders,%1),%#)))]
@@ -88,7 +88,7 @@
     #-1 INVALID FACTION
     )]
 -
-&cmd.+fac/list #15=$+fac/list:
+&cmd.+fac/list #191=$+fac/list:
   @nspemit %#=[faction(list.factiontree)]
 -
 &fn.list.factiontree #114=
@@ -215,7 +215,7 @@
         ,%r)]%r
     [footerbar([words(%q1)] connected members)]
 -
-&cmd.+fwho #15=$+fwho*:@nspemit %#=
+&cmd.+fwho #191=$+fwho*:@nspemit %#=
   [switch(
         [t(setr(0,faction(list.memberof,%#)))]
         [t(%0)]
