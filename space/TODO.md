@@ -6,6 +6,14 @@ This file details work being done, work to do next, and future ideas.
 
 This is the list of work in-progress.
 
+### Documentation
+
+* Create a README.md
+* Move the spec into SPEC.md
+* Review and implement doc strategy via chargen
+
+### Code
+
 * Move iscrew() check to @lock/use on the Command Console parent
 * Remove WIZ flags, use API flag
 * Review existing locks/auth methods and push to spacesys()
