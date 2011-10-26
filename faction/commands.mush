@@ -1,3 +1,18 @@
+&cmd.+fac/boot #191=$+fac/boot *=*:
+  @switch [or(orflags(%#,Wr),t(member(setr(3,faction(list.leaders,%0)),%#)))]
+          [t(match(faction(list.memberof,setr(1,pmatch(%1))),%0))]
+          [not(t(member(%q3,%q1)))]=
+
+          0??,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
+          10?,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
+          110,@nspemit %#=[ansi(c,<Faction>)] Leaders must be demoted before they are ejected.,
+          111,{@nspemit %#=[ansi(c,<Faction>)] Ejecting [name(%q1)] from [ucstr(%0)].;
+               @nspemit %q1=[ansi(c,<Faction>)] You have been removed from [ucstr(%0)].;
+               think [faction(remmember,%0,%q1)];
+               @switch [t(member(cwho(setr(2,faction(channel,%0))),%q1))]=1,{@channel/off %q2=%q1};
+               @wipe %q1/fac`%0
+              }
+-
 &cmd.+fac/position #191=$+fac/position */*=*:
   @switch [or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#)))]
           [t(member(faction(list.memberof,setr(1,pmatch(%1))),ucstr(%0)))]=
@@ -5,7 +20,7 @@
           0?,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
           10,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
           11,{@nspemit %#=[ansi(c,<Faction>)] [name(%q1)]'s position updated.;
-              @set %q1=fac`%0`position:[strpansi(stripaccents(%2))]
+              @set %q1=fac`%0`position:[stripansi(stripaccents(%2))]
              }                                                                     }
 -                                                                     
 &cmd.+fac/assign #191=$+fac/assign */*=*:
@@ -115,7 +130,7 @@
         [t(setr(0,faction(list.memberof,%#)))]
         [t(%0)]
         [gt(words(%q0),1)]
-        [t(match(%q0,trim(%0)))],
+        [or(orflags(%#,Wr),t(match(%q0,trim(%0))))],
 
         0*,You're not a member of any factions.,
         101?,Specify one of the following: %q0,
@@ -129,7 +144,7 @@
         [t(setr(0,faction(list.memberof,%#)))]
         [t(%0)]
         [gt(words(%q0),1)]
-        [t(match(%q0,trim(%0)))],
+        [or(orflags(%#,Wr),t(match(%q0,trim(%0))))],
 
         0*,You're not a member of any factions.,
         101?,Specify one of the following: %q0,
