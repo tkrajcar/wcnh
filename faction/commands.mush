@@ -1,3 +1,23 @@
+&cmd.+fac/position #191=$+fac/position */*=*:
+  @switch [or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#)))]
+          [t(member(faction(list.memberof,setr(1,pmatch(%1))),ucstr(%0)))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
+          10,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
+          11,{@nspemit %#=[ansi(c,<Faction>)] [name(%q1)]'s position updated.;
+              @set %q1=fac`%0`position:[strpansi(stripaccents(%2))]
+             }                                                                     }
+-                                                                     
+&cmd.+fac/assign #191=$+fac/assign */*=*:
+  @switch [or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#)))]
+          [t(member(faction(list.memberof,setr(1,pmatch(%1))),ucstr(%0)))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
+          10,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
+          11,{@nspemit %#=[ansi(c,<Faction>)] [name(%q1)]'s assignment updated.;
+              @set %q1=fac`%0`assignment:[stripansi(stripaccents(%2))]
+             }
+-
 &cmd.+fac/demote #191=$+fac/demote *=*:
   @break [not(or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#))))]=
          @nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.;
