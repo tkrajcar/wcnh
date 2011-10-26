@@ -1,0 +1,7 @@
+################################
+### PARENT: Shuttle Kiosk (#203)
+################################
+
+# Command: shuttle
+# Displays a list of shuttle commands
+&CMD.SHUTTLE #203=$shuttle:@pemit %#=[spacesys(shuttle)]

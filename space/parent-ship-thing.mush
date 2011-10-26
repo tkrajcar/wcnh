@@ -1,0 +1,18 @@
+#############################
+### PARENT: Ship Thing (#179)
+#############################
+
+# Setup the MUSH object
+@set #179=SAFE NO_COMMAND
+-
+@lock/enter #179=CANBOARD/1
+-
+@lset #179/enter=!no_inherit
+-
+@efail #179=Boarding access denied.
+-
+@aenter #179=[pemit(%#,You board the vessel!)]
+-
+@desc #179=It's a space ship!
+-
+&CANBOARD #179=[spacesys(canboard,[v(data.console)],%#)]

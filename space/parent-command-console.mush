@@ -1,0 +1,20 @@
+##################################
+### PARENT: Command Console (#204)
+##################################
+
+# Setup the MUSH object
+@set #204=SAFE NO_COMMAND
+-
+@lock/use #204=ISCREW/1
+-
+@lset #204/use=!no_inherit
+-
+@ufail #204=Console access denied.
+-
+@desc #204=A space ship command console.
+-
+&ISCREW #204=[spacesys(iscrew,%!,%#)]
+-
+# Command: plot
+# Display the plot commands and their syntax
+&CMD.PLOT #204=$plot:[pemit(%#,[spacesys(plot)])]

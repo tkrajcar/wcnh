@@ -1,27 +1,3 @@
-##################################
-### MASTER: Command Console (#204)
-##################################
-
-# Command: plot
-# Display the plot commands and their syntax
-&CMD.PLOT #204=$plot:[pemit(%#,
-  [switch(0,
-    /@@ Only the ship's captain and crew can use a console @@/
-    [spacesys(iscrew,%#,%!)], Console access denied.,
-
-    /@@ Looks good... @@/
-    [spacesys(plot)]
-  )]
-)]
--
-################################
-### MASTER: Shuttle Kiosk (#203)
-################################
-
-# Command: shuttle
-# Displays a list of shuttle commands
-&CMD.SHUTTLE #203=$shuttle:@pemit %#=[spacesys(shuttle)]
--
 ###########################
 ### FUNCTIONS: Space (#208)
 ###########################
@@ -33,9 +9,17 @@
 # Function: shuttle()
 &FN.SHUTTLE #208=You typed the shuttle command! Have a sticker!
 -
-# Function: iscrew(player DBREF, console DBREF)
-# Returns true if the enactor (%#) is a member of a ship's roster
-&FN.ISCREW #208=[t([member([get(%1/data.roster)],%0)])]
+# Function: iscrew(console DBREF, player DBREF)
+# Returns true if the player is the ship's captain or a crew member
+&FN.ISCREW #208=[t([member([get(%0/data.roster)],%1)])]
+-
+# Function: isdocked(console DBREF)
+# Returns true if the console is docked.
+&FN.ISDOCKED #208=[t([hastype([get(%0/data.docked)],ROOM)])]
+-
+# Function: canboard(console DBREF, player DBREF)
+# Returns true if the player can board the ship
+&FN.CANBOARD #208=[t([member([get(%0/data.roster)],%1)])]
 -
 # Subfunction: actors()
 # Debug subfunction used to determine enactor, executor and caller
