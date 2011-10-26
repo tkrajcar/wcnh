@@ -5,16 +5,52 @@
 # Setup the MUSH object
 @set #204=SAFE NO_COMMAND
 -
-@lock/use #204=ISCREW/1
+@lock/use #204=LOCK.CANUSECONSOLE/1
+-
+@lock/command #204=LOCK.ISMANNING/1
 -
 @lset #204/use=!no_inherit
 -
-@ufail #204=Console access denied.
+@lset #204/command=!no_inherit
 -
-@desc #204=A space ship command console.
+@ufail #204=[pemit(%#,
+  [if([spacesys(ismanned,%!)],
+    /@@ Console is manned by someone else @@/
+    The [name(%!)] console is already being manned by [spacesys(mannedby,%!)].,
+    
+    /@@ Access denied @@/
+    Console access denied.
+  )]
+)]
 -
-&ISCREW #204=[spacesys(iscrew,%!,%#)]
+@desc #204=A command console. It is currently [switch([v(data.manned)],0,unmanned.,manned by [spacesys(mannedby,%!)])].
+-
+&LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,%!,%#)]
+-
+&LOCK.ISMANNING #204=[spacesys(ismanning,%!,%#)]
+-
+&USE #204=[pemit(%#,
+  [if([spacesys(ismanned,%!)],
+    /@@ Player is already manning the console. @@/
+    You are already manning the [name(%!)].,
+
+    /@@ Set the player's DBREF as manning the console @@/
+    [attrib_set(%!/data.manned,%#)]
+    You man the [name(%!)].
+  )]
+)]
+-
+# Command: unman
+# Unmans the player from the console.
+&CMD.UNMAN #204=$unman:[pemit(%#,
+  [attrib_set(%!/data.manned,0)]
+  You unman the [name(%!)].
+)]
 -
 # Command: plot
 # Display the plot commands and their syntax
 &CMD.PLOT #204=$plot:[pemit(%#,[spacesys(plot)])]
+-
+# Command: roster
+# Display the roster commands and their syntax
+&CMD.ROSTER #204=$roster:[pemit(%#,[spacesys(roster)])]

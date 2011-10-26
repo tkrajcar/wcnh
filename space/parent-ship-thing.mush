@@ -5,7 +5,7 @@
 # Setup the MUSH object
 @set #179=SAFE NO_COMMAND
 -
-@lock/enter #179=CANBOARD/1
+@lock/enter #179=LOCK.CANBOARD/1
 -
 @lset #179/enter=!no_inherit
 -
@@ -15,4 +15,4 @@
 -
 @desc #179=It's a space ship!
 -
-&CANBOARD #179=[spacesys(canboard,[v(data.console)],%#)]
+&LOCK.CANBOARD #179=[spacesys(canboard,[v(data.console)],%#)]

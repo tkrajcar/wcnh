@@ -12,12 +12,12 @@ This is the list of work in-progress.
 
 ### Code
 
-* Move all shuttle kiosk parent code into parent-shuttle-kiosk.mush
 * Write @aenter on ship thing parent
 * Talk with Rince about using 'use' vs 'man'
 * Change data.console to data.ship?
 * Add roles to DATA.ROSTER format
 * Update ISCREW to only pass on Captain or Crew, not Visitor
+* Write roster/list, roster/add, and roster/remove
 
 ## Work To Do Next
 
@@ -50,3 +50,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Setup @lock/enter on the ship obj parent
 * Move all ship thing parent code into parent-ship-thing.mush
 * Move all command console parent code into parent-command-console.mush
+* Move all shuttle kiosk parent code into parent-shuttle-kiosk.mush
+* Add canuseconsole() function
+* Add ismanned(), isunmanned(), ismanning() and mannedby() functions
+* Add unman command

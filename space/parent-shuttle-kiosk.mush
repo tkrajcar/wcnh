@@ -2,6 +2,11 @@
 ### PARENT: Shuttle Kiosk (#203)
 ################################
 
+# Setup the MUSH object
+@set #203=SAFE NO_COMMAND
+-
+@desc #203=A kiosk for purchasing shuttle tickets.
+-
 # Command: shuttle
 # Displays a list of shuttle commands
 &CMD.SHUTTLE #203=$shuttle:@pemit %#=[spacesys(shuttle)]

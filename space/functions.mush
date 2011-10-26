@@ -4,10 +4,14 @@
 
 # Function: plot()
 # Display the plot commands and their syntax
-&FN.PLOT #208=You typed the plot command! Hooray! Have a donut.
+&FN.PLOT #208=You typed the plot command.
+-
+# Function: roster()
+# Display the roster commands and their syntax
+&FN.ROSTER #208=You typed the roster command.
 -
 # Function: shuttle()
-&FN.SHUTTLE #208=You typed the shuttle command! Have a sticker!
+&FN.SHUTTLE #208=You typed the shuttle command.
 -
 # Function: iscrew(console DBREF, player DBREF)
 # Returns true if the player is the ship's captain or a crew member
@@ -15,13 +19,54 @@
 -
 # Function: isdocked(console DBREF)
 # Returns true if the console is docked.
-&FN.ISDOCKED #208=[t([hastype([get(%0/data.docked)],ROOM)])]
+&FN.ISDOCKED #208=[hastype([get(%0/data.docked)],ROOM)]
 -
 # Function: canboard(console DBREF, player DBREF)
 # Returns true if the player can board the ship
 &FN.CANBOARD #208=[t([member([get(%0/data.roster)],%1)])]
 -
+# Function: canuseconsole(console DBREF, player DBREF)
+# Returns true if the player can use the console
+&FN.CANUSECONSOLE #208=[firstof(
+  /@@ If the player is aleady manning the console, they can use it @@/
+  [u(#208/fn.ismanning,%0,%1)],
+
+  /@@ If the console is unmanned and the player is a crew member, they can use it @@/
+  [and(
+    [u(#208/fn.iscrew,%0,%1)],
+    [u(#208/fn.isunmanned,%0)]
+  )]
+
+  /@@ Otherwise, the player can't use the console @@/
+  ,0
+)]
+-
+# Function: ismanned(console DBREF)
+# Returns true if the console is manned
+&FN.ISMANNED #208=[not([u(#208/fn.isunmanned,%0)])]
+-
+# Function: isunmanned(console DBREF)
+# Returns true if the console is unmanned
+&FN.ISUNMANNED #208=[eq(0,[get(%0/data.manned)])]
+-
+# Function: ismanning(console DBREF, player DBREF)
+# Returns true if the player is manning the console
+&FN.ISMANNING #208=[strmatch([get(%0/data.manned)],%1)]
+-
+# Function: mannedby(console DBREF)
+# Returns the name of the player manning the console
+&FN.MANNEDBY #208=[name([get(%0/data.manned)])]
+-
 # Subfunction: actors()
 # Debug subfunction used to determine enactor, executor and caller
-&SUBFN.ACTORS #208=[pemit(%#,\%#: [name(%#)](%#) \%!: [name(%!)](%!) \%@: [name(%@)](%@))]
+&SUBFN.ACTORS #208=[pemit(%#,
+  /@@ Enactor name and DBREF @@/
+  \%#: [name(%#)](%#) 
+
+  /@@ Executor name and DBREF @@/
+  \%!: [name(%!)](%!) 
+
+  /@@ Caller name and DBREF @@/
+  \%@: [name(%@)](%@)
+)]
 -

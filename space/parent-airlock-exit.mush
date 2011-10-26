@@ -5,7 +5,7 @@
 # Setup the MUSH object
 @set #209=SAFE NO_COMMAND
 -
-@lock #209=DOCKED/1
+@lock #209=LOCK.ISDOCKED/1
 -
 @lset #209/basic=!no_inherit
 -
@@ -15,4 +15,4 @@
 -
 &DESTINATION #209=[get([v(data.console)]/data.docked)]
 -
-&DOCKED #209=[spacesys(isdocked,[v(data.console)])]
+&LOCK.ISDOCKED #209=[spacesys(isdocked,[v(data.console)])]
