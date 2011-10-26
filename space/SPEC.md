@@ -15,18 +15,18 @@ Also, please do not mistake my gratuitous use of "will" as a sign that anything 
 
 # Definitions
 
-		ship					A player owned space ship. Players use ships to travel
-									within a system, as well as between systems.
+	ship          A player owned space ship. Players use ships to travel
+                within a system, as well as between systems.
 
-		shipyard			A location where a player can purchase a ship from a
-									shipyard vendor.
+	shipyard      A location where a player can purchase a ship from a
+                shipyard vendor.
 
-		station				A space station shares some things in common with a
-									ship, but cannot travel - it is stationary.
+	station       A space station shares some things in common with a
+                ship, but cannot travel - it is stationary.
 
-		shuttle				A ship that can be used by players who do not own their
-									own ships. Players buy a ticket for a destination and
-									the shuttle takes them there.
+	shuttle       A ship that can be used by players who do not own their
+                own ships. Players buy a ticket for a destination and
+                the shuttle takes them there.
 
 # Buying a Ship
 
