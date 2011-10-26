@@ -83,7 +83,7 @@ module PennJSON
 
     # Guess that the object is defined by a file of the same name.
     begin
-      require 'pennmush-json/' + name
+      require name
     rescue LoadError
       raise LocalError.new(-32601, 'Object definition not found')
     end

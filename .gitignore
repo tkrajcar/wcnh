@@ -41,3 +41,6 @@ game/data/
 game/log/
 game/txt/
 game/save/
+
+# Ruby implementation-specific files.
+game/ruby/config.yml

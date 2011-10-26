@@ -1,0 +1,7 @@
+# Configuration file. Copy to config.yaml and modify as needed.
+
+# All directories listed here will be added to $LOAD_PATH for you.
+load_paths:
+  - /my/path1
+  - /my/path2
+
