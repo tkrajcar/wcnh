@@ -11,6 +11,8 @@
 #include "log.h"
 
 /* System headers. */
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/select.h>
 
 /* JSON server headers */
@@ -18,6 +20,15 @@
 #include "json-net.h"
 #include "json-call.h"
 #include "json-private.h"
+
+/* Communication failure error message. */
+#define ERROR_COMM_FAILURE T("#-1 COMMUNICATION FAILURE")
+
+/* Handy macro for getting context. */
+#define GET_INFO_VAR JSON_Server *const info = json_server_info()
+
+/* Handy macro for trying a protocol operation. All errors are fatal. */
+#define TRY_PROTO(op) do { if (!(op)) goto failed; } while (0)
 
 /*
  * Get the JSON server instance.
@@ -29,8 +40,9 @@ json_server_info(void)
 	static JSON_Server info;
 
 	if (!init) {
-		info.fd = -1;
 		init = 1;
+
+		info.fd = -1;
 	}
 
 	return &info;
@@ -58,7 +70,7 @@ json_server_log(JSON_Server *info, const char *message, int code)
 void
 json_server_shutdown(int reboot)
 {
-	JSON_Server *const info = json_server_info();
+	GET_INFO_VAR;
 
 	/* TODO: Preserve server across reboots? */
 	json_server_stop(info);
@@ -70,7 +82,7 @@ json_server_shutdown(int reboot)
 void
 json_server_setfd(fd_set *input_set)
 {
-	JSON_Server *const info = json_server_info();
+	GET_INFO_VAR;
 
 	if (info->fd == -1) {
 		return;
@@ -87,7 +99,7 @@ json_server_setfd(fd_set *input_set)
 void
 json_server_issetfd(fd_set *input_set)
 {
-	JSON_Server *const info = json_server_info();
+	GET_INFO_VAR;
 
 	if (info->fd == -1) {
 		return;
@@ -111,7 +123,7 @@ json_server_issetfd(fd_set *input_set)
  */
 COMMAND(cmd_json_rpc)
 {
-	JSON_Server *const info = json_server_info();
+	GET_INFO_VAR;
 
 	const char *subcmd = arg_left;
 
@@ -147,7 +159,10 @@ COMMAND(cmd_json_rpc)
  */
 FUNCTION(fun_json_rpc)
 {
-	JSON_Server *const info = json_server_info();
+	GET_INFO_VAR;
+
+	JSON_Server_Message msg;
+	int ii;
 
 	/* Restrict to wizards using Hard coded permission check. */
 	if (!Wizard(executor)) {
@@ -158,17 +173,63 @@ FUNCTION(fun_json_rpc)
 	/* Ensure the server is started. */
 	json_server_start(info);
 	if (info->fd == -1) {
-		safe_str(T("#-1 CONNETION FAILED"), buff, bp);
+		safe_str(ERROR_COMM_FAILURE, buff, bp);
 		return;
 	}
 
 	/* Send request. */
+	TRY_PROTO(json_server_start_request(info, args[0], arglens[0]));
 
-	/* Return response. */
+	for (ii = 1; ii < nargs; ii++) {
+		TRY_PROTO(json_server_add_param(info, args[ii], arglens[ii]));
+	}
 
-	safe_format(buff, bp, "Not implemented yet: %s", args[0]);
+	TRY_PROTO(json_server_add_context(info, "executor", 8, "#3", -1));
+	TRY_PROTO(json_server_add_context(info, "caller", 6, "#2", -1));
+	TRY_PROTO(json_server_add_context(info, "enactor", 7, "#1", -1));
+
+	TRY_PROTO(json_server_send_request(info));
+
+	/* Dispatch response. */
+	msg.type = JSON_SERVER_MSG_NONE;
+
+	if (!json_server_receive(info, &msg)) {
+		goto failed;
+	}
+
+	switch (msg.type) {
+	case JSON_SERVER_MSG_REQUEST:
+		/* TODO: Handle recursive requests. */
+		json_server_message_clear(&msg);
+		goto failed;
+
+	case JSON_SERVER_MSG_RESULT:
+		if (msg.message) {
+			safe_str(msg.message, buff, bp);
+		}
+		break;
+
+	case JSON_SERVER_MSG_ERROR:
+		safe_format(buff, bp, T("#-1 %ld (%s)"),
+		            msg.error_code, msg.message);
+		break;
+
+	default:
+		/* This shouldn't happen. */
+		json_server_message_clear(&msg);
+		goto failed;
+	}
+
+	json_server_message_clear(&msg);
+	return;
+
+failed:
+	/* Recover from protocol failure. */
+	json_server_stop(info);
+	safe_str(ERROR_COMM_FAILURE, buff, bp);
 }
 
 /*
  * Dispatches recursive call from JSON server to MUSHcode.
  */
+/* TODO: Not implemented yet. */

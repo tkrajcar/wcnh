@@ -12,8 +12,8 @@ JSON_LIBS=-lyajl
 JSON_CFLAGS=-pthread
 
 # Extra dependencies for JSON server. We may need to add transitive
-# dependencies, but currently relying on json/server.o needing to be rebuilt
-# whenever cmdlocal.o/funlocal.o also needs to be rebuilt.
+# dependencies, but currently relying on rebuilding certain files whenever the
+# cmdlocal.o/funlocal.o/local.o also need to be rebuilt.
 bsd.o: json/json-config.h json/json-net.h
 command.o: json/json-config.h json/json-call.h
 function.o: json/json-config.h json/json-call.h
@@ -21,6 +21,8 @@ json/server.o: json/json-config.h
 json/server.o: json/json-net.h json/json-call.h json/json-private.h
 json/server.o: cmdlocal.o funlocal.o
 json/launch.o: json/json-config.h json/json-private.h
+json/json.o: json/json-config.h json/json-private.h
+json/json.o: local.o
 
 # Libs EXCEPT for SQL ones
 LIBS=$(CLIBS) $(JSON_LIBS)
@@ -56,7 +58,7 @@ O_FILES=access.o atr_tab.o attrib.o boolexp.o bsd.o bufferq.o chunk.o	\
 	rob.o services.o set.o SFMT.o shs.o sig.o sort.o speech.o	\
 	sql.o ssl_master.o strdup.o strtree.o strutil.o tables.o		\
 	timer.o unparse.o utils.o version.o wait.o warnings.o wild.o	\
-	json/server.o json/launch.o					\
+	json/server.o json/launch.o json/json.o				\
 	wiz.o
 
 # This is a dummy target, in case you type 'make' in the source
@@ -205,7 +207,7 @@ indent:
 	$$file ; done)
 
 clean:
-	-rm -f *.o 
+	-rm -f *.o json/*.o
 	-rm -f a.out core gmon.out $(OUTFILES) 
 
 distclean: clean

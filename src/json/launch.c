@@ -56,12 +56,18 @@ json_server_start(JSON_Server *const info)
 	}
 
 	/* Reset data structure. */
+	if (!json_server_json_alloc(info)) {
+		return;
+	}
+
+	info->state = JSON_SERVER_STATE_READY;
 	info->in_off = 0;
 	info->in_len = 0;
 
 	/* Create socket pair. */
 	if (socketpair(AF_LOCAL, SOCK_STREAM, 0, pair) == -1) {
 		json_server_log(info, "start: socketpair", errno);
+		json_server_json_free(info);
 		return;
 	}
 
@@ -112,12 +118,17 @@ json_server_start(JSON_Server *const info)
 	/* Clean up parent. */
 	if (close(pair[1]) == -1) {
 		json_server_log(info, "start: close[1]", errno);
+		info->fd = -1; /* note info->fd == -1 or pair[0] */
 	}
 
 	if (info->fd == -1) {
 		if (close(pair[0]) == -1) {
 			json_server_log(info, "start: close[0]", errno);
 		}
+	}
+
+	if (info->fd == -1) {
+		json_server_json_free(info);
 	}
 }
 
@@ -136,6 +147,9 @@ json_server_stop(JSON_Server *const info)
 	if (close(info->fd) == -1) {
 		json_server_log(info, "stop: close", errno);
 	}
+
+	/* Clean up other resources. */
+	json_server_json_free(info);
 
 	/* Indicate data structure can be reused. */
 	info->fd = -1;
