@@ -18,6 +18,10 @@ module Ping
     return 1 / 0
   end
 
+  def self.pj_pong(*args)
+    return "PONG#{args.inspect}"
+  end
+
   def self.pj_exit
     # SystemExit example; not enabled by default, for obvious reasons.
     #exit

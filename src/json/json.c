@@ -114,13 +114,12 @@ handle_null(void *ctx)
 			break;
 
 		case TOKEN_0_RESULT:
-			/* TODO: Transition to result, set value to null. */
+			/* FIXME: Yes, not robust. Just prototyping. */
+			info->msg->type = JSON_SERVER_MSG_RESULT;
+			info->msg->message = NULL;
 			break;
 
 		default:
-			return 0;
-		}
-		if (info->msg_token != -1) {
 			return 0;
 		}
 		break;
@@ -130,8 +129,6 @@ handle_null(void *ctx)
 		return 0;
 	}
 
-	return 1;
-	fputs("null", stderr);
 	return 1;
 }
 
@@ -188,6 +185,14 @@ handle_string(void *ctx, const unsigned char *value, unsigned int len)
 	GET_INFO_VAR;
 
 	switch (info->state) {
+	case JSON_SERVER_STATE_OBJECT:
+		if (info->msg_token == TOKEN_0_RESULT) {
+			/* FIXME: Yes, not robust. Just prototyping. */
+			info->msg->type = JSON_SERVER_MSG_RESULT;
+			info->msg->message = mush_strndup((const char *)value, len, "json");
+		}
+		break;
+
 	default:
 		/* Unexpected parser state. */
 		return 0;
@@ -341,13 +346,15 @@ static const yajl_callbacks callbacks = {
 int
 json_server_json_alloc(JSON_Server *info)
 {
+	JSON_Server_State old_state;
+
 	info->encoder = yajl_gen_alloc(&gen_config, NULL);
 	if (!info->encoder) {
 		json_server_log(info, "json_alloc: yajl_gen_alloc", 0);
 		return 0;
 	}
 
-	info->decoder = yajl_alloc(&callbacks, &parser_config, NULL, &info);
+	info->decoder = yajl_alloc(&callbacks, &parser_config, NULL, info);
 	if (!info->decoder) {
 		/* Not fatal, but will prevent operation. */
 		json_server_log(info, "json_alloc: yajl_alloc", 0);
@@ -356,7 +363,39 @@ json_server_json_alloc(JSON_Server *info)
 		return 0;
 	}
 
+	/*
+	 * Hack to allow YAJL to generate/parse a stream of JSON documents.
+	 * Normally, YAJL only allows a single JSON document, but we add an
+	 * invisible [ to the beginning to stream a sequence.
+	 *
+	 * Note that this hack requires spurious commas, so we insert an
+	 * initial null and skip/add leading commas as needed.
+	 */
+	TRY_GEN(yajl_gen_array_open(info->encoder));
+	TRY_GEN(yajl_gen_null(info->encoder));
+	yajl_gen_clear(info->encoder);
+
+	old_state = info->state;
+	info->state = JSON_SERVER_STATE_IGNORING;
+
+	switch (yajl_parse(info->decoder, (unsigned char *)"[null", 5)) {
+	case yajl_status_ok:
+	case yajl_status_insufficient_data:
+		break;
+
+	default:
+		goto failed;
+	}
+
+	info->msg_nesting--; /* reverse handle_start_array */
+	info->state = old_state;
+
 	return 1;
+
+failed:
+	json_server_log(info, "json_alloc: yajl", 0);
+	json_server_json_free(info);
+	return 0;
 }
 
 /*
@@ -611,11 +650,11 @@ json_server_message_clear(JSON_Server_Message *msg)
 
 			nargs = msg->param_nargs;
 			for (ii = 0; ii < nargs; ii++) {
-				free(msg->param_args[ii]);
+				mush_free(msg->param_args[ii], "json");
 			}
 
-			free(msg->param_args);
-			free(msg->param_arglens);
+			mush_free(msg->param_args, "json");
+			mush_free(msg->param_arglens, "json");
 		}
 
 		/* FALLTHROUGH */
@@ -623,7 +662,7 @@ json_server_message_clear(JSON_Server_Message *msg)
 	case JSON_SERVER_MSG_ERROR:
 		/* Response message. */
 		if (msg->message) {
-			free(msg->message);
+			mush_free(msg->message, "json");
 		}
 
 		msg->type = JSON_SERVER_MSG_NONE;
@@ -656,6 +695,16 @@ json_server_receive(JSON_Server *info, JSON_Server_Message *msg)
 	info->msg = msg;
 	info->msg_nesting = 0;
 	info->msg_token = -1;
+
+	/* Parse virtual comma for streaming hack. */
+	switch (yajl_parse(info->decoder, (unsigned char *)",", 1)) {
+	case yajl_status_ok:
+	case yajl_status_insufficient_data:
+		break;
+
+	default:
+		goto failed;
+	}
 
 	do {
 		if (info->in_off == info->in_len) {
@@ -712,6 +761,13 @@ flush_json(JSON_Server *info)
 	ssize_t result;
 
 	TRY_GEN(yajl_gen_get_buf(info->encoder, &buf, &len));
+
+	/*
+	 * Our infinite stream hack (see json_server_json_alloc) introduces a
+	 * spurious comma that we need to skip.
+	 */
+	buf += 1;
+	len -= 1;
 
 	while (len > 0) {
 		if ((result = write(info->fd, buf, len)) == -1) {
