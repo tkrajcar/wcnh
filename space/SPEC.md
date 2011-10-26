@@ -15,12 +15,6 @@ Also, please do not mistake my gratuitous use of "will" as a sign that anything 
 
 # Definitions
 
-  ship          A player owned space ship. Players use ships to travel
-                within a system as well as between systems.
-
-  shipyard      A location where a player can purchase a ship from a
-                shipyard vendor.
-
 	ship          A player owned space ship. Players use ships to travel
                 within a system, as well as between systems.
 
