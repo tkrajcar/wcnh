@@ -15,16 +15,16 @@ Also, please do not mistake my gratuitous use of "will" as a sign that anything 
 
 # Definitions
 
-	ship          A player owned space ship. Players use ships to travel
+	ship         A player owned space ship. Players use ships to travel
                 within a system, as well as between systems.
 
-	shipyard      A location where a player can purchase a ship from a
+	shipyard     A location where a player can purchase a ship from a
                 shipyard vendor.
 
-	station       A space station shares some things in common with a
+	station      A space station shares some things in common with a
                 ship, but cannot travel - it is stationary.
 
-	shuttle       A ship that can be used by players who do not own their
+	shuttle      A ship that can be used by players who do not own their
                 own ships. Players buy a ticket for a destination and
                 the shuttle takes them there.
 
@@ -40,7 +40,7 @@ Only those players listed on a ship's roster (see Securing a Ship) may board a s
 
 Commands
 
-		enter <ship>					Board a ship
+	enter <ship>       Board a ship
 
 # Securing a Ship
 
@@ -48,10 +48,10 @@ Players will be able to grant access to their ship to other players using the sh
 
 Commands
 
-		roster													Display the different roster commands
-		roster/list											Display the current roster members
-		roster/add <player>:<role>			Add a player to the roster
-		roster/remove <player>					Remove a player from the roster
+	roster                          Display the different roster commands
+	roster/list                     Display the current roster members
+	roster/add <player>:<role>      Add a player to the roster
+	roster/remove <player>          Remove a player from the roster
 
 # Communicating in a Ship
 
