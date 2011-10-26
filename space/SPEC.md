@@ -15,18 +15,18 @@ Also, please do not mistake my gratuitous use of "will" as a sign that anything 
 
 # Definitions
 
-	ship         A player owned space ship. Players use ships to travel
-                within a system, as well as between systems.
+	ship          A player owned space ship. Players use ships to travel
+                 within a system, as well as between systems.
 
-	shipyard     A location where a player can purchase a ship from a
-                shipyard vendor.
+	shipyard      A location where a player can purchase a ship from a
+                 shipyard vendor.
 
-	station      A space station shares some things in common with a
-                ship, but cannot travel - it is stationary.
+	station       A space station shares some things in common with a
+                 ship, but cannot travel - it is stationary.
 
-	shuttle      A ship that can be used by players who do not own their
-                own ships. Players buy a ticket for a destination and
-                the shuttle takes them there.
+	shuttle       A ship that can be used by players who do not own their
+                 own ships. Players buy a ticket for a destination and
+                 the shuttle takes them there.
 
 # Buying a Ship
 
@@ -40,7 +40,7 @@ Only those players listed on a ship's roster (see Securing a Ship) may board a s
 
 Commands
 
-	enter <ship>       Board a ship
+	enter <ship>      Board a ship
 
 # Securing a Ship
 
@@ -59,7 +59,7 @@ Players can send a message throughout the ship using an intercom. Anyone on the 
 
 Commands
 
-		intercom <msg>				Send a message through the ship's intercom
+	intercom <msg>       Send a message through the ship's intercom
 
 # Piloting a Ship
 
@@ -67,13 +67,13 @@ Players will be able to plot a destination from the ship's Command Console. Dest
 
 Commands
 
-		plot										Display the different plot commands
-		plot/list								List destinations in the local system and the
-														names of other systems that have destinations
-		plot/list <system>			List the destinations in a specific system
-		plot/calc <code>				Plot a route to a destination. Travel time
-														will be influenced by the player's skill
-														in Astrogation and Piloting.
+	plot                    Display the different plot commands
+	plot/list               List destinations in the local system and the
+                           names of other systems that have destinations
+	plot/list <system>      List the destinations in a specific system
+	plot/calc <code>        Plot a route to a destination. Travel time
+                           will be influenced by the player's skill
+                           in Astrogation and Piloting.
 
 Example Output
 
@@ -81,16 +81,16 @@ Command: plot/list
 
 	>--[Navigation: Available Destinations]--------------------------------------<
 	
-			LOCAL DESTINATIONS
-			 VS1: Vespus I					VS2: Vespus II					VS3: Asteroid Belt
-			 VS4: Asteroid Belt			VS5: Gas Giant					VS6: Gas Giant
+      LOCAL DESTINATIONS
+       VS1: Vespus I          VS2: Vespus II          VS3: Asteroid Belt
+       VS4: Asteroid Belt     VS5: Gas Giant          VS6: Gas Giant
 
-			OTHER SYSTEMS
-			 CB: Cabrea							 CD: Cardell						 PB: Pembroke
-			 SP: Speardon
+      OTHER SYSTEMS
+        CB: Cabrea             CD: Cardell             PB: Pembroke
+        SP: Speardon
 
-	Use 'plot/calc <local code>' to plot a route to a local destination
-	Use 'plot/list <system code>' to view destinations in another system
+	 Use 'plot/calc <local code>' to plot a route to a local destination
+	 Use 'plot/list <system code>' to view destinations in another system
 	>--[Showing: plot/list]------------------------------------------------------<
 
 Though it may appear complex at first glance, the idea behind using codes is that they are short and easily remembered, removing the need to issue a 'plot/list' every time.
@@ -101,11 +101,11 @@ While in orbit, players can scan for other entities in space using the Command C
 
 Commands
 
-		scan										List entities in orbit
-		comm <entity> <msg>			Send a message to another entity
-		spose <pose>						Display a pose to other entities in orbit
-		land <planet>						Land on a planet
-		dock <station|ship>			Dock with a station or carrier
+	scan                     List entities in orbit
+	comm <entity> <msg>      Send a message to another entity
+	spose <pose>             Display a pose to other entities in orbit
+	land <planet>            Land on a planet
+	dock <station|ship>      Dock with a station or carrier
 
 # Planets & Space Stations
 
@@ -117,9 +117,9 @@ Carriers have all the capabilities of other ships, but similar to stations, they
 
 Commands
 
-		bay							Display the open/closed status of the docking bay doors
-		bay/open				Open the docking bay doors
-		bay/close				Close the docking bay doors
+	bay             Display the open/closed status of the docking bay doors
+	bay/open        Open the docking bay doors
+	bay/close       Close the docking bay doors
 
 # Shuttles
 
@@ -127,10 +127,10 @@ Shuttles can be used by players to travel between habitable planets and space st
 
 Commands
 
-		shuttle									Display the different shuttle commands
-		shuttle/list						List destinations serviced by the shuttle
-		shuttle/buy <code>			Purchase a ticket for a destination
-		shuttle/board						Board the shuttle for your destination
+	shuttle                 Display the different shuttle commands
+	shuttle/list            List destinations serviced by the shuttle
+	shuttle/buy <code>      Purchase a ticket for a destination
+	shuttle/board           Board the shuttle for your destination
 
 # The Plumbing
 
@@ -145,12 +145,12 @@ and other rooms.
 
 Calculating the time required to travel between destinations is up in the air. Right now we're looking at a 2d X/Y coordinate grid.
 
-		Vespus III: 38.45 10.02
-		Vespus VI:  38.07 10.10
+	Vespus III: 38.45 10.02
+	Vespus VI:  38.07 10.10
 		
-		Cardell II: 76.54 60.75
-		Cardell VI: 76.22 59.85
+	Cardell II: 76.54 60.75
+	Cardell VI: 76.22 59.85
 		
-		Definitely open to suggestions...
+Definitely open to suggestions...
 
 Shuttles will be one of the faster modes of transit in the game. With a small playerbase, and a principal goal of facilitating RP, players shouldn't be keep out of RP because we decided to make travel times too damn realistic.
