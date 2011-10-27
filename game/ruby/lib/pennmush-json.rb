@@ -114,8 +114,9 @@ module PennJSON
       begin
         SEARCH_PATH.each do |remote_path|
           full_name = remote_path + name
-          p full_name.to_s + '.rb'
-          if File.file?(full_name.to_s + '.rb')
+          ruby_file = full_name.to_s + '.rb'
+          if File.file? ruby_file
+            LOGGER.info "Loading '#{name}' from #{ruby_file}"
             require full_name
             found = true
             break # break out on first success
