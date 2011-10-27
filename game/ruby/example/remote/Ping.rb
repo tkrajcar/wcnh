@@ -1,4 +1,5 @@
 require 'pennmush-json'
+require 'pennmush-json-example'
 
 module Ping
   PennJSON::register_object(self)
@@ -14,8 +15,8 @@ module Ping
   end
 
   def self.pj_div0
-    # StandardError subclass example.
-    return 1 / 0
+    # StandardError subclass and support module example.
+    return PennMUSH_Example.div(1, 0)
   end
 
   def self.pj_pong(*args)

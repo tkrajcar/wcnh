@@ -3,7 +3,6 @@
 #
 
 # External modules.
-require 'environment'
 require 'yajl'
 
 # Standard library modules.
@@ -33,11 +32,6 @@ module PennJSON_Conversation
 
   # Callback trigger value.
   CALLBACK_DATA = 'P'
-
-  # Panic in response to unrecoverable failures.
-  def self.panic(message)
-    raise Exception, message
-  end
 
   # Helper method for clearing buffers.
   def self.do_clear(buf)
@@ -97,7 +91,7 @@ module PennJSON_Conversation
     elsif message['go']
       dispatch_callback
     else
-      panic 'Malformed protocol message.'
+      PennJSON.panic 'Malformed protocol message.'
     end
   end
 
@@ -220,7 +214,7 @@ module PennJSON_Conversation
           raise PennJSON::RemoteError.from_json(response)
         else
           # Invalid response.
-          panic 'Malformed protocol message.'
+          PennJSON.panic 'Malformed protocol message.'
         end
       end
     ensure
@@ -239,7 +233,7 @@ module PennJSON_Conversation
       @encoder = Yajl::Encoder.new
 
       @parser.on_parse_complete = Proc.new do |object|
-        PennJSON_Conversation.panic 'Protocol violation.' if @object
+        PennJSON.panic 'Protocol violation.' if @object
         @object = object
       end
     end
@@ -264,7 +258,7 @@ module PennJSON_Conversation
           PennJSON_Conversation.do_clear(@inbuf)
         end
       rescue Yajl::ParseError
-        PennJSON_Conversation.panic 'Malformed protocol message.'
+        PennJSON.panic 'Malformed protocol message.'
       rescue EOFError
         raise SystemExit, 'Remote closed connection.'
       end

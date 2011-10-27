@@ -1,7 +1,13 @@
 # Configuration file. Copy to config.yaml and modify as needed.
 
-# All directories listed here will be added to $LOAD_PATH for you.
+# All directories listed under load_paths will be added to the PennJSON
+# extension load path. For security reasons, each extension load path contains
+# two directories: A "remote" directory holding remotely loadable modules, and
+# a "lib" directory added to the normal Ruby load path for library modules. All
+# paths are resolved relative to the current working directory.
+#
+# If you do not specify an extension load path, the default extension load path
+# will search "pennmush-json".
 load_paths:
-  - /my/path1
-  - /my/path2
-
+- example
+- pennmush-json
