@@ -3,13 +3,21 @@
 ###############################
 
 # Setup the MUSH object
-@set #209=SAFE NO_COMMAND
+@set #209=!SAFE NO_COMMAND
+-
+@wipe #209
+-
+@set #209=SAFE
 -
 @lock #209=LOCK.ISDOCKED/1
 -
 @lset #209/basic=!no_inherit
 -
-@desc #209=[setq(0,[v(data.console)])][if([spacesys(isdocked,%q0)],The airlock leads to [name([get(%q0/data.docked)])].,The airlock is sealed shut.)]
+@desc #209=[setq(0,[v(data.console)])]
+  [if([spacesys(isdocked,%q0)],
+    The airlock leads to [name([get(%q0/data.docked)])].,
+    The airlock is sealed shut.
+  )]
 -
 @failure #209=You cannot go that way. The airlock is sealed shut.
 -

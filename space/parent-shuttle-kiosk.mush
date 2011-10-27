@@ -3,10 +3,16 @@
 ################################
 
 # Setup the MUSH object
-@set #203=SAFE NO_COMMAND
+@set #203=!SAFE NO_COMMAND
+-
+@wipe #203
+-
+@set #203=SAFE
 -
 @desc #203=A kiosk for purchasing shuttle tickets.
 -
 # Command: shuttle
 # Displays a list of shuttle commands
-&CMD.SHUTTLE #203=$shuttle:@pemit %#=[spacesys(shuttle)]
+&CMD.SHUTTLE #203=$shuttle:[pemit(%#,
+  [spacesys(shuttle)]
+)]

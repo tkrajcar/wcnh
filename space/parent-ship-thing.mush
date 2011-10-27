@@ -3,7 +3,11 @@
 #############################
 
 # Setup the MUSH object
-@set #179=SAFE NO_COMMAND
+@set #179=!SAFE NO_COMMAND
+-
+@wipe #179
+-
+@set #179=SAFE
 -
 @lock/enter #179=LOCK.CANBOARD/1
 -

@@ -33,8 +33,8 @@
 
   /@@ If the console is unmanned and the player is a crew member, they can use it @@/
   [and(
-    [u(#208/fn.iscrew,%0,%1)],
-    [u(#208/fn.isunmanned,%0)]
+    [u(#208/fn.isunmanned,%0)],
+    [u(#208/fn.iscrew,%0,%1)]
   )]
 
   /@@ Otherwise, the player can't use the console @@/
