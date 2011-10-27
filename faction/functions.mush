@@ -28,6 +28,44 @@
 -
 &DATA #114=#116
 -
+&fn.set #114=
+  [switch(
+       [t(member(u(fn.list.factions),ucstr(%0)))]
+       [t(match(get(v(data)/factions_settings),%1,|))],
+
+       0?,#-1 INVALID FACTION,
+       10,#-1 INVALID SETTING,
+       11,[u(subfn.set.%1,%0,%2)],
+       [u(fn.error,%=,%0,%1,%2)]
+       )]
+-
+&subfn.set.parent #114=
+  [ifelse(
+        and(
+            t(member([u(fn.list.factions)] NONE,setr(1,ucstr(%1)))),
+            not(strmatch(%q1,ucstr(%0)))
+            ),
+        [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),4,ifelse(strmatch(%q1,NONE),,%q1),|)])]
+         [syslog(FACTION,Updated settings by [name(%#)]\(%#\) in [ansi(wh,faction(name,%0))]\([ucstr(%0)]\): Parent => %q1)],
+        #-1 INVALID PARENT
+        )]
+-
+&subfn.set.level #114=
+  [ifelse(
+        t(member(get(v(data)/factions_levels),setr(1,capstr(%1)),|)),
+        [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),2,%q1,|)])]
+         [syslog(FACTION,Updated settings by [name(%#)]\(%#\) in [ansi(wh,faction(name,%0))]\([ucstr(%0)]\): Level => %q1)],
+        #-1 INVALID LEVEL
+        )]
+-
+&subfn.set.name #114=
+  [ifelse(
+        gt(strlen(%1),0),
+        [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),1,setr(1,decompose(stripansi(stripaccents(%1)))),|)])]
+         [syslog(FACTION,Updated settings by [name(%#)]\(%#\) in [ansi(wh,faction(name,%0))]\([ucstr(%0)]\): Title => %q1)],
+        #-1 EMPTY STRING
+        )]
+-
 &fn.error #114=
   [syslog(
         FACTION,
