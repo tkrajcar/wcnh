@@ -1,4 +1,4 @@
-# Configuration file. Copy to config.yaml and modify as needed.
+# Configuration file. Copy to config.yml and modify as needed.
 
 # All directories listed under load_paths will be added to the PennJSON
 # extension load path. For security reasons, each extension load path contains
@@ -9,5 +9,4 @@
 # If you do not specify an extension load path, the default extension load path
 # will search "pennmush-json".
 load_paths:
-- example
-- pennmush-json
+  - example
