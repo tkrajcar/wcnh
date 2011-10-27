@@ -18,6 +18,9 @@
 
 
 ### FUNCTIONS
+### To avoid clobbering registers, remember:
+### 1. ulocal() instead of u().
+### 2. Wrap the .FN in localize() if you use any registers.
 ## Systems
 &CHARGEN.FN #25=
   switch(
@@ -57,11 +60,11 @@
 -
 &NUM2ADJ.FN #25=[switch(%0,<1,[ansi(Rhx,Awful)],1,[ansi(hr,Poor)],2,[ansi(y,switch(%1,short,Medcr,Mediocre))],3,[ansi(hy,Fair)],4,[ansi(g,Good)],5,[ansi(hg,Great)],6,[ansi(Bh,switch(%1,short,Suprb,Superb))],>6,[ansi(Rhu,switch(%1,short,Legnd,Legend))],#-1)]
 -
-&TIMESTRING2.FN #25=[setq(0,timestring(%0,2))][if(gte(before(extract(%q0,1,1),d),1),extract(%q0,1,1)%b)][before(extract(%q0,2,1),h)]:[before(extract(%q0,3,1),m)]:[before(extract(%q0,4,1),s)]
+&TIMESTRING2.FN #25=localize([setq(0,timestring(%0,2))][if(gte(before(extract(%q0,1,1),d),1),extract(%q0,1,1)%b)][before(extract(%q0,2,1),h)]:[before(extract(%q0,3,1),m)]:[before(extract(%q0,4,1),s)])
 -
 
 ## General utilities
-&ATTRIBREPORT.FN #25=if(controls(%@,%0),[if(setr(8,iter(setr(1,lattr(%0/CMD.*)),[setr(0,itext(0))][if(hasflag(%0/%q0,no_command),%b\(disabled\))],%b,|)),Command:%r[table(%q8,25,78,|)]%r%r)][if(setr(2,lattr(%0/FN.*)),Functions:%r[table(%q2,25)]%r%r)][if(setr(3,iter(setdiff(setr(9,lattr(%0)),%q1),if(not(hasflag(%0/[setr(0,itext(0))],no_command)),%q0))),Not set NO_COMMAND:%r[table(%q3,25)]%r%r)][if(setr(8,setdiff(%q9,%q1 %q2 %q3)),Other:%r[table(%q8,25)])])
+&ATTRIBREPORT.FN #25=localize(if(controls(%@,%0),[if(setr(8,iter(setr(1,lattr(%0/CMD.*)),[setr(0,itext(0))][if(hasflag(%0/%q0,no_command),%b\(disabled\))],%b,|)),Command:%r[table(%q8,25,78,|)]%r%r)][if(setr(2,lattr(%0/FN.*)),Functions:%r[table(%q2,25)]%r%r)][if(setr(3,iter(setdiff(setr(9,lattr(%0)),%q1),if(not(hasflag(%0/[setr(0,itext(0))],no_command)),%q0))),Not set NO_COMMAND:%r[table(%q3,25)]%r%r)][if(setr(8,setdiff(%q9,%q1 %q2 %q3)),Other:%r[table(%q8,25)])]))
 -
 # This is only here to prevent weird output in the output from the ascii2mu converter I use. Silly, I know.
 &C.FN #25=c
@@ -80,8 +83,8 @@
     switch(
       loc(#$),
       #-2,
-      udefault(%$1/destination,
-        udefault(%$1/exitto,#-1)
+      uldefault(%$1/destination,
+        uldefault(%$1/exitto,#-1)
         ),
       %$0)
     )
@@ -94,7 +97,7 @@
 -
 &MCONTROLS.FN #25=or(isadmin(%0),or(match(%0,[owner(%1)]),[controls(%0,%1)]))
 -
-&MPMATCH.FN #25=ifelse(cand(setr(Z,pmatch(secure(%0))),not(isadmin(%qZ))),%qZ,#-1 NO MATCH)
+&MPMATCH.FN #25=localize(ifelse(cand(setr(Z,pmatch(secure(%0))),not(isadmin(%qZ))),%qZ,#-1 NO MATCH))
 -
 &MYWHO.FN #25=objeval(%#,lwho())
 -
