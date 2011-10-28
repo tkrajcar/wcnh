@@ -127,8 +127,8 @@ module PennJSON
       end
 
       raise LocalError.new(-32601, 'Object definition not found') unless found
-    rescue LoadError => e
-      raise LocalError.new(-32601, 'Failed to load object definition: ' + e.message)
+    rescue LoadError
+      raise LocalError.new(-32601, "Failed to load object definition: #{$!}")
     end
 
     # Try to resolve name again after require.
