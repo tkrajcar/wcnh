@@ -26,7 +26,40 @@
 -
 &DOC.REMLEADER #114=fac abbrev:leader|Demote a leader back to a regular member.
 -
+&DOC.SET #114=fac abbrev:option:value|Change an existing faction setting.  See [v(data)]/factions_settings for valid settings.
+-
+&DOC.CREATE #114=fac abbrev:fac title|Create a new faction at default level organization.
+-
+&DOC.DESTROY #114=fac abbrev:|Delete a faction and remove all members.
+-
 &DATA #114=#116
+-
+&fn.create #114=
+  [ifelse(
+        t(match(lattr(v(data)/fac.*),fac.%0)),
+        #-1 EXISTING FAC ABBREV,
+        [set(v(data),fac.%0:%1|Organization|||)]
+         [syslog(FACTION,New faction [ansi(wh,%1\([ucstr(%0)]\))] created by [name(%#)].)]
+        )]
+-
+&fn.destroy #114=
+  [ifelse(
+        t(match(lattr(v(data)/fac.*),fac.%0)),
+        [iter(
+            extract(setr(0,get(v(data)/fac.%0)),5,1,|),
+            localize(u(fn.remleader,%0,itext(0)))
+            )]
+         [iter(
+              extract(%q0,3,1,|),
+              [wipe(itext(0)/fac`%0)][localize(u(fn.remmember,%0,itext(0)))]
+              )]
+         [attrib_set(v(data)/fac.%0)]
+         [syslog(
+              FACTION,
+              [ansi(wh,[first(%q0,|)]\([ucstr(%0)]\))] deleted by [name(%#)].  [words(extract(%q0,3,1,|))] members removed.
+              )],
+        #-1 INVALID FACTION
+        )]
 -
 &fn.set #114=
   [switch(

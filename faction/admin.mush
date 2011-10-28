@@ -1,3 +1,21 @@
+&cmd.+fac/create #115=$+fac/create *=*:
+  @switch [faction(create,%0,%1)]=
+
+          #-1*,@nspemit %#=[ansi(c,<Faction>)] Faction abbreviation must be unique.,
+          ,@nspemit %#=[ansi(c,<Faction>)] New faction created: %1\([ucstr(%0)]\),
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
+&cmd.+fac/destroy #115=$+fac/destroy *:
+  @switch [faction(destroy,%0)]=
+
+          #-1*,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
+          ,@nspemit %#=[ansi(c,<Faction>)] Faction destroyed.  All members have been removed.,
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
 &cmd.+fac/set #115=$+fac/set */*=*:
   @select [faction(set,%0,%1,%2)]=
 
