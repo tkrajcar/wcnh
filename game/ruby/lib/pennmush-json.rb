@@ -113,13 +113,11 @@ module PennJSON
       @@expected_name = name
       begin
         SEARCH_PATH.each do |remote_path|
-          searchstr = remote_path.to_s + "/**/" + name + ".rb"
-          search = Dir.glob(searchstr)
-          if search.length > 1
-            raise LocalError.new(-32601, 'Multiple object definitions found')
-          elsif search.length == 1 
-            LOGGER.info "Loading '#{name}' from #{search[0]}"
-            require search[0]
+          full_name = remote_path + name
+          ruby_file = full_name.to_s + '.rb'
+          if File.file? ruby_file
+            LOGGER.info "Loading '#{name}' from #{ruby_file}"
+            require full_name
             found = true
             break # break out on first success
           end
