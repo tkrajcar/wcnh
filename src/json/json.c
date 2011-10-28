@@ -31,6 +31,19 @@
 	TRY_GEN(yajl_gen_string(info->encoder, (const unsigned char *)(s), \
 	                        OPT_STRLEN((s), (l))))
 
+/*
+ * Handy macro for trying a JSON parse operation. All errors are fatal. Note
+ * that due to infinite streaming hack, any status other than
+ * yajl_status_insufficient_data is considered an error.
+ */
+#define TRY_PARSE(s,l) \
+	do { \
+		if (yajl_parse(info->decoder, (const unsigned char *)(s), (l)) \
+		    != yajl_status_insufficient_data) { \
+			goto failed; \
+		} \
+	} while (0)
+
 /* YAJL generator configuration. */
 static const yajl_gen_config gen_config = {
 	0, /* don't beautify */
@@ -377,16 +390,7 @@ json_server_json_alloc(JSON_Server *info)
 
 	old_state = info->state;
 	info->state = JSON_SERVER_STATE_IGNORING;
-
-	switch (yajl_parse(info->decoder, (unsigned char *)"[null", 5)) {
-	case yajl_status_ok:
-	case yajl_status_insufficient_data:
-		break;
-
-	default:
-		goto failed;
-	}
-
+	TRY_PARSE("[null", 5);
 	info->msg_nesting--; /* reverse handle_start_array */
 	info->state = old_state;
 
@@ -697,14 +701,7 @@ json_server_receive(JSON_Server *info, JSON_Server_Message *msg)
 	info->msg_token = -1;
 
 	/* Parse virtual comma for streaming hack. */
-	switch (yajl_parse(info->decoder, (unsigned char *)",", 1)) {
-	case yajl_status_ok:
-	case yajl_status_insufficient_data:
-		break;
-
-	default:
-		goto failed;
-	}
+	TRY_PARSE(",", 1);
 
 	do {
 		if (info->in_off == info->in_len) {
@@ -725,17 +722,8 @@ json_server_receive(JSON_Server *info, JSON_Server_Message *msg)
 		}
 
 		/* Parse from buffer. */
-		switch (yajl_parse(info->decoder, info->in_buf + info->in_off,
-		                   info->in_len - info->in_off)) {
-		case yajl_status_ok:
-		case yajl_status_insufficient_data:
-			/* Successful (though possibly incomplete) parse. */
-			break;
-
-		default:
-			/* Failed parse. */
-			goto failed;
-		}
+		TRY_PARSE(info->in_buf + info->in_off,
+		          info->in_len - info->in_off);
 
 		info->in_off += yajl_get_bytes_consumed(info->decoder);
 	} while (info->state != JSON_SERVER_STATE_READY);
