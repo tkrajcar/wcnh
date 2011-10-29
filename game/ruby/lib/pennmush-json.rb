@@ -6,9 +6,6 @@
 require 'logger'
 require 'pathname'
 
-# Application modules.
-require 'pennmush-json-conversation'
-
 module PennJSON
   STDOUT.sync = true
   LOGGER = Logger.new(STDOUT)
@@ -51,7 +48,7 @@ module PennJSON
     # Proxy unknown invocations to remote PennMUSH. Throws RemoteError in the
     # event the remote call responds with an error.
     def self.method_missing(name, *args)
-      return PennJSON_Conversation.remote_invoke(name, *args)
+      return SERVER.remote_invoke(name, *args)
     end
 
     # Set the context hash. If we had to deal with threads, this would need to

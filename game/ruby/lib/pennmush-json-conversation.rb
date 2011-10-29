@@ -276,3 +276,6 @@ module PennJSON_Conversation
     end
   end
 end
+
+# Inject ourself into PennJSON.
+PennJSON::SERVER = PennJSON_Conversation
