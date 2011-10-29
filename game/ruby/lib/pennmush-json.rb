@@ -10,6 +10,7 @@ require 'pathname'
 require 'pennmush-json-conversation'
 
 module PennJSON
+  STDOUT.sync = true
   LOGGER = Logger.new(STDOUT)
 
   OBJECT_REGISTRY = {}
