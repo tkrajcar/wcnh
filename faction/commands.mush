@@ -20,8 +20,8 @@
           0?,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
           10,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
           11,{@nspemit %#=[ansi(c,<Faction>)] [name(%q1)]'s position updated.;
-              @set %q1=fac`%0`position:[stripansi(stripaccents(%2))]
-             }                                                                     }
+              @set %q1=fac`%0`position:[decompose(stripansi(stripaccents(%2)))]
+             }
 -                                                                     
 &cmd.+fac/assign #191=$+fac/assign */*=*:
   @switch [or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#)))]
@@ -30,16 +30,16 @@
           0?,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
           10,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
           11,{@nspemit %#=[ansi(c,<Faction>)] [name(%q1)]'s assignment updated.;
-              @set %q1=fac`%0`assignment:[stripansi(stripaccents(%2))]
+              @set %q1=fac`%0`assignment:[decompose(stripansi(stripaccents(%2)))]
              }
 -
 &cmd.+fac/demote #191=$+fac/demote *=*:
   @break [not(or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#))))]=
          @nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.;
-             
-  @switch [faction(remleader,%0,%1)]=                                                                    
 
-          #-1 INVALID FACTION,@nspemit %#=[ansi(c,<Faction>)] No such faction.,                                    
+  @switch [faction(remleader,%0,%1)]=
+
+          #-1 INVALID FACTION,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
           #-1 INVALID PLAYER,@nspemit %#=[ansi(c,<Faction>)] No such player.,
           #-1 INVALID LEADER,@nspemit %#=[ansi(c,<Faction>)] They are not a leader of [ucstr(%0)].,
           ,{@nspemit %#=[ansi(c,<Faction>)] You have removed [name(setr(0,pmatch(%1)))] as a leader of [ucstr(%0)].;

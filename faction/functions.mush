@@ -26,7 +26,78 @@
 -
 &DOC.REMLEADER #114=fac abbrev:leader|Demote a leader back to a regular member.
 -
+&DOC.SET #114=fac abbrev:option:value|Change an existing faction setting.  See [v(data)]/factions_settings for valid settings.
+-
+&DOC.CREATE #114=fac abbrev:fac title|Create a new faction at default level organization.
+-
+&DOC.DESTROY #114=fac abbrev:|Delete a faction and remove all members.
+-
 &DATA #114=#116
+-
+&fn.create #114=
+  [ifelse(
+        t(match(lattr(v(data)/fac.*),fac.%0)),
+        #-1 EXISTING FAC ABBREV,
+        [set(v(data),fac.%0:%1|Organization|||)]
+         [syslog(FACTION,New faction [ansi(wh,%1\([ucstr(%0)]\))] created by [name(%#)].)]
+        )]
+-
+&fn.destroy #114=
+  [ifelse(
+        t(match(lattr(v(data)/fac.*),fac.%0)),
+        [iter(
+            extract(setr(0,get(v(data)/fac.%0)),5,1,|),
+            localize(u(fn.remleader,%0,itext(0)))
+            )]
+         [iter(
+              extract(%q0,3,1,|),
+              [wipe(itext(0)/fac`%0)][localize(u(fn.remmember,%0,itext(0)))]
+              )]
+         [attrib_set(v(data)/fac.%0)]
+         [syslog(
+              FACTION,
+              [ansi(wh,[first(%q0,|)]\([ucstr(%0)]\))] deleted by [name(%#)].  [words(extract(%q0,3,1,|))] members removed.
+              )],
+        #-1 INVALID FACTION
+        )]
+-
+&fn.set #114=
+  [switch(
+       [t(member(u(fn.list.factions),ucstr(%0)))]
+       [t(match(get(v(data)/factions_settings),%1,|))],
+
+       0?,#-1 INVALID FACTION,
+       10,#-1 INVALID SETTING,
+       11,[u(subfn.set.%1,%0,%2)],
+       [u(fn.error,%=,%0,%1,%2)]
+       )]
+-
+&subfn.set.parent #114=
+  [ifelse(
+        and(
+            t(member([u(fn.list.factions)] NONE,setr(1,ucstr(%1)))),
+            not(strmatch(%q1,ucstr(%0)))
+            ),
+        [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),4,ifelse(strmatch(%q1,NONE),,%q1),|)])]
+         [syslog(FACTION,Updated settings by [name(%#)]\(%#\) in [ansi(wh,faction(name,%0))]\([ucstr(%0)]\): Parent => %q1)],
+        #-1 INVALID PARENT
+        )]
+-
+&subfn.set.level #114=
+  [ifelse(
+        t(member(get(v(data)/factions_levels),setr(1,capstr(%1)),|)),
+        [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),2,%q1,|)])]
+         [syslog(FACTION,Updated settings by [name(%#)]\(%#\) in [ansi(wh,faction(name,%0))]\([ucstr(%0)]\): Level => %q1)],
+        #-1 INVALID LEVEL
+        )]
+-
+&subfn.set.name #114=
+  [ifelse(
+        gt(strlen(%1),0),
+        [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),1,setr(1,decompose(stripansi(stripaccents(%1)))),|)])]
+         [syslog(FACTION,Updated settings by [name(%#)]\(%#\) in [ansi(wh,faction(name,%0))]\([ucstr(%0)]\): Title => %q1)],
+        #-1 EMPTY STRING
+        )]
 -
 &fn.error #114=
   [syslog(

@@ -1,0 +1,29 @@
+&cmd.+fac/create #115=$+fac/create *=*:
+  @switch [faction(create,%0,%1)]=
+
+          #-1*,@nspemit %#=[ansi(c,<Faction>)] Faction abbreviation must be unique.,
+          ,@nspemit %#=[ansi(c,<Faction>)] New faction created: %1\([ucstr(%0)]\),
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
+&cmd.+fac/destroy #115=$+fac/destroy *:
+  @switch [faction(destroy,%0)]=
+
+          #-1*,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
+          ,@nspemit %#=[ansi(c,<Faction>)] Faction destroyed.  All members have been removed.,
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
+&cmd.+fac/set #115=$+fac/set */*=*:
+  @select [faction(set,%0,%1,%2)]=
+
+          #-1 INVALID FACTION,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
+          #-1 INVALID SETTING,@nspemit %#=[ansi(c,<Faction>)] Invalid faction setting.,
+          #-1*,@nspemit %#=[ansi(c,<Faction>)] Value is [art(setr(3,trim(after(stext(0),#-1))))] [lcstr(%q3)].,
+          ,@nspemit %#=[ansi(c,<Faction>)] [capstr(%1)] setting for [ucstr(%0)] updated.,
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported.;
+           think [faction(error,%=,%0,%1,%2)]
+          }
+-
