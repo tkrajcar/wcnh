@@ -16,11 +16,17 @@
 #include "json-config.h"
 #include "json-private.h"
 
+/* Logging macro. */
+#define JSON_LOG(msg) (json_server_log(server, (msg), 0))
+
+/* Logging macro using errno. */
+#define JSON_LOG_ERRNO(msg) (json_server_log(server, (msg), errno))
+
 /* Handy macro for handling optional string lengths. Multiple evaluates. */
 #define OPT_STRLEN(s,l) ((l) < 0 ? strlen((s)) : (size_t)(l))
 
 /* Handy macro for getting context. */
-#define GET_INFO_VAR JSON_Server *const info = (JSON_Server *)ctx
+#define GET_SERVER_VAR JSON_Server *const server = (JSON_Server *)ctx
 
 /* Handy macro for trying a JSON generation operation. All errors are fatal. */
 #define TRY_GEN(op) \
@@ -28,7 +34,8 @@
 
 /* Handy macro for writing JSON string. Multiple evaluates. */
 #define TRY_GEN_STR(s,l) \
-	TRY_GEN(yajl_gen_string(info->encoder, (const unsigned char *)(s), \
+	TRY_GEN(yajl_gen_string(server->encoder, \
+	                        (const unsigned char *)(s), \
 	                        OPT_STRLEN((s), (l))))
 
 /*
@@ -38,7 +45,8 @@
  */
 #define TRY_PARSE(s,l) \
 	do { \
-		if (yajl_parse(info->decoder, (const unsigned char *)(s), (l)) \
+		if (yajl_parse(server->decoder, \
+	                       (const unsigned char *)(s), (l)) \
 		    != yajl_status_insufficient_data) { \
 			goto failed; \
 		} \
@@ -85,7 +93,7 @@ static Token_Table tok_tab_error = {
 };
 
 /* Transmits buffered JSON while blocking. */
-static int flush_json(JSON_Server *info);
+static int flush_json(JSON_Server *server);
 
 /* Transitions message object to the given type. */
 static int message_set_type(JSON_Server_Message *msg,
@@ -113,23 +121,23 @@ find_token(Token_Table table, const unsigned char *key, unsigned int len)
 static int
 handle_null(void *ctx)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_IGNORING:
 		/* Ignore value within ignored container. */
 		break;
 
 	case JSON_SERVER_STATE_OBJECT:
 		/* Ignore unknown key-value within message object. */
-		switch (info->msg_token) {
+		switch (server->msg_token) {
 		case -1:
 			break;
 
 		case TOKEN_0_RESULT:
 			/* FIXME: Yes, not robust. Just prototyping. */
-			info->msg->type = JSON_SERVER_MSG_RESULT;
-			info->msg->message = NULL;
+			server->msg->type = JSON_SERVER_MSG_RESULT;
+			server->msg->message = NULL;
 			break;
 
 		default:
@@ -148,16 +156,16 @@ handle_null(void *ctx)
 static int
 handle_boolean(void *ctx, int value)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_IGNORING:
 		/* Ignore value within ignored container. */
 		break;
 
 	case JSON_SERVER_STATE_OBJECT:
 		/* Ignore unknown key-value within message object. */
-		if (info->msg_token != -1) {
+		if (server->msg_token != -1) {
 			return 0;
 		}
 		break;
@@ -173,9 +181,9 @@ handle_boolean(void *ctx, int value)
 static int
 handle_integer(void *ctx, long int value)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	switch (info->state) {
+	switch (server->state) {
 	default:
 		/* Unexpected parser state. */
 		return 0;
@@ -187,7 +195,7 @@ handle_integer(void *ctx, long int value)
 static int
 handle_double(void *ctx, double value)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
 	return 1;
 }
@@ -195,14 +203,14 @@ handle_double(void *ctx, double value)
 static int
 handle_string(void *ctx, const unsigned char *value, unsigned int len)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_OBJECT:
-		if (info->msg_token == TOKEN_0_RESULT) {
+		if (server->msg_token == TOKEN_0_RESULT) {
 			/* FIXME: Yes, not robust. Just prototyping. */
-			info->msg->type = JSON_SERVER_MSG_RESULT;
-			info->msg->message = mush_strndup((const char *)value, len, "json");
+			server->msg->type = JSON_SERVER_MSG_RESULT;
+			server->msg->message = mush_strndup((const char *)value, len, "json");
 		}
 		break;
 
@@ -217,21 +225,21 @@ handle_string(void *ctx, const unsigned char *value, unsigned int len)
 static int
 handle_start_map(void *ctx)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	++info->msg_nesting;
+	++server->msg_nesting;
 
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_WAITING:
-		if (info->msg_nesting == 1) {
+		if (server->msg_nesting == 1) {
 			/* Entered message object. */
-			info->state = JSON_SERVER_STATE_OBJECT;
+			server->state = JSON_SERVER_STATE_OBJECT;
 		}
 		break;
 
 	case JSON_SERVER_STATE_OBJECT:
-		if (info->msg_nesting == 2) {
-			switch (info->msg_token) {
+		if (server->msg_nesting == 2) {
+			switch (server->msg_token) {
 			case TOKEN_0_RESULT:
 				break;
 			}
@@ -239,7 +247,7 @@ handle_start_map(void *ctx)
 			/* Deeper nesting of ignored object. */
 		}
 
-		if (info->msg_token == 0) {
+		if (server->msg_token == 0) {
 		}
 		break;
 
@@ -254,12 +262,12 @@ handle_start_map(void *ctx)
 static int
 handle_map_key(void *ctx, const unsigned char *key, unsigned int len)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_OBJECT:
 		/* Message object key. */
-		info->msg_token = find_token(tok_tab_0, key, len);
+		server->msg_token = find_token(tok_tab_0, key, len);
 		break;
 
 	case JSON_SERVER_STATE_CONTEXT:
@@ -281,20 +289,20 @@ handle_map_key(void *ctx, const unsigned char *key, unsigned int len)
 static int
 handle_end_map(void *ctx)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	--info->msg_nesting;
+	--server->msg_nesting;
 
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_OBJECT:
 		/* End of message object. */
-		info->state = JSON_SERVER_STATE_READY;
+		server->state = JSON_SERVER_STATE_READY;
 		break;
 
 	case JSON_SERVER_STATE_IGNORING:
 		/* End of ignored object? */
-		if (info->msg_nesting == info->restore_nesting) {
-			info->state = info->restore_state;
+		if (server->msg_nesting == server->restore_nesting) {
+			server->state = server->restore_state;
 		}
 		break;
 
@@ -309,9 +317,9 @@ handle_end_map(void *ctx)
 static int
 handle_start_array(void *ctx)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	++info->msg_nesting;
+	++server->msg_nesting;
 
 	return 1;
 }
@@ -319,15 +327,15 @@ handle_start_array(void *ctx)
 static int
 handle_end_array(void *ctx)
 {
-	GET_INFO_VAR;
+	GET_SERVER_VAR;
 
-	--info->msg_nesting;
+	--server->msg_nesting;
 
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_IGNORING:
 		/* End of ignored object? */
-		if (info->msg_nesting == info->restore_nesting) {
-			info->state = info->restore_state;
+		if (server->msg_nesting == server->restore_nesting) {
+			server->state = server->restore_state;
 		}
 		break;
 
@@ -357,22 +365,22 @@ static const yajl_callbacks callbacks = {
  * Allocate JSON encoder/decoder.
  */
 int
-json_server_json_alloc(JSON_Server *info)
+json_server_json_alloc(JSON_Server *server)
 {
 	JSON_Server_State old_state;
 
-	info->encoder = yajl_gen_alloc(&gen_config, NULL);
-	if (!info->encoder) {
-		json_server_log(info, "json_alloc: yajl_gen_alloc", 0);
+	server->encoder = yajl_gen_alloc(&gen_config, NULL);
+	if (!server->encoder) {
+		JSON_LOG("json_alloc: yajl_gen_alloc");
 		return 0;
 	}
 
-	info->decoder = yajl_alloc(&callbacks, &parser_config, NULL, info);
-	if (!info->decoder) {
+	server->decoder = yajl_alloc(&callbacks, &parser_config, NULL, server);
+	if (!server->decoder) {
 		/* Not fatal, but will prevent operation. */
-		json_server_log(info, "json_alloc: yajl_alloc", 0);
-		yajl_gen_free(info->encoder);
-		info->decoder = NULL;
+		JSON_LOG("json_alloc: yajl_alloc");
+		yajl_gen_free(server->encoder);
+		server->decoder = NULL;
 		return 0;
 	}
 
@@ -384,21 +392,21 @@ json_server_json_alloc(JSON_Server *info)
 	 * Note that this hack requires spurious commas, so we insert an
 	 * initial null and skip/add leading commas as needed.
 	 */
-	TRY_GEN(yajl_gen_array_open(info->encoder));
-	TRY_GEN(yajl_gen_null(info->encoder));
-	yajl_gen_clear(info->encoder);
+	TRY_GEN(yajl_gen_array_open(server->encoder));
+	TRY_GEN(yajl_gen_null(server->encoder));
+	yajl_gen_clear(server->encoder);
 
-	old_state = info->state;
-	info->state = JSON_SERVER_STATE_IGNORING;
+	old_state = server->state;
+	server->state = JSON_SERVER_STATE_IGNORING;
 	TRY_PARSE("[null", 5);
-	info->msg_nesting--; /* reverse handle_start_array */
-	info->state = old_state;
+	server->msg_nesting--; /* reverse handle_start_array */
+	server->state = old_state;
 
 	return 1;
 
 failed:
-	json_server_log(info, "json_alloc: yajl", 0);
-	json_server_json_free(info);
+	JSON_LOG("json_alloc: yajl");
+	json_server_json_free(server);
 	return 0;
 }
 
@@ -406,16 +414,16 @@ failed:
  * Deallocate JSON encoder/decoder.
  */
 void
-json_server_json_free(JSON_Server *info)
+json_server_json_free(JSON_Server *server)
 {
-	if (info->encoder) {
-		yajl_gen_free(info->encoder);
-		info->encoder = NULL;
+	if (server->encoder) {
+		yajl_gen_free(server->encoder);
+		server->encoder = NULL;
 	}
 
-	if (info->decoder) {
-		yajl_free(info->decoder);
-		info->decoder = NULL;
+	if (server->decoder) {
+		yajl_free(server->decoder);
+		server->decoder = NULL;
 	}
 }
 
@@ -423,27 +431,27 @@ json_server_json_free(JSON_Server *info)
  * Starts request.
  */
 int
-json_server_start_request(JSON_Server *info, const char *method, int len)
+json_server_start_request(JSON_Server *server, const char *method, int len)
 {
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_READY:
 		/* GENERATE: {"method":method[len] */
-		TRY_GEN(yajl_gen_map_open(info->encoder));
+		TRY_GEN(yajl_gen_map_open(server->encoder));
 		TRY_GEN_STR("method", 6);
 		TRY_GEN_STR(method, len);
 
-		info->state = JSON_SERVER_STATE_REQ;
+		server->state = JSON_SERVER_STATE_REQ;
 		break;
 
 	default:
-		json_server_log(info, "start_request: invalid state", 0);
+		JSON_LOG("start_request: invalid state");
 		return 0;
 	}
 
 	return 1;
 
 failed:
-	json_server_log(info, "start_request: yajl_gen", 0);
+	JSON_LOG("start_request: yajl_gen");
 	return 0;
 }
 
@@ -451,15 +459,15 @@ failed:
  * Adds positional parameter to current request.
  */
 int
-json_server_add_param(JSON_Server *info, const char *value, int len)
+json_server_add_param(JSON_Server *server, const char *value, int len)
 {
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_REQ:
 		/* GENERATE: "param":[ */
 		TRY_GEN_STR("params", 6);
-		TRY_GEN(yajl_gen_array_open(info->encoder));
+		TRY_GEN(yajl_gen_array_open(server->encoder));
 
-		info->state = JSON_SERVER_STATE_REQ_ARGS;
+		server->state = JSON_SERVER_STATE_REQ_ARGS;
 		/* FALLTHROUGH */
 	case JSON_SERVER_STATE_REQ_ARGS:
 		/* GENERATE: value[len] */
@@ -467,14 +475,14 @@ json_server_add_param(JSON_Server *info, const char *value, int len)
 		break;
 
 	default:
-		json_server_log(info, "add_param: invalid state", 0);
+		JSON_LOG("add_param: invalid state");
 		return 0;
 	}
 
 	return 1;
 
 failed:
-	json_server_log(info, "add_param: yajl_gen", 0);
+	JSON_LOG("add_param: yajl_gen");
 	return 0;
 }
 
@@ -482,21 +490,22 @@ failed:
  * Adds context parameter to current request.
  */
 int
-json_server_add_context(JSON_Server *info, const char *key, int klen,
+json_server_add_context(JSON_Server *server,
+                        const char *key, int klen,
                         const char *value, int vlen)
 {
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_REQ_ARGS:
 		/* GENERATE: ] */
-		TRY_GEN(yajl_gen_array_close(info->encoder));
+		TRY_GEN(yajl_gen_array_close(server->encoder));
 
 		/* FALLTHROUGH */
 	case JSON_SERVER_STATE_REQ:
 		/* GENERATE: "context":{ */
 		TRY_GEN_STR("context", 7);
-		TRY_GEN(yajl_gen_map_open(info->encoder));
+		TRY_GEN(yajl_gen_map_open(server->encoder));
 
-		info->state = JSON_SERVER_STATE_REQ_CTX;
+		server->state = JSON_SERVER_STATE_REQ_CTX;
 		/* FALLTHROUGH */
 	case JSON_SERVER_STATE_REQ_CTX:
 		/* GENERATE: key:value */
@@ -505,14 +514,14 @@ json_server_add_context(JSON_Server *info, const char *key, int klen,
 		break;
 
 	default:
-		json_server_log(info, "add_context: invalid state", 0);
+		JSON_LOG("add_context: invalid state");
 		return 0;
 	}
 
 	return 1;
 
 failed:
-	json_server_log(info, "add_context: yajl_gen", 0);
+	JSON_LOG("add_context: yajl_gen");
 	return 0;
 }
 
@@ -520,41 +529,41 @@ failed:
  * Sends complete request.
  */
 int
-json_server_send_request(JSON_Server *info)
+json_server_send_request(JSON_Server *server)
 {
-	switch (info->state) {
+	switch (server->state) {
 	case JSON_SERVER_STATE_REQ:
 		/* GENERATE: */
 		break;
 
 	case JSON_SERVER_STATE_REQ_ARGS:
 		/* GENERATE: ] */
-		TRY_GEN(yajl_gen_array_close(info->encoder));
+		TRY_GEN(yajl_gen_array_close(server->encoder));
 		break;
 
 	case JSON_SERVER_STATE_REQ_CTX:
 		/* GENERATE: } */
-		TRY_GEN(yajl_gen_map_close(info->encoder));
+		TRY_GEN(yajl_gen_map_close(server->encoder));
 		break;
 
 	default:
-		json_server_log(info, "send_request: invalid state", 0);
+		JSON_LOG("send_request: invalid state");
 		return 0;
 	}
 
 	/* GENERATE: } */
-	TRY_GEN(yajl_gen_map_close(info->encoder));
+	TRY_GEN(yajl_gen_map_close(server->encoder));
 
 	/* Transmit complete request. Block until complete. */
-	if (!flush_json(info)) {
+	if (!flush_json(server)) {
 		return 0;
 	}
 
-	info->state = JSON_SERVER_STATE_WAITING;
+	server->state = JSON_SERVER_STATE_WAITING;
 	return 1;
 
 failed:
-	json_server_log(info, "send_request: yajl_gen", 0);
+	JSON_LOG("send_request: yajl_gen");
 	return 0;
 }
 
@@ -562,15 +571,15 @@ failed:
  * Sends result. The result may be NULL.
  */
 int
-json_server_send_result(JSON_Server *info, const char *result, int len)
+json_server_send_result(JSON_Server *server, const char *result, int len)
 {
-	if (info->state != JSON_SERVER_STATE_READY) {
-		json_server_log(info, "send_result: invalid state", 0);
+	if (server->state != JSON_SERVER_STATE_READY) {
+		JSON_LOG("send_result: invalid state");
 		return 0;
 	}
 
 	/* GENERATE: {"result": */
-	TRY_GEN(yajl_gen_map_open(info->encoder));
+	TRY_GEN(yajl_gen_map_open(server->encoder));
 	TRY_GEN_STR("result", 6);
 
 	if (result) {
@@ -578,22 +587,22 @@ json_server_send_result(JSON_Server *info, const char *result, int len)
 		TRY_GEN_STR(result, len);
 	} else {
 		/* GENERATE: null */
-		TRY_GEN(yajl_gen_null(info->encoder));
+		TRY_GEN(yajl_gen_null(server->encoder));
 	}
 
 	/* GENERATE: } */
-	TRY_GEN(yajl_gen_map_close(info->encoder));
+	TRY_GEN(yajl_gen_map_close(server->encoder));
 
 	/* Transmit result. Block until complete. */
-	if (!flush_json(info)) {
+	if (!flush_json(server)) {
 		return 0;
 	}
 
-	info->state = JSON_SERVER_STATE_WAITING;
+	server->state = JSON_SERVER_STATE_WAITING;
 	return 1;
 
 failed:
-	json_server_log(info, "send_result: yajl_gen", 0);
+	JSON_LOG("send_result: yajl_gen");
 	return 0;
 }
 
@@ -601,38 +610,38 @@ failed:
  * Sends error.
  */
 int
-json_server_send_error(JSON_Server *info, long int code, const char *error,
-                       int len)
+json_server_send_error(JSON_Server *server, long int code,
+                       const char *error, int len)
 {
-	if (info->state != JSON_SERVER_STATE_READY) {
-		json_server_log(info, "send_error: invalid state", 0);
+	if (server->state != JSON_SERVER_STATE_READY) {
+		JSON_LOG("send_error: invalid state");
 		return 0;
 	}
 
 	/* GENERATE: {"error":{"code":code,"message":error[len]}} */
-	TRY_GEN(yajl_gen_map_open(info->encoder));
+	TRY_GEN(yajl_gen_map_open(server->encoder));
 	TRY_GEN_STR("error", 5);
 
-	TRY_GEN(yajl_gen_map_open(info->encoder));
+	TRY_GEN(yajl_gen_map_open(server->encoder));
 	TRY_GEN_STR("code", 4);
-	TRY_GEN(yajl_gen_integer(info->encoder, code));
+	TRY_GEN(yajl_gen_integer(server->encoder, code));
 
 	TRY_GEN_STR("message", 7);
 	TRY_GEN_STR(error, len);
-	TRY_GEN(yajl_gen_map_close(info->encoder));
+	TRY_GEN(yajl_gen_map_close(server->encoder));
 
-	TRY_GEN(yajl_gen_map_close(info->encoder));
+	TRY_GEN(yajl_gen_map_close(server->encoder));
 
 	/* Transmit error. Block until complete. */
-	if (!flush_json(info)) {
+	if (!flush_json(server)) {
 		return 0;
 	}
 
-	info->state = JSON_SERVER_STATE_WAITING;
+	server->state = JSON_SERVER_STATE_WAITING;
 	return 1;
 
 failed:
-	json_server_log(info, "send_error: yajl_gen", 0);
+	JSON_LOG("send_error: yajl_gen");
 	return 0;
 }
 
@@ -684,49 +693,49 @@ json_server_message_clear(JSON_Server_Message *msg)
  * receive up to one asynchronous polling request message.)
  */
 int
-json_server_receive(JSON_Server *info, JSON_Server_Message *msg)
+json_server_receive(JSON_Server *server, JSON_Server_Message *msg)
 {
 	unsigned int remaining;
 
 	ssize_t result;
 	yajl_status status;
 
-	if (info->state != JSON_SERVER_STATE_WAITING) {
+	if (server->state != JSON_SERVER_STATE_WAITING) {
 		/* TODO: Except when handling async poll request? */
 		return 0;
 	}
 
-	info->msg = msg;
-	info->msg_nesting = 0;
-	info->msg_token = -1;
+	server->msg = msg;
+	server->msg_nesting = 0;
+	server->msg_token = -1;
 
 	/* Parse virtual comma for streaming hack. */
 	TRY_PARSE(",", 1);
 
 	do {
-		if (info->in_off == info->in_len) {
+		if (server->in_off == server->in_len) {
 			/* Fill buffer. */
-			if ((result = read(info->fd, info->in_buf,
+			if ((result = read(server->fd, server->in_buf,
 			                   JSON_SERVER_BUFFER_SIZE)) == -1) {
-				json_server_log(info, "receive: read", errno);
+				JSON_LOG_ERRNO("receive: read");
 				goto failed;
 			}
 
 			if (result == 0) {
-				json_server_log(info, "receive: closed", 0);
+				JSON_LOG("receive: closed");
 				goto failed;
 			}
 
-			info->in_off = 0;
-			info->in_len = result;
+			server->in_off = 0;
+			server->in_len = result;
 		}
 
 		/* Parse from buffer. */
-		TRY_PARSE(info->in_buf + info->in_off,
-		          info->in_len - info->in_off);
+		TRY_PARSE(server->in_buf + server->in_off,
+		          server->in_len - server->in_off);
 
-		info->in_off += yajl_get_bytes_consumed(info->decoder);
-	} while (info->state != JSON_SERVER_STATE_READY);
+		server->in_off += yajl_get_bytes_consumed(server->decoder);
+	} while (server->state != JSON_SERVER_STATE_READY);
 
 	return 1;
 
@@ -741,14 +750,14 @@ failed:
  * incrementally, but messages we send are unlikely to make that worthwhile.)
  */
 static int
-flush_json(JSON_Server *info)
+flush_json(JSON_Server *server)
 {
 	const unsigned char *buf;
 	unsigned int len;
 
 	ssize_t result;
 
-	TRY_GEN(yajl_gen_get_buf(info->encoder, &buf, &len));
+	TRY_GEN(yajl_gen_get_buf(server->encoder, &buf, &len));
 
 	/*
 	 * Our infinite stream hack (see json_server_json_alloc) introduces a
@@ -758,8 +767,8 @@ flush_json(JSON_Server *info)
 	len -= 1;
 
 	while (len > 0) {
-		if ((result = write(info->fd, buf, len)) == -1) {
-			json_server_log(info, "flush_json: write", errno);
+		if ((result = write(server->fd, buf, len)) == -1) {
+			JSON_LOG_ERRNO("flush_json: write");
 			return 0;
 		}
 
@@ -767,11 +776,11 @@ flush_json(JSON_Server *info)
 		len -= result;
 	}
 
-	yajl_gen_clear(info->encoder);
+	yajl_gen_clear(server->encoder);
 	return 1;
 
 failed:
-	json_server_log(info, "flush_json: yajl_gen", 0);
+	JSON_LOG("flush_json: yajl_gen");
 	return 0;
 }
 

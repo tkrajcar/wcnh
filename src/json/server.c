@@ -25,24 +25,40 @@
 #define ERROR_COMM_FAILURE T("#-1 COMMUNICATION FAILURE")
 
 /* Handy macro for getting context. */
-#define GET_INFO_VAR JSON_Server *const info = json_server_info()
+#define GET_INFO_VAR JSON_Server_Context *const info = json_server_info()
 
 /* Handy macro for trying a protocol operation. All errors are fatal. */
 #define TRY_PROTO(op) do { if (!(op)) goto failed; } while (0)
 
+/* Execution context frame. */
+typedef struct JSON_Server_Frame_tag {
+	/* Execution context. */
+	dbref executor; /* the executor */
+	dbref caller; /* the caller */
+	dbref enactor; /* the enactor */
+
+	NEW_PE_INFO *pe_info; /* NEW_PE_INFO structure */
+} JSON_Server_Frame;
+
+/* Execution context. */
+typedef struct JSON_Server_Context_tag {
+	JSON_Server server; /* connection state */
+	JSON_Server_Frame current; /* current context frame */
+} JSON_Server_Context;
+
 /*
  * Get the JSON server instance.
  */
-static JSON_Server *
+static JSON_Server_Context *
 json_server_info(void)
 {
 	static int init = 0;
-	static JSON_Server info;
+	static JSON_Server_Context info;
 
 	if (!init) {
 		init = 1;
 
-		info.fd = -1;
+		info.server.fd = -1;
 	}
 
 	return &info;
@@ -52,15 +68,15 @@ json_server_info(void)
  * Simple error logging facility.
  */
 void
-json_server_log(JSON_Server *info, const char *message, int code)
+json_server_log(JSON_Server *server, const char *message, int code)
 {
 	/* Log error. */
 	if (code) {
 		fprintf(stderr, "JSON server[%d]: %s: %s\n",
-		        info->fd, message, strerror(code));
+		        server->fd, message, strerror(code));
 	} else {
 		fprintf(stderr, "JSON server[%d]: %s\n",
-		        info->fd, message);
+		        server->fd, message);
 	}
 }
 
@@ -73,7 +89,7 @@ json_server_shutdown(int reboot)
 	GET_INFO_VAR;
 
 	/* TODO: Preserve server across reboots? */
-	json_server_stop(info);
+	json_server_stop(&info->server);
 }
 
 /*
@@ -84,11 +100,11 @@ json_server_setfd(fd_set *input_set)
 {
 	GET_INFO_VAR;
 
-	if (info->fd == -1) {
+	if (info->server.fd == -1) {
 		return;
 	}
 
-	FD_SET(info->fd, input_set);
+	FD_SET(info->server.fd, input_set);
 }
 
 /*
@@ -101,17 +117,18 @@ json_server_issetfd(fd_set *input_set)
 {
 	GET_INFO_VAR;
 
-	if (info->fd == -1) {
+	if (info->server.fd == -1) {
 		return;
 	}
 
-	if (FD_ISSET(info->fd, input_set)) {
+	if (FD_ISSET(info->server.fd, input_set)) {
 		/* TODO: Dispatch incoming request. */
 		ssize_t len;
 
-		len = recv(info->fd, info->in_buf, sizeof(info->in_buf), 0);
+		len = read(info->server.fd,
+		           info->server.in_buf, JSON_SERVER_BUFFER_SIZE);
 		if (len < 1) {
-			json_server_stop(info);
+			json_server_stop(&info->server);
 		}
 	}
 }
@@ -132,7 +149,7 @@ COMMAND(cmd_json_rpc)
 		notify(executor, "RPC: Commands: STATUS START STOP");
 	} else if (strcasecmp(subcmd, "STATUS") == 0) {
 		/* Report status information. */
-		if (info->fd == -1) {
+		if (info->server.fd == -1) {
 			notify(executor, "RPC: Disconnected.");
 		} else {
 			notify(executor, "RPC: Connected.");
@@ -140,11 +157,11 @@ COMMAND(cmd_json_rpc)
 	} else if (strcasecmp(subcmd, "START") == 0) {
 		/* Start the JSON server instance. */
 		notify(executor, "RPC: Starting.");
-		json_server_start(info);
+		json_server_start(&info->server);
 	} else if (strcasecmp(subcmd, "STOP") == 0) {
 		/* Stop the JSON server instance. */
 		notify(executor, "RPC: Stopping.");
-		json_server_stop(info);
+		json_server_stop(&info->server);
 	} else {
 		/* Unknown command. */
 		notify_format(executor, "RPC: Unknown command: %s", subcmd);
@@ -171,29 +188,36 @@ FUNCTION(fun_json_rpc)
 	}
 
 	/* Ensure the server is started. */
-	json_server_start(info);
-	if (info->fd == -1) {
+	json_server_start(&info->server);
+	if (info->server.fd == -1) {
 		safe_str(ERROR_COMM_FAILURE, buff, bp);
 		return;
 	}
 
+	/* Save call state. */
+
 	/* Send request. */
-	TRY_PROTO(json_server_start_request(info, args[0], arglens[0]));
+	TRY_PROTO(json_server_start_request(&info->server,
+	                                    args[0], arglens[0]));
 
 	for (ii = 1; ii < nargs; ii++) {
-		TRY_PROTO(json_server_add_param(info, args[ii], arglens[ii]));
+		TRY_PROTO(json_server_add_param(&info->server,
+	                                        args[ii], arglens[ii]));
 	}
 
-	TRY_PROTO(json_server_add_context(info, "executor", 8, "#3", -1));
-	TRY_PROTO(json_server_add_context(info, "caller", 6, "#2", -1));
-	TRY_PROTO(json_server_add_context(info, "enactor", 7, "#1", -1));
+	TRY_PROTO(json_server_add_context(&info->server, "executor", 8,
+	                                  unparse_dbref(executor), -1));
+	TRY_PROTO(json_server_add_context(&info->server, "caller", 6,
+	                                  unparse_dbref(caller), -1));
+	TRY_PROTO(json_server_add_context(&info->server, "enactor", 7,
+	                                  unparse_dbref(enactor), -1));
 
-	TRY_PROTO(json_server_send_request(info));
+	TRY_PROTO(json_server_send_request(&info->server));
 
 	/* Dispatch response. */
 	msg.type = JSON_SERVER_MSG_NONE;
 
-	if (!json_server_receive(info, &msg)) {
+	if (!json_server_receive(&info->server, &msg)) {
 		goto failed;
 	}
 
@@ -221,12 +245,16 @@ FUNCTION(fun_json_rpc)
 	}
 
 	json_server_message_clear(&msg);
-	return;
+	goto success;
 
 failed:
 	/* Recover from protocol failure. */
-	json_server_stop(info);
+	json_server_stop(&info->server);
 	safe_str(ERROR_COMM_FAILURE, buff, bp);
+
+success:
+	/* Restore call state. */
+	return;
 }
 
 /*

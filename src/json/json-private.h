@@ -69,6 +69,7 @@ typedef struct JSON_Server_Message_tag {
  * whether or not fd is still -1 after return.
  */
 typedef struct JSON_Server_tag {
+  /* I/O fields. */
   int fd; /* file descriptor; initialize to -1 for first connect */
 
   JSON_Server_State state; /* protocol state */
@@ -80,6 +81,7 @@ typedef struct JSON_Server_tag {
   yajl_gen encoder; /* JSON encoder */
   yajl_handle decoder; /* JSON decoder */
 
+  /* Parser fields. */
   JSON_Server_Message *msg; /* current message */
   int msg_nesting; /* current nesting depth */
   int msg_token; /* current key token */
@@ -90,44 +92,46 @@ typedef struct JSON_Server_tag {
 } JSON_Server;
 
 /* Simple logging facility. Use 0 or errno-style for code parameter. */
-extern void json_server_log(JSON_Server *info, const char *message, int code);
+extern void json_server_log(JSON_Server *server, const char *message, int code);
 
 /* Lazily starts a JSON server instance. */
-extern void json_server_start(JSON_Server *info);
+extern void json_server_start(JSON_Server *server);
 
 /* Stops a JSON server instance. */
-extern void json_server_stop(JSON_Server *info);
+extern void json_server_stop(JSON_Server *server);
 
 /* Allocate JSON encoder/decoder. */
-extern int json_server_json_alloc(JSON_Server *info);
+extern int json_server_json_alloc(JSON_Server *server);
 
 /* Deallocate JSON encoder/decoder. */
-extern void json_server_json_free(JSON_Server *info);
+extern void json_server_json_free(JSON_Server *server);
 
 /* Starts a request message. */
-extern int json_server_start_request(JSON_Server *info, const char *method,
-                                     int len);
+extern int json_server_start_request(JSON_Server *server,
+                                     const char *method, int len);
 
 /* Add parameter. Must come after json_server_start_request. */
-extern int json_server_add_param(JSON_Server *info, const char *value, int len);
+extern int json_server_add_param(JSON_Server *server,
+                                 const char *value, int len);
 
 /* Add context value. Must come after any parameters. */
-extern int json_server_add_context(JSON_Server *info, const char *key, int klen,
+extern int json_server_add_context(JSON_Server *server,
+                                   const char *key, int klen,
                                    const char *value, int vlen);
 
 /* Sends a request message started by json_server_start_request(). */
-extern int json_server_send_request(JSON_Server *info);
+extern int json_server_send_request(JSON_Server *server);
 
 /* Sends a result message. */
-extern int json_server_send_result(JSON_Server *info, const char *result,
-                                   int len);
+extern int json_server_send_result(JSON_Server *server,
+                                   const char *result, int len);
 
 /* Sends an error message. */
-extern int json_server_send_error(JSON_Server *info, long int code,
+extern int json_server_send_error(JSON_Server *server, long int code,
                                   const char *error, int len);
 
 /* Receives a message. */
-extern int json_server_receive(JSON_Server *info, JSON_Server_Message *msg);
+extern int json_server_receive(JSON_Server *server, JSON_Server_Message *msg);
 
 /* Clears received message, releasing any allocated memory. */
 extern void json_server_message_clear(JSON_Server_Message *msg);
