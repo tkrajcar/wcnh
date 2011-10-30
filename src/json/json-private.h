@@ -10,6 +10,41 @@
 #define JSON_SERVER_BUFFER_SIZE 32768
 
 /*
+ * Maximum parse parts. This value is sufficient to handle messages with up to
+ * 3 parts. Any useful value can be parsed with only this many parts.
+ */
+#define JSON_SERVER_MAX_PARSE_PARTS 3
+
+/* Error code for method not found. */
+#define JSON_SERVER_ERROR_METHOD -32601
+
+/* Error code for invalid method parameters. */
+#define JSON_SERVER_ERROR_PARAMS -32602
+
+/* Error code for (non-fatal) internal error. */
+#define JSON_SERVER_ERROR_INTERNAL -32603
+
+/*
+ * Context parameter callback. Currently defined statically, but we may want to
+ * allow different implementations, or explicit context parameters at a future
+ * date. But not needed for now.
+ *
+ * No assumptions should be made about the lifetime of the parameters. An
+ * explicit copy should be made if the parameters need to be retained. The
+ * strings are not necessarily null-terminated.
+ *
+ * The value may be NULL, to indicate a special value. If the value length is
+ * -1, the parameter should be removed. If the value length is -2, the value
+ * type is not supported.
+ *
+ * The return value should normally be non-zero to indicate that the parameter
+ * was handled successfully. Zero should be returned if an internal error
+ * prevents the parameter from being handled.
+ */
+extern int json_server_context_callback(const char *key, int klen,
+                                        const char *value, int vlen);
+
+/*
  * Protocol state.
  */
 typedef enum JSON_Server_State_tag {
@@ -23,10 +58,10 @@ typedef enum JSON_Server_State_tag {
   /* Receive states. */
   JSON_SERVER_STATE_WAITING, /* waiting to receive */
 
-  JSON_SERVER_STATE_IGNORING, /* parsing ignored */
-  JSON_SERVER_STATE_OBJECT, /* parsing message object */
-  JSON_SERVER_STATE_PARAMS, /* parsing method parameters */
-  JSON_SERVER_STATE_CONTEXT, /* parsing context parameters */
+  JSON_SERVER_STATE_COMPOSITE, /* parsing composite value */
+  JSON_SERVER_STATE_MESSAGE, /* parsing message object */
+  JSON_SERVER_STATE_PARAMS, /* parsing method parameters array */
+  JSON_SERVER_STATE_CONTEXT, /* parsing context object */
   JSON_SERVER_STATE_ERROR /* parsing error object */
 } JSON_Server_State;
 
@@ -34,7 +69,7 @@ typedef enum JSON_Server_State_tag {
  * Received message type.
  */
 typedef enum JSON_Server_Message_Type_tag {
-  JSON_SERVER_MSG_NONE, /* no message */
+  JSON_SERVER_MSG_NONE, /* unknown */
   JSON_SERVER_MSG_REQUEST, /* request */
   JSON_SERVER_MSG_RESULT, /* successful response */
   JSON_SERVER_MSG_ERROR /* error response */
@@ -51,15 +86,16 @@ typedef struct JSON_Server_Message_tag {
   char *message;
 
   /* Additional request information. */
-  int param_size; /* allocated number of parameters */
-  int param_nargs; /* actual number of parameters */
+  int param_nargs; /* number of parameters */
   char **param_args; /* parameter strings; may contain embedded nulls */
   int *param_arglens; /* parameter string lengths */
 
-  /* TODO: Handle context information? */
-
   /* Additional error information. */
   long int error_code; /* error code */
+  long int local_error; /* local error code; check if non-zero */
+
+  /* Internal bookkeeping information. */
+  void *internal;
 } JSON_Server_Message;
 
 /*
@@ -69,7 +105,7 @@ typedef struct JSON_Server_Message_tag {
  * whether or not fd is still -1 after return.
  */
 typedef struct JSON_Server_tag {
-  /* I/O fields. */
+  /* I/O state. */
   int fd; /* file descriptor; initialize to -1 for first connect */
 
   JSON_Server_State state; /* protocol state */
@@ -81,14 +117,25 @@ typedef struct JSON_Server_tag {
   yajl_gen encoder; /* JSON encoder */
   yajl_handle decoder; /* JSON decoder */
 
-  /* Parser fields. */
-  JSON_Server_Message *msg; /* current message */
-  int msg_nesting; /* current nesting depth */
-  int msg_token; /* current key token */
-  int valid_error_code; /* flag indicating if error code is valid */
+  /* Lexer state. */
+  unsigned int lex_off; /* lexer offset */
+  int lex_ctx; /* context character */
+  int lex_depth; /* brace depth */
 
-  int restore_nesting; /* nesting level to restore at */
-  JSON_Server_State restore_state; /* protocol state to restore */
+  /* Parser state. */
+  JSON_Server_Message *msg; /* current message */
+
+  int parts_seen[JSON_SERVER_MAX_PARSE_PARTS]; /* parts seen */
+
+  int key_idx; /* current key token index */
+  int key_len; /* temporary context key length */
+  char key_buf[JSON_SERVER_BUFFER_SIZE]; /* temporary context key buffer */
+
+  JSON_Server_State saved_state; /* saved state when parsing composite */
+  int nesting_depth; /* nesting depth when parsing composite; starts at 0 */
+
+  /* Internal bookkeeping information. */
+  void *internal;
 } JSON_Server;
 
 /* Simple logging facility. Use 0 or errno-style for code parameter. */
@@ -130,10 +177,21 @@ extern int json_server_send_result(JSON_Server *server,
 extern int json_server_send_error(JSON_Server *server, long int code,
                                   const char *error, int len);
 
+/* Initializes a received message for first use. */
+extern void json_server_message_init(JSON_Server_Message *msg);
+
+/*
+ * Clears a received message, releasing any allocated memory.
+ *
+ * Note that this does not actually overwrite any memory. If for some terrible
+ * reason you're actually passing secure data over the RPC mechanism, you
+ * should make sure to explicitly zero out any sensitive data to minimize the
+ * chance of compromise. (There are still a lot of potential attack vectors,
+ * but it's better than nothing.)
+ */
+extern void json_server_message_clear(JSON_Server_Message *msg);
+
 /* Receives a message. */
 extern int json_server_receive(JSON_Server *server, JSON_Server_Message *msg);
-
-/* Clears received message, releasing any allocated memory. */
-extern void json_server_message_clear(JSON_Server_Message *msg);
 
 #endif /* undef JSON_PRIVATE_H */

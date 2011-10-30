@@ -24,13 +24,22 @@
 /* Communication failure error message. */
 #define ERROR_COMM_FAILURE T("#-1 COMMUNICATION FAILURE")
 
+/* Internal error message. */
+#define ERROR_INTERNAL T("#-1 INTERNAL ERROR")
+
 /* Handy macro for getting context. */
 #define GET_INFO_VAR JSON_Server_Context *const info = json_server_info()
 
 /* Handy macro for trying a protocol operation. All errors are fatal. */
 #define TRY_PROTO(op) do { if (!(op)) goto failed; } while (0)
 
-/* Macro to copy an execution context frame. Multiply evaluates. */
+/*
+ * Macro to copy an execution context frame. Multiply evaluates.
+ *
+ * TODO: If copying overhead becomes significant, may want to consider using a
+ * flag to implement a lazy copying strategy. Allocation should still occur
+ * from the stack, since that's still faster than trying to malloc() lazily.
+ */
 #define COPY_CONTEXT_FRAME(d,s) \
 	do { \
 		(d).executor = (s).executor; \
@@ -39,6 +48,20 @@
 	\
 		(d).pe_info = (s).pe_info; \
 	} while (0)
+
+/*
+ * Context parameters.
+ *
+ * TODO: May want to define these properties in a table instead.
+ */
+#define CONTEXT_KEY_EXECUTOR "executor"
+#define CONTEXT_KLEN_EXECUTOR 8
+
+#define CONTEXT_KEY_CALLER "caller"
+#define CONTEXT_KLEN_CALLER 6
+
+#define CONTEXT_KEY_ENACTOR "enactor"
+#define CONTEXT_KLEN_ENACTOR 7
 
 /* Execution context frame. */
 typedef struct JSON_Server_Frame_tag {
@@ -54,6 +77,9 @@ typedef struct JSON_Server_Context_tag {
 	JSON_Server server; /* connection state */
 	JSON_Server_Frame current; /* current context frame */
 } JSON_Server_Context;
+
+/* Receives and dispatches incoming messages. */
+static int json_server_dispatch(JSON_Server_Message *msg);
 
 /*
  * Get the JSON server instance.
@@ -186,8 +212,8 @@ COMMAND(cmd_json_rpc)
 FUNCTION(fun_json_rpc)
 {
 	GET_INFO_VAR;
-	JSON_Server_Frame old_frame;
 
+	JSON_Server_Frame old_frame;
 	JSON_Server_Message msg;
 	int ii;
 
@@ -233,26 +259,30 @@ FUNCTION(fun_json_rpc)
 	TRY_PROTO(json_server_send_request(&info->server));
 
 	/* Dispatch response. */
-	msg.type = JSON_SERVER_MSG_NONE;
+	json_server_message_init(&msg);
 
-	if (!json_server_receive(&info->server, &msg)) {
+	if (!json_server_dispatch(&msg)) {
 		goto failed;
 	}
 
-	switch (msg.type) {
-	case JSON_SERVER_MSG_REQUEST:
-		/* TODO: Handle recursive requests. */
+	if (msg.local_error) {
+		/* Report local error. */
 		json_server_message_clear(&msg);
-		goto failed;
+		safe_str(ERROR_INTERNAL, buff, bp);
+		goto success;
+	}
 
+	switch (msg.type) {
 	case JSON_SERVER_MSG_RESULT:
+		/* Report result response. */
 		if (msg.message) {
 			safe_str(msg.message, buff, bp);
 		}
 		break;
 
 	case JSON_SERVER_MSG_ERROR:
-		safe_format(buff, bp, T("#-1 %ld (%s)"),
+		/* Report error response. */
+		safe_format(buff, bp, T("#-1 %ld|%s"),
 		            msg.error_code, msg.message);
 		break;
 
@@ -270,12 +300,53 @@ failed:
 	json_server_stop(&info->server);
 	safe_str(ERROR_COMM_FAILURE, buff, bp);
 
+	/* FALLTHROUGH */
 success:
 	/* Restore call state. */
 	COPY_CONTEXT_FRAME(info->current, old_frame);
 }
 
 /*
- * Dispatches recursive call from JSON server to MUSHcode.
+ * Receives and dispatches incoming messages.
  */
-/* TODO: Not implemented yet. */
+static int
+json_server_dispatch(JSON_Server_Message *msg)
+{
+	GET_INFO_VAR;
+
+	for (;;) {
+		if (!json_server_receive(&info->server, msg)) {
+			return 0;
+		}
+
+		switch (msg->type) {
+		case JSON_SERVER_MSG_REQUEST:
+			/* TODO: Dispatch recursive request. */
+			json_server_message_clear(msg);
+
+			if (!json_server_send_error(&info->server,
+			                            JSON_SERVER_ERROR_METHOD,
+			                            "Method not found", -1)) {
+				return 0;
+			}
+			break;
+
+		default:
+			/* Return response. */
+			return 1;
+		}
+	}
+}
+
+/*
+ * Updates context parameters. Note that the previous context parameter values
+ * are saved, so we do not need to do any special recovery for fatal errors.
+ */
+int
+json_server_context_callback(const char *key, int klen,
+                             const char *value, int vlen)
+{
+	/* TODO: Implement context callback. */
+	fprintf(stderr, "DEBUG(%.*s=%.*s)\n", klen, key, vlen, value);
+	return 1;
+}
