@@ -30,9 +30,18 @@
 /* Handy macro for trying a protocol operation. All errors are fatal. */
 #define TRY_PROTO(op) do { if (!(op)) goto failed; } while (0)
 
+/* Macro to copy an execution context frame. Multiply evaluates. */
+#define COPY_CONTEXT_FRAME(d,s) \
+	do { \
+		(d).executor = (s).executor; \
+		(d).caller = (s).caller; \
+		(d).enactor = (s).enactor; \
+	\
+		(d).pe_info = (s).pe_info; \
+	} while (0)
+
 /* Execution context frame. */
 typedef struct JSON_Server_Frame_tag {
-	/* Execution context. */
 	dbref executor; /* the executor */
 	dbref caller; /* the caller */
 	dbref enactor; /* the enactor */
@@ -177,6 +186,7 @@ COMMAND(cmd_json_rpc)
 FUNCTION(fun_json_rpc)
 {
 	GET_INFO_VAR;
+	JSON_Server_Frame old_frame;
 
 	JSON_Server_Message msg;
 	int ii;
@@ -195,6 +205,7 @@ FUNCTION(fun_json_rpc)
 	}
 
 	/* Save call state. */
+	COPY_CONTEXT_FRAME(old_frame, info->current);
 
 	/* Send request. */
 	TRY_PROTO(json_server_start_request(&info->server,
@@ -205,12 +216,19 @@ FUNCTION(fun_json_rpc)
 	                                        args[ii], arglens[ii]));
 	}
 
+	info->current.executor = executor;
 	TRY_PROTO(json_server_add_context(&info->server, "executor", 8,
 	                                  unparse_dbref(executor), -1));
+
+	info->current.caller = caller;
 	TRY_PROTO(json_server_add_context(&info->server, "caller", 6,
 	                                  unparse_dbref(caller), -1));
+
+	info->current.enactor = enactor;
 	TRY_PROTO(json_server_add_context(&info->server, "enactor", 7,
 	                                  unparse_dbref(enactor), -1));
+
+	info->current.pe_info = pe_info;
 
 	TRY_PROTO(json_server_send_request(&info->server));
 
@@ -254,7 +272,7 @@ failed:
 
 success:
 	/* Restore call state. */
-	return;
+	COPY_CONTEXT_FRAME(info->current, old_frame);
 }
 
 /*
