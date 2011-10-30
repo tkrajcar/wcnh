@@ -8,6 +8,7 @@
 #include "confmagic.h"
 #include "command.h"
 #include "function.h"
+#include "case.h"
 #include "log.h"
 
 /* System headers. */
@@ -80,6 +81,9 @@ typedef struct JSON_Server_Context_tag {
 
 /* Receives and dispatches incoming messages. */
 static int json_server_dispatch(JSON_Server_Message *msg);
+
+/* Calls a PennMUSH function. */
+static int json_server_penn_call(JSON_Server_Message *msg);
 
 /*
  * Get the JSON server instance.
@@ -313,6 +317,7 @@ static int
 json_server_dispatch(JSON_Server_Message *msg)
 {
 	GET_INFO_VAR;
+	int result;
 
 	for (;;) {
 		if (!json_server_receive(&info->server, msg)) {
@@ -321,13 +326,9 @@ json_server_dispatch(JSON_Server_Message *msg)
 
 		switch (msg->type) {
 		case JSON_SERVER_MSG_REQUEST:
-			/* TODO: Dispatch recursive request. */
-			json_server_message_clear(msg);
-
-			if (!json_server_send_error(&info->server,
-			                            JSON_SERVER_ERROR_METHOD,
-			                            "Method not found", -1)) {
-				return 0;
+			/* Dispatch recursive request. */
+			if (!json_server_penn_call(msg)) {
+				goto failed;
 			}
 			break;
 
@@ -335,6 +336,85 @@ json_server_dispatch(JSON_Server_Message *msg)
 			/* Return response. */
 			return 1;
 		}
+
+		json_server_message_clear(msg);
+	}
+
+failed:
+	json_server_message_clear(msg);
+	return 0;
+}
+
+/*
+ * Calls a PennMUSH soft code function in response to an incoming request. This
+ * code is based on parse.c:process_expression(), specifically the lines around
+ * the func_hash_lookup() call.
+ */
+static int
+json_server_penn_call(JSON_Server_Message *msg)
+{
+	static char name[BUFFER_LEN];
+
+	char buff[BUFFER_LEN], *buffp, **bp;
+	char *sp, *tp;
+
+	FUN *fp;
+	int tmp;
+
+	GET_INFO_VAR;
+
+	/* Apologize to caller, we broke. */
+	if (msg->local_error) {
+		return json_server_send_error(&info->server, msg->local_error,
+		                              ERROR_INTERNAL, -1);
+	}
+
+	/* Prepare result buffer. */
+	buffp = buff;
+	bp = &buffp;
+
+	/* Find the function. Note that msg->message is null-terminated. */
+	tp = name;
+
+	for (sp = msg->message; *sp; sp++) {
+		safe_chr(UPCASE(*sp), name, &tp);
+	}
+
+	*tp = '\0';
+
+	fp = builtin_func_hash_lookup(name);
+	if (!fp) {
+		/* Function was not found. */
+		safe_format(buff, bp, T("#-1 FUNCTION (%s) NOT FOUND"), name);
+		return json_server_send_error(&info->server,
+		                              JSON_SERVER_ERROR_METHOD,
+		                              buff, buffp - buff);
+	}
+
+	/* Check that the number of arguments is valid. */
+	tmp = (fp->maxargs < 0) ? -fp->maxargs : fp->maxargs;
+	if (msg->param_nargs < fp->minargs || tmp < msg->param_nargs) {
+		safe_format(buff, bp,
+		            T("#-1 FUNCTION (%s) EXPECTS %d TO %d ARGUMENTS"),
+		            fp->name, fp->minargs, tmp);
+		return json_server_send_error(&info->server,
+		                              JSON_SERVER_ERROR_PARAMS,
+		                              buff, buffp - buff);
+	}
+
+	/* Call the function. Note that we skipped a lot of safety checks! */
+	fp->where.fun(fp, buff, bp,
+	              msg->param_nargs, msg->param_args, msg->param_arglens,
+	              info->current.executor, info->current.caller,
+	              info->current.enactor, fp->name, info->current.pe_info,
+	              PE_DEFAULT);
+
+	/* Return the result. */
+	if (buffp == buff) {
+		return json_server_send_result(&info->server, NULL, -1);
+	} else {
+		return json_server_send_result(&info->server,
+		                               buff, buffp - buff);
 	}
 }
 
@@ -347,6 +427,6 @@ json_server_context_callback(const char *key, int klen,
                              const char *value, int vlen)
 {
 	/* TODO: Implement context callback. */
-	fprintf(stderr, "DEBUG(%.*s=%.*s)\n", klen, key, vlen, value);
+	/*fprintf(stderr, "DEBUG(%.*s=%.*s)\n", klen, key, vlen, value);*/
 	return 1;
 }

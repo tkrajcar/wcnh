@@ -208,8 +208,8 @@ module PennJSON_Conversation
       while true
         response = @@conn.read_object
 
-        if response['result']
-          # Successful result.
+        if response.has_key? 'result'
+          # Successful (possibly nil) result.
           return response['result']
         elsif response['method']
           # Recursive remote call; dispatch and wait for response again.

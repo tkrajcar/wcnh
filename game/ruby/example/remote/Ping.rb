@@ -23,6 +23,10 @@ module Ping
     return "PONG#{args.inspect}"
   end
 
+  def self.pj_eval(arg)
+    return REMOTE.s(arg)
+  end
+
   def self.pj_exit
     # SystemExit example; not enabled by default, for obvious reasons.
     #exit
