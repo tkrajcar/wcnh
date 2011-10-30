@@ -39,7 +39,7 @@ module PennJSON
     def self.from_json(object)
       error = object['error']
 
-      super(error['code'], error['message'])
+      return RemoteError.new(error['code'], error['message'])
     end
   end
 

@@ -17,10 +17,10 @@
 #include "json-private.h"
 
 /* Initial items array allocation. Must be a power of 2. */
-#define JSON_ITEMS_INITIAL 1 /*16*/
+#define JSON_ITEMS_INITIAL 16
 
 /* Initial data buffer allocation. Must be a power of 2. */
-#define JSON_DATA_INITIAL 1 /*65536*/
+#define JSON_DATA_INITIAL 65536
 
 /* Logging macro. */
 #define JSON_LOG(msg) (json_server_log(server, (msg), 0))
@@ -196,13 +196,18 @@ typedef struct JSON_Server_Alloc_Pool_tag {
 static int flush_json(JSON_Server *server);
 
 /*
- * Allocates an allocator.
+ * Allocates an allocator for the current message.
  */
 static JSON_Server_Alloc *
 alloc_json_alloc(JSON_Server *server)
 {
 	JSON_Server_Alloc_Pool *pool;
 	JSON_Server_Alloc *alloc;
+
+	/* Check if the current message already has an allocator. */
+	if (server->msg->internal) {
+		return (JSON_Server_Alloc *)server->msg->internal;
+	}
 
 	/* Create the pool, if necessary. */
 	if (server->internal) {
@@ -261,6 +266,8 @@ alloc_json_alloc(JSON_Server *server)
 	alloc->next = NULL;
 
 	++pool->refs;
+
+	server->msg->internal = alloc;
 	return alloc;
 }
 
@@ -372,6 +379,9 @@ release_json_pool(JSON_Server_Alloc_Pool *pool)
 		tmp = next;
 		next = tmp->next;
 
+		JSON_FREE(tmp->items);
+		JSON_FREE(tmp->itemlens);
+		JSON_FREE(tmp->data);
 		JSON_FREE(tmp);
 	}
 
@@ -437,11 +447,12 @@ lexer_prescan(JSON_Server *server)
 			/* In raw text. */
 			switch (*cp) {
 			case '{':
-				++depth;
+				depth++;
 				break;
 
 			case '}':
 				if (--depth == 0) {
+					++cp;
 					goto done;
 				}
 				break;
@@ -1336,6 +1347,8 @@ json_server_message_clear(JSON_Server_Message *msg)
 		pool->available = alloc;
 
 		release_json_pool(pool);
+
+		msg->internal = NULL;
 	}
 
 	/* Mark this message as having an unknown type. */
