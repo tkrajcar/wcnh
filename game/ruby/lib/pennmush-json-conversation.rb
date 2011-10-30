@@ -175,7 +175,7 @@ module PennJSON_Conversation
   end
 
   # Invokes remote method.
-  def self.remote_invoke(name, *args)
+  def self.remote_invoke(context, name, *args)
     @@depth += 1 # entering call; increase depth
     begin
       # Only allowed at @@depth == 1 if soliciting was acknowledged.
@@ -189,12 +189,17 @@ module PennJSON_Conversation
       end
 
       # Invoke the requested call.
+      request = { :method => name }
+
       if args.empty?
-        request = { :method => name }
       elsif args.length == 1 and args[0].respond_to? :to_hash
-        request = { :method => name, :params => args[0].to_hash }
+        request[:params] = args[0].to_hash
       else
-        request = { :method => name, :params => args }
+        request[:params] = args
+      end
+
+      if context.respond_to? :to_hash
+        request[:context] = context.to_hash
       end
 
       @@conn.write_object(request)
