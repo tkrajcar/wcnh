@@ -9,7 +9,7 @@ OUTFILES=buildinf netmud @INFO_SLAVE_TARGET@ @SSL_SLAVE_TARGET@
 # Libs for JSON server
 JSON_LIBS=-lyajl
 
-JSON_CFLAGS=-pthread
+JSON_CFLAGS=
 
 # Extra dependencies for JSON server. We may need to add transitive
 # dependencies, but currently relying on rebuilding certain files whenever the
