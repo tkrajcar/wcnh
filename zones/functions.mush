@@ -78,3 +78,6 @@
 &fn.bc.pwgen #227=
   iter(lnum(rand(7,15)),rand(0,9),,)
 -
+&filter.zmo #227=
+  ifelse(not(strmatch(zones(lzone,%0),%0)),1,0)
+-
