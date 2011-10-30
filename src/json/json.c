@@ -95,6 +95,9 @@
 		} \
 	} while (0)
 
+/* Tests whether is missing. */
+#define HAS_PART(p) (server->parts_seen[(p)])
+
 /* Handy macro to raise a local error. */
 #define PARSER_RAISE_LOCAL \
 	do { \
@@ -206,7 +209,7 @@ alloc_json_alloc(JSON_Server *server)
 
 	/* Check if the current message already has an allocator. */
 	if (server->msg->internal) {
-		return (JSON_Server_Alloc *)server->msg->internal;
+		return GET_MESSAGE_ALLOC(server->msg);
 	}
 
 	/* Create the pool, if necessary. */
@@ -1374,6 +1377,7 @@ json_server_message_clear(JSON_Server_Message *msg)
 int
 json_server_receive(JSON_Server *server, JSON_Server_Message *msg)
 {
+	JSON_Server_Alloc *alloc;
 	ssize_t result;
 
 	switch (server->state) {
@@ -1426,8 +1430,47 @@ json_server_receive(JSON_Server *server, JSON_Server_Message *msg)
 		server->in_off += yajl_get_bytes_consumed(server->decoder);
 	} while (server->state != JSON_SERVER_STATE_READY);
 
-	/* Validate received message. */
-	/* TODO */
+	/*
+	 * Validate received message.
+	 *
+	 * TODO: We may want to zero out unused fields.
+	 */
+	if (msg->local_error) {
+		/* Local error; ignore result. */
+		return 1;
+	}
+
+	switch (msg->type) {
+	case JSON_SERVER_MSG_REQUEST:
+		if (!HAS_PART(0)) {
+			/* Malformed request message. */
+			goto failed;
+		}
+
+		alloc = alloc_json_alloc(server); /* allocate even if empty */
+		if (!alloc) {
+			goto failed;
+		}
+
+		msg->param_nargs = alloc->size;
+		msg->param_args = alloc->items;
+		msg->param_arglens = alloc->itemlens;
+		break;
+
+	case JSON_SERVER_MSG_RESULT:
+		break;
+
+	case JSON_SERVER_MSG_ERROR:
+		if (!(HAS_PART(0) || HAS_PART(1) || HAS_PART(2))) {
+			/* Malformed error message. */
+			goto failed;
+		}
+		break;
+
+	default:
+		/* Unexpected message type. */
+		goto failed;
+	}
 
 	return 1;
 
