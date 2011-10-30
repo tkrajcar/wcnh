@@ -43,7 +43,17 @@
 ### INITIALIZER
 &DOC.SET.INIT #112=victim|Initialize a new player, blanking their sheet based on their race.
 -
-&FN.SET.INIT #112=[switch(t(setr(0,pmatch(%0))),0,#-1 INVALID VICTIM,1,[wipe(%q0/char`s*)][iter(REA PER WIL STR AGI HEA,chargen(set.attribute,%q0,##,chargen(race,get(%q0/char`race),starting ##)))]
+&FN.SET.INIT #112=
+  [switch(
+    t(setr(0,pmatch(%0))),
+    0,#-1 INVALID VICTIM,
+    1,
+      [wipe(%q0/char`s*)]
+      [iter(REA PER WIL STR AGI HEA,
+        chargen(set.attribute,%q0,##,chargen(race,get(%q0/char`race),starting ##))
+      )]
+      [attrib_set(%q0/char`chargen`alevels,chargen(race,get(%q0/char`race),free attribute levels))]
+  )]
 -
 
 ### ATTRIBUTES
