@@ -1,7 +1,7 @@
 # RACES
-&RACE_ATTRIBUTES #111=name|starting rea|starting per|starting wil|starting str|starting agi|starting hea|free attribute levels
+&RACE_ATTRIBUTES #111=name|starting rea|starting per|starting wil|starting str|starting agi|starting hea|free attribute levels|starting skill points
 -
-&RACE.HUMAN #111=Human|3|3|3|3|3|3|2
+&RACE.HUMAN #111=Human|3|3|3|3|3|3|2|20
 -
 
 # ATTRIBUTES

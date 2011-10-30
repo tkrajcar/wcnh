@@ -53,6 +53,7 @@
         chargen(set.attribute,%q0,##,chargen(race,get(%q0/char`race),starting ##))
       )]
       [attrib_set(%q0/char`chargen`alevels,chargen(race,get(%q0/char`race),free attribute levels))]
+      [attrib_set(%q0/char`chargen`spoints,chargen(race,get(%q0/char`race),starting skill points))]
   )]
 -
 
