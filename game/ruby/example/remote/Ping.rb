@@ -27,6 +27,10 @@ module Ping
     return REMOTE.s(arg)
   end
 
+  def self.pj_invoke(name, *args)
+    return REMOTE.method_missing(name, *args)
+  end
+
   def self.pj_exit
     # SystemExit example; not enabled by default, for obvious reasons.
     #exit
