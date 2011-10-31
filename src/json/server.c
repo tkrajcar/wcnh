@@ -317,7 +317,6 @@ static int
 json_server_dispatch(JSON_Server_Message *msg)
 {
 	GET_INFO_VAR;
-	int result;
 
 	for (;;) {
 		if (!json_server_receive(&info->server, msg)) {
