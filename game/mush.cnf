@@ -185,7 +185,7 @@ chunk_migrate 150
 # The port to listen on for SSL connections. This must be an unused
 # port other than the standard connection port. To disable SSL
 # connections, leave this set to 0.
-ssl_port 0
+ssl_port 2299
 
 # The ip address to bind to for the SSL port, if one is specified. 
 # If your host has multiple IP addresses, put the ip address to 
@@ -206,7 +206,7 @@ ssl_private_key_file server-key.crt
 # present certificates. A standard bundle of these is distributed
 # with openssl as 'ca-bundle.crt'. If commented out, the server will
 # not attempt client authentication.
-ssl_ca_file /usr/share/ssl/certs/ca-bundle.crt
+ssl_ca_file /etc/ssl/certs/ca-certificates.crt
 
 # Are clients *required* to present a valid certificate in order to
 # make an SSL connection?
