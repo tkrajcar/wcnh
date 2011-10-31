@@ -7,6 +7,15 @@ module Github
   @repo = "wcnh_softcode"
 
   def self.issues_list
-    @api.issues.list({:user => @user, :repo => @repo})
+    ret = ""
+    ret << titlebar("wcnh_softcode Issues List") << "\n"
+    ret << "  ### #{"Title".ljust(40)} Created  Updated\n".cyan
+    @api.issues.list({:user => @user, :repo => @repo}).each { |issue|
+      created = Time.parse(issue.created_at).localtime
+      updated = Time.parse(issue.updated_at).localtime
+      ret << "  #{issue.number.to_s.rjust(3).bold.yellow} #{issue.title[0..39]} #{created.strftime("%D").ljust(8)} #{updated.strftime("%D")}\n"
+    }
+    ret << footerbar
+    ret
   end
 end

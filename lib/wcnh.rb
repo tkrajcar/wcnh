@@ -1,13 +1,11 @@
 # All universal modules, class extensions, etc.
 require 'time'
+require 'colored'
 
-class String
-  def ccl(arg)
-    self << arg
-    if defined? PennJSON
-      self << "%r"
-    else
-      self << "\n"
-    end
-  end
+def titlebar(arg)
+  ">--".red + "[".bold.red + arg.to_s.bold + "]".bold.red + ("-" * (73 - arg.length) + "<").red
+end
+
+def footerbar
+  ">-----------------------------------------------------------------------------<".red
 end
