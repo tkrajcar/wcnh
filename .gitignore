@@ -29,10 +29,6 @@ game/info_slave
 game/netmush
 game/netmush.pid
 game/ssl_slave
-game/alias.cnf
-game/mush.cnf
-game/names.cnf
-game/restrict.cnf
 game/data/
 game/log/
 game/txt/
