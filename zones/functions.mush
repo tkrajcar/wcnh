@@ -1,5 +1,7 @@
 &DOC.LZONE #227=dbref|Return a lparent() like list of zones
 -
+&DOC.LIST.ZONES #227=|Ansi hierarchy of zones.  Optional ZMO dbref argument limits return.
+-
 &DATA #227=#228
 -
 @desc #227=
