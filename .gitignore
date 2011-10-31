@@ -16,17 +16,13 @@ src/netmud~
 hdrs/buildinf.h
 hdrs/cmds.h
 hdrs/funs.h
+hdrs/svninfo.h
 src/Makefile
 src/cmdlocal.c
 src/flaglocal.c
 src/funlocal.c
 src/local.c
 test/alltests.sh
-
-# Sources modified during build we aren't interested in tracking. Alas,
-# ignoring them doesn't do any good.
-#game/txt/hlp/index.hlp
-#hdrs/svninfo.h
 
 # Runtime files.
 game/info_slave
@@ -40,7 +36,11 @@ game/restrict.cnf
 game/data/
 game/log/
 game/txt/
+game/txt/hlp/index.hlp
 game/save/
 
 # Ruby implementation-specific files.
 game/ruby/config.yml
+
+# Vagrant stuff
+.vagrant
