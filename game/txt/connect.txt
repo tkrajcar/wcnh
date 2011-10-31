@@ -24,7 +24,7 @@ $FMMMMMMMMMMM\8\8MMMMMM8'8$$$$FM?F$$$$$$$$$$$$8$F';\MMMM$h[MM$$88888$8$$88$$$$$'
 MMMMMMMMMMMM88?c8\88$cMM$$$$$$$c8c8$c$$$$$$$$$MMMMMMM'-M\?$MvMM8$$$8$$hd$$$$$$$$
 +-------------------------------------------------+----------------------------+
 | to create:  register "<first> <last>" <email>   | wcmush.com 2199            |
-| to connect: connect "<first> <last>" <password> |                            |
+| to connect: connect "<first> <last>" <password> | SSL: wcmush.com 2299 / 443 |
 | to visit:   connect guest guest                 | www.wcmush.com    @wcmush  |
 +-------------------------------------------------+----------------------------+
 | Adult content is not in any way the theme of this game, but may be present.  |
