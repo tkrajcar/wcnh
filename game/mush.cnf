@@ -1,3 +1,4 @@
+
 # configuration file for PennMUSH
 #
 # The directives in this file control the behavior of your MUSH
@@ -18,7 +19,7 @@ mud_name Wing Commander: New Horizon
 # screens will be prefixed with <!--  and suffixed with -->
 # Any HTTP clients trying to access it will be redirected to this url.
 # mud_url http://www.pennmush.org
-mud_url
+mud_url 
 
 # The port it's running on. See also ssl_port, later.
 port 2199
@@ -27,7 +28,7 @@ port 2199
 # multiple IP addresses, put the ip address to listen on here
 # Example: ip_addr 128.32.243.78
 # Otherwise, just leave it blank.
-ip_addr
+ip_addr 
 
 # Should the MUSH attempt to resolve IP numbers to hostnames?
 # If yes, you'll see hostnames on the wizard WHO. If no, IP numbers.
@@ -138,7 +139,7 @@ access_file access.cnf
 # 'Lessa', 'Dracula', 'Hercules', 'Scooby', 'Nancy Drew', etc,
 # depending on what type of MUSH you are running
 names_file names.cnf
-  
+
 ###
 ### Attribute (chunk) cache
 ###
@@ -190,7 +191,7 @@ ssl_port 0
 # If your host has multiple IP addresses, put the ip address to 
 # listen on here. Otherwise, leave it blank to listen on all
 # addresses if SSL is in use.
-ssl_ip_addr
+ssl_ip_addr 
 
 # The file containing the MUSH server's certificate and private key,
 # concatenated together, and with no password on the private key.
@@ -198,7 +199,7 @@ ssl_ip_addr
 # owner. If this is commented out, the server will not present a
 # certificate, so clients that attempt to authenticate the server
 # will fail.
-ssl_private_key_file  server-key.crt
+ssl_private_key_file server-key.crt
 
 # The file containing one or more certificates of certifying authorities
 # that the server should trust to certify clients who connect and
@@ -356,7 +357,7 @@ chan_cost 1000
 # How likely should it be that noisy whispers are noticed by other
 # players in the room? (Others see: John whispers to Mary.)
 # Use a number from 0 to 100
-whisper_loudness	100
+whisper_loudness 100
 
 # the highest allowable dbref -- you can't build more than this
 # many objects. if you don't want such a limit, leave this set
@@ -409,7 +410,7 @@ exit_cost 1
 purge_interval 10m1s
 
 # How often should we run a dbck to check db consistency? (seconds)
-dbck_interval  9m59s
+dbck_interval 9m59s
 
 # How often should we perform topology warning checks?
 # Default is 1 hour. If you set this to 0, timed MUSH-wide checks 
@@ -433,7 +434,7 @@ player_name_len 20
 # The maximum number of aliases a player may have simultaneously.
 # Setting this to 0 disables aliases. To allow an unlimited number
 # of aliases, set this to 4000 or so.
-max_aliases	3
+max_aliases 3
 
 # Limit the number of objects players can own.
 use_quota yes
@@ -469,7 +470,6 @@ forking_dump yes
 # dump_warning_1min GAME: Database save in 1 minute.
 # dump_message GAME: Saving database. Game may freeze for a few moments.
 # dump_complete GAME: Save complete. 
-
 
 ### 
 ### Filenames
@@ -511,14 +511,12 @@ full_html_file txt/full.html
 #help_command index txt/index.txt
 #help_command rules txt/rules.txt
 #help_command +help txt/plushelp.txt
-
 help_command help txt/help.txt
 help_command news txt/news.txt
 ahelp_command ahelp txt/help.txt
-restrict_command ahelp admin
 ahelp_command anews txt/news.txt
+restrict_command ahelp admin
 restrict_command anews admin
-
 
 ###
 ### Logging
@@ -531,7 +529,7 @@ restrict_command anews admin
 ###
 
 # Filename to log important messages (startups, errors, shutdowns)
-error_log  log/netmush.log
+error_log log/netmush.log
 
 # Filename to log connections to
 connect_log log/connect.log
@@ -761,6 +759,7 @@ exits_connect_rooms yes
 # OPTIONAL
 wizwall_prefix WIZARDS:
 rwall_prefix ADMIN:
+
 # wall_prefix Announcement:
 
 # Should we announce connections/disconnections to rooms and on channels?
@@ -791,14 +790,12 @@ page_aliases yes
 # the @*wall and say commands.
 chat_strip_quote yes
 
-
 # Should strlen(%r) be 1 or 2? Turning this option on will allow %r to be
 # used as a list delimiter, but might break ancient formatting softcode that 
 # depends on its length being 2. This option is deprecated, and will soon be
 # removed; you should leave it turned on, and rewrite any code that relies on
 # it being off.
 newline_one_char yes
-
 
 # Should object names be restricted to just ascii characters, or can
 # non-ascii (Accented letters, for example) be used as well if the
@@ -827,6 +824,7 @@ only_ascii_in_names yes
 #   (if you look through them, you will see the description of the next room)
 # exit_flags transparent
 exit_flags 
+
 # -- Default flags for rooms
 
 # Uncommenting this will cause all rooms to be TRANSPARENT by default.
@@ -847,14 +845,14 @@ room_flags no_command
 # Players who are ENTER_OK can be given stuff.
 player_flags enter_ok
 
-# Players who are INHERIT allow all their objects to control them.
-# player_flags inherit
-
 # Players who are ANSI see attribute names hilighted.
 player_flags ansi
 
 # See the explanation for rooms and no_command.
 player_flags no_command
+
+# Players who are INHERIT allow all their objects to control them.
+# player_flags inherit
 
 # -- Default flags for things
 
@@ -869,7 +867,6 @@ thing_flags no_command
 # For example, you might want:
 # channel_flags player quiet open hide_ok
 channel_flags player
-
 
 # PennMUSH supports MSSP (Mud Server Status Protocol) which tells connecting
 # clients/bots some basic information about your game theme, setup, etc.
@@ -891,4 +888,4 @@ include alias.cnf
 ### Restrictions on command usage are in restrict.cnf
 ###
 include restrict.cnf
-
+# wall_prefix Announcement:
