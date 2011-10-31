@@ -1,10 +1,18 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    github-v3-api (0.1.0)
+      json (~> 1.5.3)
+      rest-client (~> 1.6.3)
+    json (1.5.4)
+    mime-types (1.17.2)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     yajl-ruby (1.0.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  github-v3-api
   yajl-ruby (~> 1.0)
