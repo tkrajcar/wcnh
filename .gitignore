@@ -34,6 +34,7 @@ game/log/
 game/txt/
 game/txt/hlp/index.hlp
 game/save/
+game/*.bak
 
 # Ruby implementation-specific files.
 game/ruby/config.yml
