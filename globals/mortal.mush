@@ -45,6 +45,8 @@
 -
 &cmd.+values #15=$+values:@pemit %#=[titlebar(Adjective Values)]%r%b%b>= [ansi(h,7)]: [num2adj(7)]%r[space(5)][ansi(h,6)]: [num2adj(6)]%r[space(5)][ansi(h,5)]: [num2adj(5)]%r[space(5)][ansi(h,4)]: [num2adj(4)]%r[space(5)][ansi(h,3)]: [num2adj(3)]%r[space(5)][ansi(h,2)]: [num2adj(2)]%r[space(5)][ansi(h,1)]: [num2adj(1)]%r%b%b<= [ansi(h,0)]: [num2adj(0)]%r[footerbar()]
 -
+&cmd.time #15=$time:@pemit %#=[ansi(hr,Current Galactic Standard Time:)] [ansi(h,timefmt($H:$M on $A\, $B $d,icsecs())\, [add(760,timefmt($Y,icsecs()))]
+-
 &cmd.+where #15=$+where:@pemit %#=[titlebar(+where)]%r[iter(u(fn.rooms_with_connected_players),ansi(h,name(##)): [u(fn.connected_players_in_room,##)], ,%r)]%r[footerbar(words(mwho()) players)]
 -
 @set #15/cmd.+who=regexp
