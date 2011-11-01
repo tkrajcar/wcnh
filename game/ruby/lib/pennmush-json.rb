@@ -5,6 +5,7 @@
 # System modules.
 require 'logger'
 require 'pathname'
+require 'yaml'
 
 module PennJSON
   STDOUT.sync = true

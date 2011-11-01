@@ -78,6 +78,9 @@ typedef enum JSON_Server_Message_Type_tag {
 /*
  * Received message. This structure is meant to be preallocated by the caller,
  * then filled in with the results of an incoming message.
+ *
+ * TODO: Consider making this data structure opaque. On the other hand, the
+ * PennJSON code is the only code that is ever going to see it.
  */
 typedef struct JSON_Server_Message_tag {
   JSON_Server_Message_Type type; /* message type */
@@ -96,6 +99,7 @@ typedef struct JSON_Server_Message_tag {
 
   /* Internal bookkeeping information. */
   void *internal;
+  size_t int_off;
 } JSON_Server_Message;
 
 /*
