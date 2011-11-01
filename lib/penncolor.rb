@@ -17,7 +17,7 @@ module PennColor
   EXTRAS = {
     'bold'      => 'h',
     'underline' => 'u',
-    'invert'  => 'i',
+    'invert'    => 'i',
     'flash'     => 'f'
   }
 
