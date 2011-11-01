@@ -22,6 +22,9 @@
 /* Initial data buffer allocation. Must be a power of 2. */
 #define JSON_DATA_INITIAL 65536
 
+/* Value returned by alloc_json_string() to indicate a failed allocation. */
+#define JSON_ALLOC_FAILED ((size_t)-1)
+
 /* Logging macro. */
 #define JSON_LOG(msg) (json_server_log(server, (msg), 0))
 
@@ -54,6 +57,12 @@
 
 /* Handy macro for getting allocator from message. */
 #define GET_MESSAGE_ALLOC(m) ((JSON_Server_Alloc *)(m)->internal)
+
+/* Handy macro to convert a pointer into an item offset. */
+#define GET_ALLOC_OFF(s) ((s) - alloc->data)
+
+/* Handy macro to convert an item offset into a pointer. */
+#define GET_ALLOC_PTR(i) (alloc->data + (i))
 
 /* Handy macro for trying a JSON generation operation. All errors are fatal. */
 #define TRY_GEN(op) \
@@ -172,7 +181,8 @@ typedef struct JSON_Server_Alloc_tag {
   int capacity; /* allocated size (in elements) */
   int size; /* occupied size (in elements) */
 
-  char **items; /* array of string pointers into data */
+  char **items; /* array of strings pointers into data; realloc invalidates */
+  size_t *itemoffs; /* array of string offsets into data */
   int *itemlens; /* array of string lengths */
 
   size_t data_capacity; /* allocated data size (in char) */
@@ -244,8 +254,16 @@ alloc_json_alloc(JSON_Server *server)
 			return NULL;
 		}
 
+		alloc->itemoffs = JSON_MALLOC_N(size_t, JSON_ITEMS_INITIAL);
+		if (!alloc->itemoffs) {
+			JSON_FREE(alloc->items);
+			JSON_FREE(alloc);
+			return NULL;
+		}
+
 		alloc->itemlens = JSON_MALLOC_N(int, JSON_ITEMS_INITIAL);
 		if (!alloc->itemlens) {
+			JSON_FREE(alloc->itemoffs);
 			JSON_FREE(alloc->items);
 			JSON_FREE(alloc);
 			return NULL;
@@ -254,6 +272,7 @@ alloc_json_alloc(JSON_Server *server)
 		alloc->data = JSON_MALLOC_N(char, JSON_DATA_INITIAL);
 		if (!alloc->data) {
 			JSON_FREE(alloc->itemlens);
+			JSON_FREE(alloc->itemoffs);
 			JSON_FREE(alloc->items);
 			JSON_FREE(alloc);
 			return NULL;
@@ -275,9 +294,11 @@ alloc_json_alloc(JSON_Server *server)
 }
 
 /*
- * Adds a string to the allocator.
+ * Adds a string to the allocator. Returns an offset into the data buffer,
+ * rather than a pointer, since the data buffer can be reallocated at any time.
+ * Returns JSON_ALLOC_FAILED if the allocation fails.
  */
-static char *
+static size_t
 alloc_json_string(JSON_Server_Alloc *alloc, const unsigned char *str, int len)
 {
 	char *cp;
@@ -298,7 +319,7 @@ alloc_json_string(JSON_Server_Alloc *alloc, const unsigned char *str, int len)
 		if (data) {
 			alloc->data = data;
 		} else {
-			return NULL;
+			return JSON_ALLOC_FAILED;
 		}
 
 		alloc->data_capacity = capacity;
@@ -311,17 +332,19 @@ alloc_json_string(JSON_Server_Alloc *alloc, const unsigned char *str, int len)
 	memcpy(cp, str, len);
 	cp[len] = '\0';
 
-	return cp;
+	return GET_ALLOC_OFF(cp);
 }
 
 /*
- * Adds an item string to the allocator.
+ * Adds an item string to the allocator. Returns an offset into the data
+ * buffer, rather than a pointer, since the data buffer can be reallocated at
+ * any time. Returns JSON_ALLOC_FAILED if the allocation fails.
  */
-static char *
+static size_t
 alloc_json_item_string(JSON_Server_Alloc *alloc,
                        const unsigned char *str, int len)
 {
-	char *cp;
+	size_t itemoff;
 
 	int capacity = alloc->capacity;
 	int size = alloc->size + 1;
@@ -329,6 +352,7 @@ alloc_json_item_string(JSON_Server_Alloc *alloc,
 	/* Expand the items arrays if necessary. */
 	if (size > capacity) {
 		char **items;
+		size_t *itemoffs;
 		int *itemlens;
 
 		capacity <<= 1; /* hopefully we won't wrap around */
@@ -337,31 +361,40 @@ alloc_json_item_string(JSON_Server_Alloc *alloc,
 		if (items) {
 			alloc->items = items;
 		} else {
-			return NULL;
+			return JSON_ALLOC_FAILED;
+		}
+
+		itemoffs = JSON_REALLOC_N(size_t, alloc->itemoffs, capacity);
+		if (itemoffs) {
+			alloc->itemoffs = itemoffs;
+		} else {
+			/* No need to shrink items back. */
+			return JSON_ALLOC_FAILED;
 		}
 
 		itemlens = JSON_REALLOC_N(int, alloc->itemlens, capacity);
 		if (itemlens) {
 			alloc->itemlens = itemlens;
 		} else {
-			/* No need to shrink items back. */
-			return NULL;
+			/* No need to shrink items or itemoffs back. */
+			return JSON_ALLOC_FAILED;
 		}
 
 		alloc->capacity = capacity;
 	}
 
 	/* Add the item. */
-	cp = alloc_json_string(alloc, str, len);
-	if (!cp) {
-		return NULL;
+	itemoff = alloc_json_string(alloc, str, len);
+	if (itemoff == JSON_ALLOC_FAILED) {
+		return JSON_ALLOC_FAILED;
 	}
 
 	size = alloc->size++;
-	alloc->items[size] = cp;
+	/* only fix up items pointers at the end */
+	alloc->itemoffs[size] = itemoff;
 	alloc->itemlens[size] = len;
 
-	return cp;
+	return itemoff;
 }
 
 /*
@@ -383,6 +416,7 @@ release_json_pool(JSON_Server_Alloc_Pool *pool)
 		next = tmp->next;
 
 		JSON_FREE(tmp->items);
+		JSON_FREE(tmp->itemoffs);
 		JSON_FREE(tmp->itemlens);
 		JSON_FREE(tmp->data);
 		JSON_FREE(tmp);
@@ -554,8 +588,8 @@ parser_set_message(JSON_Server *server, const unsigned char *message, int len)
 
 	alloc = alloc_json_alloc(server);
 	if (alloc) {
-		server->msg->message = alloc_json_string(alloc, message, len);
-		if (server->msg->message) {
+		server->msg->int_off = alloc_json_string(alloc, message, len);
+		if (server->msg->int_off != JSON_ALLOC_FAILED) {
 			return 1;
 		}
 	}
@@ -715,7 +749,7 @@ handle_null(void *ctx)
 		case TOKEN_RESULT:
 			/* Results are allowed to be null. */
 			PARSER_SET_TYPE(JSON_SERVER_MSG_RESULT);
-			server->msg->message = NULL;
+			server->msg->int_off = JSON_ALLOC_FAILED;
 			return 1;
 		}
 		break;
@@ -815,7 +849,8 @@ handle_string(void *ctx, const unsigned char *value, unsigned int len)
 
 		alloc = alloc_json_alloc(server);
 		if (alloc) {
-			if (alloc_json_item_string(alloc, value, len)) {
+			if (alloc_json_item_string(alloc, value, len)
+			    != JSON_ALLOC_FAILED) {
 				return 1;
 			}
 		}
@@ -1379,6 +1414,7 @@ json_server_receive(JSON_Server *server, JSON_Server_Message *msg)
 {
 	JSON_Server_Alloc *alloc;
 	ssize_t result;
+	int ii;
 
 	switch (server->state) {
 	case JSON_SERVER_STATE_READY:
@@ -1447,9 +1483,11 @@ json_server_receive(JSON_Server *server, JSON_Server_Message *msg)
 			goto failed;
 		}
 
-		alloc = alloc_json_alloc(server); /* allocate even if empty */
-		if (!alloc) {
-			goto failed;
+		alloc = GET_MESSAGE_ALLOC(msg); /* must exist */
+		msg->message = GET_ALLOC_PTR(msg->int_off);
+
+		for (ii = 0; ii < alloc->size; ii++) {
+			alloc->items[ii] = GET_ALLOC_PTR(alloc->itemoffs[ii]);
 		}
 
 		msg->param_nargs = alloc->size;
@@ -1458,13 +1496,24 @@ json_server_receive(JSON_Server *server, JSON_Server_Message *msg)
 		break;
 
 	case JSON_SERVER_MSG_RESULT:
+		if (msg->int_off == JSON_ALLOC_FAILED) {
+			/* Indicates null result. */
+			msg->message = NULL;
+			break;
+		}
+
+		alloc = GET_MESSAGE_ALLOC(msg); /* must exist */
+		msg->message = GET_ALLOC_PTR(msg->int_off);
 		break;
 
 	case JSON_SERVER_MSG_ERROR:
-		if (!(HAS_PART(0) || HAS_PART(1) || HAS_PART(2))) {
+		if (!(HAS_PART(0) && HAS_PART(1) && HAS_PART(2))) {
 			/* Malformed error message. */
 			goto failed;
 		}
+
+		alloc = GET_MESSAGE_ALLOC(msg); /* must exist */
+		msg->message = GET_ALLOC_PTR(msg->int_off);
 		break;
 
 	default:
