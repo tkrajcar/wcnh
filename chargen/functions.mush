@@ -110,7 +110,7 @@
 
 &DOC.SET.SKILL #112=victim:skill:value|Set victim's skill modifier to value.
 -
-&FN.SET.SKILL #112=[switch(t(setr(0,pmatch(%0)))[t(setr(1,chargen(skill,%1,name)))][and(isnum(%2),gte(%2,0))],0*,#-1 INVALID VICTIM,10*,#-1 INVALID SKILL,110,#-1 INVALID VALUE,111,set(%q0,char`s`%q1:%2))]
+&FN.SET.SKILL #112=[switch(t(setr(0,pmatch(%0)))[t(setr(1,chargen(skill,%1,name)))][and(isnum(%2),gte(%2,0))],0*,#-1 INVALID VICTIM,10*,#-1 INVALID SKILL,110,#-1 INVALID VALUE,111,if(%2,attrib_set(%q0/char`s`%q1,%2),attrib_set(%q0/char`s`%q1))]
 -
 
 &DOC.LIST.SKILLGROUPS #112=|List valid skill groups.
