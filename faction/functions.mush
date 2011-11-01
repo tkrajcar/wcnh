@@ -38,7 +38,7 @@
   [ifelse(
         t(match(lattr(v(data)/fac.*),fac.%0)),
         #-1 EXISTING FAC ABBREV,
-        [set(v(data),fac.%0:%1|Organization|||)]
+        [set(v(data),fac.%0:%1|Organization||||)]
          [syslog(FACTION,New faction [ansi(wh,%1\([ucstr(%0)]\))] created by [name(%#)].)]
         )]
 -
