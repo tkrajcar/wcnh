@@ -187,7 +187,7 @@
       ),
     [after(%0,.)] [ansi(n,-)] [first(%q0,|)]
     )] 
-  \[[words(extract(%q0,3,1,|))] members\]
+  \[[words(extract(%q0,3,1,|))] members\][if(t(extract(%q0,6,1,|)),%b\([ansi(rh,HIDDEN)]\))]
 -
 &fn.list.factiontree.loop #114=
   [u(fn.list.factiontree.parse,%0,%1)]
@@ -198,7 +198,10 @@
 -
 &filter.list.factiontree #114=
   ifelse(
-    strmatch(extract(get(v(data)/%0),4,1,|),),
+    and(
+      strmatch(extract(setr(0,get(v(data)/%0)),4,1,|),),
+      or(not(t(extract(%q0,6,1,|),1)),orflags(%#,Wr))
+      ),
     1,0
     )
 -

@@ -116,6 +116,11 @@ abbrevs have to be unique.
 * +fac/create (abbrev)=(full name)
 * +fac/destroy (fac)
 
+## Data Organization
+
+Faction data is stored on its own object.  Each faction is stored in its own
+attribute in the format: Name|Level|Members|Parent Fac|Leaders|IsHidden?
+
 ## Future Plans
 
 * Hard rules for getting a faction channel or bboard?
