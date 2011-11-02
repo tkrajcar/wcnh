@@ -43,7 +43,7 @@
 &cmd.+setconcept #40=$+set concept *:
   @assert lt(words(%0),30)=
     @pemit %#=[ansi(hb,>)] That's too long for a concept. They should be short\, one or two sentences.;
-  &char`concept %#=%0;
+  &char`concept %#=[decompose(%0)];
   @pemit %#=[ansi(hb,>)] Concept set.
 -
 
