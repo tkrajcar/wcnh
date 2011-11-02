@@ -72,6 +72,14 @@
        [u(fn.error,%=,%0,%1,%2)]
        )]
 -
+&subfn.set.channel #114=
+  [ifelse(
+      t(cflags(%1)),
+      [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),7,[capstr(%1)],|)])]
+       [syslog(FACTION,Updated settings by [name(%#)]\(%#\) in [ansi(wh,faction(name,%0))]\([ucstr(%0)]\): Channel => [capstr(%1)])],
+      #-1 INVALID CHANNEL
+      )]
+-
 &subfn.set.parent #114=
   [ifelse(
         and(
@@ -122,7 +130,7 @@
       [t(member(u(fn.list.factions),ucstr(%0)))]
       [t(setr(1,pmatch(%1)))]
       [t(member(u(fn.list.members,%0),%q1))]
-      [not(t(member(setr(0,u(fn.list.leaders,%0)),%q1)))],
+      [not(member(setr(0,u(fn.list.leaders,%0)),%q1))],
 
       0???,#-1 INVALID FACTION,
       10??,#-1 INVALID PLAYER,
@@ -134,7 +142,7 @@
 &fn.channel #114=
   [ifelse(
       t(setr(0,lattr(v(data)/FAC.%0))),
-      extract(get(v(data)/%q0),5,1,|),
+      extract(get(v(data)/%q0),7,1,|),
       #-1 NO CHANNEL
       )]
 -
@@ -200,7 +208,7 @@
   ifelse(
     and(
       strmatch(extract(setr(0,get(v(data)/%0)),4,1,|),),
-      or(not(t(extract(%q0,6,1,|),1)),orflags(%#,Wr))
+      or(not(extract(%q0,6,1,|)),orflags(%#,Wr))
       ),
     1,0
     )
@@ -251,7 +259,7 @@
   [switch(
     [t(member(u(fn.list.factions),ucstr(%0)))]
     [t(setr(1,pmatch(%1)))]
-    [not(t(member(setr(0,u(fn.list.members,%0)),%q1)))],
+    [not(member(setr(0,u(fn.list.members,%0)),%q1))],
 
     0??,#-1 INVALID FACTION,
     10?,#-1 INVALID PLAYER,

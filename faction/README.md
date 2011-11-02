@@ -118,8 +118,9 @@ abbrevs have to be unique.
 
 ## Data Organization
 
-Faction data is stored on its own object.  Each faction is stored in its own
-attribute in the format: Name|Level|Members|Parent Fac|Leaders|IsHidden?
+Faction data is stored on its own object, the dbref of which is in the DATA
+attribute on the functions object.  Each faction is stored in its own
+attribute in the format: Name|Level|Members|Parent Fac|Leaders|IsHidden?|Channel
 
 ## Future Plans
 
