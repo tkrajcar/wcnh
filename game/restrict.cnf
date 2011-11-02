@@ -64,7 +64,7 @@ restrict_command @open noguest
 restrict_command @power logargs
 
 # Prevent players going home while set FIXED
-restrict_command home nofixed " You can't do that IC!
+restrict_command home admin
 
 # Used to be hate_dest
 restrict_command @destroy noplayer " Use @recycle instead
@@ -75,27 +75,27 @@ restrict_command @destroy noplayer " Use @recycle instead
 restrict_command warn_on_missing nobody
 
 # Some additional protection against spam attacks by guests
-#restrict_command @dolist noguest
-#restrict_function repeat noguest
-#restrict_function iter noguest
-#restrict_function map noguest
-#restrict_function fold noguest
+restrict_command @dolist noguest
+restrict_function repeat noguest
+restrict_function iter noguest
+restrict_function map noguest
+restrict_function fold noguest
 
 # Don't allow kill (slay still works)
-#restrict_command kill nobody
+restrict_command kill nobody
 
 # Uncomment to allow only admin or @powered builders to build
-#restrict_command @open admin builder " You need the builder power to do that.
-#restrict_command @dig admin builder " You need the builder power to do that.
+restrict_command @open admin builder " You need the builder power to do that.
+restrict_command @dig admin builder " You need the builder power to do that.
 
 # Uncomment to disallow them to create objects
-#restrict_command @create admin builder " You need the builder power to do that.
+restrict_command @create admin builder " You need the builder power to do that.
 
 # Used to be player_locate
-#restrict_command @whereis nobody
+restrict_command @whereis nobody
 
 # Used to be cemit_power
-#restrict_command @cemit admin cemit " You can't @cemit without cemit @power
+restrict_command @cemit pemit_all cemit " You can't @cemit without pemit_all @power
 
 # Turn off ansi().
 #restrict_function ansi nobody
