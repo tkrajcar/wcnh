@@ -1,7 +1,7 @@
 &cmd.+fac/boot #191=$+fac/boot *=*:
   @switch [or(orflags(%#,Wr),t(member(setr(3,faction(list.leaders,%0)),%#)))]
           [t(match(faction(list.memberof,setr(1,pmatch(%1))),%0))]
-          [not(t(member(%q3,%q1)))]=
+          [not(member(%q3,%q1))]=
 
           0??,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
           10?,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
@@ -68,7 +68,7 @@
 -
 &cmd.+fac/leave #191=$+fac/leave *:
   @switch [t(member(faction(list.members,%0),%#))]
-          [not(t(member(faction(list.leaders,%0),%#)))]=
+          [not(member(faction(list.leaders,%0),%#))]=
 
           0?,@nspemit %#=[ansi(c,<Faction>)] You are not a member of that faction.,
           10,@nspemit %#=[ansi(c,<Faction>)] You would first need to resign your leadership.,
@@ -107,8 +107,8 @@
   @switch [t(setr(0,pmatch(%0)))]
     [t(setr(2,faction(name,%1)))]
     [or(orflags(%#,Wr),t(member(faction(list.leaders,%1),%#)))]
-    [not(t(member(setr(1,get(%q0/fac`invites)),lcstr(%1))))]
-    [not(t(member(faction(list.members,%1),%q0)))]=
+    [not(member(setr(1,get(%q0/fac`invites)),lcstr(%1)))]
+    [not(member(faction(list.members,%1),%q0))]=
     
     0*,@nspemit %#=[ansi(c,<Faction>)] No such player.,
     10*,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
