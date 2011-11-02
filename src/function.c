@@ -30,6 +30,12 @@
 #include "confmagic.h"
 #include "ansi.h"
 
+<<<<<<< HEAD
+=======
+#include "json/json-config.h"
+#include "json/json-call.h"
+
+>>>>>>> upstream/master
 static void func_hash_insert(const char *name, FUN *func);
 extern void local_functions(void);
 static int apply_restrictions(uint32_t result, const char *restriction);
@@ -505,6 +511,12 @@ FUNTAB flist[] = {
   {"RNUM", fun_rnum, 2, 2, FN_REG | FN_STRIPANSI},
   {"ROOM", fun_room, 1, 1, FN_REG | FN_STRIPANSI},
   {"ROOT", fun_root, 2, 2, FN_REG | FN_STRIPANSI},
+<<<<<<< HEAD
+=======
+#ifdef JSON_SERVER
+  {"RPC", fun_json_rpc, 1, INT_MAX, FN_REG},
+#endif /* JSON_SERVER */
+>>>>>>> upstream/master
   {"S", fun_s, 1, -1, FN_REG},
   {"SCAN", fun_scan, 1, 3, FN_REG | FN_STRIPANSI},
   {"SCRAMBLE", fun_scramble, 1, -1, FN_REG},

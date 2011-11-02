@@ -1,0 +1,4 @@
+source :rubygems
+
+gem 'yajl-ruby', '~> 1.0', :require => 'yajl'
+gem 'github-v3-api'

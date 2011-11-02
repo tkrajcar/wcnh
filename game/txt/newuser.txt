@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 -------------------------------------------------------------------------
 Congratulations on your newly created character. PennMUSH welcomes you.
 For more information about this game, type 'news' or 'help' to get help.
@@ -10,4 +11,6 @@ will be more than happy to assist you.
 
 Yell at your god to personalize this file!
 -------------------------------------------------------------------------
+=======
+>>>>>>> upstream/master
 

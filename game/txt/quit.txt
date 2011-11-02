@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 Thank you for visiting.
 
 Please return soon.
 
 *********** D I S C O N N E C T E D ***********
 
+=======
+Thank you for visiting Wing Commander: New Horizon MUSH. Please return soon.
+
+While away from the game, keep up with us at http://www.wcmush.com/ and on Twitter at @wcmush.
+
+*********** D I S C O N N E C T E D ***********
+>>>>>>> upstream/master
