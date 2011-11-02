@@ -1,3 +1,4 @@
+
 #
 # Commands to restrict
 # Syntax: restrict_command <command> <restriction> [" <error message>]
@@ -65,6 +66,14 @@ restrict_command @power logargs
 # Prevent players going home while set FIXED
 restrict_command home nofixed " You can't do that IC!
 
+# Used to be hate_dest
+restrict_command @destroy noplayer " Use @recycle instead
+
+# If you turn this on, players who try to use functions in place
+# of commands (e.g. $foo: [pemit(%#,blah)] will get error messages.
+# Disabled by default for backward compatibility.
+restrict_command warn_on_missing nobody
+
 # Some additional protection against spam attacks by guests
 #restrict_command @dolist noguest
 #restrict_function repeat noguest
@@ -85,9 +94,6 @@ restrict_command home nofixed " You can't do that IC!
 # Used to be player_locate
 #restrict_command @whereis nobody
 
-# Used to be hate_dest
-restrict_command @destroy noplayer " Use @recycle instead
-
 # Used to be cemit_power
 #restrict_command @cemit admin cemit " You can't @cemit without cemit @power
 
@@ -101,11 +107,6 @@ restrict_command @destroy noplayer " Use @recycle instead
 #restrict_function create nobody
 #restrict_function clone nobody
 #restrict_function tel nobody
-
-# If you turn this on, players who try to use functions in place
-# of commands (e.g. $foo: [pemit(%#,blah)] will get error messages.
-# Disabled by default for backward compatibility.
-restrict_command warn_on_missing nobody
 
 # We add a dummy here to make updating easier
 restrict_function lstats noguest
@@ -133,20 +134,3 @@ restrict_function lstats noguest
 #restrict_function cstatus nobody
 #restrict_function cusers nobody
 #restrict_function cmogrifier nobody
-
-
-# Remove the hardcode mail system by uncommenting these
-#restrict_command @mail nobody
-#restrict_command @malias nobody
-#restrict_function mail nobody
-#restrict_function maildstats nobody
-#restrict_function mailfrom nobody
-#restrict_function mailfstats nobody
-#restrict_function mailstats nobody
-#restrict_function mailstatus nobody
-#restrict_function mailsubject nobody
-#restrict_function mailtime nobody
-#restrict_function malias nobody
-#restrict_function folderstats nobody
-#restrict_function maillist nobody
-#restrict_function mailsend nobody

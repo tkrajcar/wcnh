@@ -1,3 +1,4 @@
+
 # configuration file for PennMUSH
 #
 # The directives in this file control the behavior of your MUSH
@@ -18,7 +19,7 @@ mud_name Wing Commander: New Horizon
 # screens will be prefixed with <!--  and suffixed with -->
 # Any HTTP clients trying to access it will be redirected to this url.
 # mud_url http://www.pennmush.org
-mud_url
+mud_url 
 
 # The port it's running on. See also ssl_port, later.
 port 2199
@@ -27,7 +28,7 @@ port 2199
 # multiple IP addresses, put the ip address to listen on here
 # Example: ip_addr 128.32.243.78
 # Otherwise, just leave it blank.
-ip_addr
+ip_addr 
 
 # Should the MUSH attempt to resolve IP numbers to hostnames?
 # If yes, you'll see hostnames on the wizard WHO. If no, IP numbers.
@@ -190,7 +191,7 @@ ssl_port 2299
 # If your host has multiple IP addresses, put the ip address to 
 # listen on here. Otherwise, leave it blank to listen on all
 # addresses if SSL is in use.
-ssl_ip_addr
+ssl_ip_addr 
 
 # The file containing the MUSH server's certificate and private key,
 # concatenated together, and with no password on the private key.
@@ -510,12 +511,11 @@ full_html_file txt/full.html
 #help_command index txt/index.txt
 #help_command rules txt/rules.txt
 #help_command +help txt/plushelp.txt
-
 help_command help txt/help.txt
 help_command news txt/news.txt
 ahelp_command ahelp txt/help.txt
-restrict_command ahelp admin
 ahelp_command anews txt/news.txt
+restrict_command ahelp admin
 restrict_command anews admin
 
 ###
@@ -844,14 +844,14 @@ room_flags no_command
 # Players who are ENTER_OK can be given stuff.
 player_flags enter_ok
 
-# Players who are INHERIT allow all their objects to control them.
-# player_flags inherit
-
 # Players who are ANSI see attribute names hilighted.
 player_flags ansi
 
 # See the explanation for rooms and no_command.
 player_flags no_command
+
+# Players who are INHERIT allow all their objects to control them.
+# player_flags inherit
 
 # Players who are INHERIT allow all their objects to control them.
 # player_flags inherit
@@ -869,7 +869,6 @@ thing_flags no_command
 # For example, you might want:
 # channel_flags player quiet open hide_ok
 channel_flags player
-
 
 # PennMUSH supports MSSP (Mud Server Status Protocol) which tells connecting
 # clients/bots some basic information about your game theme, setup, etc.

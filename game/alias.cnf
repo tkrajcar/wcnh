@@ -1,3 +1,4 @@
+
 # Command aliases that you'd like reserved.
 # Normally, commands are autoaliased to their unique prefixes,
 # so n -> news
@@ -48,9 +49,6 @@ reserve_alias dummy_exit_alias
 # command_alias think pensent
 # Some standard aliases:
 command_alias @edit @gedit
-# Alias read to look?
-#command_alias look read 
-
 command_alias look l
 command_alias inventory i
 command_alias @switch @sw
@@ -60,6 +58,9 @@ command_alias goto move
 command_alias @atrlock @attrlock
 command_alias @atrchown @attrchown
 command_alias get take
+
+# Alias read to look?
+#command_alias look read 
 
 # As well as commands, functions can be aliased. Same syntax,
 # just function_alias instead of command_alias. 
@@ -94,4 +95,3 @@ attribute_alias asuccess asucc
 attribute_alias failure fail
 attribute_alias ofailure ofail
 attribute_alias afailure afail
-
