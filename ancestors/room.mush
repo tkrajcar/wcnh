@@ -39,7 +39,30 @@
 -
 
 ### SUBFUNCTIONS
-&ROOM_PARENT.CHECK_ACTIVE.FN #9=null(iter(u(room_parent.mlplayers.fn,%0,%1),if(not(match(##,%1)),if(isconn(##,%1),setq(A,%qA ##),setq(I,%qI ##)))))[if(or(words(%qA),words(%qI)),[if(and(words(%qA),words(%qI)),u(room_parent.check_active_format.fn,words(%qA),1)\, [u(room_parent.check_active_format.fn,words(%qI))],[if(words(%qA),[u(room_parent.check_active_format.fn,words(%qA),1)],[u(room_parent.check_active_format.fn,words(%qI))])])])]
+&ROOM_PARENT.CHECK_ACTIVE.FN #9=
+    null(
+        iter(
+            u(room_parent.mlplayers.fn,%0,%1),
+            if(
+              not(match(##,%1)),
+              if(isconn(##,%1),setq(A,%qA ##),setq(I,%qI ##))
+              )
+            )
+        )
+    [if(
+      or(words(%qA),words(%qI)),
+      [if(
+        and(words(%qA),words(%qI)),
+        u(room_parent.check_active_format.fn,words(%qA),1)\, 
+         [u(room_parent.check_active_format.fn,words(%qI))],
+        [if(
+          words(%qA),
+          [u(room_parent.check_active_format.fn,words(%qA),1)],
+          [u(room_parent.check_active_format.fn,words(%qI))]
+          )]
+        )]
+      )]
+    [if(setr(P,places(%0)),[words(%qP)] Places Available)]
 -
 &ROOM_PARENT.CHECK_ACTIVE_FORMAT.FN #9=%0 [if(%1,Active,Inactive)] Player[if(not(match(%0,1)),s)]
 -
