@@ -58,11 +58,19 @@
 -
 
 ## IC Time
-&ICTIME.FN #25=extract(setr(0,convsecs(icsecs())),1,4) [add(last(%q0),760)]
+&ICTIME.FN #25=
+  setq(0,ifelse(inc(%0),%0,icsecs()))
+  [setq(1,convsecs(%q0))]
+  [ifelse(
+    gte(%q0,0),
+    extract(%q1,1,4) [add(last(%q1),760)],
+    #-1 ARGUMENT MUST BE POSITIVE INTEGER
+  )]
 -
 
 &ICSECS.FN #25=mul(sub(secs(),1320000000),3)
 -
+
 
 ## Cosmetics
 &CMDGRAB.FN #25=if(%1,ansi(hw,extract(after({%0},@@),%1,1,|))
@@ -121,5 +129,9 @@
 
 ### ACTUAL MAKE-IT-GO-NESS
 &DESCRIBE #25=Global @functions go here, in the format 'funname.fn'%rAlso global attributes, in the format 'funname.attr', with the contents of the attribute being the list of attribute flags assigned.%r%r[AttribReport(%!)]%r
+-
+
 &FN.LIST #25=#25
+-
+
 &STARTUP #25=@dol [setr(0,iter(v(FN.List),iter(lattr([setr(1,##)]/*.FN),%q1\,[itext(0)])))]={@function/preserve [before(rest(lit(##),\,),.FN)]=##};@cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] [ansi(hw,@Functions initialized.)] %([ansi(c,[iter(%q0,[first(setr(1,lit(##)),\,)]:[before(rest(%q1,\,),.FN)])])]%);@dol [lattr(me/*.ATTR)]={@attrib/access/retroactive [before(##,.ATTR)]=[xget(#25,##)]};@cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] [ansi(hw,Shared Attributes initialized.)] %([ansi(c,[iter(lattr(me/*.ATTR),[before(##,.ATTR)])])]%)
