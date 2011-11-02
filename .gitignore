@@ -32,10 +32,16 @@ game/netmush.pid
 game/ssl_slave
 game/data/
 game/log/
-game/txt/
-game/txt/hlp/index.hlp
 game/save/
 game/*.bak
+
+# Text files.
+game/txt/hlp/index.hlp
+game/txt/nws/index.nws
+game/txt/compose.sh
+game/txt/help.txt
+game/txt/events.txt
+game/txt/news.txt
 
 # Ruby implementation-specific files.
 game/ruby/config.yml
