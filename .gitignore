@@ -11,6 +11,7 @@ src/json/*.o
 src/info_slave
 src/netmud
 src/netmud~
+src/ssl_slave
 
 # Built sources.
 hdrs/buildinf.h
