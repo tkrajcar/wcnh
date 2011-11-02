@@ -1,0 +1,98 @@
+& FACTIONS
+
+A faction is a group of characters with a common cause.  That cause could be
+almost anything, but it's something that all of the faction members share.  The
+citizens of a government are all in the same faction, as are the soldiers in a
+military branch or the employees of a corporation.  
+
+On New Horizon, the government, military, and corporation are all examples of
+faction types in our faction system.  There are two additional faction types:
+Industry, which is any business-oriented faction that hasn't reached the level
+of a Corporation; and the Organization, which is any type of faction that
+doesn't fit in to one of the other types.  There is no limit to the number of
+factions that a character can be a part of.
+
+For more information on the Faction System, type 'help <command>'
+
+COMMANDS:
+
++fac/boot       +fac/demote       +fac/invite       +fac/join
++fac/leave      +fac/list         +fac/promote      +fac/reject
++fac/roster     +fwho
+
+& +FAC/BOOT
+
+Syntax: +fac/boot <faction>=<member>
+
+This command allows a faction leader to remove a member from the faction.  The
+<faction> is the faction abbreviation.
+
+& +FAC/DEMOTE
+
+Syntax: +fac/demote <faction>=<member>
+
+This command allows a faction leader to demote another faction leader.  The
+<faction> is the faction abbreviation.
+
+& +FAC/INVITE
+
+Syntax: +fac/invite <player> to <faction>
+        +fac/invites
+
+The first syntax allows a leader to invite a player to their faction.  The
+<faction> must be the faction abbreviation.
+
+The second syntax will display any pending faction invitations a player might
+have.
+
+& +FAC/JOIN
+
+Syntax: +fac/join <faction>
+
+This command allows a player who was previously invited to a faction to join
+that faction.  The <faction> must be the faction abbreviation.
+
+& +FAC/LEAVE
+
+Syntax: +fac/leave <faction>
+
+This command allows a member to quit a faction.  The faction must be the
+faction abbreviation.
+
+& +FAC/LIST
+
+Syntax: +fac/list
+
+This command displays a hierarchy of every faction on the game.
+
+& +FAC/PROMOTE
+
+Syntax: +fac/promote <faction>=<member>
+
+This command allows a leader to make another faction member a leader.  The
+<faction> must be the faction abbreviation.
+
+& +FAC/REJECT
+
+Syntax: +fac/reject <faction>
+
+This command rejects an invitation to join a faction.  The <faction> must be
+the faction abbreviation.
+
+& +FAC/ROSTER
+
+Syntax: +fac/roster <faction>
+
+This command allows a faction member to see a list of all the current members
+of that faction.  The <faction> must be the faction abbreviation.
+
+& +FAC/WHO
+
+Syntax: +fwho [<faction>]
+
+This command will show a faction member a list of connected players in that
+faction.  The <faction> must be the faction abbreviation.  If you are a member
+of only one faction, typing this without an argument will show the +fwho for
+your one faction.
+
+
