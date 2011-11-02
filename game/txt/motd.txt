@@ -1,8 +1,2 @@
-<<<<<<< HEAD
-Welcome to PennMUSH!
---------------------------------------------------------------------------
-Yell at your god to personalize this file
-
-=======
 Welcome to Wing Commander: New Horizon MUSH.
->>>>>>> upstream/master
+

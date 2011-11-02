@@ -6,12 +6,11 @@
 
 OUTFILES=buildinf netmud @INFO_SLAVE_TARGET@ @SSL_SLAVE_TARGET@
 
-<<<<<<< HEAD
 # Libs EXCEPT for SQL ones
 LIBS=$(CLIBS)
 
 CFLAGS=$(CCFLAGS) $(SQL_CFLAGS)
-=======
+
 # Libs for JSON server
 JSON_LIBS=-lyajl
 
@@ -34,7 +33,6 @@ json/json.o: local.o
 LIBS=$(CLIBS) $(JSON_LIBS)
 
 CFLAGS=$(CCFLAGS) $(SQL_CFLAGS) $(JSON_CFLAGS)
->>>>>>> upstream/master
 
 # List of C files, used for make depend:
 C_FILES=access.c atr_tab.c attrib.c boolexp.c bsd.c bufferq.c chunk.c	\
@@ -65,10 +63,7 @@ O_FILES=access.o atr_tab.o attrib.o boolexp.o bsd.o bufferq.o chunk.o	\
 	rob.o services.o set.o SFMT.o shs.o sig.o sort.o speech.o	\
 	sql.o ssl_master.o strdup.o strtree.o strutil.o tables.o		\
 	timer.o unparse.o utils.o version.o wait.o warnings.o wild.o	\
-<<<<<<< HEAD
-=======
 	json/server.o json/launch.o json/json.o				\
->>>>>>> upstream/master
 	wiz.o
 
 # This is a dummy target, in case you type 'make' in the source
@@ -217,11 +212,7 @@ indent:
 	$$file ; done)
 
 clean:
-<<<<<<< HEAD
-	-rm -f *.o 
-=======
 	-rm -f *.o json/*.o
->>>>>>> upstream/master
 	-rm -f a.out core gmon.out $(OUTFILES) 
 
 distclean: clean

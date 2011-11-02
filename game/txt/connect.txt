@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-<This is where you announce that they've connected to your MUSH>
-<It's a good idea to include the version/patchlevel of MUSH you're running>
-<It's a good idea to include an email address for questions about the MUSH>
------------------------------------------------------------------------------
-Use create <name> <password> to create a character.
-Use connect <name> <password> to connect to your existing character.
-Use 'ch <name> <pass>' to connect hidden, and cd to connect DARK (admin)
-Use QUIT to logout.
-Use the WHO command to find out who is online currently.
------------------------------------------------------------------------------
-Yell at your local god to personalize this file!
-
-=======
  +    .                   __       __  _   ____     ____     .        .
    .     .         .      \ \ /\  / / | | |  _ \ . / ___| .                .
   .            .           \ \\ \/ /  | | | | | | | / __       ++   .|
@@ -45,4 +31,3 @@ MMMMMMMMMMMM88?c8\88$cMM$$$$$$$c8c8$c$$$$$$$$$MMMMMMM'-M\?$MvMM8$$$8$$hd$$$$$$$$
 | By connecting, you agree that you are over 18 years of age. All content is   |
 | copyright (c) 2011 wcmush.com, except where prior ownership exists.          |
 +------------------------------------------------------------------------------+
->>>>>>> upstream/master

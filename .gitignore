@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 config.log
 src/*.o
 src/netmud
@@ -15,7 +14,7 @@ game/log/*.log
 game/data/*.gz
 game/data/chunkswap
 game/netmush.pid
-=======
+
 # Built configuration.
 Makefile
 config.h
@@ -66,7 +65,3 @@ game/ruby/config.yml
 
 # Vagrant stuff
 .vagrant
-<<<<<<< HEAD
->>>>>>> upstream/master
-=======
->>>>>>> upstream/master

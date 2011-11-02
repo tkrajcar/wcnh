@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
 # Command aliases that you'd like reserved.
 # Normally, commands are autoaliased to their unique prefixes,
 # so n -> news
@@ -52,12 +48,9 @@ reserve_alias dummy_exit_alias
 # command_alias think pensent
 # Some standard aliases:
 command_alias @edit @gedit
-<<<<<<< HEAD
 # Alias read to look?
 #command_alias look read 
 
-=======
->>>>>>> upstream/master
 command_alias look l
 command_alias inventory i
 command_alias @switch @sw
@@ -68,12 +61,6 @@ command_alias @atrlock @attrlock
 command_alias @atrchown @attrchown
 command_alias get take
 
-<<<<<<< HEAD
-=======
-# Alias read to look?
-#command_alias look read 
-
->>>>>>> upstream/master
 # As well as commands, functions can be aliased. Same syntax,
 # just function_alias instead of command_alias. 
 # Some standard aliases:
@@ -107,7 +94,4 @@ attribute_alias asuccess asucc
 attribute_alias failure fail
 attribute_alias ofailure ofail
 attribute_alias afailure afail
-<<<<<<< HEAD
 
-=======
->>>>>>> upstream/master

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
 #
 # Commands to restrict
 # Syntax: restrict_command <command> <restriction> [" <error message>]
@@ -69,17 +65,6 @@ restrict_command @power logargs
 # Prevent players going home while set FIXED
 restrict_command home nofixed " You can't do that IC!
 
-<<<<<<< HEAD
-=======
-# Used to be hate_dest
-restrict_command @destroy noplayer " Use @recycle instead
-
-# If you turn this on, players who try to use functions in place
-# of commands (e.g. $foo: [pemit(%#,blah)] will get error messages.
-# Disabled by default for backward compatibility.
-restrict_command warn_on_missing nobody
-
->>>>>>> upstream/master
 # Some additional protection against spam attacks by guests
 #restrict_command @dolist noguest
 #restrict_function repeat noguest
@@ -100,12 +85,9 @@ restrict_command warn_on_missing nobody
 # Used to be player_locate
 #restrict_command @whereis nobody
 
-<<<<<<< HEAD
 # Used to be hate_dest
 restrict_command @destroy noplayer " Use @recycle instead
 
-=======
->>>>>>> upstream/master
 # Used to be cemit_power
 #restrict_command @cemit admin cemit " You can't @cemit without cemit @power
 
@@ -120,14 +102,11 @@ restrict_command @destroy noplayer " Use @recycle instead
 #restrict_function clone nobody
 #restrict_function tel nobody
 
-<<<<<<< HEAD
 # If you turn this on, players who try to use functions in place
 # of commands (e.g. $foo: [pemit(%#,blah)] will get error messages.
 # Disabled by default for backward compatibility.
 restrict_command warn_on_missing nobody
 
-=======
->>>>>>> upstream/master
 # We add a dummy here to make updating easier
 restrict_function lstats noguest
 
@@ -154,7 +133,6 @@ restrict_function lstats noguest
 #restrict_function cstatus nobody
 #restrict_function cusers nobody
 #restrict_function cmogrifier nobody
-<<<<<<< HEAD
 
 
 # Remove the hardcode mail system by uncommenting these
@@ -172,5 +150,3 @@ restrict_function lstats noguest
 #restrict_function folderstats nobody
 #restrict_function maillist nobody
 #restrict_function mailsend nobody
-=======
->>>>>>> upstream/master
