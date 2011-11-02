@@ -26,7 +26,16 @@
 -
 &EXITFORMAT #9=
 -
-&NAMEFORMAT #9=titlebar([name(%!)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%![flags(%!)]\))][if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)],v(COLOR.Frame))
+&NAMEFORMAT #9=
+        titlebar(
+              [name(%!)]
+               [if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%![flags(%!)]\))]
+               [if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)]
+               [if(
+                  and(setr(8,zone(%q9)),not(strmatch(%q8,#222))),
+                  %b<[trim(regedit(name(%q8),lit(<\w*>),))]>
+                  )],
+              v(COLOR.Frame))
 -
 
 ### SUBFUNCTIONS
