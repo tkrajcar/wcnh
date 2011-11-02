@@ -507,16 +507,16 @@ full_html_file txt/full.html
 # and adding a new help_command line below, or uncommenting one of
 # the normal file entries.
 
-#help_command events txt/events.txt
+help_command events txt/events.txt
 #help_command index txt/index.txt
 #help_command rules txt/rules.txt
 #help_command +help txt/plushelp.txt
 help_command help txt/help.txt
 help_command news txt/news.txt
-ahelp_command ahelp txt/help.txt
-ahelp_command anews txt/news.txt
-restrict_command ahelp admin
-restrict_command anews admin
+#ahelp_command ahelp txt/help.txt
+#ahelp_command anews txt/news.txt
+#restrict_command ahelp admin
+#restrict_command anews admin
 
 ###
 ### Logging
