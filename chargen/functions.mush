@@ -126,5 +126,14 @@
 ### SHEET
 &DOC.SHEET #112=victim|Return ANSI sheet for victim.
 -
-&FN.SHEET #112=[titlebar([ansi(h,Character Sheet:)] [ansi(hy,name(%0))])]%r[align(39 38,Race: [ansi(h,chargen(get.race,%0))],Age: TODO)]%r[middlebar(ATTRIBUTES)]%r[align(26 25 26,u(#112/subfn.attrformat,rea,%0),u(#112/subfn.attrformat,per,%0),u(#112/subfn.attrformat,wil,%0))]%r[align(26 25 26,u(#112/subfn.attrformat,str,%0),u(#112/subfn.attrformat,agi,%0),u(#112/subfn.attrformat,hea,%0))]%r[middlebar(SKILLS)]%r[align(26 25 26,[u(#112/subfn.skillgroupformat,Athletic,%0)]%r%r[u(#112/subfn.skillgroupformat,Social,%0)],u(#112/subfn.skillgroupformat,Combat,%0)%r%r[u(#112/subfn.skillgroupformat,Knowledge,%0)],u(#112/subfn.skillgroupformat,Professional,%0)%r%r[u(#112/subfn.skillgroupformat,Outdoor,%0)])]%r[footerbar()]
+&FN.SHEET #112=
+  [titlebar([ansi(h,Character Sheet:)] [ansi(hy,name(%0))])]%r
+  [align(
+    26 25 26,
+    Race: [ansi(h,chargen(get.race,%0))],
+    Age: [ansi(h,default(%0/char`age,Not Set))],
+    Birthday: [ansi(h,default(%0/char`birthday,Not Set))]
+  )]%r
+  [middlebar(ATTRIBUTES)]%r[align(26 25 26,u(#112/subfn.attrformat,rea,%0),u(#112/subfn.attrformat,per,%0),u(#112/subfn.attrformat,wil,%0))]%r[align(26 25 26,u(#112/subfn.attrformat,str,%0),u(#112/subfn.attrformat,agi,%0),u(#112/subfn.attrformat,hea,%0))]%r[middlebar(SKILLS)]%r[align(26 25 26,[u(#112/subfn.skillgroupformat,Athletic,%0)]%r%r[u(#112/subfn.skillgroupformat,Social,%0)],u(#112/subfn.skillgroupformat,Combat,%0)%r%r[u(#112/subfn.skillgroupformat,Knowledge,%0)],u(#112/subfn.skillgroupformat,Professional,%0)%r%r[u(#112/subfn.skillgroupformat,Outdoor,%0)])]%r[footerbar()]
 -
+

@@ -30,7 +30,7 @@
     @pemit %#=[ansi(hb,>)] You absolutely cannot be any younger than 18 or older than 85.;
   @pemit %#=[ansi(hb,>)] Age set to [ansi(h,%q0)] human years.;
   &char`age %#=%q0;
-  &char`birthday %#=[secs()];
+  &char`birthday %#=[extract(ictime(),2,2)] [sub(last(ictime()),%q0)]
 -
 
 &cmd.+setgender #40=$+set gender *:
