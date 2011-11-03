@@ -1,5 +1,4 @@
 require 'wcnh'
-require 'github-v3-api'
 
 module Github
   @api = GitHubV3API.new('52364226a675c6090b6551c609fc052d6e74c7ba')

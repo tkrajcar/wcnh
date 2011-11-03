@@ -1,0 +1,61 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    activemodel (3.1.1)
+      activesupport (= 3.1.1)
+      builder (~> 3.0.0)
+      i18n (~> 0.6)
+    activesupport (3.1.1)
+      multi_json (~> 1.0)
+    bson (1.3.1)
+    bson_ext (1.3.1)
+    builder (3.0.0)
+    capistrano (2.9.0)
+      highline
+      net-scp (>= 1.0.0)
+      net-sftp (>= 2.0.0)
+      net-ssh (>= 2.0.14)
+      net-ssh-gateway (>= 1.1.0)
+    capistrano-ext (1.2.1)
+      capistrano (>= 1.0.0)
+    github-v3-api (0.1.0)
+      json (~> 1.5.3)
+      rest-client (~> 1.6.3)
+    highline (1.6.2)
+    i18n (0.6.0)
+    json (1.5.4)
+    mime-types (1.17.2)
+    mongo (1.3.1)
+      bson (>= 1.3.1)
+    mongoid (2.3.3)
+      activemodel (~> 3.1)
+      mongo (~> 1.3)
+      tzinfo (~> 0.3.22)
+    multi_json (1.0.3)
+    net-scp (1.0.4)
+      net-ssh (>= 1.99.1)
+    net-sftp (2.0.5)
+      net-ssh (>= 2.0.9)
+    net-ssh (2.2.1)
+    net-ssh-gateway (1.1.0)
+      net-ssh (>= 1.99.1)
+    railsless-deploy (1.0.2)
+    require_all (1.2.0)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    tzinfo (0.3.30)
+    wirble (0.1.3)
+
+PLATFORMS
+  ruby
+  x86-mingw32
+
+DEPENDENCIES
+  bson_ext
+  capistrano
+  capistrano-ext
+  github-v3-api
+  mongoid (~> 2.3)
+  railsless-deploy
+  require_all
+  wirble

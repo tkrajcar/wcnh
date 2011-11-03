@@ -1,5 +1,4 @@
 require 'wcnh'
-require 'pennmush-json'
 
 module Sysinf
   PennJSON::register_object(self)

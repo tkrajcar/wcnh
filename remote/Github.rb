@@ -1,5 +1,4 @@
-require 'lib-github'
-require 'pennmush-json'
+require 'wcnh'
 
 module Github
   PennJSON::register_object(self)
