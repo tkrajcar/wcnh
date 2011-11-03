@@ -1,4 +1,15 @@
 source :rubygems
 
 gem 'yajl-ruby', '~> 1.0', :require => 'yajl'
-gem 'github-v3-api'
+
+# Load additional Gemfiles from paths in config.yml, if they exist.
+if File.exists?("config.yml")
+  config = YAML.load_file "config.yml"
+  config['load_paths'].each do |path|
+    gempath = File.expand_path(path + '/Gemfile')
+    if File.exists?(gempath)
+      p "Loading gems from #{gempath}."
+      self.send(:eval, File.open(gempath, 'r').read)
+    end
+  end
+end
