@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+# Handy little console for WCNH systems development.
+
+require 'rubygems'
+require 'bundler'
+Bundler.setup
+require 'wirble'
+require File.expand_path('../lib/wcnh.rb', __FILE__)
+require 'irb'
+IRB.start
+Wirble.init
+Wirble.colorize
