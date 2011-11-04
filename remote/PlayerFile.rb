@@ -20,11 +20,11 @@ module PlayerFile
   end
 
   def self.pj_view_connections(file)
-    "Not implemented."
+    self.view_connections(file)
   end
 
   def self.pj_search_connections(term)
-    "Not implemented."
+    self.search_connections(term)
   end
 
   def self.pj_connect(pfile,ip,host,descriptor)

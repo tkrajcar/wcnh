@@ -19,16 +19,50 @@ module PlayerFile
   def self.view_file(arg)
     return ">".red + " No file found for '#{arg}'." unless p = Pfile.locate(arg)
     ret = titlebar("Playerfile for #{p.email} (#{p._id.to_s})") + "\n"
-    p.notes.each do |note|
-      ret << R.penn_name(note.author).bold.cyan + "-".cyan + note.timestamp.strftime("%m/%d/%Y %H:%m").cyan + " (" + note.category.bold + "): ".cyan + note.text + "\n"
+    p.notes.desc("timestamp").each do |note|
+      ret << R.penn_name(note.author).bold.cyan + "-".cyan + note.timestamp.strftime("%m/%d/%Y %H:%M").cyan + " (" + note.category.bold + "): ".cyan + note.text + "\n"
     end
     ret << footerbar
     return ret
   end
 
   # Return the 30 most recent connections for <arg>. <arg> as above.
-  def self.ip(arg)
+  def self.view_connections(arg)
+    return ">".red + " No file found for '#{arg}'." unless p = Pfile.locate(arg)
+    ret = titlebar("Connections for #{p.email} (#{p._id.to_s})") + "\n"
+    p.connections.desc("disconnected").limit(20).each do |conn|
+      ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + " "
+      if conn.disconnected.class == DateTime
+        ret << conn.disconnected.strftime("%m/%d %H:%M")
+      else
+        ret << "Connected  ".bold
+      end
+      ret << " " + conn.ip.ljust(16)
+      ret << conn.host[0..18] + "\n"
+    end
+    ret << footerbar
+    return ret
+  end
 
+  def self.search_connections(term)
+    return ">".red + " You must specify a search term." unless term.length > 0
+    results = Pfile.any_of("connections.host" => /#{term}/i, "connections.ip" => /#{term}/i).all
+    return ">".red + " No connections matching '#{term}'." unless results.size > 0
+    ret = titlebar("Pfiles with connections matching #{term}") + "\n"
+    results.each do |p|
+      p.connections.any_of(:host => /#{term}/i, :ip => /#{term}/i).all.each do |conn|
+        ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + " "
+        if conn.disconnected.class == DateTime
+          ret << conn.disconnected.strftime("%m/%d %H:%M")
+        else
+          ret << "Connected  ".bold
+        end
+        ret << " " + conn.ip.ljust(16).gsub(/(#{term})/i,'\1'.bold.yellow.underline)
+        ret << conn.host[0..18].gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
+      end
+    end
+    ret << footerbar
+    return ret
   end
 
   # Search pfile note text for the string.
@@ -40,7 +74,7 @@ module PlayerFile
     # iterate over each Pfile that matched our query
     results.each do |p|
       p.notes.where("text" => /#{term}/i).all.each do |n|
-        ret << R.penn_name(p.current_dbref).bold.yellow  + "-" + R.penn_name(n.author).bold.cyan + "-".cyan + n.timestamp.strftime("%m/%d/%Y %H:%m").cyan + " (" + n.category.bold + "): ".cyan + n.text.gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
+        ret << R.penn_name(p.current_dbref).bold.yellow  + "-" + R.penn_name(n.author).bold.cyan + "-".cyan + n.timestamp.strftime("%m/%d/%Y %H:%M").cyan + " (" + n.category.bold + "): ".cyan + n.text.gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
       end
     end
 
