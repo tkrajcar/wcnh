@@ -27,12 +27,12 @@ module PlayerFile
     "Not implemented."
   end
 
-  def self.pj_connect()
-    "Not Implemented."
+  def self.pj_connect(pfile,ip,host,descriptor)
+    self.connect(pfile,ip,host,descriptor)
   end
 
-  def self.pj_disconnect()
-    "Not implemented."
+  def self.pj_disconnect(pfile,descriptor)
+    self.disconnect(pfile,descriptor)
   end
 end
 

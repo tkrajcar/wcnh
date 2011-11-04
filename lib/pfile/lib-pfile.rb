@@ -3,17 +3,6 @@ require 'wcnh'
 module PlayerFile
   R = PennJSON::Remote
 
-#  def self.register_email(dbref, email)
-#    p = Player.create(:email => email)
-#
-#    Player.all_of(:email => email).count.to_s
-#  end
-
-#  def self.find_email(email)
-#    Player.all_of(:email => email).first.inspect
-
-#  end
-
   # Add the <dbref> to the pfile for <email>. Returns _id of pfile.
   def self.register(email,dbref)
     return "#-1 INVALID DBREF" unless R.type(dbref) == "PLAYER"
@@ -68,12 +57,16 @@ module PlayerFile
 
   # Log a connection to a pfile.
   def self.connect(pfile,ip,host,descriptor)
-
+    p = Pfile.find(pfile)
+    p.connections.create(:ip => ip, :host => host, :descriptor => descriptor, :connected => DateTime.now)
   end
 
   # Log a disconnection to a pfile.
   def self.disconnect(pfile,descriptor)
-
+    p = Pfile.find(pfile)
+    conn = p.connections.where(:descriptor => descriptor).first
+    conn.disconnected = DateTime.now
+    conn.save
   end
 
   class Pfile
@@ -120,7 +113,7 @@ module PlayerFile
     include Mongoid::Document
     embedded_in :pfiles, :class_name => "PlayerFile::Pfile"
     field :connected, :type => DateTime, :default => lambda {DateTime.now}
-    field :disconnected, :type => DateTime, :default => lambda {DateTime.now}
+    field :disconnected, :type => DateTime
     field :ip, :type => String
     field :host, :type => String
     field :descriptor, :type => String
