@@ -15,3 +15,11 @@ package { "pennmush": # dependencies for pennmush, JSON server, etc.
     'gperf'
   ]
 }
+
+
+package { "ruby": # dependencies for ruby
+  ensure => installed,
+  name => [
+    'curl'
+  ]
+}
