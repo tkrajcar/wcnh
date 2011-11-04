@@ -11,26 +11,28 @@ module PlayerFile
     self.view_file(file)
   end
 
-
-
-  def self.pj_ip(file)
-
+  def self.pj_add_note(arg,note,category="Misc")
+    self.add_note(arg,note,category)
   end
 
   def self.pj_search(term)
-
+    self.search(term)
   end
 
-  def self.pj_add(file,category,note)
+  def self.pj_view_connections(file)
+    "Not implemented."
+  end
 
+  def self.pj_search_connections(term)
+    "Not implemented."
   end
 
   def self.pj_connect()
-
+    "Not Implemented."
   end
 
   def self.pj_disconnect()
-
+    "Not implemented."
   end
 end
 

@@ -18,6 +18,8 @@ module PlayerFile
   def self.register(email,dbref)
     return "#-1 INVALID DBREF" unless R.type(dbref) == "PLAYER"
     p = Pfile.find_or_create_by(:email => email)
+    p.current_dbref = dbref
+    p.save
     p.add_note("#{dbref} #{R.fullname(dbref)}",R["enactor"],"Char.new")
     R.attrib_set("#{dbref}/PFILE",p._id.to_s)
     #syslog("Pfile","Registered character #{dbref} #{R.fullname(dbref)} to #{p._id.to_s}.")
@@ -42,12 +44,27 @@ module PlayerFile
 
   # Search pfile note text for the string.
   def self.search(term) # Search text
+    return ">".red + " You must specify a search term." unless term.length > 0
+    results = Pfile.where("notes.text" => /#{term}/i).all
+    return ">".red + " No notes containing '#{term}'." unless results.size > 0
+    ret = titlebar("Pfile notes containing '#{term}'") + "\n"
+    # iterate over each Pfile that matched our query
+    results.each do |p|
+      # now search that Pfile's notes. (TODO: This seems terrible. :C)
+      p.notes.where("text" => /#{term}/i).all.each do |n|
+        ret << R.fullname(p.current_dbref).bold.yellow  + "-" + R.fullname(n.author).bold.cyan + "-".cyan + n.timestamp.strftime("%m/%d/%Y %H:%m").cyan + " (" + n.category.bold + "): ".cyan + n.text.gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
+      end
+    end
 
+    ret << footerbar
+    return ret
   end
 
   # Add a new note to a pfile (search by arg)
-  def self.add(arg,note)
-
+  def self.add_note(arg,note,category)
+    return ">".red + " No file found for '#{arg}'." unless p = Pfile.locate(arg)
+    p.add_note(note,R["enactor"],category)
+    return ">".red + " Added note to player file for " + R.fullname(p.current_dbref).bold + " (#{p.email}/#{p._id.to_s})."
   end
 
   # Log a connection to a pfile.
@@ -64,12 +81,13 @@ module PlayerFile
     include Mongoid::Document
     field :email, :type => String
     index :email, :unique => true
+    field :current_dbref, :type => String
 
     embeds_many :notes, :class_name => "PlayerFile::Note"
     embeds_many :connections, :class_name => "PlayerFile::Connection"
 
     def add_note(note, author, category = "Misc")
-      p "Adding note #{note} to: #{self._id}"
+      #p "Adding note #{note} by #{author} in #{category} to: #{self._id}"
       self.notes.create(:author => author, :text => note, :category => category)
     end
 
