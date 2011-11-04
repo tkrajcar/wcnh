@@ -49,7 +49,7 @@ module PennJSON
     # Proxy unknown invocations to remote PennMUSH. Throws RemoteError in the
     # event the remote call responds with an error.
     def self.method_missing(name, *args)
-      return SERVER.remote_invoke(@context, name, *args)
+      return SERVER.remote_invoke(@context, name.to_s.gsub("penn_",""), *args)
     end
 
     # Set the context hash. If we had to deal with threads, this would need to
