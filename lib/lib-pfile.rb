@@ -50,6 +50,7 @@ module PlayerFile
     return ">".red + " No connections matching '#{term}'." unless results.size > 0
     ret = titlebar("Pfiles with connections matching #{term}") + "\n"
     results.each do |p|
+      ret << "#{R.penn_name(p.current_dbref).bold.cyan} (#{p.email.bold}/#{p._id.to_s}):\n"
       p.connections.any_of({:host => /#{term}/i}, {:ip => /#{term}/i}).all.each do |conn|
         ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + " "
         if conn.disconnected.class == DateTime
