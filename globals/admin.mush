@@ -2,3 +2,26 @@
   @switch t(pmatch(%0))=
     0,{@pemit %#=[ansi(hb,>)] Who?},
     {@pemit %#=chargen(sheet,pmatch(%0))}
+-
+
+&cmd.+pfile/add #115=$+pfile/add */*=*:@pemit %#=[rpc(PlayerFile.add_note,%0,%2,%1)]
+-
+
+&cmd.+pfile #115=$+pfile *:@pemit %#=[rpc(PlayerFile.view,%0)]
+-
+
+&cmd.+pfile/view #115=$+pfile/view *:@pemit %#=[rpc(PlayerFile.view,%0)]
+-
+
+&cmd.+pfile/register #115=$+pfile/register *=*:@pemit %#=[rpc(PlayerFile.register,%0,%1)]
+-
+
+&cmd.+pfile/search #115=$+pfile/search *:@pemit %#=[rpc(PlayerFile.search,%0)]
+-
+
+&cmd.+pfile/ip #115=$+pfile/ip *:@pemit %#=[rpc(PlayerFile.search_connections,%0)]
+-
+
+&cmd.+pfile/connections #115=$+pfile/connections *:@pemit %#=[rpc(PlayerFile.view_connections,%0)]
+-
+
