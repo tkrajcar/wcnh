@@ -31,7 +31,7 @@ module PlayerFile
     return ">".red + " No file found for '#{arg}'." unless p = Pfile.locate(arg)
     ret = titlebar("Playerfile for #{p.email} (#{p._id.to_s})") + "\n"
     p.notes.each do |note|
-      ret << R.fullname(note.author).bold.cyan + "-".cyan + note.timestamp.strftime("%m/%d/%Y %H:%m").cyan + " (" + note.category.bold + "): ".cyan + note.text + "\n"
+      ret << R.penn_name(note.author).bold.cyan + "-".cyan + note.timestamp.strftime("%m/%d/%Y %H:%m").cyan + " (" + note.category.bold + "): ".cyan + note.text + "\n"
     end
     ret << footerbar
     return ret
@@ -50,9 +50,8 @@ module PlayerFile
     ret = titlebar("Pfile notes containing '#{term}'") + "\n"
     # iterate over each Pfile that matched our query
     results.each do |p|
-      # now search that Pfile's notes. (TODO: This seems terrible. :C)
       p.notes.where("text" => /#{term}/i).all.each do |n|
-        ret << R.fullname(p.current_dbref).bold.yellow  + "-" + R.fullname(n.author).bold.cyan + "-".cyan + n.timestamp.strftime("%m/%d/%Y %H:%m").cyan + " (" + n.category.bold + "): ".cyan + n.text.gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
+        ret << R.penn_name(p.current_dbref).bold.yellow  + "-" + R.penn_name(n.author).bold.cyan + "-".cyan + n.timestamp.strftime("%m/%d/%Y %H:%m").cyan + " (" + n.category.bold + "): ".cyan + n.text.gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
       end
     end
 
@@ -64,7 +63,7 @@ module PlayerFile
   def self.add_note(arg,note,category)
     return ">".red + " No file found for '#{arg}'." unless p = Pfile.locate(arg)
     p.add_note(note,R["enactor"],category)
-    return ">".red + " Added note to player file for " + R.fullname(p.current_dbref).bold + " (#{p.email}/#{p._id.to_s})."
+    return ">".red + " Added note to player file for " + R.penn_name(p.current_dbref).bold + " (#{p.email}/#{p._id.to_s})."
   end
 
   # Log a connection to a pfile.
