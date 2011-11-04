@@ -2,4 +2,11 @@
 &player`connect #13 =
   /@@ %0 = objid, %1 = number of connections, %2 = descriptor @@/
   @trigger #114/trig.aconnect=%0;
+  think [if(hasattr(%0/pfile),rpc(PlayerFile.connect,get(%0/pfile),get(%0/lastip),get(%0/lastsite),%2))];
+-
+
+&player`disconnect #13 =
+  /@@ %0 = objid, %1 = number of remaining connections, %2 = hidden?, %3 = cause of disconnection, %4 = ip, %5 = descriptor, %6 = conn() secs, %7 = idle() secs, %8 = recv bytes/sent bytes/command/count @@/
+  think [if(hasattr(%0/pfile),rpc(PlayerFile.disconnect,get(%0/pfile),%5))];
+-
 
