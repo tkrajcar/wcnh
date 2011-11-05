@@ -38,7 +38,7 @@ module PlayerFile
         ret << "Connected  ".bold
       end
       ret << " " + conn.ip.ljust(16)
-      ret << conn.host[0..18] + "\n"
+      ret << conn.host[0...34] + "\n"
     end
     ret << footerbar
     return ret
@@ -46,11 +46,12 @@ module PlayerFile
 
   def self.search_connections(term)
     return ">".red + " You must specify a search term." unless term.length > 0
-    results = Pfile.any_of("connections.host" => /#{term}/i, "connections.ip" => /#{term}/i).all
+    results = Pfile.any_of({"connections.host" => /#{term}/i}, {"connections.ip" => /#{term}/i}).all
     return ">".red + " No connections matching '#{term}'." unless results.size > 0
     ret = titlebar("Pfiles with connections matching #{term}") + "\n"
     results.each do |p|
-      p.connections.any_of(:host => /#{term}/i, :ip => /#{term}/i).all.each do |conn|
+      ret << "#{R.penn_name(p.current_dbref).bold.cyan} (#{p.email.bold}/#{p._id.to_s}):\n"
+      p.connections.any_of({:host => /#{term}/i}, {:ip => /#{term}/i}).all.each do |conn|
         ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + " "
         if conn.disconnected.class == DateTime
           ret << conn.disconnected.strftime("%m/%d %H:%M")
@@ -58,7 +59,7 @@ module PlayerFile
           ret << "Connected  ".bold
         end
         ret << " " + conn.ip.ljust(16).gsub(/(#{term})/i,'\1'.bold.yellow.underline)
-        ret << conn.host[0..18].gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
+        ret << conn.host[0...34].gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
       end
     end
     ret << footerbar
