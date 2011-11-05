@@ -12,4 +12,7 @@
 /* The JSON server log. */
 #define JSON_SERVER_LOG "log/json-server.log"
 
+/* The JSON callback executor. */
+#define JSON_SERVER_CALLBACK_EXECUTOR GOD
+
 #endif /* undef JSON_CONFIG_H */

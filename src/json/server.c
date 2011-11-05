@@ -41,9 +41,6 @@
 /* Asynchronous solicitation request. */
 #define JSON_SYS_ASYNC_REQ "rpc.req"
 
-/* Asynchronous solicitation acknowledgement. */
-#define JSON_SYS_ASYNC_ACK "rpc.ack"
-
 /*
  * Macro to copy an execution context frame. Multiply evaluates.
  *
@@ -53,11 +50,11 @@
  */
 #define COPY_CONTEXT_FRAME(d,s) \
 	do { \
+		(d).pe_info = (s).pe_info; \
+	\
 		(d).executor = (s).executor; \
 		(d).caller = (s).caller; \
 		(d).enactor = (s).enactor; \
-	\
-		(d).pe_info = (s).pe_info; \
 	} while (0)
 
 /*
@@ -76,11 +73,11 @@
 
 /* Execution context frame. */
 typedef struct JSON_Server_Frame_tag {
+	NEW_PE_INFO *pe_info; /* NEW_PE_INFO structure */
+
 	dbref executor; /* the executor */
 	dbref caller; /* the caller */
 	dbref enactor; /* the enactor */
-
-	NEW_PE_INFO *pe_info; /* NEW_PE_INFO structure */
 } JSON_Server_Frame;
 
 /* Execution context. */
@@ -92,6 +89,10 @@ typedef struct JSON_Server_Context_tag {
 	int depth; /* call depth */
 	int soliciting; /* pending solicitation request */
 } JSON_Server_Context;
+
+/* Sends the PennMUSH context frame in the current request. */
+static int json_server_send_penn_context(JSON_Server *server,
+                                         JSON_Server_Frame *frame);
 
 /* Receives and dispatches incoming messages. */
 static int json_server_dispatch(JSON_Server_Message *msg);
@@ -202,6 +203,61 @@ json_server_receive_solicit(void)
 }
 
 /*
+ * Executes an asynchronous callback.
+ */
+static int
+json_server_execute_callback(void)
+{
+	GET_INFO_VAR;
+
+	JSON_Server_Message msg;
+	int result;
+
+	/* Initialize first context frame. */
+	info->current.pe_info = make_pe_info("json");
+	if (!info->current.pe_info) {
+		/* Note that make_pe_info() doesn't check NULL; for shame. */
+		return 0;
+	}
+
+	info->current.executor = JSON_SERVER_CALLBACK_EXECUTOR;
+	info->current.caller = JSON_SERVER_CALLBACK_EXECUTOR;
+	info->current.enactor = JSON_SERVER_CALLBACK_EXECUTOR;
+
+	/* Send solicitation acknowledgment. */
+	TRY_PROTO(json_server_start_request(&info->server, "rpc.ack", 7));
+
+	if (!json_server_send_penn_context(&info->server, &info->current)) {
+		goto failed;
+	}
+
+	TRY_PROTO(json_server_send_request(&info->server));
+
+	/* Dispatch response. Callback responses are ignored. */
+	info->depth++; /* TODO: check recursion depth */
+	json_server_message_init(&msg);
+	result = json_server_dispatch(&msg);
+	info->depth--;
+
+	if (!result) {
+		goto failed;
+	}
+
+	json_server_message_clear(&msg);
+
+	/* Release first context frame. */
+	free_pe_info(info->current.pe_info);
+	info->current.pe_info = NULL; /* for safety only */
+	return 1;
+
+failed:
+	/* Release first context frame. */
+	free_pe_info(info->current.pe_info);
+	info->current.pe_info = NULL; /* for safety only */
+	return 0;
+}
+
+/*
  * Simple error logging facility.
  */
 void
@@ -249,7 +305,10 @@ json_server_setfd(int *maxd, fd_set *input_set)
 	/* Transmit pending asynchronous acknowledgement. */
 	if (info->soliciting) {
 		info->soliciting = 0;
-		fputs("SOLICITED\n", stderr);
+
+		if (!json_server_execute_callback()) {
+			goto failed;
+		}
 	}
 
 	/* Configure socket for select. */
@@ -274,8 +333,6 @@ void
 json_server_issetfd(fd_set *input_set)
 {
 	GET_INFO_VAR;
-
-	JSON_Server_Message msg;
 
 	if (info->server.fd == -1 || !FD_ISSET(info->server.fd, input_set)) {
 		return;
@@ -373,19 +430,14 @@ FUNCTION(fun_json_rpc)
 	                                        args[ii], arglens[ii]));
 	}
 
-	info->current.executor = executor;
-	TRY_PROTO(json_server_add_context(&info->server, "executor", 8,
-	                                  unparse_dbref(executor), -1));
-
-	info->current.caller = caller;
-	TRY_PROTO(json_server_add_context(&info->server, "caller", 6,
-	                                  unparse_dbref(caller), -1));
-
-	info->current.enactor = enactor;
-	TRY_PROTO(json_server_add_context(&info->server, "enactor", 7,
-	                                  unparse_dbref(enactor), -1));
-
 	info->current.pe_info = pe_info;
+	info->current.executor = executor;
+	info->current.caller = caller;
+	info->current.enactor = enactor;
+
+	if (!json_server_send_penn_context(&info->server, &info->current)) {
+		goto failed;
+	}
 
 	TRY_PROTO(json_server_send_request(&info->server));
 
@@ -438,6 +490,27 @@ failed:
 success:
 	/* Restore call state. */
 	COPY_CONTEXT_FRAME(info->current, old_frame);
+}
+
+/*
+ * Sends the PennMUSH context in the current request.
+ */
+static int
+json_server_send_penn_context(JSON_Server *server, JSON_Server_Frame *frame)
+{
+	TRY_PROTO(json_server_add_context(server, "executor", 8,
+	                                  unparse_dbref(frame->executor), -1));
+
+	TRY_PROTO(json_server_add_context(server, "caller", 6,
+	                                  unparse_dbref(frame->caller), -1));
+
+	TRY_PROTO(json_server_add_context(server, "enactor", 7,
+	                                  unparse_dbref(frame->enactor), -1));
+
+	return 1;
+
+failed:
+	return 0;
 }
 
 /*
