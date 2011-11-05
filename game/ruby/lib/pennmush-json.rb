@@ -7,12 +7,24 @@ require 'logger'
 require 'pathname'
 require 'yaml'
 
+# Application modules.
+require 'pennmush-json-queue'
+
 module PennJSON
   STDOUT.sync = true
   LOGGER = Logger.new(STDOUT)
 
+  # TODO: May want to wrap this all up and hide it.
   OBJECT_REGISTRY = {}
-  @@expected_name = nil
+
+  # First object registered must be PennJSON_System. This is normally handled
+  # by PennJSON_Conversation. Note that since multiple registration is not
+  # allowed, 'rpc' will act effectively like a nil value.
+  @@expected_name = 'rpc'
+
+  # TODO: May want to wrap this all up and hide it.
+  MAX_CALLBACKS = 7 # maximum callbacks; may want to make this configurable
+  CALLBACK_QUEUE = PennJSON_Queue.new(MAX_CALLBACKS)
 
   # Configuration values. Initially loaded with default values.
   SEARCH_PATH = ['pennmush-json']
@@ -48,10 +60,21 @@ module PennJSON
   class Remote
     # Proxy unknown invocations to remote PennMUSH. Throws RemoteError in the
     # event the remote call responds with an error.
+    #
+    # To avoid name conflicts, this method accepts either "name" or "penn_name"
+    # for the PennMUSH function "name". A good example of when "penn_name"
+    # would be necessary is, amusingly enough, "name".
     def self.method_missing(name, *args)
       name = name.to_s
       name = name[5..-1] if name.start_with?('penn_')
       return SERVER.remote_invoke(@context, name, *args)
+    end
+
+    # Responds to everything, although possibly with a RemoteError. Doesn't
+    # actually query if the remote method exists, although a cache might be
+    # useful if we ever want to implement that.
+    def self.respond_to_missing?(name, include_private)
+      return true
     end
 
     # Set the context hash. If we had to deal with threads, this would need to
@@ -146,6 +169,25 @@ module PennJSON
     rescue NameError
       raise LocalError.new(-32601, 'Method not found')
     end
+  end
+
+  # Invoke the block on the event dispatch thread at some later point in time.
+  # May be called safely from other threads. Remote calls may be safely made
+  # from this block, which is the main reason to use this method. Use some
+  # other mechanism if remote calls are not needed.
+  #
+  # If MAX_CALLBACKS are already pending, this method will raise a RuntimeError
+  # instead of blocking forever or queueing an unlimited number of callbacks.
+  def self.invoke_later(&block)
+    # This method is thread-safe. This method throws if the queue is full.
+    CALLBACK_QUEUE.queue(block)
+
+    # TODO: We could test if SERVER exists before trying to wake it, in case we
+    # want to schedule callbacks before the server is ready. We probably don't
+    # care in practice, though.
+    SERVER.wakeup
+
+    nil
   end
 
   # Configuration loader.

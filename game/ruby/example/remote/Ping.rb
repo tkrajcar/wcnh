@@ -35,4 +35,11 @@ module Ping
     # SystemExit example; not enabled by default, for obvious reasons.
     #exit
   end
+
+  def self.pj_callback
+    # Callback example.
+    PennJSON::invoke_later do
+      next REMOTE.lwho
+    end
+  end
 end
