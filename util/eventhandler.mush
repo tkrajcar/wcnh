@@ -2,7 +2,7 @@
 &player`connect #13 =
   /@@ %0 = objid, %1 = number of connections, %2 = descriptor @@/
   @trigger #114/trig.aconnect=%0;
-  think [if(hasattr(%0/pfile),rpc(PlayerFile.connect,get(%0/pfile),get(%0/lastip),get(%0/lastsite),%2))];
+  think [if(hasattr(%0/pfile),rpc(PlayerFile.connect,get(%0/pfile),get(%0/lastip),get(%0/lastsite),%2,num(%0)))];
 -
 
 &player`disconnect #13 =
