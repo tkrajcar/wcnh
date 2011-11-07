@@ -7,6 +7,10 @@ module PlayerFile
     self.register(email,dbref)
   end
 
+  def self.pj_register_secondary(email,dbref)
+    self.register(email,dbref,false)
+  end
+
   def self.pj_view(file)
     self.view_file(file)
   end

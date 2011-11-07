@@ -4,14 +4,21 @@ module PlayerFile
   R = PennJSON::Remote
 
   # Add the <dbref> to the pfile for <email>. Returns _id of pfile.
-  def self.register(email,dbref)
+  def self.register(email,dbref,primary = true)
     return "#-1 INVALID DBREF" unless R.type(dbref) == "PLAYER"
+
     p = Pfile.find_or_create_by(:email => email)
-    p.current_dbref = dbref
-    p.save
-    p.add_note("#{dbref} #{R.fullname(dbref)}",R["enactor"],"Char.new")
+    # update their current_dbref in the pfile if this is a primary registration
+    if primary
+      p.current_dbref = dbref
+      p.save
+      lognote = "Primary registration: "
+    else
+      lognote = "Primary registration: "
+    end
+    lognote << "#{dbref}/#{R.fullname(dbref)}"
+    p.add_note(lognote,R["enactor"],"Char.new")
     R.attrib_set("#{dbref}/PFILE",p._id.to_s)
-    #syslog("Pfile","Registered character #{dbref} #{R.fullname(dbref)} to #{p._id.to_s}.")
     return p._id.to_s
   end
 
