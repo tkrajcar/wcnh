@@ -3,7 +3,7 @@
 #############################
 
 # Setup the MUSH object
-@set #179=!SAFE NO_COMMAND
+@set #179=!SAFE NO_COMMAND ENTER_OK
 -
 @wipe #179
 -

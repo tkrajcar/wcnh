@@ -9,7 +9,7 @@
 -
 @set #203=SAFE
 -
-@desc #203=A kiosk for purchasing shuttle tickets.
+@desc #203=A kiosk for purchasing [spacesys(hicmd,shuttle)] tickets.
 -
 # Command: shuttle
 # Displays a list of shuttle commands

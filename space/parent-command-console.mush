@@ -27,7 +27,13 @@
   )]
 )]
 -
-@desc #204=A command console. It is currently [switch([v(data.manned)],0,unmanned.,manned by [spacesys(mannedby,%!)])]
+@desc #204=A command 
+  /@@ Command-highlight 'console' to whoever is manning the console @@/
+  [if([spacesys(ismanning,%!,%#)],
+    [spacesys(hicmd,console)],
+    /@@ Otherwise, show the plain word @@/
+    console
+  )]. It is currently [switch([v(data.manned)],0,unmanned.,manned by [spacesys(mannedby,%!)].)]
 -
 &LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,%!,%#)]
 -
@@ -44,11 +50,10 @@
   )]
 )]
 -
-# Command: unman
-# Unmans the player from the console.
-&CMD.UNMAN #204=$unman:[pemit(%#,
-  [attrib_set(%!/data.manned,0)]
-  You unman the [name(%!)].
+# Command: console
+# Diplay the console commands and their syntax
+&CMD.CONSOLE #204=$console:[pemit(%#,
+  [spacesys(console)]
 )]
 -
 # Command: plot
@@ -62,3 +67,11 @@
 &CMD.ROSTER #204=$roster:[pemit(%#,
   [spacesys(roster)]
 )]
+-
+# Command: unman
+# Unmans the player from the console.
+&CMD.UNMAN #204=$unman:[pemit(%#,
+  [attrib_set(%!/data.manned,0)]
+  You unman the [name(%!)].
+)]
+-

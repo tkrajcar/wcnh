@@ -2,41 +2,34 @@
 
 This document outlines the ideas for a stand-in space system for the Wing Commander: New Horizon MUSH. This system is temporary, and will be replaced by a more robust system in the future.
 
-The guiding principle is simplicity that promotes role play and an interactive storytelling environment... that being said, please feel free to cut this spec to pieces. I've been known to over-engineer. ;)
-
-Also, please do not mistake my gratuitous use of "will" as a sign that anything in this spec is set in stone. If you have an idea for a better way to do things, _please_ let us know.
+The guiding principle is simplicity that promotes role play and an interactive storytelling environment.
 
 # Goals
 
-* Give players a means to travel between systems/planets
-* Give players their own ships on which to roleplay
-* Give players a reason to invest in space-related skills
+* Give players a simple means to travel between systems/planets
+* Give players their own ships on which to roleplays
 * Give players an opportunity to roleplay in space
+* Give players a reason to invest in space-related skill
 
 # Definitions
 
-	ship          A player owned space ship. Players use ships to travel
-                 within a system, as well as between systems.
+**ship**: A player owned space ship. Players use ships to travel within a system, as well as betweel systems.
 
-	shipyard      A location where a player can purchase a ship from a
-                 shipyard vendor.
+**shipyard**: A location where a player can purchase a ship from a shipyard vendor.
 
-	station       A space station shares some things in common with a
-                 ship, but cannot travel - it is stationary.
+**station**: A space station is a stationary ship. It cannot travel.
 
-	shuttle       A ship that can be used by players who do not own their
-                 own ships. Players buy a ticket for a destination and
-                 the shuttle takes them there.
+**shuttle**: A ship that can be used by players who do not own their own ships. Players buy a ticket for a destination and the shuttle takes them there.
 
 # Buying a Ship
 
-Players will be able to purchase a ship from a shipyard. Shipyards can be found on planets or on stations. Upon purchase, a two hour timer will kick in to account for the time required to deliver the ship. This should serve as a deterrent to those that would mass purchase ships moments before a battle, as well as give us time to complete anything computationally expensive during the ship building process.
+Players will be able to purchase a ship from a shipyard. Shipyards can be found on planets or on stations. Upon purchase, a two hour timer will kick in to account for the time required to deliver the ship. This should serve as a deterrent to those that would mass purchase ships moments before a battle, as well as create time to complete anything computationally expensive during the ship building process.
 
 After the two hours, the ship will be available to the player at the planet's landing field or in the station's docking bay.
 
 # Boarding a Ship
 
-Only those players listed on a ship's roster (see Securing a Ship) may board a ship. The player who purchases a ship is listed as Captain on the ship's roster. Disembarking from a ship is accomplished by exiting through a normal exit located in the ship's airlock room.
+Only those players listed on a ship's roster (see Securing a Ship) may board a ship. The player who purchases a ship is listed as Captain on the ship's roster. Disembarking from a ship is accomplished by exiting through an exit located in the ship's airlock.
 
 Commands
 

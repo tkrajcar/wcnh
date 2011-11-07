@@ -2,6 +2,15 @@
 ### FUNCTIONS: Space (#208)
 ###########################
 
+# Setup the MUSH object
+@desc #208=It's SPAAAAACE!
+-
+@set #208=SAFE NO_COMMAND
+-
+# Function: console()
+# Display a console's commands and their syntax
+&FN.CONSOLE #208=You type the console command.
+-
 # Function: plot()
 # Display the plot commands and their syntax
 &FN.PLOT #208=You typed the plot command.
@@ -70,3 +79,5 @@
   \%@: [name(%@)](%@)
 )]
 -
+# Temporary stuff, belongs elsewhere
+&FN.HICMD #208=[ansi(hu,%0)]
