@@ -38,14 +38,18 @@ module PlayerFile
     return ">".red + " No file found for '#{arg}'." unless p = Pfile.locate(arg)
     ret = titlebar("Connections for #{p.email} (#{p._id.to_s})") + "\n"
     p.connections.desc("disconnected").limit(20).each do |conn|
-      ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + " "
+      ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + "-"
       if conn.disconnected.class == DateTime
-        ret << conn.disconnected.strftime("%m/%d %H:%M")
+        ret << conn.disconnected.strftime("%m/%d %H:%M ")
       else
-        ret << "Connected  ".bold
+        ret << "Connected   ".bold
       end
-      ret << " " + conn.ip.ljust(16)
-      ret << conn.host[0...34] + "\n"
+      if conn.dbref
+        ret << "#{conn.dbref} #{R.penn_name(conn.dbref)}"[0..15].ljust(15).yellow
+      else
+        ret << "".ljust(15)
+      end
+      ret << conn.host[0...35] + "\n"
     end
     ret << footerbar
     return ret
@@ -58,15 +62,19 @@ module PlayerFile
     ret = titlebar("Pfiles with connections matching #{term}") + "\n"
     results.each do |p|
       ret << "#{R.penn_name(p.current_dbref).bold.cyan} (#{p.email.bold}/#{p._id.to_s}):\n"
-      p.connections.any_of({:host => /#{term}/i}, {:ip => /#{term}/i}).all.each do |conn|
+      p.connections.any_of({:host => /#{term}/i}, {:ip => /#{term}/i}).desc("disconnected").each do |conn|
         ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + " "
         if conn.disconnected.class == DateTime
           ret << conn.disconnected.strftime("%m/%d %H:%M")
         else
           ret << "Connected  ".bold
         end
-        ret << " " + conn.ip.ljust(16).gsub(/(#{term})/i,'\1'.bold.yellow.underline)
-        ret << conn.host[0...34].gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
+        if conn.dbref
+           ret << "#{conn.dbref} #{R.penn_name(conn.dbref)}"[0..15].ljust(15).yellow
+         else
+           ret << "".ljust(15)
+         end
+        ret << conn.host[0...35].gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
       end
     end
     ret << footerbar
@@ -81,7 +89,7 @@ module PlayerFile
     ret = titlebar("Pfile notes containing '#{term}'") + "\n"
     # iterate over each Pfile that matched our query
     results.each do |p|
-      p.notes.where("text" => /#{term}/i).all.each do |n|
+      p.notes.where("text" => /#{term}/i).desc("timestamp").each do |n|
         ret << R.penn_name(p.current_dbref).bold.yellow  + "-" + R.penn_name(n.author).bold.cyan + "-".cyan + n.timestamp.strftime("%m/%d/%Y %H:%M").cyan + " (" + n.category.bold + "): ".cyan + n.text.gsub(/(#{term})/i,'\1'.bold.yellow.underline) + "\n"
       end
     end
@@ -98,9 +106,9 @@ module PlayerFile
   end
 
   # Log a connection to a pfile.
-  def self.connect(pfile,ip,host,descriptor)
+  def self.connect(pfile,ip,host,descriptor,dbref)
     p = Pfile.find(pfile)
-    p.connections.create(:ip => ip, :host => host, :descriptor => descriptor, :connected => DateTime.now)
+    p.connections.create(:ip => ip, :host => host, :descriptor => descriptor, :connected => DateTime.now, :dbref => dbref, :name => R.penn_name(dbref))
   end
 
   # Log a disconnection to a pfile.
@@ -159,5 +167,7 @@ module PlayerFile
     field :ip, :type => String
     field :host, :type => String
     field :descriptor, :type => String
+    field :dbref, :type => String
+    field :name, :type => String
   end
 end

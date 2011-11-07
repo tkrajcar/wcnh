@@ -31,8 +31,8 @@ module PlayerFile
     self.search_connections(term)
   end
 
-  def self.pj_connect(pfile,ip,host,descriptor)
-    self.connect(pfile,ip,host,descriptor)
+  def self.pj_connect(pfile,ip,host,descriptor,dbref)
+    self.connect(pfile,ip,host,descriptor,dbref)
   end
 
   def self.pj_disconnect(pfile,descriptor)
