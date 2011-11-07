@@ -16,6 +16,9 @@
 &cmd.+pfile/register #115=$+pfile/register *=*:@pemit %#=[rpc(PlayerFile.register,%0,%1)]
 -
 
+&cmd.+pfile/secondary #115=$+pfile/secondary *=*:@pemit %#=[rpc(PlayerFile.register_secondary,%0,%1)]
+-
+
 &cmd.+pfile/search #115=$+pfile/search *:@pemit %#=[rpc(PlayerFile.search,%0)]
 -
 
