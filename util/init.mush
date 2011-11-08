@@ -17,6 +17,7 @@
 -
 &PFILE.ATTR #25=no_command wizard mortal_dark
 -
+&TIMEOUT.ATTR #25=no_command wizard mortal_dark
 
 ### FUNCTIONS
 ### Shouldn't have to worry about localizing due to @function/preserve,
