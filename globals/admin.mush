@@ -4,6 +4,7 @@
     {@pemit %#=chargen(sheet,pmatch(%0))}
 -
 
+# Pfile system
 &cmd.+pfile/add #115=$+pfile/add */*=*:@pemit %#=[rpc(PlayerFile.add_note,%0,%2,%1)]
 -
 
@@ -28,3 +29,17 @@
 &cmd.+pfile/connections #115=$+pfile/connections *:@pemit %#=[rpc(PlayerFile.view_connections,%0)]
 -
 
+# Ticket system
+&cmd.+ticket/comment/private #115=$+ticket/comment/private *=*:@pemit %#=[rpc(Ticket.comment,decompose(%0),decompose(%1),private)]
+-
+
+&cmd.+ticket/assign #115=$+ticket/assign *=*:@pemit %#=[rpc(Ticket.assign,decompose(%0),decompose(%1))]
+-
+
+&cmd.+ticket/mine #115=$+ticket/mine:@pemit %#=[rpc(Ticket.list_mine,1)]
+-
+
+&cmd.+ticket/mine/page #115=$+ticket/mine page *:@pemit %#=[rpc(Ticket.list_mine,decompose(%0))]
+-
+
+&cmd.+ticket/view #115=$+ticket/view *:@pemit %#=[rpc(Ticket.view,decompose(%0))]
