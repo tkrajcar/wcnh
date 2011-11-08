@@ -15,16 +15,16 @@ module Ticket
     self.mine(page)
   end
 
-  def self.pj_comment(ticket,comment,privacy = "private")
-    "Not implemented"
+  def self.pj_comment(ticket,comment,privacy = true)
+    self.comment(ticket,comment,privacy.to_bool)
   end
 
   def self.pj_close(ticket)
-    "Not implemented"
+    self.close(ticket)
   end
 
   def self.pj_reopen(ticket)
-    "Not implemented"
+    self.reopen(ticket)
   end
 
   def self.pj_assign(ticket,victim)

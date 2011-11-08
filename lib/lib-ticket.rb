@@ -41,15 +41,77 @@ module Ticket
 
   def self.view(ticket)
     t = Ticket.where(number: ticket).first
-    return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && (t.requester == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool))
+    isadmin = R.orflags(R["enactor"],"Wr").to_bool
+    return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && (t.requester == R["enactor"] || isadmin))
     ret = titlebar("Ticket #{t.number.to_s}: #{t.title[0..60]}") + "\n"
     ret << "Requester: ".cyan + R.penn_name(t.requester || "")[0..20].ljust(20)
-    ret << "Opened: ".cyan + t.opened.strftime("%m/%d/%y %H:%M").ljust(20)
-    ret << "Status: ".cyan + (t.status == "open" ? "Open".bold.on_blue : "Closed".green ) + "\n"  
+    ret << "Opened:  ".cyan + t.opened.strftime("%m/%d/%y %H:%M").ljust(20)
+    ret << "Status: ".cyan + (t.status == "open" ? "Open".bold.on_blue : "Closed".green ) + "\n"
+    if isadmin
+      ret << "Assigned:  ".cyan + (t.assignee ? R.penn_name(t.assignee)[0..20].ljust(20) : "None".ljust(20))
+    else
+      ret << "Assigned:  ".cyan + (t.assignee ? "Yes".ljust(20) : "No".ljust(20))
+    end
+    ret << "Updated: ".cyan + (t.updated ? t.updated.strftime("%m/%d/%y %H:%M").ljust(20) : "Never".ljust(20)) + "\n"
+    ret << ">------------------------------------BODY-------------------------------------<".red + "\n"
+    ret << t.body + "\n"
+    comments = t.comments
+    if !isadmin
+      comments = comments.where(private: false)
+    end
+    if comments.length > 0
+      ret << ">----------------------------------COMMENTS-----------------------------------<".red + "\n"
+      comments.each do |c|
+        if c.private
+          ret << "ADMIN-".bold.red
+        end
+        ret << "#{R.penn_name(c.author).white.bold} at #{c.timestamp.strftime("%m/%d/%y %H:%M").bold}: " .cyan
+        ret << c.text << "\n"
+      end
+    end
     ret << footerbar
     ret
   end
 
+  def self.comment(ticket,comment,privacy = true)
+    t = Ticket.where(number: ticket).first
+    return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && (t.requester == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool))
+    t.comments.create!(author: R["enactor"], text: comment, private: privacy)
+    t.updated = DateTime.now
+    t.save
+    team_notify("#{R.penn_name(R["enactor"]).bold} has added an #{privacy ? "admin-" : ""}comment to ticket ##{t.number.to_s.bold.yellow}.")
+    if(!privacy && R["enactor"] != t.requester)
+      R.pemit(t.requester,">".bold.cyan + " #{R.penn_name(R["enactor"]).bold} has added a new comment to +ticket ##{t.number.to_s.bold.yellow}. You can review it via #{("+ticket/view " + t.number.to_s).bold}.")
+    end
+    ">".bold.cyan + " Added comment to ticket #{t.number.to_s.bold}."
+  end
+
+  def self.close(ticket)
+    t = Ticket.where(number: ticket).first
+    return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && (t.requester == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool))
+    return ">".bold.cyan + " Ticket already closed!" unless t.status == "open"
+    t.updated = DateTime.now
+    t.status = "closed"
+    t.save
+    t.comments.create!(author: R["enactor"], text: "Ticket closed.", private: false)
+    team_notify("#{R.penn_name(R["enactor"]).bold} has closed ticket ##{t.number.to_s.bold.yellow}.")
+    if R["enactor"] != t.requester
+      R.mailsend(t.requester, "+Ticket #{t.number.to_s} Closed/Your +ticket ##{t.number.to_s} has been closed. Please review any comments via +ticket/view #{t.number.to_s}. If the matter is still not resolved, please add a new comment using +ticket/comment #{t.number.to_s}=<your notes> and +ticket/reopen #{t.number.to_s}.")
+    end
+    ">".bold.cyan + " Closed ticket #{t.number.to_s.bold}."
+  end
+
+  def self.reopen(ticket)
+    t = Ticket.where(number: ticket).first
+    return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && (t.requester == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool))
+    return ">".bold.cyan + " Ticket already open!" unless t.status == "closed"
+    t.updated = DateTime.now
+    t.status = "open"
+    t.save
+    t.comments.create!(author: R["enactor"], text: "Ticket reopened.", private: false)
+    team_notify("#{R.penn_name(R["enactor"]).bold} has reopened ticket ##{t.number.to_s.bold.yellow}.")
+    ">".bold.cyan + " Reopened ticket #{t.number.to_s.bold}."
+  end
 
   ## internal functions
 
@@ -66,7 +128,7 @@ module Ticket
       ret << t.number.to_s.rjust(4).yellow.bold + " "
       ret << R.penn_name(t.requester ||= "")[0...15].ljust(16)
       ret << (t.status == "open" ? "O".bold.on_blue + " " : "C ".green)
-      ret << (t.assignee ? (show_assigned ? R.penn_name(t.assignee)[0...6].ljust(7) : "Yes   ") : "       ")
+      ret << (t.assignee ? (show_assigned ? R.penn_name(t.assignee)[0...6].ljust(7) : "Yes    ") : "       ")
       ret << t.opened.strftime("%m/%d/%y ").cyan
       ret << (t.updated.nil? ? "         " : t.updated.strftime("%m/%d/%y "))
       ret << t.title[0..30]
@@ -96,5 +158,6 @@ module Ticket
     field :author, :type => String
     field :timestamp, :type => DateTime, :default => lambda { DateTime.now }
     field :text, :type => String
+    field :private, :type => Boolean, :default => true
   end
 end
