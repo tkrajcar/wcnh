@@ -7,8 +7,8 @@ module Ticket
   def self.open(title, data)
     return ">".bold.cyan + " Sorry, guests can't open new tickets." unless !R.haspower(R["enactor"], "guest").to_bool
     t = Ticket.create!(title: title, body: data, requester: R["enactor"])
-    R.cemit("Ticket", "#{R.penn_name(R["enactor"]).bold} has opened a new ticket ##{t.number.to_s.bold.yellow}: #{data}.","1")
-    return ">".bold.cyan + " Ticket ##{t.number.to_s.bold} opened. Staff will respond as soon as able."
+    team_notify("#{R.penn_name(R["enactor"]).bold} has opened a new ticket ##{t.number.to_s.bold.yellow}: #{title.bold.white}.")
+    return ">".bold.cyan + " Ticket ##{t.number.to_s.bold} opened. We'll respond as soon as possible."
   end
 
   def self.list(page = 1)
@@ -28,7 +28,23 @@ module Ticket
     list_output(Ticket.where(assignee: R["enactor"]).where(status: "open"), "Your Assigned +Tickets", page,true)
   end
 
+  def self.assign(ticket,victim)
+    return ">".bold.cyan + " Invalid ticket!" unless t = Ticket.where(number: ticket).first
+    p = R.pmatch(victim)
+    return ">".bold.cyan + " Invalid assignee!" unless R.orflags(p,"Wr").to_bool || victim = "none"
+    t.assignee = (victim == "none" ? nil : p)
+    t.save
+    team_notify("#{R.penn_name(R["enactor"]).bold} has assigned ticket ##{t.number.to_s.bold.white} to #{victim == "none" ? "nobody".bold.yellow : R.penn_name(p).bold.yellow}.")
+    ">".bold.cyan + " Ticket #{t.number.to_s.bold} assigned to #{victim == "none" ? "nobody".bold : R.penn_name(p).bold}."
+  end
 
+
+  ## internal functions
+
+  # notify admin about ticket system activity
+  def self.team_notify(message)
+    R.cemit("Ticket",message.cyan,"1")
+  end
 
   # Given a Mongoid criteria, a title, and a page number, return a ticket list.
   def self.list_output(criteria, title, page = 1, show_assigned = false)

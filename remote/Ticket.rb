@@ -28,7 +28,7 @@ module Ticket
   end
 
   def self.pj_assign(ticket,victim)
-    "Not implemented"
+    self.assign(ticket,victim)
   end
 
   def self.view(ticket)
