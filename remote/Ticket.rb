@@ -31,7 +31,7 @@ module Ticket
     self.assign(ticket,victim)
   end
 
-  def self.view(ticket)
-    "Not implemented"
+  def self.pj_view(ticket)
+    self.view(ticket)
   end
 end

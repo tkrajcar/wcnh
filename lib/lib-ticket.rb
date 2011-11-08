@@ -31,11 +31,23 @@ module Ticket
   def self.assign(ticket,victim)
     return ">".bold.cyan + " Invalid ticket!" unless t = Ticket.where(number: ticket).first
     p = R.pmatch(victim)
-    return ">".bold.cyan + " Invalid assignee!" unless R.orflags(p,"Wr").to_bool || victim = "none"
+    return ">".bold.cyan + " Invalid assignee!" unless R.orflags(p,"Wr").to_bool || victim == "none"
     t.assignee = (victim == "none" ? nil : p)
+    t.updated = DateTime.now
     t.save
     team_notify("#{R.penn_name(R["enactor"]).bold} has assigned ticket ##{t.number.to_s.bold.white} to #{victim == "none" ? "nobody".bold.yellow : R.penn_name(p).bold.yellow}.")
     ">".bold.cyan + " Ticket #{t.number.to_s.bold} assigned to #{victim == "none" ? "nobody".bold : R.penn_name(p).bold}."
+  end
+
+  def self.view(ticket)
+    t = Ticket.where(number: ticket).first
+    return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && (t.requester == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool))
+    ret = titlebar("Ticket #{t.number.to_s}: #{t.title[0..60]}") + "\n"
+    ret << "Requester: ".cyan + R.penn_name(t.requester || "")[0..20].ljust(20)
+    ret << "Opened: ".cyan + t.opened.strftime("%m/%d/%y %H:%M").ljust(20)
+    ret << "Status: ".cyan + (t.status == "open" ? "Open".bold.on_blue : "Closed".green ) + "\n"  
+    ret << footerbar
+    ret
   end
 
 
