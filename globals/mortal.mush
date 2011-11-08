@@ -83,5 +83,7 @@
 -
 
 &cmd.+ticket/reopen #15=$+ticket/reopen *:@pemit %#=[rpc(Ticket.reopen,decompose(%0))]
-n-
+-
+
+&cmd.+ticket/view #15=$+ticket/view *:@pemit %#=[rpc(Ticket.view,decompose(%0))]
 
