@@ -8,7 +8,6 @@ module Counters
   def self.next(name)
     c = Counter.find_or_create_by(:name => name)
     c.inc(:value,1)
-    c.value
   end
 
   # get the next value of a counter.
