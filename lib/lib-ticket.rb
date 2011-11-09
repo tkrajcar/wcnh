@@ -61,7 +61,7 @@ module Ticket
     end
     if comments.length > 0
       ret << ">----------------------------------COMMENTS-----------------------------------<".red + "\n"
-      comments.each do |c|
+      comments.desc("timestamp").each do |c|
         if c.private
           ret << "ADMIN-".bold.red
         end
