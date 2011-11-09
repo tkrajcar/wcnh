@@ -1,3 +1,31 @@
+&cmd.+set #15=$+set *:
+  @assert match(IC OOC,%0)=
+    @pemit %#=[ansi(hb,>)] Huh? Try IC or OOC.;
+  @assert or(match(IC,%0),hasflag(%#,IC))=
+    @pemit %#=[ansi(hb,>)] You are already [ucstr(%0)]!;
+  @break orflags(%#,Wr)=
+    @pemit %#=[ansi(hb,>)] Admins should never be set IC. @tel #20 if you're trying to get to the OOC area.;
+  @assert t(get(%#/char`approved))=
+    @pemit %#=[ansi(hb,>)] You are not approved yet. Be patient there, pardner.;
+  @assert or(match(OOC,%0),hastype(get(%#/char`icloc),room))=
+    @pemit %#=[ansi(hb,>)] You don't appear to have a valid IC location.;
+  think switch(%0,
+  IC,
+    [nspemit(%#,[ansi(hb,>)] Returning IC...)]
+    [nsoemit(%#,%n returns IC.)]
+    [tel(%#,get(%#/char`icloc))]
+    [nsoemit(%#,%n returns IC.)]
+    [set(%#,IC)],
+  OOC,
+    [nspemit(%#,[ansi(hb,>)] Going OOC...)]
+    [nsoemit(%#,%n goes OOC.)]
+    [attrib_set(%#/char`icloc,loc(%#))]
+    [tel(%#,#20)]
+    [set(%#,!IC)]
+    [nsoemit(%#,%n enters from the IC world.)]
+  )
+-
+
 @set #15/cmd.+check=regexp
 -
 &cmd.+check #15=$^\+check(/private)? (.*):
