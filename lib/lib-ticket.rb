@@ -96,7 +96,7 @@ module Ticket
     t.comments.create!(author: R["enactor"], text: "Ticket closed.", private: false)
     team_notify("#{R.penn_name(R["enactor"]).bold} has closed ticket ##{t.number.to_s.bold.yellow}.")
     if R["enactor"] != t.requester
-      R.mailsend(t.requester, "+Ticket #{t.number.to_s} Closed/Your +ticket ##{t.number.to_s} has been closed. Please review any comments via +ticket/view #{t.number.to_s}. If the matter is still not resolved, please add a new comment using +ticket/comment #{t.number.to_s}=<your notes> and +ticket/reopen #{t.number.to_s}.")
+      R.objeval("#17","mailsend(#{t.requester},+Ticket #{t.number.to_s} Closed/Your +ticket #[ansi(hy,#{t.number.to_s})] has been closed. Please review any comments via [ansi(h,+ticket/view #{t.number.to_s})]. If the matter is still not resolved\\, please add a new comment using [ansi(h,+ticket/comment #{t.number.to_s}=<your notes>)] and [ansi(h,+ticket/reopen #{t.number.to_s})].)")
     end
     ">".bold.cyan + " Closed ticket #{t.number.to_s.bold}."
   end
