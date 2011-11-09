@@ -1,4 +1,4 @@
-&cmd.+zone/checkout #226=$+zone/checkout *:
+&cmd.+zone/checkout #115=$+zone/checkout *:
   @switch [setr(0,zones(bc.checkout,%0))]=
 
           #-1 NO RESULTS,@nspemit %#=[ansi(y,<Zones>)] No such zone.,
@@ -11,7 +11,7 @@
            @wait 90={@fo me=@newpass %q0=[zones(bc.pwgen)]}
           }
 -
-&cmd.+zone/list #226=$+zone/list*:
+&cmd.+zone/list #115=$+zone/list*:
   @switch [t(%0)]
           [t(zones(lzone,setr(0,lsearch(all,type,thing,name,trim(%0)))))]
           [t(gt(words(%q0),1))]=
