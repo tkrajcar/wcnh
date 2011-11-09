@@ -92,7 +92,7 @@ uncompress_program gunzip
 compress_suffix .gz
 
 # Room where new players are created.
-player_start 0
+player_start 14
 
 # The master room. Exits here are global, as are commands on
 # objects here.
@@ -127,7 +127,7 @@ ancestor_player 8
 # homeless (usually due to its home getting destroyed).  It's also
 # the place where things get moved to if their location gets
 # unsalvageably corrupted.
-default_home 0
+default_home 16
 
 # What's the filename of the @sitelock file, that controls
 # who can connect and who can't
@@ -506,13 +506,14 @@ full_html_file txt/full.html
 # a new subdirectory of game/txt as described in game/txt/README,
 # and adding a new help_command line below, or uncommenting one of
 # the normal file entries.
-
 help_command events txt/events.txt
+
 #help_command index txt/index.txt
 #help_command rules txt/rules.txt
 #help_command +help txt/plushelp.txt
 help_command help txt/help.txt
 help_command news txt/news.txt
+
 #ahelp_command ahelp txt/help.txt
 #ahelp_command anews txt/news.txt
 #restrict_command ahelp admin
@@ -890,3 +891,7 @@ include alias.cnf
 ### Restrictions on command usage are in restrict.cnf
 ###
 include restrict.cnf
+ahelp_command ahelp txt/help.txt
+ahelp_command anews txt/news.txt
+restrict_command ahelp admin
+restrict_command anews admin
