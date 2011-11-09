@@ -101,7 +101,7 @@
 &cmd.+ticket/list #15=$+ticket/list:@pemit %#=[rpc(Ticket.list,1)]
 -
 
-&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,%)]
+&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,%0)]
 -
 
 &cmd.+ticket/comment #15=$+ticket/comment *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,false)]
