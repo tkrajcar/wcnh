@@ -30,16 +30,15 @@
 -
 
 # Ticket system
-&cmd.+ticket/comment/private #115=$+ticket/comment/private *=*:@pemit %#=[rpc(Ticket.comment,decompose(%0),decompose(%1),private)]
+&cmd.+ticket/comment/private #115=$+ticket/comment/private *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,true)]
 -
 
-&cmd.+ticket/assign #115=$+ticket/assign *=*:@pemit %#=[rpc(Ticket.assign,decompose(%0),decompose(%1))]
+&cmd.+ticket/assign #115=$+ticket/assign *=*:@pemit %#=[rpc(Ticket.assign,%0,%1)]
 -
 
 &cmd.+ticket/mine #115=$+ticket/mine:@pemit %#=[rpc(Ticket.list_mine,1)]
 -
 
-&cmd.+ticket/mine/page #115=$+ticket/mine page *:@pemit %#=[rpc(Ticket.list_mine,decompose(%0))]
+&cmd.+ticket/mine/page #115=$+ticket/mine page *:@pemit %#=[rpc(Ticket.list_mine,%0)]
 -
 
-&cmd.+ticket/view #115=$+ticket/view *:@pemit %#=[rpc(Ticket.view,decompose(%0))]

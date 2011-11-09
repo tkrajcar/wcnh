@@ -67,23 +67,23 @@
 -
 
 # Ticket system globals
-&cmd.+ticket/open #15=$+ticket/open *=*:@pemit %#=[rpc(Ticket.open,decompose(%0),decompose(%1))]
+&cmd.+ticket/open #15=$+ticket/open *=*:@pemit %#=[rpc(Ticket.open,%0,%1)]
 -
 
 &cmd.+ticket/list #15=$+ticket/list:@pemit %#=[rpc(Ticket.list,1)]
 -
 
-&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,decompose(%0)]
+&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,%)]
 -
 
-&cmd.+ticket/comment #15=$+ticket/comment *=*:@pemit %#=[rpc(Ticket.comment,decompose(%0),decompose(%1),public)]
+&cmd.+ticket/comment #15=$+ticket/comment *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,false)]
 -
 
-&cmd.+ticket/close #15=$+ticket/close *:@pemit %#=[rpc(Ticket.close,decompose(%0))]
+&cmd.+ticket/close #15=$+ticket/close *:@pemit %#=[rpc(Ticket.close,%0)]
 -
 
-&cmd.+ticket/reopen #15=$+ticket/reopen *:@pemit %#=[rpc(Ticket.reopen,decompose(%0))]
+&cmd.+ticket/reopen #15=$+ticket/reopen *:@pemit %#=[rpc(Ticket.reopen,%0)]
 -
 
-&cmd.+ticket/view #15=$+ticket/view *:@pemit %#=[rpc(Ticket.view,decompose(%0))]
-
+&cmd.+ticket/view #15=$+ticket/view *:@pemit %#=[rpc(Ticket.view,%0)]
+-
