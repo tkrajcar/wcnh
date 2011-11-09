@@ -63,7 +63,7 @@
 -
 &map.+who #15=%b[align(-3 35 5 >8 >8,\([switch(left(default(%0/sex,?),1),M,ansi(b,M),F,ansi(m,F),ansi(hx,?))]\),[if(hasattr(%0,title),get(%0/title)%b)][ansi(ifelse(orflags(%0,Wr),hy,h),name(%0))][if(hasattr(%0,clan),%bnar [get(%0/clan)])],get(%0/alias),ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),extract(timestring(conn(%0)),1,2))]
 -
-&cmd.ooc #15=$ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<OOC>) %q0))]
+&cmd.+ooc #15=$+ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<+OOC>) %q0))]
 -
 
 # Ticket system globals
