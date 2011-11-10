@@ -1,3 +1,6 @@
+&cmd.+zone/history #115=$+zone/history *:
+  @nspemit %#=[rpc(Zones.history,zones(bc.checkout,%0))]
+-
 &cmd.+zone/checkout #115=$+zone/checkout *:
   @switch [setr(0,zones(bc.checkout,%0))]=
 
@@ -7,6 +10,7 @@
           #-1 NO BUILDER,@nspemit %#=[ansi(y,<Zones>)] That zone does not have a builder.,
           {@nspemit %#=[ansi(y,<Zones>)] [name(%q0)] checked out.  Password: [setr(1,zones(bc.pwgen))];
            @fo me={@newpass %q0=%q1};
+           think [rpc(Zones.checkout,%q0,%#)];
            think [syslog(ZONES,[name(%q0)]\(%q0\) checked out by [name(%#)]\(%#\).  Password will cycle in 90 seconds.)];
            @wait 90={@fo me=@newpass %q0=[zones(bc.pwgen)]}
           }
