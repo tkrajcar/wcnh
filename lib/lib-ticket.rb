@@ -24,8 +24,9 @@ module Ticket
   def self.mine(page)
     page = page.to_i
     return ">".bold.cyan + " Invalid page number." unless page > 0
-
-    list_output(Ticket.where(assignee: R["enactor"]).where(status: "open"), "Your Assigned +Tickets", page,true)
+    tickets = Ticket.where(assignee: R["enactor"]).where(status: "open")
+    return ">".bold.cyan + " No open +tickets assigned to you." unless tickets.length > 0
+    list_output(tickets, "Your Assigned +Tickets", page,true)
   end
 
   def self.assign(ticket,victim)
