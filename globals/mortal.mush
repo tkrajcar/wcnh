@@ -1,3 +1,31 @@
+&cmd.+set #15=$+set *:
+  @assert match(IC OOC,%0)=
+    @pemit %#=[ansi(hb,>)] Huh? Try IC or OOC.;
+  @assert or(match(IC,%0),hasflag(%#,IC))=
+    @pemit %#=[ansi(hb,>)] You are already [ucstr(%0)]!;
+  @break orflags(%#,Wr)=
+    @pemit %#=[ansi(hb,>)] Admins should never be set IC. @tel #20 if you're trying to get to the OOC area.;
+  @assert t(get(%#/char`approved))=
+    @pemit %#=[ansi(hb,>)] You are not approved yet. Be patient there, pardner.;
+  @assert or(match(OOC,%0),hastype(get(%#/char`icloc),room))=
+    @pemit %#=[ansi(hb,>)] You don't appear to have a valid IC location.;
+  think switch(%0,
+  IC,
+    [nspemit(%#,[ansi(hb,>)] Returning IC...)]
+    [nsoemit(%#,%n returns IC.)]
+    [tel(%#,get(%#/char`icloc))]
+    [nsoemit(%#,%n returns IC.)]
+    [set(%#,IC)],
+  OOC,
+    [nspemit(%#,[ansi(hb,>)] Going OOC...)]
+    [nsoemit(%#,%n goes OOC.)]
+    [attrib_set(%#/char`icloc,loc(%#))]
+    [tel(%#,#20)]
+    [set(%#,!IC)]
+    [nsoemit(%#,%n enters from the IC world.)]
+  )
+-
+
 @set #15/cmd.+check=regexp
 -
 &cmd.+check #15=$^\+check(/private)? (.*):
@@ -63,7 +91,7 @@
 -
 &map.+who #15=%b[align(-3 35 5 >8 >8,\([switch(left(default(%0/sex,?),1),M,ansi(b,M),F,ansi(m,F),ansi(hx,?))]\),[if(hasattr(%0,title),get(%0/title)%b)][ansi(ifelse(orflags(%0,Wr),hy,h),name(%0))][if(hasattr(%0,clan),%bnar [get(%0/clan)])],get(%0/alias),ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),extract(timestring(conn(%0)),1,2))]
 -
-&cmd.ooc #15=$ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<OOC>) %q0))]
+&cmd.+ooc #15=$+ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<+OOC>) %q0))]
 -
 
 # Ticket system globals
@@ -73,7 +101,7 @@
 &cmd.+ticket/list #15=$+ticket/list:@pemit %#=[rpc(Ticket.list,1)]
 -
 
-&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,%)]
+&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,%0)]
 -
 
 &cmd.+ticket/comment #15=$+ticket/comment *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,false)]
