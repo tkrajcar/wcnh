@@ -24,8 +24,9 @@ module Ticket
   def self.mine(page)
     page = page.to_i
     return ">".bold.cyan + " Invalid page number." unless page > 0
-
-    list_output(Ticket.where(assignee: R["enactor"]).where(status: "open"), "Your Assigned +Tickets", page,true)
+    tickets = Ticket.where(assignee: R["enactor"]).where(status: "open")
+    return ">".bold.cyan + " No open +tickets assigned to you." unless tickets.length > 0
+    list_output(tickets, "Your Assigned +Tickets", page,true)
   end
 
   def self.assign(ticket,victim)
@@ -123,7 +124,7 @@ module Ticket
   # Given a Mongoid criteria, a title, and a page number, return a ticket list.
   def self.list_output(criteria, title, page = 1, show_assigned = false)
     ret = titlebar(title + " (Page #{page})") + "\n"
-    ret << "XXXX #{"Requester".ljust(15)} S Assign Opened   Updated  Title".cyan + "\n"
+    ret << "#### #{"Requester".ljust(15)} S Assign Opened   Updated  Title".cyan + "\n"
     criteria.desc(:status).desc(:opened).skip(20 * (page.to_i - 1)).limit(20).each do |t|
       ret << t.number.to_s.rjust(4).yellow.bold + " "
       ret << R.penn_name(t.requester ||= "")[0...15].ljust(16)
@@ -141,10 +142,13 @@ module Ticket
   class Ticket
     include Mongoid::Document
     field :number, :type => Integer, :default => lambda {Counters.next("ticket")}
+    index :number, :unique => true
     field :title, :type => String
     field :body, :type => String
     field :assignee, :type => String
+    index :assignee
     field :requester, :type => String
+    index :requester
     field :status, :type => String, :default => "open"
     field :opened, :type => DateTime, :default => lambda { DateTime.now }
     field :updated, :type => DateTime
