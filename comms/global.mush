@@ -21,7 +21,7 @@
 &cmd.message/list #341=$message/list:@pemit %#=[rpc(Comms.message_list_summary)]
 -
 
-&cmd.message/list #341=$message/list *:
+&cmd.message/listhandle #341=$message/list *:
   /@@ Some regmatch trickery with the goal of %q0 = person, %q1 = page number. @@/
   @pemit %#=
     [ifelse(
@@ -58,7 +58,7 @@
 &cmd.comm/off #341=$comm/off *:@pemit %#=[rpc(Comms.channel_off,%0)]
 -
 
-&cmd.comm/handle #341=comm/handle *=*:@pemit %#=[rpc(Comms.channel_handle,%0,%1)]
+&cmd.comm/handle #341=$comm/handle *=*:@pemit %#=[rpc(Comms.channel_handle,%0,%1)]
 -
 
 &cmd.comm/transmit #341=$-* *:@pemit %#=[rpc(Comms.channel_transmit,%0,%1)]
