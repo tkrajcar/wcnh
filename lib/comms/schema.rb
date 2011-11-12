@@ -10,7 +10,8 @@ module Comms
     identity :type => String # use a MUSH dbref for id
 
     field :handles, :type => Array, :default => lambda { ["Anon" + Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by{rand}.join).upcase[0..6]]}
-    field :active_handle, :type => String
+    field :lowercase_handles, :type => Array, :default => lambda { [self.handles.first.downcase] } # used to prevent two people from having same handle, different capitalizations
+    field :active_handle, :type => String, :default => lambda { self.handles.first }
     field :dnd_on, :type => Boolean, :default => false
 
     index :handles, :unique => true

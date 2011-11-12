@@ -4,19 +4,19 @@ module Comms
   PennJSON::register_object(self)
 
   def self.pj_handle_list
-    "Not implemented."
+    self.handle_list
   end
 
   def self.pj_handle_register(handle)
-    "Not implemented."
+    self.handle_register(handle)
   end
 
   def self.pj_handle_unregister(handle)
-    "Not implemented."
+    self.handle_unregister(handle)
   end
 
   def self.pj_handle_use(handle)
-    "Not implemented."
+    self.handle_use(handle)
   end
 
   def self.pj_message_list_summary
