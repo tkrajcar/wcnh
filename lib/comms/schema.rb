@@ -1,23 +1,27 @@
 require 'wcnh'
 
 module Comms
+  # Generic IC comms object. Every IC player has a doc of this class, but there's nothing necessarily restricting it to players.
   class Comlink
-    # Generic IC comms object. Every IC player has a doc of this class, but there's nothing necessarily restricting it to players.
     include Mongoid::Document
 
     embeds_many :memberships, :class_name => "Comms::Membership"
 
     identity :type => String # use a MUSH dbref for id
 
+    # to prevent two people from having same handle, different capitalizations, we store :lowercase_handles, which is maintained
+    # as a copy of :handles with everything downcased, basically. the app layer takes care of this. eventually it would be nice
+    # to do it at the db layer.
     field :handles, :type => Array, :default => lambda { ["Anon" + Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by{rand}.join).upcase[0..6]]}
-    field :lowercase_handles, :type => Array, :default => lambda { [self.handles.first.downcase] } # used to prevent two people from having same handle, different capitalizations
+    field :lowercase_handles, :type => Array, :default => lambda { [self.handles.first.downcase] }
     field :active_handle, :type => String, :default => lambda { self.handles.first }
     field :dnd_on, :type => Boolean, :default => false
 
-    index :handles, :unique => true
+    index :lowercase_handles, :unique => true # no need to index :handles at present as there are no commands that search it!
     index :active_handle
   end
 
+  # individual tightbeam message
   class Tightbeam
     include Mongoid::Document
     include Mongoid::Timestamps
@@ -32,6 +36,7 @@ module Comms
     index :to_handles
   end
 
+  # named channel. numeric-based channels do not have their own documents as they have no metadata associated.
   class Channel
     include Mongoid::Document
 
@@ -41,6 +46,7 @@ module Comms
     # TODO: Permissions stuff.
   end
 
+  # individual transmission on a channel, numeric or named.
   class Transmission
     include Mongoid::Document
 
@@ -56,6 +62,7 @@ module Comms
     index :from_handle
   end
 
+  # record of a comlink's membership in a channel.
   class Membership
     include Mongoid::Document
 
@@ -63,6 +70,7 @@ module Comms
 
     field :channel, :type => String
     field :active_handle, :type => String
+    field :nickname, :type => String # we use 'alias' in the UI but it's a reserved word, soooo...
 
     index :channel
   end
