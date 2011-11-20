@@ -24,15 +24,15 @@ module Comms
   end
 
   def self.pj_message_list(handle,page=1)
-    "Not implemented."
+    self.message_list(handle,page)
   end
 
   def self.pj_message_send(handle,message)
-    "Not implemented."
+    self.message_send(handle,message)
   end
 
-  def self.pj_message_dnd(status)
-    "Not implemented."
+  def self.pj_message_dnd(status = "toggle")
+    self.message_dnd(status)
   end
 
   def self.pj_message_unread

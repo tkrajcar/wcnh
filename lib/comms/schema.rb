@@ -16,6 +16,7 @@ module Comms
     field :lowercase_handles, :type => Array, :default => lambda { [self.handles.first.downcase] }
     field :active_handle, :type => String, :default => lambda { self.handles.first }
     field :dnd_on, :type => Boolean, :default => false
+    field :unread_tightbeams, :type => Array, :default => []
 
     index :lowercase_handles, :unique => true # no need to index :handles at present as there are no commands that search it!
     index :active_handle
@@ -35,6 +36,7 @@ module Comms
     index :from
     index :to_handles
   end
+
 
   # named channel. numeric-based channels do not have their own documents as they have no metadata associated.
   class Channel
