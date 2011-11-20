@@ -12,17 +12,9 @@ module Comms
     # from enactor, to handle.
     #msgs_to = Tightbeam.where(from: c.id, to_handles: [proper_handle])
 
-    # sort & paginate
-    msgs = msgs.desc(:ic_timestamp).skip(10 * (page.to_i - 1)).limit(10)
-
     return "> ".bold.yellow + "No tightbeam messages between you and #{proper_handle.bold}." unless msgs.all.length > 0
-    ret = titlebar("Tightbeam Messages Between You And #{proper_handle} (Page #{page})") + "\n"
-    msgs.each do |msg|
-      ret << "Received #{msg.ic_timestamp.strftime("%m/%d/%Y %H:%m").bold}\n".cyan #TODO - correct for IC
-      ret << msg.body + "\n"
-    end
-    ret << footerbar()
-    ret
+
+    list_output(msgs, c, "Tightbeam Messages Between You And #{proper_handle}")
   end
 
   def self.message_send(handle, message)
@@ -56,5 +48,24 @@ module Comms
     end
     c.save
     "> ".bold.yellow + "Do-not-disturb set to #{c.dnd_on ? "on".bold : "off".bold}."
+  end
+
+
+  def self.list_output(criteria, comlink, title, page=1, showfrom = false)
+    ret = titlebar("#{title} (Page #{page})") + "\n"
+    msgs = criteria.desc(:ic_timestamp)
+    if page.to_i > 0 # paginate
+      msgs = msgs.skip(10 * (page.to_i - 1)).limit(10)
+    end
+    msgs.each do |msg|
+      if comlink.unread_tightbeams.include?(msg.id)
+        ret << "UNREAD> ".bold.red
+        comlink.unread_tightbeams.delete(msg.id)
+      end
+      ret << "Received #{msg.ic_timestamp.strftime("%m/%d/%Y %H:%m").bold}: ".cyan #TODO - correct for IC
+      ret << msg.body + "\n"
+    end
+    comlink.save # update unread_tightbeams field
+    ret << footerbar()
   end
 end
