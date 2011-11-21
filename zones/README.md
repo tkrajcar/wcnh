@@ -13,6 +13,8 @@ This is where code that has to do with building and/or grid management goes.
 * @lock ZMO==BC
 * @tel ZMO=BC
 * @lock/zone ZMO==ZMO
+* @lock/chzone ZMO=flag^wizard
+* @lock/chzone BC=flag^wizard
 * @chzone BC=ZMO
 * @chzone ZMO=Parent ZMO
 * @lset ZMO/chzone=wizard
