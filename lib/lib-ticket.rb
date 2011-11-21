@@ -54,14 +54,14 @@ module Ticket
       ret << "Assigned:  ".cyan + (t.assignee ? "Yes".ljust(20) : "No".ljust(20))
     end
     ret << "Updated: ".cyan + (t.updated ? t.updated.strftime("%m/%d/%y %H:%M").ljust(20) : "Never".ljust(20)) + "\n"
-    ret << ">------------------------------------BODY-------------------------------------<".red + "\n"
+    ret << middlebar("BODY") + "\n"
     ret << t.body + "\n"
     comments = t.comments
     if !isadmin
       comments = comments.where(private: false)
     end
     if comments.length > 0
-      ret << ">----------------------------------COMMENTS-----------------------------------<".red + "\n"
+      ret << middlebar("COMMENTS") + "\n"
       comments.desc("timestamp").each do |c|
         if c.private
           ret << "ADMIN-".bold.red
