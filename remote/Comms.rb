@@ -20,7 +20,7 @@ module Comms
   end
 
   def self.pj_message_list_summary
-    "Not implemented."
+    self.message_list_summary
   end
 
   def self.pj_message_list(handle,page=1)
@@ -36,7 +36,7 @@ module Comms
   end
 
   def self.pj_message_unread
-    "Not implemented."
+    self.message_unread
   end
 
   def self.pj_channel_list

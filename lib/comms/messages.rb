@@ -1,6 +1,22 @@
 require 'wcnh'
 
 module Comms
+  def self.message_unread
+    c = Comlink.find_or_create_by(id: R["enactor"])
+    return "> ".bold.yellow + "No unread messages." unless c.unread_tightbeams.length > 0
+
+    msgs = c.unread_tightbeams
+    ret = titlebar("All Unread Messages") + "\n"
+    msgs.each do |msg_id|
+      next unless msg = Tightbeam.find(msg_id)
+      ret << "Received #{msg.ic_timestamp.strftime("%m/%d/%Y %H:%M").bold} from #{msg.from_handle.bold.white}: ".cyan #TODO - correct for IC
+      ret << msg.body + "\n"
+    end
+    c.unread_tightbeams = []
+    c.save
+    ret << footerbar()
+  end
+
   def self.message_list(handle,page=1)
     c = Comlink.find_or_create_by(id: R["enactor"])
     return "> ".bold.yellow + "Recipient handle not found." unless recipient = Comlink.where(lowercase_handles: handle.downcase).first
@@ -14,7 +30,16 @@ module Comms
 
     return "> ".bold.yellow + "No tightbeam messages between you and #{proper_handle.bold}." unless msgs.all.length > 0
 
-    list_output(msgs, c, "Tightbeam Messages Between You And #{proper_handle}")
+    list_output(msgs, c, "Tightbeam From #{proper_handle}")
+  end
+
+  def self.message_list_summary
+    c = Comlink.find_or_create_by(id: R["enactor"])
+    msgs = Tightbeam.any_in(to_handles: c.handles)
+
+    return "> ".bold.yellow + "No messages received at your registerd handles!" unless msgs.all.length > 0
+
+    list_output(msgs, c, "Recent Tightbeam Messages", 1, true)
   end
 
   def self.message_send(handle, message)
@@ -50,7 +75,6 @@ module Comms
     "> ".bold.yellow + "Do-not-disturb set to #{c.dnd_on ? "on".bold : "off".bold}."
   end
 
-
   def self.list_output(criteria, comlink, title, page=1, showfrom = false)
     ret = titlebar("#{title} (Page #{page})") + "\n"
     msgs = criteria.desc(:ic_timestamp)
@@ -62,7 +86,7 @@ module Comms
         ret << "UNREAD> ".bold.red
         comlink.unread_tightbeams.delete(msg.id)
       end
-      ret << "Received #{msg.ic_timestamp.strftime("%m/%d/%Y %H:%m").bold}: ".cyan #TODO - correct for IC
+      ret << "Received #{msg.ic_timestamp.strftime("%m/%d/%Y %H:%M").bold}#{showfrom ? " from " + msg.from_handle.bold.white : ""}: ".cyan #TODO - correct for IC
       ret << msg.body + "\n"
     end
     comlink.save # update unread_tightbeams field
