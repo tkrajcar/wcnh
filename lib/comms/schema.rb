@@ -37,14 +37,15 @@ module Comms
     index :to_handles
   end
 
-
   # named channel. numeric-based channels do not have their own documents as they have no metadata associated.
   class Channel
     include Mongoid::Document
 
     identity :type => String # name of channel for id
-
+    field :lowercase_name, :type => String, :default => lambda { self._id.downcase }
     field :description, :type => String
+
+    index :lowercase_name
     # TODO: Permissions stuff.
   end
 
@@ -72,7 +73,7 @@ module Comms
 
     field :channel, :type => String
     field :active_handle, :type => String
-    field :nickname, :type => String # we use 'alias' in the UI but it's a reserved word, soooo...
+    field :shortcut, :type => String # we use 'alias' in the UI but it's a reserved word, soooo...
 
     index :channel
   end

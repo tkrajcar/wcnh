@@ -40,22 +40,22 @@ module Comms
   end
 
   def self.pj_channel_list
-    "Not implemented."
+    self.channel_list
   end
 
   def self.pj_channel_on(channel,shortcut)
-    "Not implemented."
+    self.channel_on(channel,shortcut)
   end
 
   def self.pj_channel_off(channel)
-    "Not implemented."
+    self.channel_off(channel)
   end
 
   def self.pj_channel_handle(channel,handle)
-    "Not implemented."
+    self.channel_handle(channel,handle)
   end
 
   def self.pj_channel_transmit(channel,message)
-    "Not implemented."
+    self.channel_transmit(channel,message)
   end
 end
