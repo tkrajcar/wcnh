@@ -115,3 +115,22 @@
 
 &cmd.+ticket/view #15=$+ticket/view *:@pemit %#=[rpc(Ticket.view,%0)]
 -
+&cmd.+finger #15=$+finger *:
+  @switch [t(setr(0,pmatch(%0)))]=0,
+
+          @pemit %#=[ansi(rh,>)] No such player.,
+          @pemit %#=[titlebar(+Finger: [name(%q0)])]%r
+                    [table(
+                        [ansi(c,Alias:)] [alias(%q0)]|
+                        [ansi(c,Race:)] [default(%q0/race,Human)]|
+                        [ansi(c,Sex:)] [get(%q0/sex)]|
+                        [ansi(c,Status:)] [ifelse(hasflag(%q0,IC),IC,OOC)]|
+                        [ansi(c,Last On:)] [ifelse(
+                                              or(orflags(%q0,D!c),hidden(%q0)),
+                                              timefmt($m/$d/$Y $I:$M $p,convtime(get(%q0/last))),
+                                              [ansi(gh,Online)] \(Idle: [first(timestring(idlesecs(%q0)))]\)
+                                              )],
+                        38,79,|)]%r%r
+                    [ansi(c,Info:)] [u(%q0/info)]%r
+                    [footerbar()]
+-
