@@ -1,0 +1,26 @@
+& help
+Welcome to Wing Commander: New Horizon MUSH. Please don't be afraid to ask for
+help if you need it! Just type '+help I need some help!'. Our admin and
+player guides will be glad to help if able.
+  
+  >>> New to MUSHing and totally confused? Type:  help getting started
+ 
+  For the list of standard MUSH commands, type:   help commands
+  For the list of standard MUSH topics, type:     help topics
+  For an alphabetical list of all help entries:   help entries   
+
+  For a list of commands specific to WCNH, type:  help local
+
+If you find an error in the help files or have an idea of how to make one better,
+please open a +ticket (see: 'help +ticket') and we'll check it out.
+
+& local
+  This page lists our local commands and topics. To view a page, type
+  'help <page name>' (for example, 'help chargen').
+
+  Pages in capital letters have sub pages.
+
+  PAGES:
+
+  +TICKET        +where         +who           CHARGEN        FACTIONS       
+  ooc            time  
