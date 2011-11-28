@@ -12,18 +12,24 @@ This is the list of work in-progress.
 
 ### Code
 
-* Write @aenter on ship thing parent
-* Talk with Rince about using 'use' vs 'man'
-* Change data.console to data.ship?
-* Add roles to DATA.ROSTER format
+* Shift default function processing from console to ship
+* Make all funcs process wiz/roy flag as default captain
 * Update ISCREW to only pass on Captain or Crew, not Visitor
+* Launching, scanning, and landing
+* Intra-system travel where time = Distance * Speed * Universal
+* Inter-system travel
 * Write roster/list, roster/add, and roster/remove
+* Intercom command
+* Comm command
+* Spose
+* Bay commands
+* Shuttles
+* Shipyards
 
 ## Work To Do Next
 
 This is the list of work that is next up to be tackled.
 
-* Shuttles
 
 ## Work In The Spec
 
