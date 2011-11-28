@@ -103,6 +103,7 @@ module Comms
       #mbr = comm.memberships.where(channel: channel).first
       R.nspemit(comm.id,"<".yellow.bold + ch.bold + ">".yellow.bold + " " + mymbr.active_handle.bold + ": ".yellow + message)
     end
+    Transmission.create!(channel: ch, from: R["enactor"], from_handle: mymbr.active_handle, text: message)
     ""
   end
 end
