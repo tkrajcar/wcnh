@@ -22,33 +22,42 @@
 # Function: shuttle()
 &FN.SHUTTLE #208=You typed the shuttle command.
 -
-# Function: iscrew(console DBREF, player DBREF)
+# Function: iscrew(ship DBREF, player DBREF)
 # Returns true if the player is the ship's captain or a crew member
-&FN.ISCREW #208=[t([member([get(%0/data.roster)],%1)])]
+&FN.ISCREW #208=[firstof(
+                    member(setr(0,get(%0/data.roster)),%1:captain),
+                    member(%q0,%1:crew),
+                    orflags(%1,Wr),
+                    0
+                    )]
 -
-# Function: isdocked(console DBREF)
-# Returns true if the console is docked.
+# Function: isdocked(ship DBREF)
+# Returns true if the ship is docked.
 &FN.ISDOCKED #208=[hastype([get(%0/data.docked)],ROOM)]
 -
-# Function: canboard(console DBREF, player DBREF)
+# Function: canboard(ship DBREF, player DBREF)
 # Returns true if the player can board the ship
-&FN.CANBOARD #208=[t([member([get(%0/data.roster)],%1)])]
+&FN.CANBOARD #208=[or(
+                    member(get(%0/data.roster),%1),
+                    orflags(%1,Wr)
+                    )]
 -
 # Function: canuseconsole(console DBREF, player DBREF)
 # Returns true if the player can use the console
-&FN.CANUSECONSOLE #208=[firstof(
+&FN.CANUSECONSOLE #208=
+  [firstof(
   /@@ If the player is aleady manning the console, they can use it @@/
-  [u(#208/fn.ismanning,%0,%1)],
+        [u(#208/fn.ismanning,%0,%1)],
 
   /@@ If the console is unmanned and the player is a crew member, they can use it @@/
-  [and(
-    [u(#208/fn.isunmanned,%0)],
-    [u(#208/fn.iscrew,%0,%1)]
-  )]
+        [and(
+            [u(#208/fn.isunmanned,%0)],
+            [u(#208/fn.iscrew,%0,%1)]
+            )]
 
   /@@ Otherwise, the player can't use the console @@/
-  ,0
-)]
+        ,0
+  )]
 -
 # Function: ismanned(console DBREF)
 # Returns true if the console is manned

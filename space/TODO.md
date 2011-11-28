@@ -15,6 +15,7 @@ This is the list of work in-progress.
 * Shift default function processing from console to ship
 * Make all funcs process wiz/roy flag as default captain
 * Update ISCREW to only pass on Captain or Crew, not Visitor
+* Interior formatting.
 * Launching, scanning, and landing
 * Intra-system travel where time = Distance * Speed * Universal
 * Inter-system travel

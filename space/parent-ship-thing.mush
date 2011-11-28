@@ -9,14 +9,36 @@
 -
 @set #179=SAFE
 -
+@dol remove(lattr(#9),CONFORMAT)=@cpattr #9/##=#179
+-
+@cpattr #9/conformat=#179/iconformat
+-
+@conformat #179=
+-
+@edit #179/iconformat=lexits(%!),remove(lexits(%!),#-1)
+-
+@idescformat #179=[u(idescribe)]%r[u(iconformat,remove(lvcon(%!),%#))]
+-
 @lock/enter #179=LOCK.CANBOARD/1
 -
 @lset #179/enter=!no_inherit
 -
-@efail #179=Boarding access denied.
+@efail #179=Boarding access [ansi(rh,denied)].
 -
-@aenter #179=[pemit(%#,You board the vessel!)]
+@enter #179=You board the [ansi(wh,name(%!))].
+-
+@oenter #179=[name(%#)] boards the vessel from outside.
+-
+@oxenter #179=[name(%#)] boards the [name(%!)].
+-
+@leave #179=You disembark from the [ansi(wh,name(%!))].
+-
+@oleave #179=[name(%#)] disembarks.
+-
+@oxleave #179=[name(%#)] disembarks from the [name(%!)].
+-
+@idesc #179=The inside of the ship.
 -
 @desc #179=It's a space ship!
 -
-&LOCK.CANBOARD #179=[spacesys(canboard,[v(data.console)],%#)]
+&LOCK.CANBOARD #179=[spacesys(canboard,%!,%#)]
