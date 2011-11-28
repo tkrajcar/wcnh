@@ -8,7 +8,7 @@ module Comms
     c = Comlink.find_or_create_by(id: R["enactor"])
     ret = titlebar("Channel List") + "\n"
     ret << "#{'Alias'.ljust(7)} #{'Handle'.ljust(20)} #{'Name'.ljust(15)} Description\n".cyan
-    Channel.all.each do |channel| # TODO: Permissions
+    Channel.all.find_all { |chan| chan.can_see?(R["enactor"])}.each do |channel|
       if mbr = c.memberships.where(channel: channel.lowercase_name).first
         ret << mbr.shortcut.ljust(8).green.bold
         ret << mbr.active_handle.ljust(21).cyan.bold
@@ -53,8 +53,8 @@ module Comms
     else
       # Named channel.
       return "> ".bold.yellow + "Channel not found." unless ch = Channel.where(lowercase_name: channel).first
+      return "> ".bold.yellow + "You can't quite seem to figure out the encryption algorithms for that channel." unless ch.can_see?(R["enactor"])
 
-      # TODO: PERMISSIONS
       c.memberships.create!(channel: channel, shortcut: shortcut, active_handle: c.active_handle)
       newchan = ch.id
     end

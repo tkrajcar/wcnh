@@ -44,9 +44,20 @@ module Comms
     identity :type => String # name of channel for id
     field :lowercase_name, :type => String, :default => lambda { self._id.downcase }
     field :description, :type => String
+    field :permission_type, :type => String # used for permission handling - see can_join below. Use 'nil' for no permissions.
+    field :permission_value, :type => String
 
     index :lowercase_name
-    # TODO: Permissions stuff.
+
+    def can_see?(dbref)
+      return true if R.orflags(dbref,"Wr").to_bool # roy/wiz always can join
+      return true if self.permission_type.nil? # no permissions set
+      if self.permission_type == "faction"
+        members = R.u("#114/fn.list.members",self.permission_value) || ""
+        return members.split(' ').include?(dbref)
+      end
+      return false # failsafe in case a bad permission_type is set
+    end
   end
 
   # individual transmission on a channel, numeric or named.
