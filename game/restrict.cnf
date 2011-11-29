@@ -66,6 +66,15 @@ restrict_command @power logargs
 # Prevent players going home while set FIXED
 restrict_command home admin
 
+# Prevent mortals using @name
+restrict_command @name builder admin
+
+# Prevent mortals using remote-capable emit commands
+restrict_command @pemit builder admin pemit_all 
+restrict_command @nspemit builder admin pemit_all
+restrict_command @remit builder admin pemit_all
+restrict_command @nsremit builder admin pemit_all
+
 # Used to be hate_dest
 restrict_command @destroy noplayer " Use @recycle instead
 
@@ -95,7 +104,7 @@ restrict_command @create admin builder " You need the builder power to do that.
 restrict_command @whereis nobody
 
 # Used to be cemit_power
-restrict_command @cemit pemit_all cemit " You can't @cemit without pemit_all @power
+restrict_command @cemit pemit_all cemit " You can't @cemit without pemit_all @power.
 
 # Turn off ansi().
 #restrict_function ansi nobody
