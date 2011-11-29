@@ -9,11 +9,17 @@
 -
 @set #179=SAFE
 -
-@dol remove(lattr(#9),CONFORMAT)=@cpattr #9/##=#179
+@dol remove(lattr(#9),CONFORMAT NAMEFORMAT)=@cpattr #9/##=#179
 -
 @cpattr #9/conformat=#179/iconformat
 -
 @conformat #179=
+-
+@nameformat #179=
+  [titlebar([ifelse(hasattrval(%!,roomname),get(%!/roomname),name(%!))]
+  [if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%![flags(%!)]\))]
+  [if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)]
+  [if(and(t(setr(8,parent(%!))),not(strmatch(%q8,#179))),%b<[trim(regedit(name(%q8),lit(<\w*>),))]>)],v(COLOR.Frame))]
 -
 @edit #179/iconformat=lexits(%!),remove(lexits(%!),#-1)
 -

@@ -7,6 +7,20 @@
 -
 @set #208=SAFE NO_COMMAND
 -
+&DATA #208=#351
+-
+@STARTUP #208=
+  think [syslog(
+            SPACE,
+            Starting up GhettoSpace.  [words(get(v(data)/list.active))] active ships. 
+            Cycle interval set to [default(v(data)/interval,60)] seconds.
+            )];
+  @dol get(v(data)/list.active)={@drain/any/all ##;@nszemit ##=[ansi(rh,WARNING:)] Space System Reboot by Admin.};          
+  @trig me/tick
+-
+&TICK #208=
+  @dol get(v(data)/list.active)={@notify/any ##};@wait [default(v(data)/interval,60)]=@trig me/tick
+-
 # Function: console()
 # Display a console's commands and their syntax
 &FN.CONSOLE #208=You type the console command.

@@ -1,0 +1,9 @@
+@set #351=!safe no_command
+-
+@wipe #351
+-
+@set #351=safe
+-
+&INTERVAL #351=60
+-
+
