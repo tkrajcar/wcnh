@@ -1,0 +1,69 @@
+# chargen room 4: discharge
+# help terms of service
+# +I accept the TOS
+# +decline faction
+# +accept faction (undocumented - result of +decline)
+# +list
+# +choose <planet> 
+# +finish (undocumented - result of +choose)
+
+@desc #217=
+  So close to being done! Admin will review your background and let you know if there are any issues, but in the meantime, you can start exploring and roleplaying your character. There's just three things left - accept our Terms of Service, choose whether you want to be placed into a starting faction, and select your starting location.
+  %r%r
+  [ansi(hy,For the commands\, see 'help chargen room 4'.)] 
+-
+
+&cmd.+tos #217=$+I accept the TOS:
+  @pemit %#=[ansi(hb,>)] Great! You're good to go.;
+  &char`tos %#=Accepted: [secs()]
+-
+
+&cmd.+decline #217=$+decline faction:
+  @pemit %#=[ansi(hb,>)] You have selected to DECLINE faction membership out of the gate. Consider this carefully. Living outside the laws, as loose as they are, can be a VERY tough life. Especially if you are new to the game, this choice is NOT recommended. If you have changed your mind, type [ansi(h,+accept faction)].;
+  &char`declinefaction %#=1;
+-
+
+&cmd.+accept #217=$+accept faction:
+  @pemit %#=[ansi(hb,>)] You have selected to ACCEPT faction membership.;
+  &char`declinefaction %#;
+-
+
+&cmd.+list #217=$+list:
+  @pemit %#=[titlebar(Starting Planets)]%r
+  [iter(lattr(me/planet.*),[ansi(hy,after(##,.))]: [extract(v(##),2,1,|)], ,%R)]%r
+  [ansi(y,Type)] [ansi(hy,+choose <planet>)] [ansi(y,once you are ready to leave chargen and enter the game.)]%r
+  [footerbar()]
+-
+
+&cmd.+choose #217=$+choose *:
+  @assert [hasattr(me,planet.%0)]=
+    @pemit %#=[ansi(hb,>)] That's not a valid starting planet! Type [ansi(h,+list)] to see them.;
+  &char`startingplanet %#=%0;
+  @pemit %#=[ansi(hb,>)] Starting planet set. If you need to edit your character more, just type [ansi(h,back)] to go back through the rooms as needed. [ansi(y,If you are now ready to leave character generation)] [ansi(hyu,permanently)][ansi(y,\, type)] [ansi(h,+finish)].
+-
+
+&cmd.+finish #217=$+finish:
+  @break [orflags(%#,Wr)]=
+    @pemit %#=[ansi(hb,>)] Yeah, admin REALLY shouldn't run that command.;
+  @assert [hasattr(%#,char`tos)]=
+    @pemit %#=[ansi(hb,>)] You must accept the Terms of Service before finishing chargen.;
+  @assert [hasattr(%#,char`startingplanet)]=
+    @pemit %#=[ansi(hb,>)] You must choose a starting planet!;
+  @pemit %#=[ansi(hb,>)] Finalizing character. Stand by...;
+  @tri me/tri.finalize=%#;
+-
+
+&tri.finalize #217=
+  think [rpc(PlayerFile.register,get(%0/email),%0)];
+  think [syslog(New player [name(%0)]\(%0\), [get(%0/email)]. Starting on [get(%0/char`startingplanet)]. [if(get(%0/char`declinefaction),Faction DECLINED.)])];
+  &char`approved %0=[secs()];
+  @set %0=IC;
+  think [tel(%0,extract(v(planet.[get(%0/char`startingplanet)]),1,1,|))];
+  @pemit %#=[ansi(hb,>)] You have entered the game world.;
+  &unapproved.players #111=[setunion(get(#111/unapproved.players),%0)];
+  @break [get(%0/char`declinefaction)];
+  think [setq(0,switch(chargen(get.race,%0),Kilrathi,KC,ESC))];
+  think [faction(addmember,%q0,%0)];
+  @swi [t(setr(1,faction(channel,%q0)))]=1,{@chan/on %q1=%0;@nscemit/noisy %q1=[ansi(h,name(%0) has joined [faction(name,%q0)]!)]};
+  @pemit %#=[ansi(hb,>)] You have joined the [ansi(h,[faction(name,%q0)])].;
+
