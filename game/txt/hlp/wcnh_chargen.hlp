@@ -1,0 +1,224 @@
+& chargen
+  These files are designed to ease you through the character generation 
+  process as easily as possible. You can always ask on channel <Help> for 
+  assistance. It is recommended that you read over all these chargen files 
+  before beginning the process, to avoid having to start over.
+  
+  Topic          Updated    Summary 
+  OVERVIEW      [11/28/11]  A general overview of the new chargen system.
+  COMMANDS      [11/28/11]  A list of the chargen-system commands.
+  ROOM          [11/28/11]  Specific help for each room of chargen.
+ 
+  Type 'help chargen <subtopic>' to access a subtopic.
+& chargen overview
+  If you're not familiar with a 'chargen' system, it's a common term for a MUSH
+  system to help design your character - his or her abilities, skills, traits,
+  and so on. The process is very similar to that used in pen-and-paper RPGs.
+
+  WCNH's system is based on the FUDGE tabletop system, with adaptations and
+  customizations for MUSH use.
+
+  As a new player, you will need to complete chargen before you can begin role-
+  playing. Don't worry, it doesn't take very long.
+
+  Your character will have two classes of abilities: ATTRIBUTES and SKILLS.
+  You have six attributes that represent big-picture capabilities.  
+  Each of these attributes has a number of skills based on it. These represent
+  specific abilities, things you can be trained on, and so on. They are:
+
+  REAson - your ability to solve mental challenges, learn and retain knowledge
+  STRength - your pure physical power and brute force abilities
+  PERception - your ability to notice things around you and engage socially
+  AGIlity - your physical mobility, dexterity, and coordination
+  WILlpower - your inner strength, resolve, and determination
+  HEAlth - your vitality and overall hardiness
+
+  Type 'help chargen overview2' to continue.
+& chargen overview2
+  Both attributes and skills are rated on a simple scale. Like many RPG
+  systems, it is numbers-based, but it also has adjectives attached (for
+  example, a 4 is 'Good'). You can type '+values' to view the scale.
+
+  Typing '+sheet' will show you your attributes and skills. Most skills
+  have a base, which you can see via '+skillinfo <skill>'. For example, 
+  Astrogation has a base of REA-2; if your REAson is Good (4), that skill will
+  be Mediocre (2).
+
+  Some skills are complex and don't have a base; those skills will start at 
+  Awful (0) for everybody.
+
+  In chargen, you will be able to add levels to your skills. Continuing the
+  example above, if you spend points in chargen to get a +2 in Astrogation,
+  you'd then have it at Good (4).
+
+  Once your skills and attributes are set, you can roll them using '+check'.
+  See 'help +check' for info. Some game systems will auto-+check for you.
+
+  As you walk through chargen, the helpfile for each room will give you the
+  commands necessary. There are also several global commands that can be used
+  outside of chargen.
+
+  To start chargen, look for the 'chargen' exit in the new player area.
+  Don't be afraid to ask for help at any point via the <Help> channel - just
+  type '+help <message>'.
+
+  Type 'help chargen commands' to see the list of global chargen commands.
+& chargen commands
+  These are the global commands that interface with the chargen system.
+  For information on the commands used IN chargen itself, see 'help chargen 
+  room'.
+
+  COMMANDS:
+
+  +check         +sheet         +skillinfo     +values   
+
+  Type 'help <entry>' for information on each command.
+& +check
+  +check[/private] <skill|attribute>
+
+  This command runs a skill or attribute check, rolling the dice to see how
+  your character does at a task using that skill or attribute. A +check
+  consists of your base value in that attribute or skill, with a random number
+  between -2 and +2 added. For example, if your Astrogation skill is Good (4),
+  a '+check Astrogation' will always be between Mediocre (2) and Superb (6).
+
+  +checks are visible to everyone in the same room. If you don't want to spam
+  everybody, use +check/private.
+See also: chargen overview, +sheet, +skillinfo, +values
+& +sheet
+  +sheet
+
+  +sheet shows you your character's attributes and skills.
+
+  Note that the skill groups are cosmetic only and do NOT reflect the base
+  attribute. Use '+skillinfo' to see that information.
+See also: chargen overview, +check, +skillinfo, +values
+& +skillinfo
+  +skillinfo <skill>
+
+  This command shows you information on a skill.
+See also: chargen overview, +check, +sheet, +values
+& +values
+  +values
+
+  +values shows you the various numerical values used in WCNH's chargen system,
+  and their adjective descriptions.
+See also: chargen overview, +check, +sheet, +skillinfo
+& chargen room
+  For information on each room of chargen type 'help chargen room 1', 'help
+  chargen room 2', and so on.
+& chargen room 1
+Welcome aboard! This help file will help you through the first room.
+The commands you'll need here are:
+ 
++set age <AGE>
+You can't be over 85 or under 18. Note that we use 'human years' here, even
+for other races.
+ 
++set race <RACE>
+Choose a race. Valid races at the moment are are Human or Kilrathi.
+ 
++set concept <CONCEPT>
+Your 'concept' is a one-or-two sentence summary of your character. We make you
+write this first because then you can keep it in mind for the rest of chargen,
+which really helps the process (believe it or not). Example: 'A neophyte
+merchant trader. Young, impressionable, but determined to make his mark on the 
+galaxy.'
+ 
++set name <firstname> <lastname>
+You need a full name. Kilrathi should use their clan name as their last name.
+(See the Kilrathi page on the website for info on the clans that are part of
+our little corner of the galaxy.)
+ 
++set gender <Male|Female>
+I dearly hope this is self-explanatory.
+ 
++set alias <alias>
+An alias is a short form of your name, something easier to type than the full
+thing. It must be 5 letters or less.
+
+onwards
+Once you've set all the above, type 'onwards' to move to the next room.
+& chargen room 2
+This room allows you to set your skills and attributes. Make sure and read 
+'help chargen overview' first or you will be totally lost.
+
+If you type 'look', you'll see your remaining skill points and attribute
+levels.
+
+Increasing attributes is straightforward - spend an attribute level to increase
+an attribute. You can also lower your starting attributes to raise other 
+attributes, if desired.
+
+Raising a skill from 0 to 1 costs 1 point. Every level beyond that costs that
+level, minus one. So 1 to 2 costs 1 point, 2 to 3 costs 2 points, and so on.
+
+An attribute can never be lower than 1 or higher than 6.
+A skill can never be lower than 0 or higher than 6 (total score, not +6).
+ 
++sheet
+Displays all your skills and attributes. See 'help +sheet'.
+
++raise <skill|attribute>
+Raises a skill or attribute, if you've got the attribute levels/skill points.
+
++lower <skill|attribute>
+Lowers a skill or attribute.
+
+onwards
+Once you've set all the above, type 'onwards' to move to the next room.
+& chargen room 3
+In room 3, you'll set your background and do a few housekeeping items. Your
+background is a description of your character's life prior to you starting to
+tell his or her story "live" on the game; their childhood, upbringing, and so
+on.
+
+We use a simple question-based system to help you get your background done
+quickly, and there's no waiting for approval. If you write something that's
+out of whack with the universe we're trying to roleplay in, an admin will let
+you know.
+
+The commands are:
+
++bg/questions
+List all the questions we need answered. Optional questions are not required,
+but you're encouraged to answer them.
+
++bg/answer <question>=<text>
+Answers a question. Pages of text aren't really needed, but a few sentences
+would be nice.
+
++bg/question <number>
+Review your answer to a question.
+
++email <email>
+Set your email address. If you've previously played the game under a different
+email address, please let an administrator know prior to finishing chargen.
+
+@desc me=<description>
+Write a description of your character; what he/she looks like physically,
+typical posture/attitude, clothing and accessories/personal items, and so on.
+
+onwards
+Once you've set all the above, type 'onwards' to move to the next room.
+& chargen room 4
+Almost done. There's only a few things to do here.
+
+help terms of service
+Please take a moment to review our terms of service. It's important.
+
++I ACCEPT THE TOS
+After you read the TOS, type this command if you accept. If you don't accept,
+feel free to disconnect.
+
++decline faction
+This command should be used ONLY if you plan to play a character that does NOT
+have IC citizenship in the appropriate government for his/her race. This is
+almost certainly a bad choice for new players and it's recommended you discuss
+this with a Guide or admin before proceeding if you think it's right for you.
+
++list
+This command lists the various starting planets.
+
++choose <planet>
+Chooses a starting planet.
