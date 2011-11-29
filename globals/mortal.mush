@@ -91,7 +91,27 @@
 -
 @set #15/cmd.+who=regexp
 -
-&cmd.+who #15=$^[\+@]?who$:@nspemit %#=[titlebar(+who)]%r%b[ansi(y,align(3 35 5 >8 >8,Sex,Title\, Name\, & Clan,Alias,Idle,On For))]%r%b[ansi(r,--- [repeat(-,35)] ----- [repeat(-,8)] [repeat(-,8)])]%r[map(map.+who,mwho(), ,%r)]%r[footerbar(words(mwho()) players online)]
+&cmd.+who #15=$^[\+@]?who$:
+  @nspemit %#=
+  [titlebar(+who)]%r
+  %b[ansi(y,align(3 25 >8 >8 29,Sta,Name\(Alias\),Idle,On For,ifelse(orflags(%#,Wr),Location,Doing)))]%r
+  %b[ansi(r,--- [repeat(-,25)] [repeat(-,8)] [repeat(-,8)] [repeat(-,29)])]%r
+  [map(map.+who,lwho(%#), ,%r)]%r
+  [footerbar(words(lwho(%#)) players online)]
+-
+&map.+who #15=
+  %b[align(
+      >3 25 >8 >8 29,
+      switch(orflags(%0,Wr)[t(hidden(%0))][t(default(%0/char`approved,0))][hasflag(%0,IC)],10*,[ansi(hy,ADM)],11*,[ansi(hx,HID)],000*,[ansi(hm,NEW)],0011,[ansi(hg,IC)],[ansi(hr,OOC)]),
+      ansi(switch(hidden(%0)[orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))[if(hasattr(%0,alias),\([get(%0/alias)]\))],
+      ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),
+      extract(timestring(conn(%0)),1,2),
+      mid(
+        ifelse(orflags(%#,Wr),
+          [ansi(hc,rjust(loc(%0),4))] [ansi(w,[name(loc(%0))])][if(zone(loc(%0)),-[ansi(c,name(zone(loc(%0))))])],
+          doing(%0)
+      ),0,29)
+    )]
 -
 &filter.isconnected #15=[hasflag(%0,connected)]
 -
@@ -100,8 +120,6 @@
 &fn.connected_players_in_room #15=[itemize(iter(filter(filter.isconnected,lcon(%0)),name(##), ,|),|)]
 -
 &fn.rooms_with_connected_players #15=[setunion(iter(mwho(),loc(##)),)]
--
-&map.+who #15=%b[align(-3 35 5 >8 >8,\([switch(left(default(%0/sex,?),1),M,ansi(b,M),F,ansi(m,F),ansi(hx,?))]\),[if(hasattr(%0,title),get(%0/title)%b)][ansi(ifelse(orflags(%0,Wr),hy,h),name(%0))][if(hasattr(%0,clan),%bnar [get(%0/clan)])],get(%0/alias),ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),extract(timestring(conn(%0)),1,2))]
 -
 &cmd.+ooc #15=$+ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<+OOC>) %q0))]
 -
