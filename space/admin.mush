@@ -4,6 +4,8 @@
 -
 @set #367=safe
 -
+@desc #367=Global space commands.
+-
 @lock #367==#367
 -
 @lock/use #367=flag^wizard|power^api

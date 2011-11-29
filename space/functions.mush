@@ -28,7 +28,62 @@
   @trig me/tick
 -
 &TICK #208=
-  @dol get(v(data)/list.active)={@notify/any ##};@wait [default(v(data)/interval,60)]=@trig me/tick
+  @dol get(v(data)/list.active)={@notify/any ##;think [spacesys(update.report,##)]};
+  @wait [default(v(data)/interval,60)]=@trig me/tick
+-
+&FN.MOVE #208=
+  [set(%0,space`x:%1)][set(%0,space`y:%2)]
+-
+&FN.ADVANCE #208=
+  ifelse(
+      hasattrval(%0,space`destination),
+      [u(fn.move,%0,first(setr(0,u(fn.advance.calc,%0))),last(%q0))]
+        [if(strmatch(%q0,get(%0/space`destination)),wipe(%0/space`destination))],
+      #-1 NO DESTINATION SET
+      )
+-
+&FN.HEADING #208=
+  [setq(dx,sub(first(setr(0,get(%0/space`destination))),get(%0/space`x)))][setq(dy,sub(last(%q0),get(%0/space`y)))][u(subfn.rad2deg,atan2(mul(r(dx),-1),r(dy)))]
+-
+&SUBFN.DELTA_Y #208=
+  [mul(-1,u(fn.speed,%0),cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+-
+&SUBFN.DELTA_X #208=
+  [mul(-1,u(fn.speed,%0),cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+-
+&FN.ADVANCE.CALC #208=
+  ifelse(
+      t(hasattrval(%0,space`destination)),
+      add(get(%0/space`x),u(subfn.delta_x,%0))] [add(get(%0/space`y),u(subfn.delta_y,%0)),
+      #-1 NO DESTINATION SET
+      )
+-
+&FN.SPEED #208=
+  default(%0/space`maxspeed,10)
+-
+&SUBFN.RAD2DEG #208=
+  add(fdiv(mul(%0,180),pi()),180)
+-
+&OLD.FN.ADVANCE.CALC #208=
+  ifelse(
+      hasattrval(%0,space`destination),
+        vmin(
+            vadd(
+                  vmul(
+                      vmul(
+                          vunit(
+                              vsub(get(%0/space`destination),[get(%0/space`x)] [get(%0/space`y)])
+                              ),
+                          default(%0/space`maxspeed,10)
+                          ),
+                      default(v(data)/default.speed,1)
+                      ),
+                  [get(%0/space`x)] [get(%0/space`y)]
+                  ),
+            get(%0/space`destination)
+            ),
+      #-1 NO DESTINATION SET
+      )
 -
 &FN.CLASS #208=
   [ifelse(
@@ -81,6 +136,7 @@
       1110?,#-1 OUT OF RANGE,
       11110,#-1 NO LANDING ZONE ON TARGET,
       11111,[u(fn.notify.ship,%0,The ship lurches as it touches down.)]
+            /@@ Notify other in-system ships @@/
             [tel(%0,setr(2,get(%q1/data.landing)),silent)]
             [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
             [set(%0,data.docked:%q2)]
@@ -106,6 +162,7 @@
           [set(v(data),list.active:[trim([get(v(data)/list.active)] %0)])]
           [u(fn.notify.consoles,%0,Launch sequence complete.)]
           [spacesys(update.report,%0)]
+          /@@ Notify other in-system ships @@/
           )]
 -
 &FN.ISSHIP #208=
