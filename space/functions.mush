@@ -21,6 +21,109 @@
 &TICK #208=
   @dol get(v(data)/list.active)={@notify/any ##};@wait [default(v(data)/interval,60)]=@trig me/tick
 -
+&FN.CLASS #208=
+  [ifelse(
+      hasattrval(%0,space`class),
+      get(%0/space`class),
+      Unknown
+      )]
+-
+&FN.ADDCONSOLE #208=
+  [switch(
+      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+      [strmatch(last(lparent(%1)),get(v(data)/parent.console))],
+
+      0?,#-1 INVALID SHIP OBJECT,
+      10,#-1 INVALID CONSOLE OBJECT,
+      11,[set(%1,data.ship:%0)]
+         [powers(%1,api)]
+         [lock(%1,=%1)]
+         [set(%0,data.consoles:[trim([get(%0/data.consoles)] %1)])]
+         )]
+-
+&FN.DISTANCE #208=
+  [dist2d(
+      get(%0/space`x),
+      get(%0/space`y),
+      get(%1/space`x),
+      get(%1/space`y)
+      )]
+-
+&FN.LAND #208=
+  [switch(
+      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+      [t(setr(1,locate(%0,%1,nT)))]
+      [not(u(fn.isdocked,%0))]
+      [and(
+          eq(get(%0/space`x),get(%q1/space`x)),
+          eq(get(%0/space`y),get(%q1/space`y))
+          )]
+      [t(hasattrval(%q1,data.landing))],
+
+      0????,#-1 INVALID SHIP OBJECT,
+      10???,#-1 INVALID TARGET OBJECT,
+      110??,#-1 SHIP IS ALREADY DOCKED,
+      1110?,#-1 OUT OF RANGE,
+      11110,#-1 NO LANDING ZONE ON TARGET,
+      11111,[u(fn.notify.ship,%0,The ship lurches as it touches down.)]
+            [tel(%0,setr(2,get(%q1/data.landing)),silent)]
+            [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
+            [set(%0,data.docked:%q2)]
+            [set(v(data),list.active:[remove(get(v(data)/list.active),%0)])]
+            [iter(after(get(%0/space`report),|),u(fn.notify.consoles,%0,Contact [name(itext(0))] lost from sensors.))]
+            [set(%0,space`report:[secs()]|)]
+            )]
+-
+&FN.LAUNCH #208=
+  [switch(
+      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+      [u(fn.isdocked,%0)]
+      [hasattrval(loc(%0),space`loc)],
+
+      0??,#-1 INVALID SHIP OBJECT,
+      10?,#-1 SHIP ALREADY UNDOCKED,
+      110,#-1 INVALID LANDING AREA SPACE LOC
+      111,[u(fn.notify.ship,%0,The roar of the engines diminishes as the ship breaks into orbit.)]
+          [nsremit(loc(%0),The [ansi(wh,name(%0))] lifts off with a roar of its engines.)]
+          [tel(%0,loc(setr(0,get(loc(%0)/space`loc))),silent)]
+          [set(%0,data.docked:)]
+          [set(%0,space`x:[get(%q0/space`x)])]
+          [set(%0,space`y:[get(%q0/space`y)])]
+          [set(v(data),list.active:[trim([get(v(data)/list.active)] %0)])]
+          [u(fn.notify.consoles,%0,Launch sequence complete.)]
+          [iter(setr(1,u(fn.list.report,%0)),u(fn.notify.consoles,%0,New contact [name(itext(0))] detected on sensors.))]
+          [set(%0,space`report:[secs()]|%q1)]
+          )]
+-
+&FN.LIST.REPORT #208=
+  [switch(
+      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+      [not(u(fn.isdocked,%0))],
+
+      0?,#-1 INVALID SHIP OBJECT,
+      10,#-1 SHIP IS DOCKED,
+      11,[trim(filter(filter.inrange,remove(filter(filter.spaceobj,lcon(loc(%0))),%0)))]
+      )]
+-
+&FILTER.SPACEOBJ #208=
+  [and(
+      hasattrval(%0,space`x),
+      hasattrval(%0,space`y)
+      )]
+-
+&FILTER.INRANGE #208=
+  1
+-
+&FN.NOTIFY.SHIP #208=
+  [nsremit(%0,%1)]
+  [nszemit(%0,%1)]
+-
+&FN.NOTIFY.CONSOLES #208=
+  iter(
+    get(%0/data.consoles),
+    nspemit(get(itext(0)/data.manned),[ansi(gh,>)] %1)
+    )
+-
 # Function: console()
 # Display a console's commands and their syntax
 &FN.CONSOLE #208=You type the console command.
@@ -47,7 +150,7 @@
 -
 # Function: isdocked(ship DBREF)
 # Returns true if the ship is docked.
-&FN.ISDOCKED #208=[hastype([get(%0/data.docked)],ROOM)]
+&FN.ISDOCKED #208=[t(hastype([get(%0/data.docked)],ROOM))]
 -
 # Function: canboard(ship DBREF, player DBREF)
 # Returns true if the player can board the ship

@@ -17,6 +17,34 @@
 -
 @lset #204/command=!no_inherit
 -
+&COMMAND_LOCK`FAILURE #204=
+  [ifelse(
+    not(hasattrval(%!,data.ship)),
+    [ansi(rh,WARNING:)] [trim(before(name(%!),<))] does not have a valid ship object set.,
+    Huh? \(Type "help" for help.\)
+    )]
+-
+&CMD.SCAN #204=$scan:
+  @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
+
+          0,@nspemit %#=[ansi(gh,>)] The ship is currently landed.,
+          1,{@nspemit %#=[titlebar(Sensor Report: [name(%q0)])]%r
+                         %b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
+                         %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
+                         [iter(
+                            setr(1,spacesys(list.report,%q0)),
+                            %b[align(
+                                2 39 21 >12,
+                                #@,
+                                [name(itext(0))],
+                                [spacesys(class,itext(0))],
+                                [round(spacesys(distance,%q0,itext(0)),2,1)]km
+                                )],
+                            ,%r)]%r
+                         [footerbar([words(%q1)] Contacts)];
+             @set %q0=space`report:[secs()]|%q1
+            }
+-
 @ufail #204=[pemit(%#,
   [if([spacesys(ismanned,%!)],
     /@@ Console is manned by someone else @@/
@@ -37,7 +65,7 @@
 -
 &LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,%!,%#)]
 -
-&LOCK.ISMANNING #204=[spacesys(ismanning,%!,%#)]
+&LOCK.ISMANNING #204=[and(spacesys(ismanning,%!,%#),hasattrval(%!,data.ship))]
 -
 &AUSE #204=
   @name %!=[trim(before(name(%!),<))] <[name(%#)]>;
@@ -45,8 +73,8 @@
 -
 &CMD.UNMAN #204=$unman:
   @name %!=[trim(before(name(%!),<))] <Unmanned>;
-  @pemit %#=You unman the [trim(before(name(%!),<))];
-  @oemit %#=[name(%#)] unmans the [trim(before(name(%!),<))].;
+  @nspemit %#=You unman the [trim(before(name(%!),<))];
+  @nsoemit %#=[name(%#)] unmans the [trim(before(name(%!),<))].;
   &data.manned %!;
 -
 &OUSE #204=
@@ -60,7 +88,7 @@
       spacesys(ismanned,%!),
       You are already manning the [trim(before(name(%!),<))].,
       You man the [trim(before(name(%!),<))].
-      )]
+      )] 
 -
 # Command: console
 # Diplay the console commands and their syntax
