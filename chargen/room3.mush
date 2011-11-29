@@ -39,7 +39,7 @@
   @pemit %#=[ansi(hb,>)] [ansi(h,v(%q1))]: [default(%#/char`bg`%q0`a,No answer yet.)]
 -
 
-&email #214=$+email *:
+&cmd.+email #214=$+email *:
   &email %#=%0;
   @pemit %#=[ansi(hb,>)] Email set.
 -
