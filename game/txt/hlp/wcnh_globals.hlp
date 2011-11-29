@@ -1,0 +1,32 @@
+& +where
+  +where
+
+  This gives you an idea of where players are located. This is OOC information,
+  of course.
+& +who
+  +who
+
+  This command lists all connected players, with some information about them.
+& ooc
+  ooc <message>
+
+  This command sends an OOC message to all the connected players in the room.
+& +set
+  +set <IC|OOC>
+
+  By typing '+set OOC', you can move to the OOC nexus and get away from the
+  game for a little bit. Idling in OOC rather than an IC room is appreciated.
+
+  '+set IC' will return you to where you were when you went OOC.
+
+  Going OOC to avoid IC consequences of an action is considered Bad Form(tm).
+& time
+  time
+
+  Shows you the current IC date & time.
+& +finger
+  +finger <person>
+
+  This command gives you OOC information about a player. If you are wondering
+  why it has a strange name, ask your friendly neighborhood UNIX-knowledgeable
+  greybeard computer geek.
