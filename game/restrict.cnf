@@ -67,7 +67,7 @@ restrict_command @power logargs
 restrict_command home admin
 
 # Prevent mortals using @name
-restrict_command @name builder admin
+restrict_command @name builder admin api
 
 # Prevent mortals using remote-capable emit commands
 restrict_command @pemit builder admin pemit_all 
