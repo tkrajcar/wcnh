@@ -27,7 +27,13 @@
 -
 @lock/enter #179=LOCK.CANBOARD/1
 -
+@lock/leave #179=LOCK.CANLEAVE/1
+-
 @lset #179/enter=!no_inherit
+-
+@lset #179/leave=!no_inherit
+-
+@lfail #179=The ship isn't landed!
 -
 @efail #179=Boarding access [ansi(rh,denied)].
 -
@@ -48,3 +54,7 @@
 @desc #179=It's a space ship!
 -
 &LOCK.CANBOARD #179=[spacesys(canboard,%!,%#)]
+-
+&LOCK.CANLEAVE #179=[hasattrval(%!,data.docked)]
+-
+

@@ -5,17 +5,21 @@
 # Setup the MUSH object
 @desc #208=It's SPAAAAACE!
 -
-@set #208=SAFE NO_COMMAND
+@set #208=!SAFE NO_COMMAND
+-
+@wipe #208
+-
+@set #208=SAFE
 -
 &DATA #208=#351
 -
-@STARTUP #208=
+&SUBFN.RESTART #208=
   think [syslog(
             SPACE,
-            Starting up GhettoSpace.  [words(get(v(data)/list.active))] active ships. 
+            Rebooting GhettoSpace.  [words(get(v(data)/list.active))] active ships. 
             Cycle interval set to [default(v(data)/interval,60)] seconds.
             )];
-  @dol get(v(data)/list.active)={@drain/any/all ##;@nszemit ##=[ansi(rh,WARNING:)] Space System Reboot by Admin.};          
+  @dol get(v(data)/list.active)={@drain/any/all ##;@nszemit ##=[ansi(rh,WARNING:)] Space System Reboot by Admin.}; 
   @trig me/tick
 -
 &TICK #208=
@@ -51,7 +55,7 @@
 -
 &FN.LAND #208=
   [switch(
-      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+      [u(fn.isship,%0)]
       [t(setr(1,locate(%0,%1,nT)))]
       [not(u(fn.isdocked,%0))]
       [and(
@@ -70,13 +74,12 @@
             [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
             [set(%0,data.docked:%q2)]
             [set(v(data),list.active:[remove(get(v(data)/list.active),%0)])]
-            [iter(after(get(%0/space`report),|),u(fn.notify.consoles,%0,Contact [name(itext(0))] lost from sensors.))]
-            [set(%0,space`report:[secs()]|)]
+            [spacesys(update.report,%0)]
             )]
 -
 &FN.LAUNCH #208=
   [switch(
-      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+      [u(fn.isship,%0)]
       [u(fn.isdocked,%0)]
       [hasattrval(loc(%0),space`loc)],
 
@@ -84,31 +87,45 @@
       10?,#-1 SHIP ALREADY UNDOCKED,
       110,#-1 INVALID LANDING AREA SPACE LOC
       111,[u(fn.notify.ship,%0,The roar of the engines diminishes as the ship breaks into orbit.)]
-          [nsremit(loc(%0),The [ansi(wh,name(%0))] lifts off with a roar of its engines.)]
+          [nsremit(loc(%0),The [ansi(wh,name(%0))] dissapears from sight as it's propelled into orbit.)]
           [tel(%0,loc(setr(0,get(loc(%0)/space`loc))),silent)]
           [set(%0,data.docked:)]
           [set(%0,space`x:[get(%q0/space`x)])]
           [set(%0,space`y:[get(%q0/space`y)])]
           [set(v(data),list.active:[trim([get(v(data)/list.active)] %0)])]
           [u(fn.notify.consoles,%0,Launch sequence complete.)]
-          [iter(setr(1,u(fn.list.report,%0)),u(fn.notify.consoles,%0,New contact [name(itext(0))] detected on sensors.))]
-          [set(%0,space`report:[secs()]|%q1)]
+          [spacesys(update.report,%0)]
           )]
 -
+&FN.ISSHIP #208=
+  [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+-
+&FN.UPDATE.REPORT #208=
+# %q0 = New contacts detected.
+# %q1 = Contacts lost from sensors.
+  [ifelse(
+      [not(u(fn.isship,%0))],
+      #-1 INVALID SHIP OBJECT,
+      [setq(0,setdiff(setr(2,u(fn.list.report,%0)),after(setr(3,get(%0/space`report)),|)))]
+      [setq(1,setdiff(after(%q3,|),%q2))]
+      [iter(%q0,u(fn.notify.consoles,%0,New contact [name(itext(0))] [ansi(gh,detected)] on sensors.))]
+      [iter(%q1,u(fn.notify.consoles,%0,Contact [name(itext(0))] [ansi(rh,lost)] from sensors.))]
+      [set(%0,space`report:[secs()]|%q2)]
+      %q2
+      )]
+-
 &FN.LIST.REPORT #208=
-  [switch(
-      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
-      [not(u(fn.isdocked,%0))],
-
-      0?,#-1 INVALID SHIP OBJECT,
-      10,#-1 SHIP IS DOCKED,
-      11,[trim(filter(filter.inrange,remove(filter(filter.spaceobj,lcon(loc(%0))),%0)))]
+  [ifelse(
+      [not(u(fn.isship,%0))],
+      #-1 INVALID SHIP OBJECT,
+      [trim(filter(filter.inrange,remove(filter(filter.spaceobj,lcon(loc(%0))),%0)))]
       )]
 -
 &FILTER.SPACEOBJ #208=
   [and(
       hasattrval(%0,space`x),
-      hasattrval(%0,space`y)
+      hasattrval(%0,space`y),
+      not(hasattrval(%0,data.docked))
       )]
 -
 &FILTER.INRANGE #208=
@@ -211,3 +228,21 @@
 -
 # Temporary stuff, belongs elsewhere
 &FN.HICMD #208=[ansi(hu,%0)]
+-
+&FN.SCAN #208=
+  [titlebar(Sensor Report: [name(%0)])]%r%b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
+  %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
+  [iter(
+      setr(1,spacesys(list.report,%0)),
+      %b[align(
+            2 39 21 >12,
+            #@,
+            [name(itext(0))],
+            [spacesys(class,itext(0))],
+            [round(spacesys(distance,%0,itext(0)),2,1)]km
+            )],
+      ,%r)]%r
+  [footerbar([words(%q1)] Contacts)]
+  [set(%0,space`report:[secs()]|%q1)]
+-
+

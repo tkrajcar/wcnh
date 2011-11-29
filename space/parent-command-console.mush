@@ -27,23 +27,8 @@
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
 
-          0,@nspemit %#=[ansi(gh,>)] The ship is currently landed.,
-          1,{@nspemit %#=[titlebar(Sensor Report: [name(%q0)])]%r
-                         %b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
-                         %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
-                         [iter(
-                            setr(1,spacesys(list.report,%q0)),
-                            %b[align(
-                                2 39 21 >12,
-                                #@,
-                                [name(itext(0))],
-                                [spacesys(class,itext(0))],
-                                [round(spacesys(distance,%q0,itext(0)),2,1)]km
-                                )],
-                            ,%r)]%r
-                         [footerbar([words(%q1)] Contacts)];
-             @set %q0=space`report:[secs()]|%q1
-            }
+          0,@nspemit %#=[ansi(rh,>)] The ship is currently landed.,
+          1,@nspemit %#=[spacesys(scan,%q0)]
 -
 @ufail #204=[pemit(%#,
   [if([spacesys(ismanned,%!)],
@@ -107,5 +92,12 @@
 &CMD.ROSTER #204=$roster:[pemit(%#,
   [spacesys(roster)]
 )]
+-
+&CMD.LAND #204=$land *:
+  @switch [t(lte(%0,words(setr(0,spacesys(update.report,v(data.ship))))))]
+          [hasattrval(setr(1,extract(%q0,%0,1)),data.landing)]=
+
+          11,@nspemit %#=Okay,
+          @nspemit %#=Not Okay.
 -
 
