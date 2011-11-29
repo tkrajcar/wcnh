@@ -138,5 +138,28 @@
 
 &FN.LIST #25=#25
 -
+&USE.ALIAS #25=man
+-
+&ENTER.ALIAS #25=board
+-
+&LEAVE.ALIAS #25=disembark
+-
+&STARTUP #25=
+    @dol [setr(0,iter(v(FN.List),iter(lattr([setr(1,##)]/*.FN),%q1\,[itext(0)])))]=
+    
+         {@function/preserve [before(rest(lit(##),\,),.FN)]=##};
+    @cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] 
+                  [ansi(hw,@Functions initialized.)] 
+                  %([ansi(c,[iter(%q0,[first(setr(1,lit(##)),\,)]:[before(rest(%q1,\,),.FN)])])]%);
+    @dol [lattr(me/*.ATTR)]=
+    
+         {@attrib/access/retroactive [before(##,.ATTR)]=[xget(#25,##)]};
+    @cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] 
+                  [ansi(hw,Shared Attributes initialized.)] %([ansi(c,[iter(lattr(me/*.ATTR),[before(##,.ATTR)])])]%);
+    @dol [lattr(me/*.ALIAS)]=
 
-&STARTUP #25=@dol [setr(0,iter(v(FN.List),iter(lattr([setr(1,##)]/*.FN),%q1\,[itext(0)])))]={@function/preserve [before(rest(lit(##),\,),.FN)]=##};@cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] [ansi(hw,@Functions initialized.)] %([ansi(c,[iter(%q0,[first(setr(1,lit(##)),\,)]:[before(rest(%q1,\,),.FN)])])]%);@dol [lattr(me/*.ATTR)]={@attrib/access/retroactive [before(##,.ATTR)]=[xget(#25,##)]};@cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] [ansi(hw,Shared Attributes initialized.)] %([ansi(c,[iter(lattr(me/*.ATTR),[before(##,.ATTR)])])]%)
+         {@command/alias [before(##,.)]=[xget(#25,##)]};
+    @cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] 
+                  [ansi(hw,Commands Aliased.)] %([ansi(c,[iter(lattr(me/*.ALIAS),[before(##,.ALIAS)])])]%)
+-
+
