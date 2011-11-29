@@ -1,3 +1,10 @@
+# space aliases
+command_alias board enter
+command_alias disembark leave
+command_alias man use
+
+
+
 
 # Command aliases that you'd like reserved.
 # Normally, commands are autoaliased to their unique prefixes,
