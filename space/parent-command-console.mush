@@ -39,16 +39,28 @@
 -
 &LOCK.ISMANNING #204=[spacesys(ismanning,%!,%#)]
 -
-&USE #204=[pemit(%#,
-  [if([spacesys(ismanned,%!)],
-    /@@ Player is already manning the console. @@/
-    You are already manning the [name(%!)].,
-
-    /@@ Set the player's DBREF as manning the console @@/
-    [attrib_set(%!/data.manned,%#)]
-    You man the [name(%!)].
-  )]
-)]
+&AUSE #204=
+  @name %!=[trim(before(name(%!),<))] <[name(%#)]>;
+  &data.manned %!=%#
+-
+&CMD.UNMAN #204=$unman:
+  @name %!=[trim(before(name(%!),<))] <Unmanned>;
+  @pemit %#=You unman the [trim(before(name(%!),<))];
+  @oemit %#=[name(%#)] unmans the [trim(before(name(%!),<))].;
+  &data.manned %!;
+-
+&OUSE #204=
+  [if(
+      spacesys(isunmanned,%!),
+      [name(%#)] mans the [trim(before(name(%!),<))].
+      )]
+-
+&USE #204=
+  [ifelse(
+      spacesys(ismanned,%!),
+      You are already manning the [trim(before(name(%!),<))].,
+      You man the [trim(before(name(%!),<))].
+      )]
 -
 # Command: console
 # Diplay the console commands and their syntax
@@ -68,10 +80,4 @@
   [spacesys(roster)]
 )]
 -
-# Command: unman
-# Unmans the player from the console.
-&CMD.UNMAN #204=$unman:[pemit(%#,
-  [attrib_set(%!/data.manned,0)]
-  You unman the [name(%!)].
-)]
--
+

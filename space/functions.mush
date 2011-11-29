@@ -46,26 +46,25 @@
 # Returns true if the player can use the console
 &FN.CANUSECONSOLE #208=
   [firstof(
-  /@@ If the player is aleady manning the console, they can use it @@/
         [u(#208/fn.ismanning,%0,%1)],
-
-  /@@ If the console is unmanned and the player is a crew member, they can use it @@/
         [and(
             [u(#208/fn.isunmanned,%0)],
             [u(#208/fn.iscrew,%0,%1)]
-            )]
-
-  /@@ Otherwise, the player can't use the console @@/
-        ,0
-  )]
+            )],
+        [and(
+            u(fn.ismanned,%0),
+            not(strmatch(loc(get(%0/data.manned)),loc(%0))),
+            u(fn.iscrew,%0,%1)
+            )],
+        0)]
 -
 # Function: ismanned(console DBREF)
 # Returns true if the console is manned
-&FN.ISMANNED #208=[not([u(#208/fn.isunmanned,%0)])]
+&FN.ISMANNED #208=[t(get(%0/data.manned))]
 -
 # Function: isunmanned(console DBREF)
 # Returns true if the console is unmanned
-&FN.ISUNMANNED #208=[eq(0,[get(%0/data.manned)])]
+&FN.ISUNMANNED #208=[not(get(%0/data.manned))]
 -
 # Function: ismanning(console DBREF, player DBREF)
 # Returns true if the player is manning the console
@@ -73,7 +72,12 @@
 -
 # Function: mannedby(console DBREF)
 # Returns the name of the player manning the console
-&FN.MANNEDBY #208=[name([get(%0/data.manned)])]
+&FN.MANNEDBY #208=
+  [ifelse(
+      u(fn.ismanned,%0),
+      name(get(%0/data.manned)),
+      #-1 UNMANNED
+      )]
 -
 # Subfunction: actors()
 # Debug subfunction used to determine enactor, executor and caller

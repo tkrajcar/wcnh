@@ -12,10 +12,6 @@ This is the list of work in-progress.
 
 ### Code
 
-* Shift default function processing from console to ship
-* Make all funcs process wiz/roy flag as default captain
-* Update ISCREW to only pass on Captain or Crew, not Visitor
-* Interior formatting.
 * Launching, scanning, and landing
 * Intra-system travel where time = Distance * Speed * Universal
 * Inter-system travel
@@ -47,7 +43,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-2011-10-26
+11-28-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -61,3 +57,8 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Add canuseconsole() function
 * Add ismanned(), isunmanned(), ismanning() and mannedby() functions
 * Add unman command
+* Shift default function processing from console to ship
+* Make all funcs process wiz/roy flag as default captain
+* Update ISCREW to only pass on Captain or Crew, not Visitor
+* Interior formatting.
+
