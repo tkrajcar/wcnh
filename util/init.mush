@@ -155,11 +155,5 @@
     
          {@attrib/access/retroactive [before(##,.ATTR)]=[xget(#25,##)]};
     @cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] 
-                  [ansi(hw,Shared Attributes initialized.)] %([ansi(c,[iter(lattr(me/*.ATTR),[before(##,.ATTR)])])]%);
-    @dol [lattr(me/*.ALIAS)]=
-
-         {@command/alias [before(##,.ALIAS)]=[xget(#25,##)]};
-    @cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] 
-                  [ansi(hw,Commands Aliased.)] %([ansi(c,[iter(lattr(me/*.ALIAS),[before(##,.ALIAS)])])]%)
--
-
+                  [ansi(hw,Shared Attributes initialized.)] %([ansi(c,[iter(lattr(me/*.ATTR),[before(##,.ATTR)])])]%)
+- 
