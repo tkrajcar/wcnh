@@ -3,15 +3,20 @@
 ###########################
 
 # Setup the MUSH object
-@desc #208=It's SPAAAAACE!
--
+
 @set #208=!SAFE NO_COMMAND
 -
 @wipe #208
 -
 @set #208=SAFE
 -
+@desc #208=Space Functions.
+-
 &DATA #208=#351
+-
+@startup #208=
+  @trig me/tick;
+  @cemit SysLog=[ansi(bh,\[)]SysLog[ansi(bh,\])] Resuming GhettoSpace.  [words(get(v(data)/list.active))] active ships.
 -
 &SUBFN.RESTART #208=
   think [syslog(
@@ -31,6 +36,12 @@
       get(%0/space`class),
       Unknown
       )]
+-
+&FN.ISMOVING #208=
+  t(member(iter(getpids(%0),after(pidinfo(itext(0)),SPACE`QUEUE`)),MOVE))  
+-
+&FN.CYCLE #208=
+  pidinfo(first(lpids(%!,w)),time)
 -
 &FN.ADDCONSOLE #208=
   [switch(

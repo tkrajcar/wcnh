@@ -1,0 +1,56 @@
+@set #367=!safe !no_command
+-
+@wipe #367
+-
+@set #367=safe
+-
+@lock #367==#367
+-
+@lock/use #367=flag^wizard|power^api
+-
+&data #367=#351
+-
+&FN.CALLER #367=
+  ifelse(
+      hastype(%#,thing),
+      get(%#/data.manned),
+      %#
+      )
+-
+&CMD.+SPACE/LAND #367=$+space/land *=*:
+  @switch [spacesys(isship,%0)]
+          [not(spacesys(ismoving,%0))]
+          [t(setr(1,locate(%0,%1,nT)))]
+          [t(eq(spacesys(distance,%0,%q1),0))]
+          [t(hasattrval(%q1,data.landing))]=
+
+          0????,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10???,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship must come to a complete stop first.,
+          110??,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid target destination.,
+          1110?,@nspemit [u(fn.caller)]=[ansi(rh,>)] Out of range.,
+          11110,@nspemit [u(fn.caller)]=[ansi(rh,>)] No available landing platforms.,
+          11111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Landing [name(%0)] on [name(%q1)].;
+                 think [spacesys(notify.consoles,%0,Landing sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] remaining.)];
+                 think [spacesys(notify.ship,%0,The engines rumble as the ship prepares to land.)];
+                 /@@ SPose notify other ships. @@/
+                 @wait %0/space`queue`move=think [spacesys(land,%0,%q1)]
+                }
+-
+&CMD.+SPACE/LAUNCH #367=$+space/launch *:
+  @switch [spacesys(isship,%0)]
+          [not(spacesys(ismoving,%0))]
+          [t(hasattrval(%0,data.docked))]
+          [t(hasattrval(loc(%0),space`loc))]=
+
+          0???,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10??,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is already moving. [ansi(yh,timestring(spacesys(cycle)))] until orbit.,
+          110?,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is already in orbit.,
+          1110,@nspemit [u(fn.caller)]=[ansi(rh,>)] Landing zone has an invalid space loc.,
+          1111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Launching the [name(%0)].;
+                &list.active [v(data)]=[trim([get(v(data)/list.active)] %0)];
+                think [spacesys(notify.consoles,%0,Launch sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] until orbit.)];
+                think [spacesys(notify.ship,%0,The ship lurches as it lifts off.)];
+                @wait %0/space`queue`move=think [spacesys(launch,%0)]
+               }
+-
+

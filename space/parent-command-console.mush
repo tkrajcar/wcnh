@@ -94,10 +94,9 @@
 )]
 -
 &CMD.LAND #204=$land *:
-  @switch [t(lte(%0,words(setr(0,spacesys(update.report,v(data.ship))))))]
-          [hasattrval(setr(1,extract(%q0,%0,1)),data.landing)]=
-
-          11,@nspemit %#=Okay,
-          @nspemit %#=Not Okay.
+  +space/land [v(data.ship)]=[extract(spacesys(update.report,v(data.ship)),%0,1)]
+-
+&CMD.LAUNCH #204=$launch:
+  +space/launch [v(data.ship)]
 -
 
