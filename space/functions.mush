@@ -34,11 +34,37 @@
 &FN.MOVE #208=
   [set(%0,space`x:%1)][set(%0,space`y:%2)]
 -
+&FN.ETA #208=
+  ifelse(
+      hasattrval(%0,space`destination),
+      timestring(add(
+                    mul(
+                      floor(fdiv(
+                                dist2d(
+                                      get(%0/space`x),
+                                      get(%0/space`y),
+                                      first(get(%0/space`destination)),
+                                      last(get(%0/space`destination))
+                                      ),
+                                u(fn.speed,%0)
+                                )),
+                      get(v(data)/interval)
+                      ),
+                    u(fn.cycle)
+                    )),
+      #-1 NO DESTINATION SET
+      )
+-
 &FN.ADVANCE #208=
   ifelse(
       hasattrval(%0,space`destination),
-      [u(fn.move,%0,first(setr(0,u(fn.advance.calc,%0))),last(%q0))]
-        [if(strmatch(%q0,get(%0/space`destination)),wipe(%0/space`destination))],
+      [u(fn.move,%0,first(setr(0,ulocal(fn.advance.calc,%0))),last(%q0))]
+      [if(
+          strmatch(%q0,setr(1,get(%0/space`destination))),
+          [wipe(%0/space`destination)]
+          [u(fn.notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
+          [u(fn.notify.consoles,%0,Arrived at destination %q1.  Speed is now 0 km/h.)]
+          )],
       #-1 NO DESTINATION SET
       )
 -
@@ -52,11 +78,27 @@
   [mul(-1,u(fn.speed,%0),cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
 -
 &FN.ADVANCE.CALC #208=
-  ifelse(
-      t(hasattrval(%0,space`destination)),
-      add(get(%0/space`x),u(subfn.delta_x,%0))] [add(get(%0/space`y),u(subfn.delta_y,%0)),
-      #-1 NO DESTINATION SET
-      )
+  [setq(0,add(get(%0/space`x),ulocal(subfn.delta_x,%0)))]
+  [setq(1,add(get(%0/space`y),ulocal(subfn.delta_y,%0)))]
+  [setq(2,get(%0/space`destination))]
+  [trim(switchall(
+            [t(hasattrval(%0,space`destination))]
+            [t(lte(setr(3,round(ulocal(fn.heading,%0),0)),180))]
+            [and(lt(%q3,270),gt(%q3,90))],
+
+            0??,#-1 NO DESTINATION SET,
+            10?,%b[max(%q0,first(%q2))],
+            11?,%b[min(%q0,first(%q2))],
+            1?0,%b[max(%q1,last(%q2))],
+            1?1,%b[min(%q1,last(%q2))]
+            ))]
+# Deprecated
+# ifelse(
+#      t(hasattrval(%0,space`destination)),
+#      [min(add(get(%0/space`x),u(subfn.delta_x,%0)),first(get(%0/space`destination)))] 
+#       [min(add(get(%0/space`y),u(subfn.delta_y,%0)),last(get(%0/space`destination)))],
+#      #-1 NO DESTINATION SET
+#      )
 -
 &FN.SPEED #208=
   default(%0/space`maxspeed,10)
@@ -93,7 +135,7 @@
       )]
 -
 &FN.ISMOVING #208=
-  t(member(iter(getpids(%0),after(pidinfo(itext(0)),SPACE`QUEUE`)),MOVE))  
+  t(member(iter(getpids(%0),after(pidinfo(itext(0)),SPACE`QUEUE`)),MOVE))
 -
 &FN.CYCLE #208=
   pidinfo(first(lpids(%!,w)),time)

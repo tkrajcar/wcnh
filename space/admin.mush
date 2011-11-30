@@ -55,4 +55,26 @@
                 @wait %0/space`queue`move=think [spacesys(launch,%0)]
                }
 -
+&CMD.+SPACE/ADVANCE #367=$+space/advance *:
+  @switch [spacesys(isship,setr(0,before(%0,=)))]
+          [not(hasattrval(%q0,data.docked))]
+          [hasattrval(%q0,space`destination)]=
+
+          0??,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10?,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is currently landed.,
+          110,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship does not have a destination set.,
+          111,{@nspemit %#=[ansi(gh,>)] Advancing [name(%q0)] to [setr(1,spacesys(advance.calc,%q0))] in 
+                                        [ansi(yh,timestring(spacesys(cycle)))].;
+               think [setq(2,get(%q0/space`destination))];
+               think [if(
+                        not(or(after(%0,=),spacesys(ismoving,%q0))),
+                        [spacesys(notify.ship,%q0,The ship lurches slightly as it accelerates.)]
+                        [spacesys(notify.consoles,%q0,Course engaged. Destination: %q2.%r[ansi(gh,>)] ETA: [spacesys(eta,%q0)].)]
+                        )];
+               @wait %q0/space`queue`move={think [spacesys(advance,%q0)];
+                                           @assert [not(and(eq(first(%q1),first(%q2)),eq(last(%q1),last(%q2))))];
+                                           +space/advance %q0=1
+                                          };
+              }
+-
 
