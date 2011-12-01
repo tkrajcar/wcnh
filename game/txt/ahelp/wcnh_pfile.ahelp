@@ -18,4 +18,3 @@
   +pfile/register <dbref>=<email> - manually register a player to a pfile.
   +pfile/secondary <dbref>=<email> - manually register an alt to a pfile.
 
- 
