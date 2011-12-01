@@ -39,15 +39,15 @@
 -
 @enter #179=You board the [ansi(wh,name(%!))].
 -
-@oenter #179=[name(%#)] boards the vessel from outside.
+@oenter #179=boards the vessel from outside.
 -
-@oxenter #179=[name(%#)] boards the [name(%!)].
+@oxenter #179=boards the [name(%!)].
 -
 @leave #179=You disembark from the [ansi(wh,name(%!))].
 -
-@oleave #179=[name(%#)] disembarks.
+@oleave #179=disembarks.
 -
-@oxleave #179=[name(%#)] disembarks from the [name(%!)].
+@oxleave #179=disembarks from the [name(%!)].
 -
 @idesc #179=The inside of the ship.
 -

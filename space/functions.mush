@@ -315,7 +315,7 @@
 # Function: canboard(ship DBREF, player DBREF)
 # Returns true if the player can board the ship
 &FN.CANBOARD #208=[or(
-                    member(get(%0/data.roster),%1),
+                    t(match(get(%0/data.roster),%1:*)),
                     orflags(%1,Wr)
                     )]
 -

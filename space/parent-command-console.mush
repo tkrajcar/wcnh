@@ -74,7 +74,7 @@
   You may [ansi(yh,man)] or [ansi(yh,use)] this console.%r
   While manning the console, [ansi(yh,con/help)].
 -
-&LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,%!,%#)]
+&LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,v(data.ship),%#)]
 -
 &LOCK.ISMANNING #204=[and(spacesys(ismanning,%!,%#),hasattrval(%!,data.ship))]
 -
@@ -91,7 +91,7 @@
 &OUSE #204=
   [if(
       spacesys(isunmanned,%!),
-      [name(%#)] mans the [trim(before(name(%!),<))].
+      mans the [trim(before(name(%!),<))].
       )]
 -
 &USE #204=
