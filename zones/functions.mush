@@ -83,3 +83,7 @@
 &filter.zmo #227=
   ifelse(not(strmatch(zones(lzone,%0),%0)),1,0)
 -
+&TRIG.ACONNECT #227=
+  @switch [haspower(%0,builder)]=1,@hide/on %0
+-
+
