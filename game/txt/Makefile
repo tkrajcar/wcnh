@@ -6,7 +6,7 @@
 #	add rules.txt to the TXT line
 # Do the same to build index.txt (but add index.txt)
 
-TXT=help.txt news.txt events.txt
+TXT=help.txt news.txt events.txt ahelp.txt
 
 # INDEX_FLAGS can be set to one or more of:
 #  --first     Insert the first entry alias in the index
@@ -35,7 +35,10 @@ rules.txt: rules/*.rules rules compose.sh
 	sh ./compose.sh rules $(INDEX_FLAGS)
 
 index.txt: index/*.index index compose.sh
-	./compose.sh index $(INDEX_FLAGS)
+	sh ./compose.sh index $(INDEX_FLAGS)
+
+ahelp.txt: ahelp/*.ahelp ahelp compose.sh
+	sh ./compose.sh ahelp $(INDEX_FLAGS)
 
 clean:
 	-rm -f $(IDX) $(TXT)

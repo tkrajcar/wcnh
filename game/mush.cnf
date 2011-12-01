@@ -514,9 +514,9 @@ help_command events txt/events.txt
 help_command help txt/help.txt
 help_command news txt/news.txt
 
-#ahelp_command ahelp txt/help.txt
+help_command ahelp txt/ahelp.txt
 #ahelp_command anews txt/news.txt
-#restrict_command ahelp admin
+restrict_command ahelp admin
 #restrict_command anews admin
 
 ###
@@ -891,7 +891,3 @@ include alias.cnf
 ### Restrictions on command usage are in restrict.cnf
 ###
 include restrict.cnf
-ahelp_command ahelp txt/help.txt
-ahelp_command anews txt/news.txt
-restrict_command ahelp admin
-restrict_command anews admin
