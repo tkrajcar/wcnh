@@ -72,7 +72,7 @@
   [setq(dx,sub(first(setr(0,get(%0/space`destination))),get(%0/space`x)))][setq(dy,sub(last(%q0),get(%0/space`y)))][u(subfn.rad2deg,atan2(mul(r(dx),-1),r(dy)))]
 -
 &SUBFN.DELTA_Y #208=
-  [mul(-1,u(fn.speed,%0),cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+  [mul(-1,u(fn.speed,%0),sin(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
 -
 &SUBFN.DELTA_X #208=
   [mul(-1,u(fn.speed,%0),cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
@@ -81,18 +81,37 @@
   [setq(0,add(get(%0/space`x),ulocal(subfn.delta_x,%0)))]
   [setq(1,add(get(%0/space`y),ulocal(subfn.delta_y,%0)))]
   [setq(2,get(%0/space`destination))]
-  [trim(switchall(
-            [t(hasattrval(%0,space`destination))]
-            [t(lte(setr(3,round(ulocal(fn.heading,%0),0)),180))]
-            [and(lt(%q3,270),gt(%q3,90))],
 
-            0??,#-1 NO DESTINATION SET,
-            10?,%b[max(%q0,first(%q2))],
-            11?,%b[min(%q0,first(%q2))],
-            1?0,%b[max(%q1,last(%q2))],
-            1?1,%b[min(%q1,last(%q2))]
-            ))]
-# Deprecated
+  [ifelse(
+      or(
+        and(
+          gt(setr(3,round(ulocal(fn.heading,%0),0)),180),
+          lt(%q0,first(%q2))
+          ),
+        and(
+          lte(%q3,180),
+          gt(%q0,first(%q2))
+          )
+        ),
+      first(%q2),
+      %q0
+      )] 
+  [ifelse(
+      or(
+        and(
+          gt(%q3,270),
+          lt(%q1,last(%q2))
+          ),
+        and(
+          lte(%q3,270),
+          gt(%q1,last(%q2))
+          )
+        ),
+      last(%q2),
+      %q1
+      )]
+
+#  Deprecated
 # ifelse(
 #      t(hasattrval(%0,space`destination)),
 #      [min(add(get(%0/space`x),u(subfn.delta_x,%0)),first(get(%0/space`destination)))] 
@@ -186,6 +205,15 @@
             [spacesys(update.report,%0)]
             )]
 -
+&FN.ACTIVATE #208=
+  switch(
+      [u(fn.isship,%0)]
+      [not(u(fn.isactive,%0))],
+
+      0?,#-1 INVALID SHIP OBJECT.,
+      10,#-1 SHIP IS ALREADY ACTIVE.,
+      11,[set(v(data),list.active:[trim([get(v(data)/list.active)] %0)])]
+-
 &FN.LAUNCH #208=
   [switch(
       [u(fn.isship,%0)]
@@ -201,7 +229,6 @@
           [set(%0,data.docked:)]
           [set(%0,space`x:[get(%q0/space`x)])]
           [set(%0,space`y:[get(%q0/space`y)])]
-          [set(v(data),list.active:[trim([get(v(data)/list.active)] %0)])]
           [u(fn.notify.consoles,%0,Launch sequence complete.)]
           [spacesys(update.report,%0)]
           /@@ Notify other in-system ships @@/
@@ -354,5 +381,11 @@
       ,%r)]%r
   [footerbar([words(%q1)] Contacts)]
   [set(%0,space`report:[secs()]|%q1)]
+-
+&FN.ISACTIVE #208=
+  [t(member(get(v(data)/list.active),%0))]
+-
+&FN.SETDEST #208=
+  [set(%0,space`destination:[get(%1/space`x)] [get(%1/space`y)])]
 -
 

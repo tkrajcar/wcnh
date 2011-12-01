@@ -24,6 +24,35 @@
     Huh? \(Type "help" for help.\)
     )]
 -
+&CMD.CON/HELP #204=$con/help:
+  @nspemit %#=[titlebar(Available Console Commands)]%r
+              [iter(
+                  lattrp(%!/HELP.*),
+                  [ansi(y,before(v(itext(0)),|))] - [after(v(itext(0)),|)],
+                  ,%r)]%r
+              [footerbar()]
+-
+&HELP.SCAN #204=
+  scan|See a list of things within sensor range.
+-
+&HELP.LAUNCH #204=
+  launch|Take off.
+-
+&HELP.LAND #204=
+  land <contact ID>|Land on a planet or station.
+-
+&HELP.PLOT/CALC #204=
+  plot/calc <contact ID>|Plot a course to a target.
+-
+&HELP.PLOT/ENGAGE #204=
+  plot/engage|Engage your plotted course.
+-
+&HELP.PLOT/STOP #204=
+  plot/stop|Stop the ship.
+-
+&HELP.UNMAN #204=
+  unman|Stop using the console.
+-
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
 
@@ -40,13 +69,10 @@
   )]
 )]
 -
-@desc #204=A command 
-  /@@ Command-highlight 'console' to whoever is manning the console @@/
-  [if([spacesys(ismanning,%!,%#)],
-    [spacesys(hicmd,console)],
-    /@@ Otherwise, show the plain word @@/
-    console
-  )]. It is currently [switch([v(data.manned)],0,unmanned.,manned by [spacesys(mannedby,%!)].)]
+@desc #204=
+  A command console. It is currently [ifelse([hasattrval(%!,data.manned)],manned by [spacesys(mannedby,%!)],unmanned)].%r
+  You may [ansi(yh,man)] or [ansi(yh,use)] this console.%r
+  While manning the console, [ansi(yh,con/help)].
 -
 &LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,%!,%#)]
 -
@@ -98,5 +124,25 @@
 -
 &CMD.LAUNCH #204=$launch:
   +space/launch [v(data.ship)]
+-
+&CMD.PLOT/CALC #204=$plot/calc *:
+  @switch [spacesys(isactive,v(data.ship))]
+          [not(spacesys(ismoving,v(data.ship)))]
+          [t(lte(%0,words(setr(0,spacesys(update.report,v(data.ship))))))]=
+
+          0??,@nspemit %#=[ansi(rh,>)] The ship is currently inactive.,
+          10?,@nspemit %#=[ansi(rh,>)] The ship must be stopped before a new course can be calculated.,
+          110,@nspemit %#=[ansi(rh,>)] Invalid contact ID.,
+          111,{think [spacesys(setdest,v(data.ship),setr(1,extract(%q0,%0,1)))];
+               @nspemit %#=[ansi(gh,>)] Plotting a course to [name(%q1)]...%r
+                           [ansi(gh,>)] Course laid in.  Estimated time of arrival is 
+                                        [ansi(yh,etimefmt($h hours $m minutes,add(stringsecs(spacesys(eta,v(data.ship))),60)))].
+              }
+-
+&CMD.PLOT/ENGAGE #204=$plot/engage:
+  +space/advance [v(data.ship)]
+-
+&CMD.PLOT/STOP #204=$plot/stop:
+  +space/stop [v(data.ship)]
 -
 

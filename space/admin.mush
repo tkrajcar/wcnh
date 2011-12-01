@@ -49,9 +49,9 @@
           110?,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is already in orbit.,
           1110,@nspemit [u(fn.caller)]=[ansi(rh,>)] Landing zone has an invalid space loc.,
           1111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Launching the [name(%0)].;
-                &list.active [v(data)]=[trim([get(v(data)/list.active)] %0)];
                 think [spacesys(notify.consoles,%0,Launch sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] until orbit.)];
                 think [spacesys(notify.ship,%0,The ship lurches as it lifts off.)];
+                think [spacesys(activate,%0)];
                 @wait %0/space`queue`move=think [spacesys(launch,%0)]
                }
 -
@@ -69,12 +69,49 @@
                think [if(
                         not(or(after(%0,=),spacesys(ismoving,%q0))),
                         [spacesys(notify.ship,%q0,The ship lurches slightly as it accelerates.)]
-                        [spacesys(notify.consoles,%q0,Course engaged. Destination: %q2.%r[ansi(gh,>)] ETA: [spacesys(eta,%q0)].)]
+                        [spacesys(
+                              notify.consoles,
+                              %q0,
+                              Course engaged. Destination: %q2.%r
+                              [ansi(gh,>)] Speed: [mul(spacesys(speed,%q0),get(v(data)/interval))] km/h. ETA: [spacesys(eta,%q0)].
+                              )]
                         )];
                @wait %q0/space`queue`move={think [spacesys(advance,%q0)];
                                            @assert [not(and(eq(first(%q1),first(%q2)),eq(last(%q1),last(%q2))))];
                                            +space/advance %q0=1
                                           };
+              }
+-
+&CMD.+SPACE/STOP #367=$+space/stop *:
+  @switch [spacesys(isship,%0)]
+          [spacesys(ismoving,%0)]=
+
+          0?,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is not in motion.,
+          11,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Stopping the [name(%0)].;
+              @drain %0/space`queue`move;
+              &space`destination %0=[get(%0/space`x)] [get(%0/space`y)];
+              think [spacesys(advance,%0)];
+              &space`destination %0
+             }
+-
+&CMD.+SPACE/ADDCON #367=$+space/addcon *=*:
+  @switch [spacesys(isship,%0)]
+          [isdbref(%1)]
+          [hastype(%1,thing)]=
+
+          0??,@nspemit %#=Invalid ship object.,
+          10?,@nspemit %#=Invalid console dbref.,
+          110,@nspemit %#=That's not an object.,
+          111,{@nspemit %#=Adding [name(%1)]\(%1\) to [name(%0)]\(%0\) as a console.;
+               @parent %1=#204;
+               @power %1=api;
+               @power %1=pemit;
+               &data.manned %1=;
+               &data.ship %1=%0;
+               @set %0=data.consoles:[trim([get(%0/data.consoles)] %1)];
+               @lock %1==%1;
+               @set %1=!no_command
               }
 -
 
