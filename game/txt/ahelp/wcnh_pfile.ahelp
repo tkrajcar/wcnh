@@ -1,0 +1,21 @@
+& +pfile
+  WCNH's +pfile (or 'player file') system is used to track player activity.
+  It tracks the following data:
+
+  1) When a player exits chargen, a pfile for their email is created (if one
+     doesn't exist already) and their character is associated with it.
+  2) All player connections and disconnections, once they have a pfile, are
+     logged.
+  3) Admin can enter arbitrary notes about a player, normally disciplinary.
+
+  The relevant commands are:
+
+  +pfile <person, email address, or pfile id> - view a pfile
+  +pfile/add <pfile>/<category>=<comment> - add a comment to a pfile.
+  +pfile/ip <ip or hostname> - search connection records.
+  +pfile/connections <pfile> - view connections for a pfile.
+  +pfile/search <text> - search all pfile comments for <text>.
+  +pfile/register <dbref>=<email> - manually register a player to a pfile.
+  +pfile/secondary <dbref>=<email> - manually register an alt to a pfile.
+
+ 
