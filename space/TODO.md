@@ -12,7 +12,6 @@ This is the list of work in-progress.
 
 ### Code
 
-* Intra-system travel where time = Distance * Speed * Universal
 * Inter-system travel
 * Write roster/list, roster/add, and roster/remove
 * Intercom command
@@ -42,7 +41,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-11-29-2011
+11-30-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -61,3 +60,4 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Update ISCREW to only pass on Captain or Crew, not Visitor
 * Interior formatting.
 * Launching, scanning landing
+* Intra-system travel where time = Distance * Speed * Universal

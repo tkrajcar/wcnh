@@ -99,11 +99,11 @@
   [ifelse(
       or(
         and(
-          gt(%q3,270),
+          and(gt(%q3,270),lt(%q3,90)),
           lt(%q1,last(%q2))
           ),
         and(
-          lte(%q3,270),
+          and(lte(%q3,270),gte(%q3,90)),
           gt(%q1,last(%q2))
           )
         ),
@@ -251,12 +251,21 @@
       %q2
       )]
 -
+&FN.LIST.SYSTEM.ACTIVE #208=
+  filter(filter.active,u(fn.list.system.all,%0))
+-
+&FN.LIST.SYSTEM.ALL #208=
+  filter(filter.spaceobj,lcon(%0))
+-
 &FN.LIST.REPORT #208=
-  [ifelse(
+  ifelse(
       [not(u(fn.isship,%0))],
       #-1 INVALID SHIP OBJECT,
-      [trim(filter(filter.inrange,remove(filter(filter.spaceobj,lcon(loc(%0))),%0)))]
-      )]
+      remove(u(fn.list.system.all,loc(%0)),%0)
+      )
+-
+&FILTER.ACTIVE #208=
+  t(member(get(v(data)/list.active),%0))
 -
 &FILTER.SPACEOBJ #208=
   [and(
@@ -264,9 +273,6 @@
       hasattrval(%0,space`y),
       not(hasattrval(%0,data.docked))
       )]
--
-&FILTER.INRANGE #208=
-  1
 -
 &FN.NOTIFY.SHIP #208=
   [nsremit(%0,%1)]
