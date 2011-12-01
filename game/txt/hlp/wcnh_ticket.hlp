@@ -8,7 +8,7 @@
   +ticket/open <subject>=<message> - opens a new +ticket. Please provide as 
     much information as you can about your question, bug, etc.
   +ticket/comment <ticket number>=<comment> - add a comment to an existing
-     ticket.
+    ticket.
   +ticket/list [page <#>] - list your tickets.
   +ticket/view <ticket number> - view a ticket.
   +ticket/reopen <ticket number> - reopen a closed ticket.
