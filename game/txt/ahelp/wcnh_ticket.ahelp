@@ -1,0 +1,9 @@
+& +ticket
+  Make sure and @chan/on Ticket for +ticket updates.
+
+  See 'help +ticket' for most commands.
+
+  Admin-only +ticket commands:  
+
+  +ticket/assign <ticket number>=<person> - assigns a +ticket to somebody.
+  +ticket/mine [page <#>] - list +tickets assigned to you.

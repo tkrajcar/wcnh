@@ -1,0 +1,19 @@
+& +ticket
+  WCNH's +ticket system is your method as a player to create tasks or questions
+  for the admin. You can use it to submit a bug report, make a request for
+  something, note a typo, etc. All +tickets are only viewable by admin.
+
+  The commands you need to know are:
+
+  +ticket/open <subject>=<message> - opens a new +ticket. Please provide as 
+    much information as you can about your question, bug, etc.
+  +ticket/comment <ticket number>=<comment> - add a comment to an existing
+     ticket.
+  +ticket/list [page <#>] - list your tickets.
+  +ticket/view <ticket number> - view a ticket.
+  +ticket/reopen <ticket number> - reopen a closed ticket.
+  +ticket/close <ticket number> - close a ticket.
+
+  You will normally receive a @mail message when a +ticket you open is closed.
+  +ticket/view to see the response notes, if any, and if you have any
+  questions, please add them as a comment and use +ticket/reopen.
