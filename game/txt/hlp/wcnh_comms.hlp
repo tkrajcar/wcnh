@@ -1,0 +1,74 @@
+& comms
+  These are the helpfiles for WCNH's IC communications system. These systems
+  should be used for ALL IC communication. @mail, page, normal +channels,
+  and the +bboards (with the exception of Enigma Sector News Net and The Free
+  Press) are ALWAYS OOC.
+
+  Here are the major concepts/components of the system:
+
+  At all times, you can have one or more handles (think callsigns). You use
+  these to communicate. These allow you to be anonymous whenever desired,
+  since you can SEND a message using any of your registered handles. You will
+  always RECEIVE messages to all of your registered handles. 
+
+  You can send person-to-person messages using the tightbeam message system.
+
+  You can send group messages, both secure and unsecure, using the channel
+  system.
+
+  For more information on each of these, see 'help comms handles', 'help comms
+  messages', and 'help comms channels'.
+& comms handles
+  You can register a limited number of handles. Once you register a handle,
+  nobody else can register it, but if you unregister it, it becomes available
+  to anyone else to re-register.
+
+  You will by default have a random 'Anon' handle generated. This allows you
+  to communicate anonymously, if you want to. You probably should also register
+  your fullname, and a callsign, if you want one.
+
+  The commands to interact with handles are:
+
+  handle/list - see what handles you have registered.
+  handle/register <handle> - register a new handle.
+  handle/unregister <handle> - unregister a handle.
+  handle/use <handle> - set your default handle, used for ALL outbound tight-
+    beam messages. 
+ 
+  See also: 'help comms messages' and 'help comms channels'
+& comms messages
+  Tightbeam messages allow you to send private messages to an individual or a
+  small list of individuals. When you send a tightbeam message, it's sent
+  using your default handle (see 'help comms handles').
+
+  The commands are:
+  message/list [page <#>] - list your most recent received messages.
+  message/list <handle> [page <#>] - list messages from a handle.
+  message <handle>=<message> - send a new message.
+  message/dnd <on|off> - turn 'Do Not Disturb' on/off. With DND on, you will
+    not receive notifiers when you receive new messages; only once per hour.
+  message/unread - display all unread messages.
+
+  See also: 'help comms handles' and 'help comms channels'
+& comms channels
+  The channel system allows you to communicate with a group of people. You
+  can use channels to communicate with others in your faction, an IC group
+  or company, etc.
+
+  There are two types of channels, secured and unsecure. Secured channels are
+  named, are setup by admin, and can only be joined by people who pass its
+  locks. Unsecure channels are numeric in ###.## format, such as 123.45, and
+  can be joined by anyone. 
+
+  When you join a channel, you can specify an alias, which you can use to
+  interact with a channel. For example, you can designate '344.44' as 'HQ'.
+
+  comm/list - List all secured channels you can join, and the unsecured
+    channels you are already on.
+  comm/on <name/numeric>[=<alias] - join a channel. The alias is optional.
+  comm/off <name/numeric/alias> - leave a channel.
+  comm/handle <name/numeric/alias> - Set a handle override for a channel. If an
+    override is present, it will always be used. If not, your default is used.
+  -<name/numeric/alias> <message> - Transmit on a frequency.
+
+  See also: 'help comms handles' and 'help comms messages'
