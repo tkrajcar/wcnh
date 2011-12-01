@@ -8,10 +8,20 @@ This is where code that has to do with building and/or grid management goes.
 * +zone/checkout (zone name) - Check out a BC for use.
 
 ## New Zone Setup Checklist
+
+Someday, there will be automation for this process.
+
+Before creating a new city ZMO and BC, make sure that the system and planet are  zoned. 
+@find <system name>.  There should be a room AND an object with the same name.
+The object is the system ZMO, and should be zoned to the Galaxy ZMO (#222).  The planet should 
+be zoned to the system ZMO.
+
+Once that is done, proceed with the following.
+
 * @pcreate BC
 * @create ZMO
 * @lock ZMO==BC
-* @tel ZMO=BC
+* @lock BC==BC
 * @lock/zone ZMO==ZMO
 * @lock/chzone ZMO=flag^wizard
 * @lock/chzone BC=flag^wizard
@@ -23,4 +33,8 @@ This is where code that has to do with building and/or grid management goes.
 * &BC ZMO=BC
 * @set ZMO/BC=wizard
 * @squota BC=+amount
+* @power BC=builder
+* @chown ZMO=BC
+* @set ZMO=!halt
+* @tel ZMO=BC
 * Crack beer

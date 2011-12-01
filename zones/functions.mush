@@ -65,7 +65,7 @@
 -
 &fn.bc.checkout #227=
   switch(
-      [t(setr(0,lsearch(all,type,thing,name,%0)))]
+      [t(setr(0,ifelse(isdbref(%0),%0,lsearch(all,type,thing,name,%0))))]
       [t(eq(words(%q0),1))]
       [t(strmatch(last(zones(lzone,%q0)),get(v(data)/zones_master)))]
       [t(hasattrval(%q0,bc))],
