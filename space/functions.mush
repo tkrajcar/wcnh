@@ -78,39 +78,19 @@
   [mul(-1,u(fn.speed,%0),cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
 -
 &FN.ADVANCE.CALC #208=
-  [setq(0,add(get(%0/space`x),ulocal(subfn.delta_x,%0)))]
-  [setq(1,add(get(%0/space`y),ulocal(subfn.delta_y,%0)))]
-  [setq(2,get(%0/space`destination))]
-
-  [ifelse(
-      or(
-        and(
-          gt(setr(3,round(ulocal(fn.heading,%0),0)),180),
-          lt(%q0,first(%q2))
-          ),
-        and(
-          lte(%q3,180),
-          gt(%q0,first(%q2))
-          )
+  ifelse(
+      lt(
+        dist2d(
+            get(%0/space`x),
+            get(%0/space`y),
+            first(setr(0,get(%0/space`destination))),
+            last(%q0)
+            ),
+        ulocal(fn.speed,%0)
         ),
-      first(%q2),
-      %q0
-      )] 
-  [ifelse(
-      or(
-        and(
-          and(gt(%q3,270),lt(%q3,90)),
-          lt(%q1,last(%q2))
-          ),
-        and(
-          and(lte(%q3,270),gte(%q3,90)),
-          gt(%q1,last(%q2))
-          )
-        ),
-      last(%q2),
-      %q1
-      )]
-
+      %q0,
+      [add(get(%0/space`x),ulocal(subfn.delta_x,%0))] [add(get(%0/space`y),ulocal(subfn.delta_y,%0))]
+      )
 #  Deprecated
 # ifelse(
 #      t(hasattrval(%0,space`destination)),
