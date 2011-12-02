@@ -82,7 +82,7 @@
             [iter(
                 remove(setunion(iter(mwho(),zone(loc(itext(0)))),),#-1),
                 [name(itext(0))][if(
-                                  not(strmatch(zone(itext(0)),#222)),
+                                  not(or(strmatch(zone(itext(0)),#222),spacesys(isship,itext(0)))),
                                   \,%b[trim(regedit(name(zone(itext(0))),lit(<\w*>),))]
                                   )]%b
                                 \[[words(zwho(itext(0)))] players\],
