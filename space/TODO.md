@@ -12,8 +12,6 @@ This is the list of work in-progress.
 
 ### Code
 
-* Investigate overshoot bug (from 0 0 to 15 -20?)
-* Sort contacts by distance
 * Inter-system travel
 * Write roster/list, roster/add, and roster/remove
 * Intercom command
