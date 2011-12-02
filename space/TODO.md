@@ -12,7 +12,7 @@ This is the list of work in-progress.
 
 ### Code
 
-* Inter-system travel
+* Automated ship creation
 * Write roster/list, roster/add, and roster/remove
 * Intercom command
 * Comm command
@@ -61,3 +61,4 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Interior formatting.
 * Launching, scanning landing
 * Intra-system travel where time = Distance * Speed * Universal
+* Set up system rooms and contents.
