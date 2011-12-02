@@ -241,8 +241,18 @@
   ifelse(
       [not(u(fn.isship,%0))],
       #-1 INVALID SHIP OBJECT,
-      remove(u(fn.list.system.all,loc(%0)),%0)
+      munge(
+          sort.report,
+          iter(
+              setr(0,remove(u(fn.list.system.all,loc(%0)),%0)),
+              dist2d(get(%0/space`x),get(%0/space`y),get(itext(0)/space`x),get(itext(0)/space`y))
+              ),
+          %q0
+          )
       )
+-
+&SORT.REPORT #208=
+  sort(%0)
 -
 &FILTER.ACTIVE #208=
   t(member(get(v(data)/list.active),%0))
