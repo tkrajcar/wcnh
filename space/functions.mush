@@ -128,7 +128,7 @@
 -
 &FN.CLASS #208=
   [ifelse(
-      hasattrval(%0,space`class),
+      hasattrpval(%0,space`class),
       get(%0/space`class),
       Unknown
       )]
@@ -245,7 +245,7 @@
           sort.report,
           iter(
               setr(0,remove(u(fn.list.system.all,loc(%0)),%0)),
-              dist2d(get(%0/space`x),get(%0/space`y),get(itext(0)/space`x),get(itext(0)/space`y))
+              u(fn.distance,%0,itext(0))
               ),
           %q0
           )
@@ -383,5 +383,31 @@
 -
 &FN.SETDEST #208=
   [set(%0,space`destination:[get(%1/space`x)] [get(%1/space`y)])]
+-
+&FN.ISJUMP #208=
+  strmatch(parent(%0),get(v(data)/parent.jump))
+-
+&FN.JUMP #208=
+  switch(
+      [u(fn.isship,%0)]
+      [u(fn.isjump,%1)]
+      [t(hasattrval(%1,link))]
+      [not(ulocal(fn.ismoving,%0))]
+      [t(eq(u(fn.distance,%0,%1),0))],
+
+      0????,#-1 INVALID SHIP OBJECT,
+      10???,#-1 INVALID JUMP POINT,
+      110??,#-1 JUMP IS UNLINKED,
+      1110?,#-1 SHIP IS IN MOTION,
+      11110,#-1 OUT OF RANGE,
+      11111,/@@ Notify in-system ships @@/
+            [u(fn.notify.consoles,%0,Jumping to [name(loc(setr(1,get(%1/link))))]...)]
+            [u(fn.notify.ship,%0,Reality is briefly distorted as the ship is hurtled through a jump point.)]
+            [tel(%0,loc(%q1))]
+            /@@ Notify new system ships @@/
+            [set(%0,space`x:[get(%q1/space`x)])]
+            [set(%0,space`y:[get(%q1/space`y)])]
+            [spacesys(update.report,%0)]
+      )
 -
 

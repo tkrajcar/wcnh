@@ -1,8 +1,6 @@
-@set #351=!safe no_command
+@set #351=safe no_command
 -
-@wipe #351
--
-@set #351=safe
+@desc #351=Space data.
 -
 &INTERVAL #351=60
 -
@@ -11,4 +9,6 @@
 &DEFAULT.SPEED #351=1
 -
 &PARENT.CONSOLE #351=#204
+-
+&PARENT.JUMP #351=#393
 -

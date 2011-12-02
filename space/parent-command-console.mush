@@ -32,6 +32,9 @@
                   ,%r)]%r
               [footerbar()]
 -
+&HELP.JUMP #204=
+  jump <contact ID>|Jump to a new system.
+-
 &HELP.SCAN #204=
   scan|See a list of things within sensor range.
 -
@@ -145,4 +148,6 @@
 &CMD.PLOT/STOP #204=$plot/stop:
   +space/stop [v(data.ship)]
 -
-
+&CMD.JUMP #204=$jump *:
+  +space/jump [v(data.ship)]=[extract(spacesys(update.report,v(data.ship)),%0,1)]
+-
