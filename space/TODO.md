@@ -12,7 +12,6 @@ This is the list of work in-progress.
 
 ### Code
 
-* Automated ship creation
 * Write roster/list, roster/add, and roster/remove
 * Intercom command
 * Comm command
@@ -20,6 +19,7 @@ This is the list of work in-progress.
 * Bay commands
 * Shuttles
 * Shipyards
+* Handle multi-room ship cloning
 
 ## Work To Do Next
 
@@ -41,7 +41,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-11-30-2011
+12-08-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -62,3 +62,4 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Launching, scanning landing
 * Intra-system travel where time = Distance * Speed * Universal
 * Set up system rooms and contents.
+* Automated ship generation.

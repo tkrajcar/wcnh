@@ -141,14 +141,15 @@
 -
 &FN.ADDCONSOLE #208=
   [switch(
-      [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
-      [strmatch(last(lparent(%1)),get(v(data)/parent.console))],
+      [spacesys(isship,%0)]
+      [spacesys(isconsole,%1)] 
 
       0?,#-1 INVALID SHIP OBJECT,
       10,#-1 INVALID CONSOLE OBJECT,
       11,[set(%1,data.ship:%0)]
          [powers(%1,api)]
-         [lock(%1,=%1)]
+         [powers(%1,pemit_all)]
+         [setq(a,lock(%1,=%1))]
          [set(%0,data.consoles:[trim([get(%0/data.consoles)] %1)])]
          )]
 -
@@ -181,7 +182,7 @@
             [tel(%0,setr(2,get(%q1/data.landing)),silent)]
             [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
             [set(%0,data.docked:%q2)]
-            [set(v(data),list.active:[remove(get(v(data)/list.active),%0)])]
+            [spacesys(activate,%0)]
             [spacesys(update.report,%0)]
             [iter(remove(spacesys(list.system.active,loc(%q1)),%0),spacesys(update.report,itext(0)))]
             )]
@@ -256,7 +257,7 @@
   sort(%0)
 -
 &FILTER.ACTIVE #208=
-  t(member(get(v(data)/list.active),%0))
+  t(spacesys(isactive,%0)) 
 -
 &FILTER.SPACEOBJ #208=
   [and(
@@ -412,4 +413,36 @@
             [iter(spacesys(list.system.active,loc(%0)),spacesys(update.report,itext(0)))]
       )
 -
-
+&FN.HASSHUTTLE #208=
+  t(hasattrval(%0,space`shuttle))
+-
+&FN.CLONE.CONSINROOM #208=
+  iter(
+      lvcon(%0),
+      if(
+        spacesys(isconsole,itext(0)),
+        [setr(0,clone(itext(0)))][set(%q0,!halt)]
+        )
+      )
+-
+&FN.CLONE.SHIP #208=
+  ifelse(
+      not(strmatch(parent(%0),get(v(data)/parent.ship))),
+      #-1 INVALID SHIP PARENT,
+      [setr(1,create(%1))]
+      [setq(a,parent(%q1,%0))]
+      [setq(b,lock(%q1/zone,=%q1))]
+      [setq(d,zone(%q1,%q1))]
+      [setq(c,lock(%q1,=%q1))]
+      [set(%q1,roomname:[get(%0/roomname)])]
+      [powers(%q1,api)]
+      [iter(
+          spacesys(clone.consinroom,%0),
+          [tel(itext(0),%q1)][spacesys(addconsole,%q1,itext(0))]
+          )]
+      /@@ Todo: Handle multi-room ships [spacesys(clone.ship.rooms,%q1)] @@/
+      )
+-
+&FN.ISCONSOLE #208=
+  t(strmatch(last(lparent(%0)),get(v(data)/parent.console)))
+-
