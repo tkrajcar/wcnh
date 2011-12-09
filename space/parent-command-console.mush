@@ -38,6 +38,9 @@
 &HELP.SCAN #204=
   scan|See a list of things within sensor range.
 -
+&HELP.SCAN.TARGET #204=
+  scan <contact ID>|See detailed information on a contact.
+-
 &HELP.LAUNCH #204=
   launch|Take off.
 -
@@ -70,6 +73,14 @@
 
           0,@nspemit %#=[ansi(rh,>)] The ship is currently landed.,
           1,@nspemit %#=[spacesys(scan,%q0)]
+-
+&CMD.SCAN.TARGET #204=$scan *:
+  @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]
+          [t(lte(%0,words(setr(1,spacesys(list.report,%q0)))))]=
+
+          0?,@nspemit %#=[ansi(rh,>)] The ship is currently landed.,
+          10,@nspemit %#=[ansi(rh,>)] Invalid contact.,
+          11,@nspemit %#=[spacesys(scan.target,extract(%q1,%0,1))]
 -
 @ufail #204=[pemit(%#,
   [if([spacesys(ismanned,%!)],

@@ -385,6 +385,24 @@
   [footerbar([words(%q1)] Contacts)]
   [set(%0,space`report:[secs()]|%q1)]
 -
+&FN.SCAN.TARGET #208=
+  [titlebar(Scan Report: [name(%0)])]%r
+  [ifelse(
+      hasattrval(%!,subfn.scan.[setr(0,edit(spacesys(class,%0),%b,_))]),
+      ulocal(subfn.scan.%q0,%0),
+      [u(%0/describe)]%r%r
+      Location%r%t
+      X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
+      Docking Bay: [ifelse(hasattrval(%0,data.landing),Yes,No)]
+      )]%r
+  [footerbar(Class: [edit(%q0,_,%b)])]
+-
+&SUBFN.SCAN.CELESTIAL #208=
+  [u(%0/describe)]%r
+  Location%r%t
+  X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
+  Landing Area: [ifelse(hasattrval(%0,data.landing),name(zone(get(%0/data.landing))),N/A)]
+-
 &FN.ISACTIVE #208=
   [t(member(get(v(data)/list.active),%0))]
 -

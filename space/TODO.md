@@ -12,7 +12,6 @@ This is the list of work in-progress.
 
 ### Code
 
-* Modify scan to take an arg.
 * Intercom command
 * Comm command
 * Spose
@@ -64,3 +63,4 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Set up system rooms and contents.
 * Automated ship generation.
 * Write roster/list, roster/add, and roster/remove
+* Modify scan to take an arg.
