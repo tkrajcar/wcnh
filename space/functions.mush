@@ -297,8 +297,13 @@
                     member(setr(0,get(%0/data.roster)),%1:captain),
                     member(%q0,%1:crew),
                     orflags(%1,Wr),
-                    0
-                    )]
+                    0)]
+-
+&FN.ISGUEST #208=
+  or(
+    orflags(%1,Wr),
+    t(match(get(%0/data.roster),%1:*))
+    )
 -
 # Function: isdocked(ship DBREF)
 # Returns true if the ship is docked.
@@ -445,4 +450,42 @@
 -
 &FN.ISCONSOLE #208=
   t(strmatch(last(lparent(%0)),get(v(data)/parent.console)))
+-
+&FN.ROSTER #208=
+  [titlebar(Ship Roster: [name(%0)])]%r
+  [ansi(y,align(30 14 32,Name,Access,Location))]%r
+  [iter(
+      sort(get(%0/data.roster),name),
+      align(
+          30 14 32,
+          name(setr(0,first(itext(0),:))),
+          capstr(last(itext(0),:)),
+          ifelse(strmatch(zone(loc(%q0)),%0),name(loc(%q0)),ansi(rh,NOT ABOARD))
+          ),
+      ,%r)]%r
+  [footerbar()]
+-
+&FN.ISCAPTAIN #208=
+  ifelse(
+      not(spacesys(isship,%0)),
+      #-1 INVALID SHIP OBJECT,
+      or(orflags(%1,Wr),t(match(get(%0/data.roster),%1:captain)))
+      )
+-
+&FN.ROSTER.ADD #208=
+  switch(
+      [spacesys(isship,%0)]
+      [spacesys(isguest,%0,%1)],
+
+      0?,#-1 INVALID SHIP OBJECT,
+      10,set(%0,data.roster:[trim([get(%0/data.roster)] %1:%2)]),
+      11,set(%0,data.roster:[regediti(get(%0/data.roster),%1:\\w*,%1:%2)])
+      )
+-
+&FN.ROSTER.REMOVE #208=
+  ifelse(
+      spacesys(isship,%0),
+      set(%0,data.roster:[trim(ldelete(setr(0,get(%0/data.roster)),match(%q0,%1:*)))]),
+      #-1 INVALID SHIP OBJECT
+      )
 -

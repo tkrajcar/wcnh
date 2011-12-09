@@ -12,7 +12,7 @@ This is the list of work in-progress.
 
 ### Code
 
-* Write roster/list, roster/add, and roster/remove
+* Modify scan to take an arg.
 * Intercom command
 * Comm command
 * Spose
@@ -41,7 +41,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-12-08-2011
+12-09-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -63,3 +63,4 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Intra-system travel where time = Distance * Speed * Universal
 * Set up system rooms and contents.
 * Automated ship generation.
+* Write roster/list, roster/add, and roster/remove

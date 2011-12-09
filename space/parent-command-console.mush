@@ -41,6 +41,15 @@
 &HELP.LAUNCH #204=
   launch|Take off.
 -
+&HELP.ROSTER/LIST #204=
+  roster/list|See a list of crew members.
+-
+&HELP.ROSTER/ADD #204=
+  roster/add <person>=CREW/VISITOR|Add a crew member.
+-
+&HELP.ROSTER/REMOVE #204=
+  roster/remove <person>|Remove a crew member.
+-
 &HELP.LAND #204=
   land <contact ID>|Land on a planet or station.
 -
@@ -104,24 +113,6 @@
       You man the [trim(before(name(%!),<))].
       )] 
 -
-# Command: console
-# Diplay the console commands and their syntax
-&CMD.CONSOLE #204=$console:[pemit(%#,
-  [spacesys(console)]
-)]
--
-# Command: plot
-# Display the plot commands and their syntax
-&CMD.PLOT #204=$plot:[pemit(%#,
-  [spacesys(plot)]
-)]
--
-# Command: roster
-# Display the roster commands and their syntax
-&CMD.ROSTER #204=$roster:[pemit(%#,
-  [spacesys(roster)]
-)]
--
 &CMD.LAND #204=$land *:
   +space/land [v(data.ship)]=[extract(spacesys(update.report,v(data.ship)),%0,1)]
 -
@@ -150,4 +141,34 @@
 -
 &CMD.JUMP #204=$jump *:
   +space/jump [v(data.ship)]=[extract(spacesys(update.report,v(data.ship)),%0,1)]
+-
+&CMD.ROSTER/LIST #204=$roster/list:
+  @switch [spacesys(isguest,v(data.ship),%#)]=
+  
+          0,@nspemit %#=[ansi(rh,>)] Permission denied.,
+          1,@nspemit %#=[spacesys(roster,v(data.ship))]
+-
+&CMD.ROSTER/ADD #204=$roster/add *=*:
+  @switch [spacesys(iscaptain,v(data.ship),%#)]
+          [t(setr(0,pmatch(%0)))]
+          [t(match(visitor crew,%1))]=
+
+          0??,@nspemit %#=[ansi(rh,>)] Permission denied.,
+          10?,@nspemit %#=[ansi(rh,>)] Invalid person.,
+          110,@nspemit %#=[ansi(rh,>)] Position must be VISITOR or CREW.,
+          111,{@nspemit %#=[ansi(gh,>)] Roster updated.;
+               think [spacesys(roster.add,v(data.ship),%q0,%1)]
+              }
+-
+&CMD.ROSTER/REMOVE #204=$roster/remove *:
+  @switch [spacesys(iscaptain,v(data.ship),%#)]
+          [spacesys(isguest,v(data.ship),setr(0,pmatch(%0)))]
+          [not(strmatch(%q0,%#))]=
+
+          0??,@nspemit %#=[ansi(rh,>)] Permission denied.,
+          10?,@nspemit %#=[ansi(rh,>)] That person is not on the ship's roster.,
+          110,@nspemit %#=[ansi(rh,>)] You cannot remove yourself.,
+          111,{@nspemit %#=[ansi(gh,>)] Roster updated.;
+               think [spacesys(roster.remove,v(data.ship),%q0)]
+              }
 -
