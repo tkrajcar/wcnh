@@ -66,4 +66,12 @@
   think [faction(addmember,%q0,%0)];
   @swi [t(setr(1,faction(channel,%q0)))]=1,{@chan/on %q1=%0;@nscemit/noisy %q1=[ansi(h,name(%0) has joined [faction(name,%q0)]!)]};
   @pemit %#=[ansi(hb,>)] You have joined the [ansi(h,[faction(name,%q0)])].;
+-
 
+&PLANET.CABREA #217=#349|Cabrea II is one of the prime worlds of the Kilrathi Commonwealth and their de-facto headquarters in the Sector.
+-
+
+&PLANET.STING #217=#387|Sting (technically Midgard C III) is where most of the more lawless folks in the Sector might be found.
+-
+
+&PLANET.VESPUS #217=#223|Vespus I is the capital of the Enigma Sector Consortium, and a good starting place for wealthier characters of either faction.
