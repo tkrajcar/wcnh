@@ -3,6 +3,8 @@
 -
 &RACE.HUMAN #111=Human|3|3|3|3|3|3|2|20
 -
+&RACE.KILRATHI #111=Kilrathi|2|3|2|4|3|4|2|20
+-
 
 # ATTRIBUTES
 &ATTRIBUTE_ATTRIBUTES #111=Name|Description
