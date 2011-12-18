@@ -164,3 +164,21 @@
                     [ansi(c,Info:)] [u(%q0/info)]%r
                     [footerbar()]
 -
+&CMD.+STAFF #15=$+staff:
+  @nspemit %#=[titlebar(Staff Listing)]%r
+              [ansi(y,align(20 18 44,Name\(alias\),Last On,Duties))]%r
+              [iter(
+                  v(list.staff),
+                  align(
+                      20 18 44,
+                      [name(itext(0))]\([alias(itext(0))]\),
+                      [ifelse(
+                            member(mwho(),itext(0)),
+                            [ansi(gh,ON)] \(Idle: [first(timestring(idle(itext(0))))]\),
+                            timefmt($m/$d/$Y,convtime(get(itext(0)/last)))
+                            )],
+                      get(itext(0)/duties)
+                      ),
+                  ,%r)]%r
+                  [footerbar()]
+-
