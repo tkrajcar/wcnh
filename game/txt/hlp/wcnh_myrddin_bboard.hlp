@@ -6,8 +6,8 @@
                 Commands for Myrddin's Bulletin Board 4.0.6
 ------------------------------------------------------------------------------
      Requiem's BBS is a global, multi-threaded board with a rich set of
-     features. To see help on a particular topic, type '+help <topic>'
-     (Example: +help bbread).
+     features. To see help on a particular topic, type 'help <topic>'
+     (Example: help bbread).
   
      TOPIC                 DESCRIPTION
      ~~~~~                 ~~~~~~~~~~~
@@ -37,10 +37,11 @@
      +bbscan        Totals unread postings (if any) in each joined group. You
                     can place this command in your @aconnect, and it's
                     recommended you do so.
+     +bbnext                       Read your next unread posting on any board.
   
 Note: You can use the boards name (or abbreviation) in place of it's number.
 ------------------------------------------------------------------------------
-See also: +help bbpost, +help bbmisc
+See also: help bbpost, help bbmisc
 ==============================================================================
 
 & bbpost
@@ -64,7 +65,7 @@ See also: +help bbpost, +help bbmisc
   
 Note: You can use the boards name (or abbreviation) in place of it's number.
 ------------------------------------------------------------------------------
-See also: +help bbread, +help bbmisc
+See also: help bbread, help bbmisc
 ==============================================================================
 
 & bbmisc
@@ -91,7 +92,7 @@ signature in that.
   
 Note: You can use the board's name (or abbreviation) in place of its number.
 ------------------------------------------------------------------------------
-See also: +help bbread, +help bbpost, +help bbtimeout, +help bbchanges
+See also: help bbread, help bbpost, help bbtimeout, help bbchanges
 ==============================================================================
 
 & bbtimeout
@@ -110,7 +111,7 @@ full advantage of message timeouts.
    triggering.
   
 ------------------------------------------------------------------------------
-Concluded in: +help bbtimeout2
+Concluded in: help bbtimeout2
 ==============================================================================
 
 & bbtimeout2
