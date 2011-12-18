@@ -30,4 +30,15 @@
   This command gives you OOC information about a player. If you are wondering
   why it has a strange name, ask your friendly neighborhood UNIX-knowledgeable
   greybeard computer geek.
-
+& +staff
+  +staff
+  
+  This command lists all online and offline game staff. Feel free to bug us
+  if you have a problem; if you just have a general question, see if there's
+  a guide online first (via +guides).
+& +guides
+  +guides
+  
+  This command lists all online and offline player guides. These are regular
+  players who are knowledgeable about the game and who have volunteered their
+  time to help answer questions and orient new players.
