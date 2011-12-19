@@ -29,7 +29,7 @@
     @pemit %#=[ansi(hb,>)] That's not much of an answer, is it? You can do better than that!;
   &char`bg`%q0`q %#=[v(%q1)];
   &char`bg`%q0`a %#=%1;
-  @pemit %#=[ansi(hb,>)] You answered '[ansi(h,v(%q1))]' with: %1;
+  @pemit %#=[ansi(hb,>)] You answered '[ansi(h,u(%q1,%#))]' with: %1;
 -
 
 &cmd.+bg/question #214=$+bg/question *:
