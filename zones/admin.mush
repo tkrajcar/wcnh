@@ -1,7 +1,7 @@
 &cmd.+zone/history #115=$+zone/history *:
   @nspemit %#=[rpc(Zones.history,zones(bc.checkout,%0))]
 -
-&cmd.+zone/checkout #115=$+zone/checkout *:
+&cmd.+zone/checkout #467=$+zone/checkout *:
   @switch [setr(0,zones(bc.checkout,%0))]=
 
           #-1 NO RESULTS,@nspemit %#=[ansi(y,<Zones>)] No such zone.,
@@ -15,7 +15,7 @@
            @wait 90={@fo me=@newpass %q0=[zones(bc.pwgen)]}
           }
 -
-&cmd.+zone/list #115=$+zone/list*:
+&cmd.+zone/list #467=$+zone/list*:
   @switch [t(%0)]
           [t(zones(lzone,setr(0,lsearch(all,type,thing,name,trim(%0)))))]
           [t(gt(words(%q0),1))]=
