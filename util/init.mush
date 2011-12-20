@@ -86,7 +86,7 @@
 -
 &FOOTERBAR.FN #25=ifelse(%0,[ansi(if(%1,edit(%1,h,),r),>--[repeat(-,sub(70,setr(6,switch(strlen(%0),>70,70,lit(#$)))))])][ansi(if(%1,h%1,hr),\[)][left(%0,%q6)][ansi(if(%1,h%1,hr),\])][ansi(if(%1,edit(%1,h,),r),---<)],[ansi(if(%1,edit(%1,h,),r),>[repeat(-,77)]<)])
 -
-&NUM2ADJ.FN #25=[switch(%0,<1,[ansi(Rhx,Awful)],1,[ansi(hr,Poor)],2,[ansi(y,switch(%1,short,Medcr,Mediocre))],3,[ansi(hy,Fair)],4,[ansi(g,Good)],5,[ansi(hg,Great)],6,[ansi(Bh,switch(%1,short,Suprb,Superb))],>6,[ansi(Rhu,switch(%1,short,Legnd,Legend))],#-1)]
+&NUM2ADJ.FN #25=[switch(%0,<1,[ansi(Rx,Awful)],1,[ansi(hr,Poor)],2,[ansi(y,switch(%1,short,Medcr,Mediocre))],3,[ansi(hy,Fair)],4,[ansi(g,Good)],5,[ansi(hg,Great)],6,[ansi(Bh,switch(%1,short,Suprb,Superb))],>6,[ansi(Rhu,switch(%1,short,Legnd,Legend))],#-1)]
 -
 &TIMESTRING2.FN #25=[setq(0,timestring(%0,2))][if(gte(before(extract(%q0,1,1),d),1),extract(%q0,1,1)%b)][before(extract(%q0,2,1),h)]:[before(extract(%q0,3,1),m)]:[before(extract(%q0,4,1),s)]
 -
