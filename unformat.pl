@@ -162,7 +162,7 @@ $version = "1.1";
 $header1 = "Unformat.pl version $version";
 # $header2 = "Copyright (C) 1996,1997 by Adam Dray.  All Rights Reserved.";
 
-$DEBUG_DEFINES = 1;
+$DEBUG_DEFINES = 0;
 
 # $filetable is a global associative array of files that have been visited
 
