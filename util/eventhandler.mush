@@ -13,3 +13,22 @@
   @swi [haspower(%0,guest)]=1,@tri #459/tri.guest.disconnect=%0
 -
 
+&player`create #13 =
+  /@@ %0 = objid, %1 = name, %2 = how, %3 = descriptor @@/
+  @swi %2=
+  pcreate,
+  {
+    think [syslog(
+      PCREATE,
+      New player [name(%0)]\([num(%0)]\) has been @pcreated by [name(%#)].
+    )]
+  },
+  {
+    think [syslog(
+      PCREATE,
+      New player [name(%0)]\([num(%0)]\) has been %2ed to [get(%0/registered_email)].
+    )];
+    @assert [hasattr(%0,registered_email)];
+    +pfile/register [get(%0/registered_email)]=[num(%0)];
+  }
+
