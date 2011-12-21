@@ -4,7 +4,12 @@
   @trigger #114/trig.aconnect=%0;
   @trigger #227/trig.aconnect=%0;
   think [if(hasattr(%0/pfile),rpc(PlayerFile.connect,get(%0/pfile),get(%0/lastip),get(%0/lastsite),%2,num(%0)))];
-  @swi [haspower(%0,guest)]=1,@tri #459/tri.guest.connect=%0
+  @swi [haspower(%0,guest)]=1,@tri #459/tri.guest.connect=%0;
+  @swi [hasattr(%0,char`announced)]=
+    0,{
+      &char`announced %0=1;
+      @cemit/noisy help=[ansi(c,Say hello to our newest player\,)] [ansi(h,name(%0))][ansi(c,!)]
+    }
 -
 
 &player`disconnect #13 =
@@ -30,5 +35,6 @@
     )];
     @assert [hasattr(%0,registered_email)];
     +pfile/register [get(%0/registered_email)]=[num(%0)];
-  }
+  };
+  ;@chan/on help=%0
 
