@@ -2,11 +2,10 @@
 # +bg/questions
 # +bg/answer <question>=<text>
 # +bg/question <question>
-# +email <email>
 # @desc me=<desc>
 
 @desc #214=
-  In this room you will be able to set your email, set your character's description, and describe his or her background (the events of his her life leading up to their entry into the game). We use a simple question-based system to make life easier!
+  In this room you will be able to set your character's description, and describe his or her background (the events of his her life leading up to their entry into the game). We use a simple question-based system to make life easier!
   %r%r
   [ansi(hy,For the commands\, see 'help chargen room 3'.)] 
 -
@@ -39,19 +38,12 @@
   @pemit %#=[ansi(hb,>)] [ansi(h,v(%q1))]: [default(%#/char`bg`%q0`a,No answer yet.)]
 -
 
-&cmd.+email #214=$+email *:
-  &email %#=%0;
-  @pemit %#=[ansi(hb,>)] Email set.
--
-
 # Exit from room 3 to room 4.
 @lock #218==#0 
 -
 
 @afail #218=
   @pemit %#=[ansi(hb,>)] Checking character [ansi(h,%n)].;
-  @assert get(%#/email)=
-    @pemit %#=[ansi(hb,>)] You need to set your email.;
   @assert [lmath(and,iter(lattr(#214/question.required.*),hasattr(%#,char`bg`[last(##,.)]`a)))]=
     @pemit %#=[ansi(hb,>)] You need to to answer all of the required background questions.;
   @assert gte(strlen(get(%#/desc)),140)=

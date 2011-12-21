@@ -54,8 +54,8 @@
 -
 
 &tri.finalize #217=
-  think [rpc(PlayerFile.register,get(%0/email),%0)];
-  think [syslog(New player [name(%0)]\(%0\), [get(%0/email)]. Starting on [get(%0/char`startingplanet)]. [if(get(%0/char`declinefaction),Faction DECLINED.)])];
+  think [rpc(PlayerFile.register,get(%0/registered_email),%0)];
+  think [syslog(New player [name(%0)]\(%0\), [get(%0/registered_email)]. Starting on [get(%0/char`startingplanet)]. [if(get(%0/char`declinefaction),Faction DECLINED.)])];
   &char`approved %0=[secs()];
   @set %0=IC;
   think [tel(%0,extract(v(planet.[get(%0/char`startingplanet)]),1,1,|))];
