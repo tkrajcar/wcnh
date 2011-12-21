@@ -152,7 +152,7 @@
           @pemit %#=[titlebar(+Finger: [name(%q0)])]%r
                     [table(
                         [ansi(c,Alias:)] [alias(%q0)]|
-                        [ansi(c,Race:)] [default(%q0/race,Human)]|
+                        [ansi(c,Race:)] [default(%q0/char`race,Human)]|
                         [ansi(c,Sex:)] [get(%q0/sex)]|
                         [ansi(c,Status:)] [ifelse(hasflag(%q0,IC),IC,OOC)]|
                         [ansi(c,Last On:)] [ifelse(
