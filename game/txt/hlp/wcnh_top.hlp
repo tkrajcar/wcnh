@@ -16,14 +16,9 @@ If you find an error in the help files or have an idea of how to make one better
 please open a +ticket (see: 'help +ticket') and we'll check it out.
 
 & local
-  This page lists our local commands and topics. To view a page, type
-  'help <page name>' (for example, 'help chargen').
-
-  Pages in capital letters have sub pages.
-
-  PAGES:
-
-  +BBOARD        CHARGEN        COMMS          FACTIONS       +finger        
-  +guides        ooc            +set           +staff         +TICKET        
-  time           +where         +who
+PAGES:
+ 
++BBOARD        CHARGEN        COMMS          FACTIONS       +finger        
++guides        ooc            places         +set           +staff         
++TICKET        time           +where         +who   
 
