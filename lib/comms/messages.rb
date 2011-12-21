@@ -37,7 +37,7 @@ module Comms
     c = Comlink.find_or_create_by(id: R["enactor"])
     msgs = Tightbeam.any_in(to_handles: c.handles)
 
-    return "> ".bold.yellow + "No messages received at your registerd handles!" unless msgs.all.length > 0
+    return "> ".bold.yellow + "No messages received at your registered handles!" unless msgs.all.length > 0
 
     list_output(msgs, c, "Recent Tightbeam Messages", 1, true)
   end
