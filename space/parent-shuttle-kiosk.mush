@@ -31,8 +31,8 @@
               @set [v(data)]=list.shuttles.players:[trim([get(v(data)/list.shuttles.players)] %#:%q1)];
               @set %#=space`shuttle:%q1;
               @set %q1=enter_ok;
-              @set %q1=space`report:
-              @set %q1=space`destination:
+              @set %q1=space`report:;
+              @set %q1=space`destination:;
               @set %q1=data.docked:[loc(%#)];
               think [syslog(SPACE,[name(%#)]\(%#\) claimed a free shuttle %q1 at [name(loc(%#))]\([loc(%#)]\))]
              }
