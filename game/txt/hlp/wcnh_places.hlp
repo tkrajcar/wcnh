@@ -1,0 +1,81 @@
+&PLACES
+Places are virtual places to sit, stand or occupy. You remain in the same
+room, but join a group of people within that room who may or may not be
+having a quiet conversation only with others placed with them. 
+ 
+   Commands:
+   ---------
+   Mv from <#> to <#>          Moves a vacancy from one place to another.
+   Join <place name>           Puts you at <place name>
+   Join at #<num>              Puts you at place #<num>.
+   Join with <name>            Puts you at the place with <name>.
+   Depart                      Removes you from your place.
+   Places                      Lists who's present at all places.
+   Place <num>                 Lists who's present at place <num>.
+   Plook                       Lists in column format everyone around the room.
+   tt <message>                (Tete a tete) Relays a message
+                                to all those at your place. This command takes
+                                the usual say/pose tokens, and TT |<message>
+                                will emit. 
+   Update <#>/<Option>=<text>  See 'help places options'
+   
+   This code is provided courtesy of Deirdre, Meg, and Osric of AmberMUSH.
+
+   See also: help places2
+
+&PLACES2
+Hints for better places.
+ 
+ 1) When updating the prefix, you don't need the comma after the phrase.
+ I.E. use 'At your table' instead of 'At your table,'
+  
+ 2) Make the number of max places a few more than you think you'll need,
+ to allow for people moving places from one place to another. 
+   
+ 3) Be aware of this syntax: When naming a place 'bar' you will find that
+ with the standard join message, you will get 'You sit down at bar." You 
+ can either name the place 'the bar' or change the join message to 'You sit
+ down at the.' Either way will work.
+    
+     
+ See also: help places config, places options, @addplace, @delplace, @places/sync
+
+&PLACES CONFIG
+PLACES configuration:
+
+Configure <num> places
+Unconfigure places
+       
+Notes: A null fixed message means vacancies can be moved freely to and
+from the place.  This does not make sense for things like couches and rugs.
+Set it tosomething like "That makes no sense." if you are using such a place.
+(O)Join and (O)depart messages take like this: %%N. All Join and Depart
+ messages are appended with the place name.
+            
+Functions:
+WHICHPLACE(<loc num>,<dbnum>) gives the number of a place where <dbnum> is.
+ATPLACE(<loc num>,<place num>) gives you a list of things at a place.
+PLACEINFO(<loc num>,<place num>,<option>) gives the value of <option> at
+place.
+                   
+See also help on: places, places options
+
+&PLACES OPTIONS
+Update <Place #>/<Option>=<Configuration Text>
+ 
+Option Description    <Option>        Default Configuration Text
+------------------    --------        --------------------------
+Place Name            NAME            Table x
+Maximum # of places   MAXPLACES       Random
+Current # of places   CURPLACES       Random (1 >= # >= MAXPLACES)
+Fixed fail message    FIXED           <NULL>
+Full fail message     FULL            That table has no more room.
+Join message          JOIN            You sit down at <place>.
+Ojoin message         OJOIN           sits down at <place>.
+Depart message        DEPART          You stand and leave <place>.
+Odepart message       ODEPART         stands and leaves <place>.
+Say prefix            PREFIX          At your table
+                          
+                            
+See also help on: places, places config
+
