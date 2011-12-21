@@ -16,6 +16,9 @@ If you find an error in the help files or have an idea of how to make one better
 please open a +ticket (see: 'help +ticket') and we'll check it out.
 
 & local
+This page lists our local commands and topics. To view a page, type
+'help <page name>' (for example, 'help chargen').
+ 
 PAGES:
  
 +BBOARD        CHARGEN        COMMS          FACTIONS       +finger        
