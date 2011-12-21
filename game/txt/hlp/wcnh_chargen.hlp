@@ -191,10 +191,6 @@ would be nice.
 +bg/question <number>
 Review your answer to a question.
 
-+email <email>
-Set your email address. If you've previously played the game under a different
-email address, please let an administrator know prior to finishing chargen.
-
 @desc me=<description>
 Write a description of your character; what he/she looks like physically,
 typical posture/attitude, clothing and accessories/personal items, and so on.
