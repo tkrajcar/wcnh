@@ -577,7 +577,7 @@ guests yes
 # If you turn this off, neither "create" nor "register" will work.
 # Use access.cnf if you want to disable creation for specific sites
 # or disable creation but enable registration for everyone.
-player_creation no
+player_creation yes
 
 # If you use the shs password system, and your database was created
 # on a little-endian hardware architecture (such as an intel PC),
