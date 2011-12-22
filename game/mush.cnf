@@ -814,6 +814,8 @@ only_ascii_in_names yes
 ###   player_flags flag1 flag2
 ###
 
+player_flags suspect
+
 # -- Default flags for exits
 
 # Uncommenting this will cause the exit default to be DARK (like in TinyMUD):
