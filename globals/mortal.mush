@@ -7,7 +7,7 @@
     @pemit %#=[ansi(hb,>)] Admins should never be set IC. @tel #20 if you're trying to get to the OOC area.;
   @assert t(get(%#/char`approved))=
     @pemit %#=[ansi(hb,>)] You are not approved yet. Be patient there, pardner.;
-  @assert or(match(OOC,%0),hastype(get(%#/char`icloc),room))=
+  @assert or(match(OOC,%0),hastype(get(%#/char`icloc),room thing))=
     @pemit %#=[ansi(hb,>)] You don't appear to have a valid IC location.;
   think switch(%0,
   IC,
