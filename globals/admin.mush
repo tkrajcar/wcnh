@@ -47,4 +47,7 @@
     @nspemit %#=[ansi(hb,>)] Player not found.;
   @nspemit %#=[titlebar(Background for [name(%q0)])]%r[u(#15/fn.bgquestions,%q0)]%r[footerbar()]
 -
+&CMD.@GEMIT #115=$@gemit *:
+  @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by Freeze>%b)]%0
+-
 
