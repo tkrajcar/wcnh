@@ -215,4 +215,8 @@
     %b,
     %r
   )
- 
+-
+&CMD.@GEMIT #15=$@gemit *:
+  @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by Freeze>%b)]%0
+-
+
