@@ -8,7 +8,8 @@
 
   This command lists all connected players, with some information about them.
 & ooc
-  ooc <message>
+& +ooc
+  +ooc <message>
 
   This command sends an OOC message to all the connected players in the room.
 & +set
