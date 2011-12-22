@@ -191,6 +191,10 @@ would be nice.
 +bg/question <number>
 Review your answer to a question.
 
++bg
+Review all of the answers you've given. This command works outside of chargen
+too, in case you ever need to review what you answered.
+
 @desc me=<description>
 Write a description of your character; what he/she looks like physically,
 typical posture/attitude, clothing and accessories/personal items, and so on.
