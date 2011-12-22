@@ -182,6 +182,7 @@
             [tel(%0,setr(2,get(%q1/data.landing)),silent)]
             [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
             [set(%0,data.docked:%q2)]
+            [set(%0,!opaque)]
             [spacesys(activate,%0)]
             [spacesys(update.report,%0)]
             [iter(remove(spacesys(list.system.active,loc(%q1)),%0),spacesys(update.report,itext(0)))]
@@ -209,6 +210,7 @@
           [nsremit(loc(%0),The [ansi(wh,name(%0))] dissapears from sight as it's propelled into orbit.)]
           [tel(%0,loc(setr(0,get(loc(%0)/space`loc))),silent)]
           [set(%0,data.docked:)]
+          [set(%0,opaque)]
           [set(%0,space`x:[get(%q0/space`x)])]
           [set(%0,space`y:[get(%q0/space`y)])]
           [u(fn.notify.consoles,%0,Launch sequence complete.)]
@@ -393,7 +395,7 @@
       [u(%0/describe)]%r%r
       Location%r%t
       X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
-      Docking Bay: [ifelse(hasattrval(%0,data.landing),Yes,No)]
+      [ansi(rh,Landing Area)]: [ifelse(hasattrval(%0,data.landing),[ansi(gh,Yes)],No)]
       )]%r
   [footerbar(Class: [edit(%q0,_,%b)])]
 -
