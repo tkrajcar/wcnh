@@ -42,3 +42,9 @@
 &cmd.+ticket/mine/page #115=$+ticket/mine page *:@pemit %#=[rpc(Ticket.list_mine,%0)]
 -
 
+&cmd.+bg #115=$+bg *:
+  @assert [setr(0,pmatch(*%0))]=
+    @nspemit %#=[ansi(hb,>)] Player not found.;
+  @nspemit %#=[titlebar(Background for [name(%q0)])]%r[u(#15/fn.bgquestions,%q0)]%r[footerbar()]
+-
+

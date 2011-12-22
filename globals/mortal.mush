@@ -145,6 +145,7 @@
 
 &cmd.+ticket/view #15=$+ticket/view *:@pemit %#=[rpc(Ticket.view,%0)]
 -
+
 &cmd.+finger #15=$+finger *:
   @switch [t(setr(0,pmatch(%0)))]=0,
 
@@ -164,6 +165,7 @@
                     [ansi(c,Info:)] [u(%q0/info)]%r
                     [footerbar()]
 -
+
 &CMD.+STAFF #15=$+staff:
   @nspemit %#=[titlebar(Staff Listing)]%r
               [ansi(y,align(20 18 39,Name\(alias\),Last On,Duties))]%r
@@ -182,6 +184,7 @@
                   ,%r)]%r
                   [footerbar()]
 -
+
 &CMD.+GUIDES #15=$+guides:
   @nspemit %#=[titlebar(Player Guide Listing)]%r
               [ansi(y,align(20 18 39,Name\(alias\),Last On,Duties))]%r
@@ -199,3 +202,17 @@
                       ),
                   ,%r)]%r
                   [footerbar()]
+-
+
+&cmd.+bg #15=$+bg:
+  @nspemit %#=[titlebar(Background for %n)]%r[u(fn.bgquestions,%#)]%r[footerbar()]
+-
+
+&fn.bgquestions #15=
+  iter(
+    sort(lattr(%0/char`bg`*`q),m),
+    [ansi(h,extract(##,3,1,`))]: [ansi(c,u(%0/##,%0))]%r[xget(%0,replace(##,4,A,`))],
+    %b,
+    %r
+  )
+ 
