@@ -68,6 +68,9 @@
 &HELP.UNMAN #204=
   unman|Stop using the console.
 -
+&HELP.TB #204=
+  tb <contact ID>=<message>|Send a message to a contact.
+-
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
 
@@ -182,4 +185,15 @@
           111,{@nspemit %#=[ansi(gh,>)] Roster updated.;
                think [spacesys(roster.remove,v(data.ship),%q0)]
               }
+-
+&CMD.TIGHTBEAM #204=$tb *=*:
+  @switch [t(lte(%0,words(setr(2,spacesys(update.report,v(data.ship))))))]=
+
+          0,@nspemit %#=[ansi(rh,>)] Invalid contact.,
+          1,{@nspemit %#=[ansi(gh,>)] Message sent.;
+             think [spacesys(
+                           notify.consoles,extract(%q2,%0,1),
+                           [ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] from [ansi(wh,name(v(data.ship)))]: %1
+                           )]
+            }
 -

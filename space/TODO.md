@@ -13,7 +13,6 @@ This is the list of work in-progress.
 ### Code
 
 * Intercom command
-* Comm command
 * Spose
 * Bay commands
 * Shuttles
@@ -40,7 +39,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-12-09-2011
+12-23-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -64,3 +63,5 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Automated ship generation.
 * Write roster/list, roster/add, and roster/remove
 * Modify scan to take an arg.
+* Comm command
+

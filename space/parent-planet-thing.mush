@@ -1,0 +1,7 @@
+@set #526=!safe no_command
+-
+@wipe #526
+-
+@set #526=safe
+-
+&SPACE`CLASS #526=Celestial
