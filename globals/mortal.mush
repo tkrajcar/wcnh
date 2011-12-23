@@ -216,4 +216,6 @@
     %r
   )
 -
-
+&CMD.+VOUCHERS #15=$+vouchers:
+  @nspemit %#=You have [ansi(yh,default(%#/char`vouchers,0))] vouchers.
+-

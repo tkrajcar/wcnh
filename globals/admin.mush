@@ -50,4 +50,20 @@
 &CMD.@GEMIT #115=$@gemit *:
   @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by [name(%#)]>%b)]%0
 -
+&CMD.+VOUCHERS #115=$+vouchers *:
+  @switch [t(setr(0,pmatch(%0)))]=
 
+          0,@nspemit %#=[ansi(rh,>)] No such player.,
+          1,@nspemit %#=[name(%q0)] has [default(%q0/char`vouchers,0)] vouchers.
+-
+&CMD.+VOUCHER/GIVE #115=$+voucher/give *=*:
+  @switch [t(setr(0,pmatch(%0)))]
+          [t(gt(%1,0))]=
+
+          0?,@nspemit %#=[ansi(rh,>)] No such player.,
+          10,@nspemit %#=[ansi(rh,>)] Number must be greater than 0.,
+          11,{@nspemit %#=You have awarded [ansi(yh,%1)] vouchers to [name(%q0)].;
+              @set %q0=char`vouchers:[add(default(%q0/char`vouchers,0),%1)];
+              @nspemit %q0=[ansi(ch,>)] You have been awarded [ansi(yh,%1)] vouchers!
+             }
+-
