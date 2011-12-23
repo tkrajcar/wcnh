@@ -1,0 +1,8 @@
+&+vouchers
+  +vouchers <player>
+  +vouchers/give <player>=<amount>
+
+  The first syntax will show you how many vouchers a player has.
+
+  The second syntax gives vouchers to a player.
+

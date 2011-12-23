@@ -47,3 +47,12 @@
   +bg
 
   +bg lets you view your chargen questions and answers once you've left chargen.
+& +vouchers
+  +vouchers
+
+  This command will show you how many vouchers you currently have.   A voucher
+  is a reward given by administrators for participating in plots or events, or
+  for contributing to the game in some way during the beta period.  As game
+  systems are further developed, players will be able to exchange vouchers for
+  tangible in-game rewards such as credits, items, or ships.
+
