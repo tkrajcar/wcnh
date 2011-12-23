@@ -137,7 +137,7 @@
   t(member(iter(getpids(%0),after(pidinfo(itext(0)),SPACE`QUEUE`)),MOVE))
 -
 &FN.CYCLE #208=
-  pidinfo(first(lpids(%!,w)),time)
+  ifelse(t(setr(0,pidinfo(first(lpids(%!,w)),time))),%q0,0)
 -
 &FN.ADDCONSOLE #208=
   [switch(
