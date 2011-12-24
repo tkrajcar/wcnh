@@ -11,9 +11,8 @@ This is the list of work in-progress.
 * Review and implement doc strategy via chargen
 
 ### Code
-
+* Tie piloting skill to ship speed.
 * Intercom command
-* Add spose messages to land/launch.
 * Bay commands
 * Shuttles
 * Shipyards
@@ -37,7 +36,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-12-23-2011
+12-24-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -62,4 +61,5 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Write roster/list, roster/add, and roster/remove
 * Modify scan to take an arg.
 * Comm command
+* Add spose messages to land/launch.
 

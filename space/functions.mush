@@ -178,7 +178,7 @@
       1110?,#-1 OUT OF RANGE,
       11110,#-1 NO LANDING ZONE ON TARGET,
       11111,[u(fn.notify.ship,%0,The ship lurches as it touches down.)]
-            /@@ Spose notify other in-system ships @@/
+            [spacesys(spose,%0,disappears as it [ifelse(spacesys(isship,%q1),docks with the,descends toward)] [name(%q1)].)]
             [tel(%0,setr(2,get(%q1/data.landing)),silent)]
             [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
             [set(%0,data.docked:%q2)]
@@ -223,7 +223,11 @@
           [set(%0,space`y:[get(%q0/space`y)])]
           [u(fn.notify.consoles,%0,Launch sequence complete.)]
           [iter(spacesys(list.system.active,loc(%0)),spacesys(update.report,itext(0)))]
-          /@@ Notify other in-system ships @@/
+          [spacesys(spose,%0,ifelse(
+                                spacesys(isship,%q0),
+                                glides out of the [name(%q0)]'s docking bay.,
+                                rises out of the atmosphere of [name(%q0)].
+                                ))]
           )]
 -
 &FN.ISSHIP #208=
@@ -441,12 +445,12 @@
       110??,#-1 JUMP IS UNLINKED,
       1110?,#-1 SHIP IS IN MOTION,
       11110,#-1 OUT OF RANGE,
-      11111,/@@ Spose notify in-system ships @@/
+      11111,[spacesys(spose,%0,disappears in a flash of light through the [rest(name(%1))] jump point.)]
             [u(fn.notify.consoles,%0,Jumping to [name(loc(setr(1,get(%1/link))))]...)]
             [u(fn.notify.ship,%0,Reality is briefly distorted as the ship is hurtled through a jump point.)]
             [tel(%0,loc(%q1))]
             [iter(spacesys(list.system.active,loc(%1)),spacesys(update.report,itext(0)))]
-            /@@ Spose notify new system ships @@/
+            [spacesys(spose,%0,arrives in-system admist a flash of light near the [rest(name(%q1))] jump point.)]
             [set(%0,space`x:[get(%q1/space`x)])]
             [set(%0,space`y:[get(%q1/space`y)])]
             [iter(spacesys(list.system.active,loc(%0)),spacesys(update.report,itext(0)))]

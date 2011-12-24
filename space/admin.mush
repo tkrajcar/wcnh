@@ -34,7 +34,6 @@
           11111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Landing [name(%0)] on [name(%q1)].;
                  think [spacesys(notify.consoles,%0,Landing sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] remaining.)];
                  think [spacesys(notify.ship,%0,The engines rumble as the ship prepares to land.)];
-                 /@@ SPose notify other ships. @@/
                  @wait %0/space`queue`move=think [spacesys(land,%0,%q1)]
                 }
 -
