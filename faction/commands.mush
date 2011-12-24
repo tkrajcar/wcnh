@@ -116,7 +116,7 @@
     1110?,@nspemit %#=[ansi(c,<Faction>)] They already have a pending invitation to [ucstr(%1)].,
     11110,@nspemit %#=[ansi(c,<Faction>)] They are already a member of [ucstr(%1)].,
     11111,{@nspemit %#=[ansi(c,<Faction>)] You have invited [name(%q0)] to join [ucstr(%1)].;
-           @nspemit %#=[ansi(c,<Faction>)] [ansi(wh,name(%#))] has invited you to join [ansi(wh,faction(name,%1))].%r
+           @nspemit %q0=[ansi(c,<Faction>)] [ansi(wh,name(%#))] has invited you to join [ansi(wh,faction(name,%1))].%r
             [space(10)]Use [ansi(yh,+fac/join [ucstr(%1)])] to accept the invitation or 
             [ansi(yh,+fac/reject [ucstr(%1)])] to reject it.;
            think [set(%q0,fac`invites:[squish(edit(%q1,$,%b%1))])]
