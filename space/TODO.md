@@ -13,7 +13,7 @@ This is the list of work in-progress.
 ### Code
 
 * Intercom command
-* Spose
+* Add spose messages to land/launch.
 * Bay commands
 * Shuttles
 * Shipyards

@@ -68,6 +68,9 @@
 &HELP.UNMAN #204=
   unman|Stop using the console.
 -
+&HELP.SPOSE #204=
+  spose <message>|Make a ship pose as if using the 'pose' command.
+-
 &HELP.HAIL #204=
   hail <contact ID>=<message>|Send a message to a contact.
 -
@@ -196,4 +199,10 @@
                            [ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] from [ansi(wh,name(v(data.ship)))]: %1
                            )]
             }
+-
+&CMD.SPOSE #204=$spose *:
+  @switch [spacesys(isactive,v(data.ship))]=
+
+          0,@nspemit %#=[ansi(rh,>)] The Ship is currently landed.,
+          1,[spacesys(spose,v(data.ship),%0)]
 -

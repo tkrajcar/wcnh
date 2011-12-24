@@ -183,10 +183,18 @@
             [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
             [set(%0,data.docked:%q2)]
             [set(%0,!opaque)]
-            [spacesys(activate,%0)]
+            [spacesys(deactivate,%0)]
             [spacesys(update.report,%0)]
             [iter(remove(spacesys(list.system.active,loc(%q1)),%0),spacesys(update.report,itext(0)))]
             )]
+-
+&FN.DEACTIVATE #208=
+  switch(
+      u(fn.isactive,%0),
+
+      1,set(v(data),list.active:[remove(get(v(data)/list.active),%0)]),
+      #-1 SHIP IS NOT ACTIVE
+      )
 -
 &FN.ACTIVATE #208=
   switch(
@@ -234,6 +242,12 @@
       [set(%0,space`report:[secs()]|%q2)]
       %q2
       )]
+-
+&FN.SPOSE #208=
+  iter(
+      spacesys(list.system.active,loc(%0)),
+      spacesys(notify.consoles,itext(0),The [ansi(wh,name(%0))] %1)
+      )
 -
 &FN.LIST.SYSTEM.ACTIVE #208=
   filter(filter.active,u(fn.list.system.all,%0))
