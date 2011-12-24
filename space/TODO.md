@@ -29,9 +29,7 @@ This is the list of work that is next up to be tackled.
 This is the list of work needed to implement the spec.
 
 * Buying a Ship
-* Securiing a Ship
 * In-ship Communication
-* In-orbit Commands
 
 ## Idea Bucket
 
