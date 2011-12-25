@@ -28,6 +28,8 @@ Vagrant::Config.run do |config|
   config.vm.share_folder "mush", "/mush", "."
   if File.exists?("../systems")
     config.vm.share_folder "systems", "/systems", "../systems"
+  elsif File.exists?("../wcnh_systems")
+    config.vm.share_folder "systems", "/systems", "../wcnh_systems"
   end
 
   # Enable provisioning with Puppet stand alone.  Puppet manifests
