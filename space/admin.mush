@@ -72,7 +72,7 @@
                               notify.consoles,
                               %q0,
                               Course engaged. Destination: %q2.%r
-                              [ansi(gh,>)] Speed: [ulocal(fn.speed.parse,%q0)] [ansi(y,ETA: [spacesys(eta,%q0)].
+                              [ansi(gh,>)] Speed: [ulocal(fn.speed.parse,%q0)] [ansi(y,ETA: [spacesys(eta,%q0)])].
                               )]
                         )];
                @wait %q0/space`queue`move={think [spacesys(advance,%q0)];
