@@ -74,6 +74,12 @@
 &HELP.HAIL #204=
   hail <contact ID>=<message>|Send a message to a contact.
 -
+&HELP.+SCHECK/LIST #204=
+  +scheck/list|See a list of valid ship skills.
+-
+&HELP.+SCHECK #204=
+  +scheck <skill> or +scheck/private <skill>|Check a ship skill.
+-
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
 
