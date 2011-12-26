@@ -111,6 +111,9 @@
 &SUBFN.SKILL #208=
   chargen(get.skill,%0,%1)
 -
+&FN.LIST.SKILLS #208=
+  lattr(v(data)/skill.*)
+-
 &FN.ISCAPSHIP #208=
   0
 -
@@ -121,7 +124,7 @@
     mul(
       spacesys(speed.base,%0),
       switch(
-          spacesys(skill,%0,ifelse(spacesys(iscapship,%0),pilot-capital,pilot-fighter)),
+          spacesys(skill,%0,ifelse(spacesys(iscapship,%0),pilot-cap,pilot-fig)),
           1,1.15,
           2,1.30,
           3,1.45,

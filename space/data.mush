@@ -14,3 +14,19 @@
 -
 &PARENT.SHUTTLE #351=#190
 -
+&SKILL.PILOT-FIG #351=pilot-fig
+-
+&SKILL.PILOT-CAP #351=pilot-cap
+-
+&SKILL.ENGINEER-CAP #351=engineer-cap
+-
+&SKILL.ENGINEER-FIG #351=engineer-fig
+-
+&SKILL.TURRET-GUN #351=turret-gun
+-
+&SKILL.ASTROGATION #351=astrogation
+-
+&SKILL.COMPUTERS #351=computers
+-
+&SKILL.SCIENCE #351=science
+-
