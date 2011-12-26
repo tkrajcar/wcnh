@@ -86,20 +86,20 @@
           @nspemit %#=[ansi(c,<Faction>)] You have no pending invitations.
 -
 &cmd.+fac/join #191=$+fac/join *:
-  @switch [t(member(setr(0,get(%#/fac`invites)),lcstr(%0)))]=
+  @switch [t(member(setr(0,get(%#/fac`invites)),ucstr(%0)))]=
 
           1,{@nspemit %#=[ansi(c,<Faction>)] You have joined [ansi(wh,setr(2,faction(name,%0)))]!;
-             think [set(%#,fac`invites:[squish(remove(%q0,%0))])];
+             think [set(%#,fac`invites:[squish(remove(%q0,ucstr(%0)))])];
              think [if(t(setr(1,faction(channel,%0))),nscemit(%q1,[ansi(wh,name(%#))] has joined [ansi(wh,%q2)]!,noisy))];
              think [faction(addmember,%0,%#)]
             },
             @nspemit %#=[ansi(c,<Faction>)] You don't have a pending invitation to join that faction.
 -
 &cmd.+fac/reject #191=$+fac/reject *:
-  @switch [t(member(setr(0,get(%#/fac`invites)),lcstr(%0)))]=
+  @switch [t(member(setr(0,get(%#/fac`invites)),ucstr(%0)))]=
   
           1,{@nspemit %#=[ansi(c,<Faction>)] You have rejected your invitation to join [ucstr(%0)].;
-             think [set(%#,fac`invites:[squish(remove(%q0,%0))])]
+             think [set(%#,fac`invites:[squish(remove(%q0,ucstr(%0)))])]
             },
             @nspemit %#=[ansi(c,<Faction>)] You don't have any invitations to join that faction.
 -
@@ -107,7 +107,7 @@
   @switch [t(setr(0,pmatch(%0)))]
     [t(setr(2,faction(name,%1)))]
     [or(orflags(%#,Wr),t(member(faction(list.leaders,%1),%#)))]
-    [not(member(setr(1,get(%q0/fac`invites)),lcstr(%1)))]
+    [not(member(setr(1,get(%q0/fac`invites)),ucstr(%1)))]
     [not(member(faction(list.members,%1),%q0))]=
     
     0*,@nspemit %#=[ansi(c,<Faction>)] No such player.,
@@ -119,7 +119,7 @@
            @nspemit %q0=[ansi(c,<Faction>)] [ansi(wh,name(%#))] has invited you to join [ansi(wh,faction(name,%1))].%r
             [space(10)]Use [ansi(yh,+fac/join [ucstr(%1)])] to accept the invitation or 
             [ansi(yh,+fac/reject [ucstr(%1)])] to reject it.;
-           think [set(%q0,fac`invites:[squish(edit(%q1,$,%b%1))])]
+           think [set(%q0,fac`invites:[squish(edit(%q1,$,%b[ucstr(%1)]))])]
           }
 -
 &cmd.+fac/list #191=$+fac/list:
