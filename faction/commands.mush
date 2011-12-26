@@ -1,3 +1,9 @@
+@set #191=safe !no_command
+-
+@wipe #191
+-
+@set #191=safe
+-
 &cmd.+fac/boot #191=$+fac/boot *=*:
   @switch [or(orflags(%#,Wr),t(member(setr(3,faction(list.leaders,%0)),%#)))]
           [t(match(faction(list.memberof,setr(1,pmatch(%1))),%0))]
@@ -153,3 +159,18 @@
         faction(fwho.parse,trim(%q0))
         )]
 -
+&CMD.+FAC/DETAILS #191=$+fac/details *=*:
+  @switch [faction(isfaction,%0)]
+          [or(orflags(%#,Wr),faction(isleader,%0,%#))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] Invalid faction.,
+          10,@nspemit %#=[ansi(c,<Faction>)] You are not a faction leader.,
+          11,{@nspemit %#=[ansi(c,<Faction>)] Details for [ucstr(%0)] set.;
+              think [faction(setdetails,%0,%1)]
+             }
+-
+&CMD.+FAC/INFO #191=$+fac/info *:
+  @assert [faction(isfaction,%0)]={@nspemit %#=[ansi(rh,>)] No such faction.};
+  @nspemit %#=[faction(info,%0)]
+-
+

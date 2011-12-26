@@ -1,3 +1,9 @@
+@set #114=!safe no_command;
+-
+@wipe #114
+-
+@set #114=safe
+-
 &DOC.LIST.FACTIONTREE #114=|Return the ansi hierarchy of factions.
 -
 &DOC.REMMEMBER #114=fac abbrev:player|Remove a faction member.
@@ -32,19 +38,31 @@
 -
 &DOC.DESTROY #114=fac abbrev:|Delete a faction and remove all members.
 -
+&DOC.INFO #114=fac abbrev|Returns ansi formatted info on fac.
+-
+&DOC.ISFACTION #114=fac abbrev|1 if valid faction.
+-
+&DOC.ISLEADER #114=fac abbrev:dbref|1 if player is leader of fac.
+-
+&DOC.LIST.FACTIONSBYLEVEL #114=level|List of factions of a particular level.
+-
+&DOC.ISMEMBER #114=fac abbrev:dbref|1 if player is member of fac.
+-
+&DOC.ROSTER #114=fac abbref|Dbref list of fac roster.
+-
 &DATA #114=#116
 -
-&fn.create #114=
+&FN.CREATE #114=
   [ifelse(
-        t(match(lattr(v(data)/fac.*),fac.%0)),
+        faction(isfaction,%0),
         #-1 EXISTING FAC ABBREV,
-        [set(v(data),fac.%0:%1|Organization||||)]
+        [set(v(data),fac.%0:%1|Organization||||||)]
          [syslog(FACTION,New faction [ansi(wh,%1\([ucstr(%0)]\))] created by [name(%#)].)]
         )]
 -
-&fn.destroy #114=
-  [ifelse(
-        t(match(lattr(v(data)/fac.*),fac.%0)),
+&FN.DESTROY #114=
+  ifelse(
+        faction(isfaction,%0),
         [iter(
             extract(setr(0,get(v(data)/fac.%0)),5,1,|),
             localize(u(fn.remleader,%0,itext(0)))
@@ -59,11 +77,11 @@
               [ansi(wh,[first(%q0,|)]\([ucstr(%0)]\))] deleted by [name(%#)].  [words(extract(%q0,3,1,|))] members removed.
               )],
         #-1 INVALID FACTION
-        )]
+        )
 -
-&fn.set #114=
+&FN.SET #114=
   [switch(
-       [t(member(u(fn.list.factions),ucstr(%0)))]
+       [faction(isfaction,%0)]
        [t(match(get(v(data)/factions_settings),%1,|))],
 
        0?,#-1 INVALID FACTION,
@@ -72,7 +90,7 @@
        [u(fn.error,%=,%0,%1,%2)]
        )]
 -
-&subfn.set.channel #114=
+&SUBFN.SET.CHANNEL #114=
   [ifelse(
       t(cflags(%1)),
       [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),7,[capstr(%1)],|)])]
@@ -80,7 +98,7 @@
       #-1 INVALID CHANNEL
       )]
 -
-&subfn.set.parent #114=
+&SUBFN.SET.PARENT #114=
   [ifelse(
         and(
             t(member([u(fn.list.factions)] NONE,setr(1,ucstr(%1)))),
@@ -91,7 +109,7 @@
         #-1 INVALID PARENT
         )]
 -
-&subfn.set.level #114=
+&SUBFN.SET.LEVEL #114=
   [ifelse(
         t(member(get(v(data)/factions_levels),setr(1,capstr(%1)),|)),
         [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),2,%q1,|)])]
@@ -99,7 +117,7 @@
         #-1 INVALID LEVEL
         )]
 -
-&subfn.set.name #114=
+&SUBFN.SET.NAME #114=
   [ifelse(
         gt(strlen(%1),0),
         [set(v(data),fac.%0:[replace(get(v(data)/fac.%0),1,setr(1,decompose(stripansi(stripaccents(%1)))),|)])]
@@ -107,15 +125,15 @@
         #-1 EMPTY STRING
         )]
 -
-&fn.error #114=
+&FN.ERROR #114=
   [syslog(
         FACTION,
         Failure in [ansi(wh,%0)] by [name(%#)]\(%#\) with [words(setr(0,squish(%1 %2 %3 %4 %5 %6 %7 %8 %9)))] args. [iter(%q0,\%[dec(inum(0))] = [itext(0)],,\,%b)]
         )]
 -
-&fn.remleader #114=
+&FN.REMLEADER #114=
   [switch(
-    [t(member(u(fn.list.factions),ucstr(%0)))]
+    [faction(isfaction,%0)]
     [t(setr(1,pmatch(%1)))]
     [t(member(setr(0,u(fn.list.leaders,%0)),%q1))],
 
@@ -125,9 +143,9 @@
     111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),5,squish(remove(%q0,%q1)),|)])
     )]
 -
-&fn.addleader #114=
+&FN.ADDLEADER #114=
   [switch(
-      [t(member(u(fn.list.factions),ucstr(%0)))]
+      [faction(isfaction,%0)]
       [t(setr(1,pmatch(%1)))]
       [t(member(u(fn.list.members,%0),%q1))]
       [not(member(setr(0,u(fn.list.leaders,%0)),%q1))],
@@ -139,14 +157,14 @@
       1111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),5,squish(%q0 %q1),|)])
       )]
 -
-&fn.channel #114=
+&FN.CHANNEL #114=
   [ifelse(
       t(setr(0,lattr(v(data)/FAC.%0))),
       extract(get(v(data)/%q0),7,1,|),
       #-1 NO CHANNEL
       )]
 -
-&trig.aconnect #114=
+&TRIG.ACONNECT #114=
    @wait 1={think [if(
                     hasattrval(%0,fac`invites),
                     nspemit(%0,[ansi(c,<Faction>)] [ansi(rh,Reminder:)] You have pending invitations to join: 
@@ -155,21 +173,21 @@
                      )]
            }
 -
-&fn.name #114=
-  [ifelse(
-    setr(0,lattr(v(data)/FAC.%0)),
-    first(get(v(data)/%q0),|),
-    #-1 INVALID FACTION.
-    )]
--
-&fn.list.leaders #114=
-  [ifelse(
-    setr(0,lattr(v(data)/FAC.%0)),
-    extract(get(v(data)/%q0),5,1,|),
+&FN.NAME #114=
+  ifelse(
+    faction(isfaction,%0),
+    first(get(v(data)/fac.%0),|),
     #-1 INVALID FACTION
-    )]
+    )
 -
-&fn.list.factiontree #114=
+&FN.LIST.LEADERS #114=
+  ifelse(
+    faction(isfaction,%0),
+    extract(get(v(data)/fac.%0),5,1,|),
+    #-1 INVALID FACTION
+    )
+-
+&FN.LIST.FACTIONTREE #114=
   [titlebar(Faction Hierarchy)]%r
   [iter(
     filter(filter.list.factiontree,lattr(v(data)/FAC.*)),
@@ -178,10 +196,10 @@
   [ansi(wh,Key:)] [ansi(c,Government)]\, [ansi(g,Military)]\, [ansi(r,Corporation)]\, [ansi(y,Industry)]\, [ansi(m,Organization)]%r
   [footerbar()]
 -
-&fn.list.factiontree.regrep #114=
+&FN.LIST.FACTIONTREE.REGREP #114=
   regrep(v(data),FAC.*,\\|%0\\||\\|%0\\b)
 -
-&fn.list.factiontree.parse #114=
+&FN.LIST.FACTIONTREE.PARSE #114=
   [if(gt(%1,2),|)]
   [space(switch(%1,3,5,4,10,5,15,0))]
   [if(gt(%1,1),|[repeat(_,5)])]
@@ -197,14 +215,14 @@
     )] 
   \[[words(extract(%q0,3,1,|))] members\][if(t(extract(%q0,6,1,|)),%b\([ansi(rh,HIDDEN)]\))]
 -
-&fn.list.factiontree.loop #114=
+&FN.LIST.FACTIONTREE.LOOP #114=
   [u(fn.list.factiontree.parse,%0,%1)]
   [iter(
     u(fn.list.factiontree.regrep,after(%0,.)),
     %r[u(fn.list.factiontree.loop,itext(0),inc(%1))]
     )]
 -
-&filter.list.factiontree #114=
+&FILTER.LIST.FACTIONTREE #114=
   ifelse(
     and(
       strmatch(extract(setr(0,get(v(data)/%0)),4,1,|),),
@@ -213,24 +231,24 @@
     1,0
     )
 -
-&fn.list.factionsbylevel #114=
+&FN.LIST.FACTIONSBYLEVEL #114=
   [switch(
     grepi(v(data),fac.*,|%0|),
     ,#-1 INVALID FACTION LEVEL,
     edit(stext(0),FAC.,)
     )]
 -
-&fn.list.factions #114=
+&FN.LIST.FACTIONS #114=
   [ifelse(
     strmatch(%0,),
     edit(lattr(v(data)/fac.*),FAC.,),
     u(fn.list.factionsbylevel,%0)
     )]
 -
-&fn.list.members #114=
+&FN.LIST.MEMBERS #114=
   [ifelse(
-    setr(0,lattr(v(data)/fac.%0)),
-    squish(extract(get(v(data)/%q0),3,1,|)),
+    faction(isfaction,%0),
+    squish(extract(get(v(data)/fac.%0),3,1,|)),
     #-1 INVALID FACTION
     )]
 -
@@ -242,22 +260,29 @@
   %b%b+[repeat(-,73)]+%r
   [repeat(-,79)]
 -
-&fn.list.levels #114=
+&FN.LIST.LEVELS #114=
   [iter(get(v(data)/factions_levels),itext(0),|,%b)]
 -
-&map.doc #114=
+&MAP.DOC #114=
   [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
 -
-&fn.list.memberof #114=
+&FN.LIST.MEMBEROF #114=
   [ifelse(
     t(setr(0,pmatch(%0))),
     squish(edit(grepi(v(data),fac.*,%q0),FAC.,)),
     #-1 INVALID PLAYER
     )]
 -
-&fn.addmember #114=
+&FN.ISMEMBER #114=
+  ifelse(
+      t(setr(1,pmatch(%1))),
+      t(match(faction(list.memberof,%q1),%0)),
+      #-1 INVALID PLAYER
+      )
+-
+&FN.ADDMEMBER #114=
   [switch(
-    [t(member(u(fn.list.factions),ucstr(%0)))]
+    [faction(isfaction,%0)]
     [t(setr(1,pmatch(%1)))]
     [not(member(setr(0,u(fn.list.members,%0)),%q1))],
 
@@ -267,9 +292,9 @@
     111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),3,squish(%q0 %q1),|)])
     )]
 -
-&fn.remmember #114=
+&FN.REMMEMBER #114=
   [switch(
-    [t(member(u(fn.list.factions),ucstr(%0)))]
+    [faction(isfaction,%0)]
     [t(setr(1,pmatch(%1)))]
     [t(member(setr(0,u(fn.list.members,%0)),%q1))],
 
@@ -279,7 +304,7 @@
     111,set(v(data),fac.%0:[replace(get(v(data)/fac.%0),3,squish(remove(%q0,%q1)),|)])
     )]
 -
-&fn.roster.parse #114=
+&FN.ROSTER.PARSE #114=
   [titlebar(Member Roster for [first(setr(0,get(v(data)/fac.%0)),|)])]%r
   %b[ansi(y,align(24 13 13 >4 19,Name\(alias\),Position,Assignment,Last,Location))]%r
   %b[ansi(r,[repeat(-,24)]%b[repeat(-,13)]%b[repeat(-,13)]%b[repeat(-,4)]%b[repeat(-,19)])]%r
@@ -301,14 +326,14 @@
       ,%r)]%r
    [footerbar([words(%q1)] members)]
 -
-&fn.roster #114=
+&FN.ROSTER #114=
   [ifelse(
-      t(member(u(fn.list.factions),ucstr(%0))),
+      faction(isfaction,%0),
       u(fn.list.members,%0),
       #-1 INVALID FACTION
       )]
 -
-&fn.fwho.parse #114=
+&FN.FWHO.PARSE #114=
     [titlebar(Connected Members of [first(setr(0,get(v(data)/fac.%0)),|)])]%r
     %b[ansi(y,align(24 13 13 >4 19,Name\(alias\),Position,Assignment,Idle,Location))]%r
     %b[ansi(r,[repeat(-,24)]%b[repeat(-,13)]%b[repeat(-,13)]%b[repeat(-,4)]%b[repeat(-,19)])]%r
@@ -331,13 +356,46 @@
         ,%r)]%r
     [footerbar([words(%q1)] connected members)]
 -
-&fn.fwho #114=
+&FN.FWHO #114=
     [ifelse(
-        t(member(u(fn.list.factions),ucstr(%0))),
+        faction(isfaction,%0),
         filter(filter.fwho,u(fn.list.members,%0)),
         #-1 INVALID FACTION
         )]
 -
-&filter.fwho #114=
+&FILTER.FWHO #114=
     ifelse(eq(conn(%0),-1),-1,1)
 -
+&FN.ISFACTION #114=
+  t(member(faction(list.factions),ucstr(%0)))
+-
+&FN.SETDETAILS #114=
+  ifelse(
+      faction(isfaction,%0),
+      set(v(data),fac.%0:[replace(get(v(data)/fac.%0),8,%1,|)]),
+      #-1 INVALID FACTION
+      )
+-
+&FN.INFO #114=
+  ifelse(
+        faction(isfaction,setr(0,ucstr(%0))),
+        
+        [titlebar(Faction Information: %q0)]%r
+        [table(
+              [ansi(y,Name:)] [faction(name,%q0)]|
+              [ansi(y,Level:)] [extract(setr(1,get(v(data)/fac.%q0)),2,1,|)]|
+              [ansi(y,Members:)] [words(faction(list.members,%q0))]|
+              [ansi(y,Channel:)] [faction(channel,%q0)],
+              38,79,|
+              )]%r
+        [ansi(y,Leaders:)] [itemize(iter(faction(list.leaders,%q0),name(itext(0)),,|),|)]%r%r
+        [ansi(y,Details:)] [extract(%q1,8,1,|)]%r
+        [footerbar()],
+
+        #-1 INVALID FACTION
+        )
+-
+&FN.ISLEADER #114=
+  t(member(faction(list.leaders,%0),%1))
+-
+
