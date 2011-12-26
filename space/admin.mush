@@ -72,7 +72,7 @@
                               notify.consoles,
                               %q0,
                               Course engaged. Destination: %q2.%r
-                              [ansi(gh,>)] Speed: [mul(spacesys(speed,%q0),get(v(data)/interval))] km/h. ETA: [spacesys(eta,%q0)].
+                              [ansi(gh,>)] Speed: [ulocal(fn.speed.parse,%q0)] [ansi(y,ETA: [spacesys(eta,%q0)].
                               )]
                         )];
                @wait %q0/space`queue`move={think [spacesys(advance,%q0)];
@@ -80,6 +80,9 @@
                                            +space/advance %q0=1
                                           };
               }
+-
+&FN.SPEED.PARSE #367=
+  [mul(setr(a,spacesys(speed,%0)),get(v(data)/interval))] km/h \([ansi(y,+[mul(100,sub(fdiv(%qa,spacesys(speed.base,%0)),1))]\% skill bonus)]\).
 -
 &CMD.+SPACE/STOP #367=$+space/stop *:
   @switch [spacesys(isship,%0)]

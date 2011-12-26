@@ -99,8 +99,39 @@
 #      #-1 NO DESTINATION SET
 #      )
 -
-&FN.SPEED #208=
+&FILTER.MANNEDCONS #208=
+  spacesys(ismanned,%0)
+-
+&FN.SKILL #208=
+  lmath(max,iter(
+                filter(filter.mannedcons,get(%0/data.consoles)),
+                ulocal(subfn.skill,spacesys(mannedby,itext(0)),get(v(data)/skill.%1))
+                ))
+-
+&SUBFN.SKILL #208=
+  chargen(get.skill,%0,%1)
+-
+&FN.ISCAPSHIP #208=
+  0
+-
+&FN.SPEED.BASE #208=
   default(%0/space`maxspeed,10)
+-
+&FN.SPEED #208=
+    mul(
+      spacesys(speed.base,%0),
+      switch(
+          spacesys(skill,%0,ifelse(spacesys(iscapship,%0),pilot-capital,pilot-fighter)),
+          1,1.15,
+          2,1.30,
+          3,1.45,
+          4,1.60,
+          5,1.75,
+          6,1.90,
+          7,2,
+          1
+          )
+      )
 -
 &SUBFN.RAD2DEG #208=
   add(fdiv(mul(%0,180),pi()),180)
