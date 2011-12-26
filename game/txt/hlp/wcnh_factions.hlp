@@ -19,9 +19,20 @@ For more information on the Faction System, type 'help <command>'
 
 COMMANDS:
 
-+fac/boot       +fac/demote       +fac/invite       +fac/join
-+fac/leave      +fac/list         +fac/promote      +fac/reject
-+fac/roster     +fwho
++fac/boot       +fac/demote       +fac/details      +fac/info
++fac/invite     +fac/join         +fac/leave        +fac/list
++fac/promote    +fac/reject       +fac/roster       +fwho
+
+& +FAC/INFO
+Syntax: +fac/info <faction>
+ 
+This command shows more detailed information about a faction.
+
+& +FAC/DETAILS
+Syntax: +fac/details <faction>=<details>
+ 
+This command allows a leader to set the detail information for a faction that
+can be seen with +fac/info.
 
 & +FAC/BOOT
 Syntax: +fac/boot <faction>=<member>
