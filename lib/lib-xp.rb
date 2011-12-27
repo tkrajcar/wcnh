@@ -8,7 +8,7 @@ module XP
     return ">".bold.yellow + " Invalid target!" unless player != "#-1"
     ret = titlebar("Experience Log: #{R.penn_name(player)}") + "\n"
     ret << "Date      Old  New  Chg Reason\n".cyan
-    logs = Log.where(player: victim).desc(:timestamp).limit(15)
+    logs = Log.where(player: player).desc(:timestamp).limit(15)
     logs.each do |log|
       change_output = log.change.to_s
       if log.change > 0
