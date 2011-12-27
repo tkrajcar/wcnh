@@ -54,6 +54,7 @@
       )]
       [attrib_set(%q0/char`chargen`alevels,chargen(race,get(%q0/char`race),free attribute levels))]
       [attrib_set(%q0/char`chargen`spoints,chargen(race,get(%q0/char`race),starting skill points))]
+      [attrib_set(%q0/char`xp`available,default(%q0/char`xp`total,0))]
   )]
 -
 
@@ -130,8 +131,10 @@
   [titlebar([ansi(h,Character Sheet:)] [ansi(hy,name(%0))])]%r
   [align(
     26 25 26,
-    Race: [ansi(h,chargen(get.race,%0))],
-    Age: [ansi(h,default(%0/char`age,Not Set))],
+    Race: [ansi(h,chargen(get.race,%0))]%r
+    Available XP: [ansi(h,default(%0/char`xp`available,0))],
+    Age: [ansi(h,default(%0/char`age,Not Set))]%r
+    Total XP: [ansi(h,default(%0/char`xp`total,0))],
     Birthday: [ansi(h,default(%0/char`birthday,Not Set))]
   )]%r
   [middlebar(ATTRIBUTES)]%r[align(26 25 26,u(#112/subfn.attrformat,rea,%0),u(#112/subfn.attrformat,per,%0),u(#112/subfn.attrformat,wil,%0))]%r[align(26 25 26,u(#112/subfn.attrformat,str,%0),u(#112/subfn.attrformat,agi,%0),u(#112/subfn.attrformat,hea,%0))]%r[middlebar(SKILLS)]%r[align(26 25 26,[u(#112/subfn.skillgroupformat,Athletic,%0)]%r%r[u(#112/subfn.skillgroupformat,Social,%0)],u(#112/subfn.skillgroupformat,Combat,%0)%r%r[u(#112/subfn.skillgroupformat,Knowledge,%0)],u(#112/subfn.skillgroupformat,Professional,%0)%r%r[u(#112/subfn.skillgroupformat,Outdoor,%0)])]%r[footerbar()]
