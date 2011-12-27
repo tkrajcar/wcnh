@@ -1,0 +1,14 @@
+&+FACTION
+ 
+Admin commands for dealing with the +faction system.
+ 
++fac/create <abbrev>=<title> - Create a new faction.
++fac/destroy <abbrev> - Remove a faction.
++fac/set <abbrev>/<setting>=<value> Adjust an existing faction.  The setting
+can be NAME, LEVEL, PARENT, or CHANNEL.  The parent refers to where the faction
+should sit in the hierarchy (+fac/list).  The channel must already be created
+before it can be set as the faction channel.
+ 
+In addition to these commands, admin may use any +fac commands that would
+otherwise be restricted to leaders.  See help +factions.
+ 
