@@ -1,5 +1,5 @@
 # PREREQUISITE
-# Make sure that you have a checkout of wcnh_systems at '../systems' relative to this file.
+# Make sure that you have a checkout of wcnh_systems at '../systems' or '../wcnh_systems' relative to this file.
 # For example, if this file is at /home/foo/mush/README.WCNHDEV, you should have a /home/foo/systems/Gemfile.
 # This is to make the Vagrant shared folders mapping work.
 # If you do it right, you should see files in /mush and /systems when in the VM.
@@ -8,7 +8,7 @@
 # 1: Install vagrant on your machine.
 sudo gem install vagrant
 
-# 2: Install Virtualbox 4.1.4 from https://www.virtualbox.org/
+# 2: Install Virtualbox from https://www.virtualbox.org/
 
 # 3: Initialize the vm. This will take awhile as it needs to download the base box, and then run a bunch
 #    of automated provisioning stuff.
@@ -23,20 +23,19 @@ vagrant ssh
 # RUBY
 # Unfortunately, the default ruby version on the box is 1.8.7, so we'll use rvm to get 1.9.2 on there.
 # 1: Install rvm
-sudo bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
+bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
 
 # Disconnect from the vm and reconnect at this point, to get the path updates done by the rvm installer.
 
-# 2: Run 'rvm requirements' and install all packages described for your environment.
+# 2: Run 'rvm requirements' and install all packages described (using sudo).
 
 # 3: Install ruby 1.9.2p0 using rvm. This compiles it from source, so this takes a little bit too.
-sudo rvm install 1.9.2
+rvm install 1.9.2
 
 # 4: Tell rvm to use 1.9.2.
 rvm use 1.9.2 --default
-sudo rvm use 1.9.2 --default
 
-# 5: Make sure you're on 1.9.2
+# 5: Disconnect from ssh and reconnect and make sure you're on 1.9.2
 ruby -v
 # should be: ruby 1.9.2p290 (2011-07-09 revision 32553) [i686-linux]
 
@@ -56,14 +55,11 @@ sudo apt-get install mongodb-10gen
 
 
 # GEMS
-# 1: Install bundler
-sudo gem install bundler
-
-# 2: Install systems gems
+# 1: Install systems gems
 cd /systems
 bundle install
 
-# 3: Install Penn gems
+# 2: Install Penn gems
 cd /mush/game/ruby
 bundle install
 
