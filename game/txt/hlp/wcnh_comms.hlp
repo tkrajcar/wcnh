@@ -67,8 +67,8 @@
     channels you are already on.
   comm/on <name/numeric>[=<alias] - join a channel. The alias is optional.
   comm/off <name/numeric/alias> - leave a channel.
-  comm/handle <name/numeric/alias> - Set a handle override for a channel. If an
-    override is present, it will always be used. If not, your default is used.
+  comm/handle <channel>=<handle> - Set a handle override for a channel. If an
+    override is set on a channel, it'll be used. If not, your default is used.
   -<name/numeric/alias> <message> - Transmit on a frequency.
 
   See also: 'help comms handles' and 'help comms messages'
