@@ -10,10 +10,21 @@
 &CREDITS #539=mushcron was coded by Myrddin (merlin@firstmagic.com). Permission is granted to distribute the code freely as long as the initial CREDIT attribute is kept intact. This code is located at www.firstmagic.com/~merlin/mushcode
 -
 
-&CRON_TIME_STATSLOG #539=||||0|
+&CRON_TIME_STATSLOG #539=||||00|
 -
 
 &CRON_JOB_STATSLOG #539=
   @pemit #3=Statistics at [time()]: [words(lwho())] online. [words(filter(#lambda/hasflag(\%0,ic),lwho()))] IC. [words(filter(#lambda/lte(idlesecs(\%0),3600),lwho()))] idle <1hr.;
   think [rpc(Statistics.log,lwho())]
 -
+
+&CRON_TIME_NOMS #539=||Sun|01|00|
+-
+
+&CRON_JOB_NOMS #539=think [syslog(CRON,Processing +noms. [rpc(XP.run_noms)])]
+-
+
+&CRON_TIME_ACTIVITY #539=|||00|30|
+-
+
+&CRON_JOB_ACTIVITY #539=think [syslog(CRON,Processing daily XP awards for RP. [rpc(XP.run_activity)])]
