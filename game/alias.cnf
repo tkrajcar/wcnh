@@ -39,6 +39,12 @@ reserve_alias dummy_exit_alias
 # hook_command say override #123/cmd.say
 # hook_command say override/inplace #123/cmd.say
 
+# RP logging system
+hook_command say after #21/hook.say
+hook_command pose after #21/hook.pose
+hook_command semipose after #21/hook.semipose
+hook_command @emit after #21/hook.emit
+
 # You can also add new functions, with
 # add_function <function> <obj>/<attr> [<minargs> [<maxargs>]]
 # as per @function <function>=<obj>, <attr>[, <minargs>[, <maxargs>]]
