@@ -216,6 +216,16 @@
     %r
   )
 -
+
 &CMD.+VOUCHERS #15=$+vouchers:
   @nspemit %#=You have [ansi(yh,default(%#/char`vouchers,0))] vouchers.
 -
+
+&cmd.+xp #15=$+xp:
+  @nspemit %#=[rpc(XP.view,%#)];
+-
+
+&cmd.+nom #15=$+nom *=*:
+  @nspemit %#=[rpc(XP.add_nom,%0,%1)];
+-
+

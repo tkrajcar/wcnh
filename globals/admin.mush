@@ -67,3 +67,12 @@
               @nspemit %q0=[ansi(ch,>)] You have been awarded [ansi(yh,%1)] vouchers!
              }
 -
+
+&cmd.+xp #115=$+xp *:
+  @nspemit %#=[rpc(XP.view,%0)];
+-
+
+&cmd.+xp/award #115=$+xp/award */*=*:
+  @nspemit %#=[rpc(XP.award,%0,%1,%2)];
+-
+
