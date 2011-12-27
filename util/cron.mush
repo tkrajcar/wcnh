@@ -13,5 +13,7 @@
 &CRON_TIME_STATSLOG #539=||||0|
 -
 
-&CRON_JOB_STATSLOG #539=@pemit #3=Statistics at [time()]: [words(lwho())] online. [words(filter(#lambda/hasflag(\%0,ic),lwho()))] IC. [words(filter(#lambda/lte(idlesecs(\%0),3600),lwho()))] idle <1hr.
+&CRON_JOB_STATSLOG #539=
+  @pemit #3=Statistics at [time()]: [words(lwho())] online. [words(filter(#lambda/hasflag(\%0,ic),lwho()))] IC. [words(filter(#lambda/lte(idlesecs(\%0),3600),lwho()))] idle <1hr.;
+  think [rpc(Statistics.log,lwho())]
 -
