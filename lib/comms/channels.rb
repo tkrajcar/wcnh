@@ -106,4 +106,9 @@ module Comms
     Transmission.create!(channel: ch, from: R["enactor"], from_handle: mymbr.active_handle, text: message)
     ""
   end
+
+  def self.channel_create(name,description,permission_type,permission_value)
+    ch = Channel.create!(id: name, description: description, permission_type: permission_type, permission_value: permission_value)
+    ""
+  end
 end
