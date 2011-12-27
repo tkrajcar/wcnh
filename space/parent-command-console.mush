@@ -74,6 +74,12 @@
 &HELP.HAIL #204=
   hail <contact ID>=<message>|Send a message to a contact.
 -
+&HELP.+SCHECK/LIST #204=
+  +scheck/list|See a list of valid ship skills.
+-
+&HELP.+SCHECK #204=
+  +scheck <skill> or +scheck/private <skill>|Check a ship skill.
+-
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
 
@@ -206,3 +212,26 @@
           0,@nspemit %#=[ansi(rh,>)] The Ship is currently landed.,
           1,[spacesys(spose,v(data.ship),%0)]
 -
+&CMD.SCHECK #204=$^\+scheck(/private)? (.*):
+  @swi/first [t(setr(0,grab(setr(1,spacesys(list.skills)),*.%2*)))]=
+    
+             0,{@nspemit %#=[ansi(hr,>)] That's not a valid skill. Valid ship skills are: [itemize(iter(%q1,capstr(lcstr(after(itext(0),.)))))]},
+             {th [u(fn.scheck,switch(%1,,public,%1),v(data.ship),after(%q0,.))]}
+-
+&FN.SCHECK #204=
+  [setq(m,
+      [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,%2)] skill: 
+      [ansi(h,setr(r,add(
+                      rand(-2,2),
+                      spacesys(skill,%1,%2)
+                      )))] 
+      ([num2adj(%qr)])
+      )]
+  [switch(%0,/private,spacesys(notify.consoles,%1,The [ansi(h,name(%1))] %qm),spacesys(spose,%1,%qm))]
+-
+@set #204/cmd.scheck=regexp
+-
+&CMD.SCHECK/LIST #204=$+scheck/list:
+  @nspemit %#=[ansi(gh,>)] Valid ship skills: [itemize(iter(spacesys(list.skills),capstr(lcstr(after(itext(0),.)))))].
+-
+
