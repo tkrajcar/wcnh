@@ -1,0 +1,45 @@
+& +xp
+  On WCNH, players earn eXperience Points (XP) to help improve their character.
+
+  For information on how to earn XP, see 'help +xp earning'.
+
+  For information on how to spend XP, see 'help +xp spending'.
+
+  Your current available and total XP are listed on '+sheet'. You can also use
+  '+xp' to view the 15 most recent XP awards you've received.
+
+& +xp earning
+  Players earn XP one of three ways:
+
+  1) Via player nominations - players can nominate each other to recognize
+  excellent roleplaying using the +nom command (see 'help +nom'). Players
+  receive 6 XP per +nom awarded until they have 200 total XP; thereafter, 4 XP.
+
+  2) Players will automatically receive XP on a daily basis for roleplaying and
+  participating in the game. This award is 2 XP per day up to 200 total XP;
+  thereafter, 1 XP.
+
+  3) Players can receive XP on a one-off basis by admin award for participating
+  in special events, helping with OOC/community tasks, ands o on.
+
+& +xp spending
+  XP will be able to be spent on improving your character. This functionality
+  is not yet implemented, but should be soon.
+
+& +nom
+  +nom
+  +nom <player>=<reason>
+
+  The +nom system allows players to reward each other for excellent roleplaying.
+
+  Typing '+nom' by itself will list the +nom(s) you've already awarded this
+  week. +noms are reset on Sundays at 1:00AM, game time.
+
+  To +nom someone, use '+nom <player>=<reason>', where <reason> is a brief
+  description of why you think their roleplay is especially worthy.
+
+  You have a limited number of +noms per week, so choose your recipients
+  carefully. You will receive between 1 and 5 +noms to give out every week,
+  depending on your level of RP activity.
+See also: +xp, +xp earning
+
