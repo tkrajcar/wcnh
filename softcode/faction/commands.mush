@@ -133,30 +133,40 @@
 -
 &cmd.+fac/roster #191=$+fac/roster*:@nspemit %#=
   [switch(
-        [t(setr(0,faction(list.memberof,%#)))]
-        [t(%0)]
-        [gt(words(%q0),1)]
-        [or(orflags(%#,Wr),t(match(%q0,trim(%0))))],
+        [faction(
+              isfaction,
+              setr(0,
+                  ifelse(
+                      t(%0),
+                      squish(%0),
+                      faction(active,%#)
+                      )
+                  )
+              )]
+        [or(orflags(%#,Wr),faction(ismember,%q0,%#))],
 
-        0*,You're not a member of any factions.,
-        101?,Specify one of the following: %q0,
-        11?0,You're not a member of that faction.,
-        1111,faction(roster.parse,trim(%0)),
-        faction(roster.parse,trim(%q0))
+        0?,[ansi(c,<Faction>)] No such faction.,
+        10,[ansi(c,<Faction>)] You are not a member of that faction.,
+        11,[faction(roster.parse,%q0)]
         )]
 -
 &cmd.+fwho #191=$+fwho*:@nspemit %#=
   [switch(
-        [t(setr(0,faction(list.memberof,%#)))]
-        [t(%0)]
-        [gt(words(%q0),1)]
-        [or(orflags(%#,Wr),t(match(%q0,trim(%0))))],
+        [faction(
+              isfaction,
+              setr(0,
+                  ifelse(
+                      t(%0),
+                      squish(%0),
+                      faction(active,%#)
+                      )
+                  )
+              )]
+        [or(orflags(%#,Wr),faction(ismember,%q0,%#))],
 
-        0*,You're not a member of any factions.,
-        101?,Specify one of the following: %q0,
-        11?0,You're not a member of that faction.,
-        1111,faction(fwho.parse,trim(%0)),
-        faction(fwho.parse,trim(%q0))
+        0?,[ansi(c,<Faction>)] No such faction.,
+        10,[ansi(c,<Faction>)] You are not a member of that faction.,
+        11,[faction(fwho.parse,%q0)]
         )]
 -
 &CMD.+FAC/DETAILS #191=$+fac/details *=*:

@@ -48,7 +48,9 @@
 -
 &DOC.ISMEMBER #114=fac abbrev:dbref|1 if player is member of fac.
 -
-&DOC.ROSTER #114=fac abbref|Dbref list of fac roster.
+&DOC.ROSTER #114=fac abbrev|Dbref list of fac roster.
+-
+&DOC.ROSTER.PARSE #114=fac abbrev|Ansi printout of fac roster.
 -
 &DATA #114=#116
 -
@@ -269,7 +271,7 @@
 &FN.LIST.MEMBEROF #114=
   [ifelse(
     t(setr(0,pmatch(%0))),
-    squish(edit(grepi(v(data),fac.*,%q0),FAC.,)),
+    squish(edit(grepi(v(data),fac.*,%q0\\b),FAC.,)),
     #-1 INVALID PLAYER
     )]
 -
@@ -397,5 +399,15 @@
 -
 &FN.ISLEADER #114=
   t(member(faction(list.leaders,%0),%1))
+-
+&FN.ACTIVE #114=
+  switch(
+      [t(setr(0,faction(list.memberof,%0)))]
+      [hasattrval(%0,fac`active)],
+
+      0?,#-1 NO JOINED FACTIONS,
+      10,first(%q0),
+      11,get(%0/fac`active)
+      )
 -
 
