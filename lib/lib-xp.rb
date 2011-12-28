@@ -37,14 +37,97 @@ module XP
   end
 
   def self.add_nom(target,reason)
+    remaining = R.default("#{R["enactor"]}/char`noms","0").to_i
+    return ">".bold.yellow + " You don't have any +noms remaining to give this week. +noms cycle weekly on Sunday evenings." unless remaining > 0
+    victim = R.pmatch(target)
+    return ">".bold.yellow + " That doesn't seem to be an approved player." unless R.xget(victim,"char`approved").to_i > 0
+    already_nommed = Nomination.where(author: R["enactor"], processed: false).collect(&:victim)
+    return ">".bold.yellow + " You've already +nommed that person this week!" if already_nommed.include?(victim)
+
+    Logs.log_syslog("+NOM","#{R.penn_name(R["enactor"])} +nommed #{R.penn_name(victim)} for: #{reason}")
+    Nomination.create!(author: R["enactor"], victim: victim, message: reason)
+    R.attrib_set("#{R["enactor"]}/char`noms",(remaining - 1).to_s)
+    ">".bold.yellow + " Roleplay +nom entered for #{R.penn_name(victim).bold.white}."
+  end
+
+  def self.nom_view(target)
+    player = R.pmatch(target)
+    return ">".bold.yellow + " Invalid target!" unless player != "#-1"
+    remaining = R.default("#{player}/char`noms","0").to_i
+    ret = titlebar("Unprocessed +Nominations Entered By #{R.penn_name(player)}") + "\n"
+    Nomination.where(author: player, processed: false).each do |nom|
+      ret << "#{R.penn_name(nom.victim).bold.white}: #{nom.message}\n"
+    end
+    ret << "\n" + "You have #{remaining.to_s.bold.yellow} +nom#{remaining != 1 ? "s" : ""} remaining to give prior to Sunday at 1AM game time.\n"
+    return ret << footerbar()
   end
 
   def self.run_noms
+    Logs.log_syslog("+NOM","Running awards.")
+    total = Hash.new
+    nommers = []
+    Nomination.where(processed: false).each do |nom|
+      nommers << nom.author
+      total[nom.victim] ||= 0
+      total[nom.victim] += 1
+#      nom.processed = true
+#      nom.save
+    end
+    total.each do |player,noms|
+      # award 3 xp per nom if total is <=100, 2 otherwise
+      victim_total_xp = R.default("#{player}/char`xp`total","0").to_i
+      if victim_total_xp > 200
+        amount = noms * 4
+      else
+        amount = noms * 6
+      end
+      self.award(player,amount,"#{noms} roleplay +nom#{noms != 1 ? "s" : ""} for #{DateTime.now.strftime("%m/%d/%y")}")
+    end
+    
+    # set new noms remaining for everyone who +nommed
+    nommers.uniq.each do |nommer|
+      days = Logs::Roleplay.where(:who => nommer, :timestamp.gte => 7.days.ago).collect { |pose| pose.timestamp.day}
+      newnoms = [1 + days.uniq.count, 5].min # only can get up to 5 noms per week, but everybody gets at least 1
+      Logs.log_syslog("+NOM","#{R.penn_name(nommer)} has poses on: #{days.uniq.to_s} so is receiving #{newnoms} new noms.")
+      R.attrib_set("#{nommer}/CHAR`NOMS",newnoms.to_s)
+    end
+    ""
   end
 
   def self.run_activity
+    Logs.log_syslog("XP","Running daily activity.")
+    roleplayers = Hash.new
+    Logs::Roleplay.where(:timestamp.gte => 1.day.ago).each do |pose|
+      roleplayers[pose.who] ||= 0
+      roleplayers[pose.who] += 1
+    end
+    roleplayers.each do |person,posecount|
+      Logs.log_syslog("XP","#{R.penn_name(person)}(#{person}) had #{posecount} poses.")
+
+      next unless posecount >= 3 # no activity XP unless you have 3 or more poses in the day
+      person_total_xp = R.default("#{person}/char`xp`total","0").to_i
+      if person_total_xp > 200
+        amount = 1
+      else
+        amount = 2
+      end
+      self.award(person,amount,"RP activity on #{1.day.ago.strftime("%m/%d/%y")}")
+    end
+    ""
   end
-  
+
+  class Nomination
+    include Mongoid::Document
+    field :timestamp, :type => DateTime, :default => lambda {DateTime.now}
+    field :processed, :type => Boolean, :default => false
+    index :processed
+    field :author, :type => String
+    index :author
+    field :victim, :type => String
+    index :victim
+    field :message, :type => String
+  end
+
   class Log
     include Mongoid::Document
     field :timestamp, :type => DateTime, :default => lambda {DateTime.now }

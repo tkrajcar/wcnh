@@ -229,3 +229,5 @@
   @nspemit %#=[rpc(XP.add_nom,%0,%1)];
 -
 
+&cmd.+nom2 #15=$+nom:
+  @nspemit %#=[rpc(XP.nom_view,%#)];

@@ -20,10 +20,10 @@
 &CRON_TIME_NOMS #539=||Sun|01|00|
 -
 
-&CRON_JOB_NOMS #539=think [syslog(CRON,Processing +noms. [rpc(XP.run_noms)])]
+&CRON_JOB_NOMS #539=think [rpc(XP.run_noms)]
 -
 
 &CRON_TIME_ACTIVITY #539=|||00|30|
 -
 
-&CRON_JOB_ACTIVITY #539=think [syslog(CRON,Processing daily XP awards for RP. [rpc(XP.run_activity)])]
+&CRON_JOB_ACTIVITY #539=think [rpc(XP.run_activity)]
