@@ -129,7 +129,20 @@
 -
 &MYWHO.FN #25=objeval(%#,lwho())
 -
-&SYSLOG.FN #25=[if(cor(isadmin(%#),isoadmin(%@)),[cemit(syslog,[ansi(hb,\[)]SysLog[ansi(hb,\])] [ansi(hw,%0)]: {%1})],[pemit(%#,#-1 PERMISSION DENIED)])]
+&SYSLOG.FN #25=
+  ifelse(
+    or(
+      orflags(%@,Wr),
+      orflags(%#,Wr),
+      haspower(%@,api)
+    ),
+    rpc(
+      Logs.log_syslog,
+      if(%1,%0,MISC),
+      if(%1,%1,%0)
+    ),
+    #-1 PERMISSION DENIED
+  )
 -
 
 ### ACTUAL MAKE-IT-GO-NESS

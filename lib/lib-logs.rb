@@ -35,6 +35,11 @@ module Logs
     ""
   end
 
+  def self.log_syslog(category,message)
+    Syslog.create!(category: category, enactor: R["enactor"], caller: R["caller"], message: message)
+    R.cemit("syslog","[".bold.blue + "SysLog".bold.white + "] ".bold.blue + "#{category}: ".bold.white + message)
+  end
+
   class Statistic
     include Mongoid::Document
     field :timestamp, :type => DateTime, :default => lambda {DateTime.now }
@@ -58,5 +63,18 @@ module Logs
     index :where_zone
     field :where_zone_name, :type => String
     field :what, :type => String
+  end
+
+  class Syslog
+    include Mongoid::Document
+    field :timestamp, :type => DateTime, :default => lambda {DateTime.now }
+    index :timestamp 
+    field :category, :type => String
+    index :category
+    field :enactor, :type => String
+    index :enactor
+    field :caller, :type => String
+    index :caller
+    field :message, :type => String
   end
 end

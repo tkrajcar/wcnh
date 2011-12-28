@@ -10,4 +10,8 @@ module Logs
   def self.pj_log_statistic(lwho)
     self.log_statistic(lwho)
   end
+
+  def self.pj_log_syslog(category,message)
+    self.log_syslog(category,message)
+  end
 end
