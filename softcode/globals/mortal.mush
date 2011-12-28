@@ -1,0 +1,231 @@
+&cmd.+set #15=$+set *:
+  @assert match(IC OOC,%0)=
+    @pemit %#=[ansi(hb,>)] Huh? Try IC or OOC.;
+  @assert or(match(IC,%0),hasflag(%#,IC))=
+    @pemit %#=[ansi(hb,>)] You are already [ucstr(%0)]!;
+  @break orflags(%#,Wr)=
+    @pemit %#=[ansi(hb,>)] Admins should never be set IC. @tel #20 if you're trying to get to the OOC area.;
+  @assert t(get(%#/char`approved))=
+    @pemit %#=[ansi(hb,>)] You are not approved yet. Be patient there, pardner.;
+  @assert or(match(OOC,%0),hastype(get(%#/char`icloc),room thing))=
+    @pemit %#=[ansi(hb,>)] You don't appear to have a valid IC location.;
+  think switch(%0,
+  IC,
+    [nspemit(%#,[ansi(hb,>)] Returning IC...)]
+    [nsoemit(%#,%n returns IC.)]
+    [tel(%#,get(%#/char`icloc))]
+    [nsoemit(%#,%n returns IC.)]
+    [set(%#,IC)],
+  OOC,
+    [nspemit(%#,[ansi(hb,>)] Going OOC...)]
+    [nsoemit(%#,%n goes OOC.)]
+    [attrib_set(%#/char`icloc,loc(%#))]
+    [tel(%#,#20)]
+    [set(%#,!IC)]
+    [nsoemit(%#,%n enters from the IC world.)]
+  )
+-
+
+@set #15/cmd.+check=regexp
+-
+&cmd.+check #15=$^\+check(/private)? (.*):
+  @swi/first 
+    [t(setr(0,
+      grab(attribute.reason attribute.perception attribute.willpower 
+           attribute.strength attribute.agility attribute.health 
+           [lattr(#111/skill.*)],
+           *.%2*
+      )
+    ))]
+    =0,{@pemit %#=[ansi(hb,>)] That's not a valid skill or attribute.},
+    {th [u(fn.check,
+           switch(%1,
+                  ,
+                  public,
+                  %1),
+           %#,
+           before(%q0,.),
+           after(%q0,.)
+        )]}
+-
+&cmd.+sheet #15=$+sheet:@pemit %#=[chargen(sheet,%#)]
+-
+&cmd.+skillinfo #15=$+skillinfo *:
+  @assert setr(0,chargen(skill,secure(%0),name))=
+    @pemit %#=[ansi(hb,>)] Invalid skill! See [ansi(h,+sheet)] for valid skills.;
+  @pemit %#=
+    [titlebar(Skill Info: [ansi(hy,%q0)])]%r
+    [align(1 38 38,
+      , /@@ blank @@/
+      Group: [ansi(h,chargen(skill,%q0,group))],
+      Base:
+      [ifelse(chargen(skill,%q0,complex),
+        [ansi(h,None \(Complex Skill\))],
+        [ansi(h,chargen(skill,%q0,base)[chargen(skill,%q0,modifier)])]
+      )]
+    )]%r
+    [align(1 12 65,
+      , /@@ blank @@/
+      Description:,
+      chargen(skill,%q0,description)
+    )]%r
+    [footerbar()]
+-
+&cmd.+values #15=$+values:@pemit %#=[titlebar(Adjective Values)]%r%b%b>= [ansi(h,7)]: [num2adj(7)]%r[space(5)][ansi(h,6)]: [num2adj(6)]%r[space(5)][ansi(h,5)]: [num2adj(5)]%r[space(5)][ansi(h,4)]: [num2adj(4)]%r[space(5)][ansi(h,3)]: [num2adj(3)]%r[space(5)][ansi(h,2)]: [num2adj(2)]%r[space(5)][ansi(h,1)]: [num2adj(1)]%r%b%b<= [ansi(h,0)]: [num2adj(0)]%r[footerbar()]
+-
+&cmd.time #15=$time:@pemit %#=[ansi(hr,Current Galactic Standard Time:)] [ansi(h,timefmt($H:$M on $A\, $B $d,icsecs())\, [add(760,timefmt($Y,icsecs()))]
+#-
+# &cmd.+where #15=$+where:@pemit %#=[titlebar(+where)]%r[iter(u(fn.rooms_with_connected_players),ansi(h,name(##)): [u(fn.connected_players_in_room,##)], ,%r)]%r[footerbar(words(mwho()) players)]
+-
+&cmd.+where #15=$+where:
+  @pemit %#=[titlebar(Populated Zones)]%r
+            [iter(
+                remove(setunion(iter(mwho(),zone(loc(itext(0)))),),#-1),
+                [name(itext(0))][if(
+                                  not(or(strmatch(zone(itext(0)),#222),spacesys(isship,itext(0)))),
+                                  \,%b[trim(regedit(name(zone(itext(0))),lit(<\w*>),))]
+                                  )]%b
+                                \[[words(zwho(itext(0)))] players\],
+                ,%r)]%r
+            [footerbar()]
+-
+@set #15/cmd.+who=regexp
+-
+&cmd.+who #15=$^[\+@]?who$:
+  @nspemit %#=
+  [titlebar(+who)]%r
+  %b[ansi(y,align(3 25 >8 >8 29,Sta,Name\(Alias\),Idle,On For,ifelse(orflags(%#,Wr),Location,Doing)))]%r
+  %b[ansi(r,--- [repeat(-,25)] [repeat(-,8)] [repeat(-,8)] [repeat(-,29)])]%r
+  [map(map.+who,lwho(%#), ,%r)]%r
+  [footerbar(words(lwho(%#)) players online)]
+-
+&map.+who #15=
+  %b[align(
+      >3 25 >8 >8 29,
+      switch(orflags(%0,Wr)[t(hidden(%0))][t(default(%0/char`approved,0))][hasflag(%0,IC)],10*,[ansi(hy,ADM)],11*,[ansi(hx,HID)],000*,[ansi(hm,NEW)],0011,[ansi(hg,IC)],[ansi(hr,OOC)]),
+      ansi(switch(hidden(%0)[orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))[if(hasattr(%0,alias),\([get(%0/alias)]\))],
+      ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),
+      extract(timestring(conn(%0)),1,2),
+      mid(
+        ifelse(orflags(%#,Wr),
+          [ansi(hc,rjust(loc(%0),4))] [ansi(w,[name(loc(%0))])][if(zone(loc(%0)),-[ansi(c,name(zone(loc(%0))))])],
+          doing(%0)
+      ),0,29)
+    )]
+-
+&filter.isconnected #15=[hasflag(%0,connected)]
+-
+&fn.check #15=[setq(m,[ansi(hb,>)] [ansi(h,[name(%1)])] [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1,%qm),nsremit(loc(%1),%qm))]
+-
+&fn.connected_players_in_room #15=[itemize(iter(filter(filter.isconnected,lcon(%0)),name(##), ,|),|)]
+-
+&fn.rooms_with_connected_players #15=[setunion(iter(mwho(),loc(##)),)]
+-
+&cmd.+ooc #15=$+ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<+OOC>) %q0))]
+-
+
+# Ticket system globals
+&cmd.+ticket/open #15=$+ticket/open *=*:@pemit %#=[rpc(Ticket.open,%0,%1)]
+-
+
+&cmd.+ticket/list #15=$+ticket/list:@pemit %#=[rpc(Ticket.list,1)]
+-
+
+&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,%0)]
+-
+
+&cmd.+ticket/comment #15=$+ticket/comment *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,false)]
+-
+
+&cmd.+ticket/close #15=$+ticket/close *:@pemit %#=[rpc(Ticket.close,%0)]
+-
+
+&cmd.+ticket/reopen #15=$+ticket/reopen *:@pemit %#=[rpc(Ticket.reopen,%0)]
+-
+
+&cmd.+ticket/view #15=$+ticket/view *:@pemit %#=[rpc(Ticket.view,%0)]
+-
+
+&cmd.+finger #15=$+finger *:
+  @switch [t(setr(0,pmatch(%0)))]=0,
+
+          @pemit %#=[ansi(rh,>)] No such player.,
+          @pemit %#=[titlebar(+Finger: [name(%q0)])]%r
+                    [table(
+                        [ansi(c,Alias:)] [alias(%q0)]|
+                        [ansi(c,Race:)] [default(%q0/char`race,Human)]|
+                        [ansi(c,Sex:)] [get(%q0/sex)]|
+                        [ansi(c,Status:)] [ifelse(hasflag(%q0,IC),IC,OOC)]|
+                        [ansi(c,Last On:)] [ifelse(
+                                              or(orflags(%q0,D!c),hidden(%q0)),
+                                              timefmt($m/$d/$Y $I:$M $p,convtime(get(%q0/last))),
+                                              [ansi(gh,Online)] \(Idle: [first(timestring(idlesecs(%q0)))]\)
+                                              )],
+                        38,79,|)]%r%r
+                    [ansi(c,Info:)] [u(%q0/info)]%r
+                    [footerbar()]
+-
+
+&CMD.+STAFF #15=$+staff:
+  @nspemit %#=[titlebar(Staff Listing)]%r
+              [ansi(y,align(20 18 39,Name\(alias\),Last On,Duties))]%r
+              [iter(
+                  v(list.staff),
+                  align(
+                      20 18 39,
+                      [name(itext(0))]\([alias(itext(0))]\),
+                      [ifelse(
+                            and(member(mwho(),itext(0)),not(hasflag(itext(0),dark))),
+                            [ansi(gh,ON)] \(Idle: [first(timestring(idle(itext(0))))]\),
+                            timefmt($m/$d/$Y,convtime(get(itext(0)/last)))
+                            )],
+                      get(itext(0)/duties)
+                      ),
+                  ,%r)]%r
+                  [footerbar()]
+-
+
+&CMD.+GUIDES #15=$+guides:
+  @nspemit %#=[titlebar(Player Guide Listing)]%r
+              [ansi(y,align(20 18 39,Name\(alias\),Last On,Duties))]%r
+              [iter(
+                  v(list.guides),
+                  align(
+                      20 18 39,
+                      [name(itext(0))]\([alias(itext(0))]\),
+                      [ifelse(
+                            and(member(mwho(),itext(0)),not(hasflag(itext(0),dark))),
+                            [ansi(gh,ON)] \(Idle: [first(timestring(idle(itext(0))))]\),
+                            timefmt($m/$d/$Y,convtime(get(itext(0)/last)))
+                            )],
+                      get(itext(0)/duties)
+                      ),
+                  ,%r)]%r
+                  [footerbar()]
+-
+
+&cmd.+bg #15=$+bg:
+  @nspemit %#=[titlebar(Background for %n)]%r[u(fn.bgquestions,%#)]%r[footerbar()]
+-
+
+&fn.bgquestions #15=
+  iter(
+    sort(lattr(%0/char`bg`*`q),m),
+    [ansi(h,extract(##,3,1,`))]: [ansi(c,u(%0/##,%0))]%r[xget(%0,replace(##,4,A,`))],
+    %b,
+    %r
+  )
+-
+
+&CMD.+VOUCHERS #15=$+vouchers:
+  @nspemit %#=You have [ansi(yh,default(%#/char`vouchers,0))] vouchers.
+-
+
+&cmd.+xp #15=$+xp:
+  @nspemit %#=[rpc(XP.view,%#)];
+-
+
+&cmd.+nom #15=$+nom *=*:
+  @nspemit %#=[rpc(XP.add_nom,%0,%1)];
+-
+

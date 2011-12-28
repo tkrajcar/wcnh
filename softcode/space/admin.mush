@@ -1,0 +1,136 @@
+@set #367=!safe !no_command
+-
+@wipe #367
+-
+@set #367=safe
+-
+@desc #367=Global space commands.
+-
+@lock #367==#367
+-
+@lock/use #367=flag^wizard|power^api
+-
+&data #367=#351
+-
+&FN.CALLER #367=
+  ifelse(
+      hastype(%#,thing),
+      get(%#/data.manned),
+      %#
+      )
+-
+&CMD.+SPACE/LAND #367=$+space/land *=*:
+  @switch [spacesys(isship,%0)]
+          [not(spacesys(ismoving,%0))]
+          [t(setr(1,locate(%0,%1,nT)))]
+          [t(eq(spacesys(distance,%0,%q1),0))]
+          [t(hasattrval(%q1,data.landing))]=
+
+          0????,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10???,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship must come to a complete stop first.,
+          110??,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid target destination.,
+          1110?,@nspemit [u(fn.caller)]=[ansi(rh,>)] Out of range.,
+          11110,@nspemit [u(fn.caller)]=[ansi(rh,>)] No available landing platforms.,
+          11111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Landing [name(%0)] on [name(%q1)].;
+                 think [spacesys(notify.consoles,%0,Landing sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] remaining.)];
+                 think [spacesys(notify.ship,%0,The engines rumble as the ship prepares to land.)];
+                 @wait %0/space`queue`move=think [spacesys(land,%0,%q1)]
+                }
+-
+&CMD.+SPACE/LAUNCH #367=$+space/launch *:
+  @switch [spacesys(isship,%0)]
+          [not(spacesys(ismoving,%0))]
+          [t(hasattrval(%0,data.docked))]
+          [t(hasattrval(loc(%0),space`loc))]=
+
+          0???,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10??,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is already moving. [ansi(yh,timestring(spacesys(cycle)))] until orbit.,
+          110?,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is already in orbit.,
+          1110,@nspemit [u(fn.caller)]=[ansi(rh,>)] Landing zone has an invalid space loc.,
+          1111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Launching the [name(%0)].;
+                think [spacesys(notify.consoles,%0,Launch sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] until orbit.)];
+                think [spacesys(notify.ship,%0,The ship lurches as it lifts off.)];
+                think [spacesys(activate,%0)];
+                @wait %0/space`queue`move=think [spacesys(launch,%0)]
+               }
+-
+&CMD.+SPACE/ADVANCE #367=$+space/advance *:
+  @switch [spacesys(isship,setr(0,before(%0,=)))]
+          [not(hasattrval(%q0,data.docked))]
+          [hasattrval(%q0,space`destination)]=
+
+          0??,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10?,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is currently landed.,
+          110,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship does not have a destination set.,
+          111,{@nspemit %#=[ansi(gh,>)] Advancing [name(%q0)] to [setr(1,spacesys(advance.calc,%q0))] in 
+                                        [ansi(yh,timestring(spacesys(cycle)))].;
+               think [setq(2,get(%q0/space`destination))];
+               think [if(
+                        not(or(after(%0,=),spacesys(ismoving,%q0))),
+                        [spacesys(notify.ship,%q0,The ship lurches slightly as it accelerates.)]
+                        [spacesys(
+                              notify.consoles,
+                              %q0,
+                              Course engaged. Destination: %q2.%r
+                              [ansi(gh,>)] Speed: [ulocal(fn.speed.parse,%q0)] [ansi(y,ETA: [spacesys(eta,%q0)])].
+                              )]
+                        )];
+               @wait %q0/space`queue`move={think [spacesys(advance,%q0)];
+                                           @assert [not(and(eq(first(%q1),first(%q2)),eq(last(%q1),last(%q2))))];
+                                           +space/advance %q0=1
+                                          };
+              }
+-
+&FN.SPEED.PARSE #367=
+  [mul(setr(a,spacesys(speed,%0)),get(v(data)/interval))] km/h \([ansi(y,+[mul(100,sub(fdiv(%qa,spacesys(speed.base,%0)),1))]\% skill bonus)]\).
+-
+&CMD.+SPACE/STOP #367=$+space/stop *:
+  @switch [spacesys(isship,%0)]
+          [spacesys(ismoving,%0)]=
+
+          0?,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is not in motion.,
+          11,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Stopping the [name(%0)].;
+              @drain %0/space`queue`move;
+              &space`destination %0=[get(%0/space`x)] [get(%0/space`y)];
+              think [spacesys(advance,%0)];
+              &space`destination %0
+             }
+-
+&CMD.+SPACE/ADDCON #367=$+space/addcon *=*:
+  @switch [spacesys(isship,%0)]
+          [isdbref(%1)]
+          [hastype(%1,thing)]=
+
+          0??,@nspemit %#=Invalid ship object.,
+          10?,@nspemit %#=Invalid console dbref.,
+          110,@nspemit %#=That's not an object.,
+          111,{@nspemit %#=Adding [name(%1)]\(%1\) to [name(%0)]\(%0\) as a console.;
+               @parent %1=#204;
+               @power %1=api;
+               @power %1=pemit;
+               &data.manned %1=;
+               &data.ship %1=%0;
+               @set %0=data.consoles:[trim([get(%0/data.consoles)] %1)];
+               @lock %1==%1;
+               @set %1=!no_command
+              }
+-
+&CMD.+SPACE/JUMP #367=$+space/jump *=*:
+  @switch [spacesys(isship,%0)]
+          [spacesys(isjump,%1)]
+          [t(hasattrval(%1,link))]
+          [not(spacesys(ismoving,%0))]
+          [t(eq(spacesys(distance,%0,%1),0))]=
+
+          0????,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
+          10???,@nspemit [u(fn.caller)]=[ansi(rh,>)] That is not a jump point.,
+          110??,@nspemit [u(fn.caller)]=[ansi(rh,>)] That jump point seems to be unlinked.,
+          1110?,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship must first come to a stop.,
+          11110,@nspemit [u(fn.caller)]=[ansi(rh,>)] Out of range.,
+          11111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Calculating jump.;
+                 think [spacesys(notify.consoles,%0,Initiating jump sequence in [ansi(yh,[spacesys(cycle)] seconds)].)];
+                 @wait %0/space`queue`move=think [spacesys(jump,%0,%1)]
+                }
+-
+

@@ -1,0 +1,40 @@
+################################
+### PARENT: Shuttle Kiosk (#203)
+################################
+
+# Setup the MUSH object
+@set #203=!SAFE NO_COMMAND
+-
+@wipe #203
+-
+@set #203=SAFE
+-
+@desc #203=
+  A kiosk for purchasing shuttle tickets.%r%r
+  COMMANDS:%r
+  [ansi(yh,shuttle/claim <ship name>)] - Claim a one-time-only free shuttle.%r
+  -
+-
+&DATA #203=#351
+-
+&CMD.SHUTTLE/CLAIM #203=$shuttle/claim *:
+  @switch [not(spacesys(hasshuttle,%#))]
+          [strmatch(first(%0),v(prefix))]=
+
+          0?,@nspemit %#=[ansi(rh,>)] You have already claimed your one free shuttle.,
+          10,@nspemit %#=[ansi(rh,>)] Your shuttle name must be prefixed with [ansi(wh,v(prefix))].,
+          11,{@nspemit %#=[ansi(gh,>)] You have claimed your one-time-only free shuttle.  Name: [setr(0,[ucstr(v(prefix))] [capstr(rest(%0))])];
+              think [setr(1,spacesys(clone.ship,get(v(data)/parent.shuttle),%q0))];
+              @nsremit [loc(%#)]=Maintenance crews direct the %q0 as it's towed in from a nearby shipyard.;
+              @tel %q1=[loc(%#)];
+              @set %q1=data.roster:%#:captain;
+              @set [v(data)]=list.shuttles.players:[trim([get(v(data)/list.shuttles.players)] %#:%q1)];
+              @set %#=space`shuttle:%q1;
+              @set %q1=enter_ok;
+              @set %q1=space`report:;
+              @set %q1=space`destination:;
+              @set %q1=data.docked:[loc(%#)];
+              think [syslog(SPACE,[name(%#)]\(%#\) claimed a free shuttle %q1 at [name(loc(%#))]\([loc(%#)]\))]
+             }
+-
+

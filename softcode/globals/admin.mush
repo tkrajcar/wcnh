@@ -1,0 +1,78 @@
+&cmd.+sheet #115 = $+sheet *:
+  @switch t(pmatch(%0))=
+    0,{@pemit %#=[ansi(hb,>)] Who?},
+    {@pemit %#=chargen(sheet,pmatch(%0))}
+-
+
+# Pfile system
+&cmd.+pfile/add #115=$+pfile/add */*=*:@pemit %#=[rpc(PlayerFile.add_note,%0,%2,%1)]
+-
+
+&cmd.+pfile #115=$+pfile *:@pemit %#=[rpc(PlayerFile.view,%0)]
+-
+
+&cmd.+pfile/view #115=$+pfile/view *:@pemit %#=[rpc(PlayerFile.view,%0)]
+-
+
+&cmd.+pfile/register #115=$+pfile/register *=*:@pemit %#=[rpc(PlayerFile.register,%0,%1)]
+-
+
+&cmd.+pfile/secondary #115=$+pfile/secondary *=*:@pemit %#=[rpc(PlayerFile.register_secondary,%0,%1)]
+-
+
+&cmd.+pfile/search #115=$+pfile/search *:@pemit %#=[rpc(PlayerFile.search,%0)]
+-
+
+&cmd.+pfile/ip #115=$+pfile/ip *:@pemit %#=[rpc(PlayerFile.search_connections,%0)]
+-
+
+&cmd.+pfile/connections #115=$+pfile/connections *:@pemit %#=[rpc(PlayerFile.view_connections,%0)]
+-
+
+# Ticket system
+&cmd.+ticket/comment/private #115=$+ticket/comment/private *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,true)]
+-
+
+&cmd.+ticket/assign #115=$+ticket/assign *=*:@pemit %#=[rpc(Ticket.assign,%0,%1)]
+-
+
+&cmd.+ticket/mine #115=$+ticket/mine:@pemit %#=[rpc(Ticket.list_mine,1)]
+-
+
+&cmd.+ticket/mine/page #115=$+ticket/mine page *:@pemit %#=[rpc(Ticket.list_mine,%0)]
+-
+
+&cmd.+bg #115=$+bg *:
+  @assert [setr(0,pmatch(*%0))]=
+    @nspemit %#=[ansi(hb,>)] Player not found.;
+  @nspemit %#=[titlebar(Background for [name(%q0)])]%r[u(#15/fn.bgquestions,%q0)]%r[footerbar()]
+-
+&CMD.@GEMIT #115=$@gemit *:
+  @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by [name(%#)]>%b)]%0
+-
+&CMD.+VOUCHERS #115=$+vouchers *:
+  @switch [t(setr(0,pmatch(%0)))]=
+
+          0,@nspemit %#=[ansi(rh,>)] No such player.,
+          1,@nspemit %#=[name(%q0)] has [default(%q0/char`vouchers,0)] vouchers.
+-
+&CMD.+VOUCHER/GIVE #115=$+voucher/give *=*:
+  @switch [t(setr(0,pmatch(%0)))]
+          [t(gt(%1,0))]=
+
+          0?,@nspemit %#=[ansi(rh,>)] No such player.,
+          10,@nspemit %#=[ansi(rh,>)] Number must be greater than 0.,
+          11,{@nspemit %#=You have awarded [ansi(yh,%1)] vouchers to [name(%q0)].;
+              @set %q0=char`vouchers:[add(default(%q0/char`vouchers,0),%1)];
+              @nspemit %q0=[ansi(ch,>)] You have been awarded [ansi(yh,%1)] vouchers!
+             }
+-
+
+&cmd.+xp #115=$+xp *:
+  @nspemit %#=[rpc(XP.view,%0)];
+-
+
+&cmd.+xp/award #115=$+xp/award */*=*:
+  @nspemit %#=[rpc(XP.award,%0,%1,%2)];
+-
+

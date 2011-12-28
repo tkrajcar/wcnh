@@ -1,0 +1,8 @@
+&FAILURE #10=You failed to enter [name(loc(%!))].
+-
+&ODROP #10=enters from [ansi(h,name(home(%!)))].
+-
+&OSUCCESS #10=exits to [ansi(h,name(loc(%!)))].
+-
+&SUCCESS #10=You enter [ansi(h,name(loc(%!)))].
+-

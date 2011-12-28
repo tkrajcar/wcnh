@@ -1,0 +1,60 @@
+#############################
+### PARENT: Ship Thing (#179)
+#############################
+
+# Setup the MUSH object
+@set #179=!SAFE NO_COMMAND ENTER_OK
+-
+@wipe #179
+-
+@set #179=SAFE
+-
+@dol remove(lattr(#9),CONFORMAT NAMEFORMAT)=@cpattr #9/##=#179
+-
+@cpattr #9/conformat=#179/iconformat
+-
+@conformat #179=
+-
+@nameformat #179=
+  [titlebar([ifelse(hasattrval(%!,roomname),get(%!/roomname),name(%!))]
+  [if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%![flags(%!)]\))]
+  [if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)]
+  [if(and(t(setr(8,parent(%!))),not(strmatch(%q8,#179))),%b<[last(name(%q8))]>)],v(COLOR.Frame))]
+-
+@edit #179/iconformat=lexits(%!),remove(lexits(%!),#-1)
+-
+@idescformat #179=[u(idescribe)]%r[u(iconformat,remove(lvcon(%!),%#))]
+-
+@lock/enter #179=LOCK.CANBOARD/1
+-
+@lock/leave #179=LOCK.CANLEAVE/1
+-
+@lset #179/enter=!no_inherit
+-
+@lset #179/leave=!no_inherit
+-
+@lfail #179=The ship isn't landed!
+-
+@efail #179=Boarding access [ansi(rh,denied)].
+-
+@enter #179=You board the [ansi(wh,name(%!))].
+-
+@oenter #179=boards the vessel from outside.
+-
+@oxenter #179=boards the [name(%!)].
+-
+@leave #179=You disembark from the [ansi(wh,name(%!))].
+-
+@oleave #179=disembarks.
+-
+@oxleave #179=disembarks from the [name(%!)].
+-
+@idesc #179=The inside of the ship.
+-
+@desc #179=It's a space ship!
+-
+&LOCK.CANBOARD #179=[spacesys(canboard,%!,%#)]
+-
+&LOCK.CANLEAVE #179=[hasattrval(%!,data.docked)]
+-
+

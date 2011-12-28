@@ -1,0 +1,14 @@
+" Suggested vimrc additions for coding on WCNH.
+set nu
+syntax on
+set autoindent
+set shiftwidth=2
+set expandtab
+set tabstop=2
+" don't make ~ files
+set nobackup 
+
+" Cosmetics; YMMV.
+set guifont=Courier_New:h10:cANSI
+colorscheme torte
+

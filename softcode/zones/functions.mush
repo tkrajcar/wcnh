@@ -1,0 +1,89 @@
+&DOC.LZONE #227=dbref|Return a lparent() like list of zones
+-
+&DOC.LIST.ZONES #227=|Ansi hierarchy of zones.  Optional ZMO dbref argument limits return.
+-
+&DATA #227=#228
+-
+@desc #227=
+  [center(Zones System\(\) Documentation,79,-)]%r
+  %b%b+[repeat(-,73)]+%r
+  [align(2 20 18 33 2,,[ansi(c,SUBFUNCTION)],[ansi(c,ARGUMENTS)],[ansi(c,DESCRIPTION)],,,|)]%r
+  [map(map.doc,[lattr(me/doc.*)], ,%r)]%r
+  %b%b+[repeat(-,73)]+%r
+  [repeat(-,79)]
+-
+&map.doc #227=
+  [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
+-
+&fn.lzone #227=
+  switch(
+      [isdbref(%0)]
+      [not(strmatch(zone(%0),#-1))],
+
+      0?,#-1 NO SUCH OBJECT VISIBLE,
+      10,%0,
+      [setq(1,zone(%0))][u(subfn.lzone.loop,%q1)][trim(%q1)]
+      )
+-
+&subfn.lzone.loop #227=
+  [if(
+      not(strmatch(setr(a,zone(%0)),#-1)),
+      [setq(1,%q1 %qa)][u(subfn.lzone.loop,%qa)]
+      )]
+-
+&fn.list.zones #227=
+  [titlebar(Zone Hierarchy[if(not(strmatch(%0,get(v(data)/zones_master))),: [name(%0)])])]%r
+  %b[ansi(y,align(60 17,Zone,Builder))]%r
+  %b[ansi(r,repeat(-,77))]%r
+  [u(subfn.list.zones.loop,%0,1)]%r
+  [footerbar()]
+-
+&subfn.list.zones.loop #227=
+  [u(subfn.list.zones.parse,%0,%1)]
+  [if(t(setr(a,filter(filter.list.zones,lsearch(all,type,thing,zone,%0)))),%r)]
+  [iter(
+      %qa,
+      u(subfn.list.zones.loop,itext(0),inc(%1)),
+      ,%r)]
+-
+&filter.list.zones #227=
+  ifelse(
+      and(
+        t(match(locks(%0),zone)), 
+        elock(%0/zone,%0)
+        ),
+        1,
+        0
+        )
+-
+&subfn.list.zones.parse #227=
+  %b[setr(b,
+        [if(gt(%1,1),|)]
+        [space(switch(%1,3,3,4,7,5,11,0))][if(gt(%1,2),|)][if(gt(%1,1),repeat(_,3))][name(%0)]
+        )]
+    [if(hasattrval(%0,bc),[repeat(.,sub(61,strlen(%qb)))][name(get(%0/bc))])]
+-
+&fn.bc.checkout #227=
+  switch(
+      [t(setr(0,ifelse(isdbref(%0),%0,lsearch(all,type,thing,name,%0))))]
+      [t(eq(words(%q0),1))]
+      [t(strmatch(last(zones(lzone,%q0)),get(v(data)/zones_master)))]
+      [t(hasattrval(%q0,bc))],
+
+      0???,#-1 NO RESULTS,
+      10??,#-1 MULTIPLE MATCHES,
+      110?,#-1 INVALID ZMO,
+      1110,#-1 NO BUILDER,
+      1111,get(%q0/bc)
+      )
+-
+&fn.bc.pwgen #227=
+  iter(lnum(rand(7,15)),rand(0,9),,)
+-
+&filter.zmo #227=
+  ifelse(not(strmatch(zones(lzone,%0),%0)),1,0)
+-
+&TRIG.ACONNECT #227=
+  @switch [haspower(%0,builder)]=1,@hide/on %0
+-
+

@@ -1,0 +1,132 @@
+# chargen room 2: attributes, skills.
+# +raise <attribute | skill>
+# +lower <attribute | skill>
+
+@desc #211=
+  In this room you will be able to set your character's attributes and skills.
+  %r%r
+  Remaining attribute levels: [ansi(h,default(%#/char`chargen`alevels,0))]
+  %r
+  Remaining skill points: [ansi(h,default(%#/char`chargen`spoints,0))]
+  %r%r
+  [ansi(hy,For the commands\, see 'help chargen room 2'.)] 
+-
+
+&cmd.+raise #211=$+raise *:
+  /@@ done in functions for speed to prevent @dol 1 2 3=+raise str @@/
+  [switch(
+    grab(attribute.reason attribute.perception attribute.willpower attribute.strength attribute.agility attribute.health [lattr(#111/skill.*)],*.%0*),
+    SKILL.*,u(#211/fn.raise.skill,after(#$,.)),
+    ATTRIBUTE.*,u(#211/fn.raise.attribute,after(#$,.)),
+    pemit(%#,[ansi(hb,>)] Invalid skill or attribute!)
+  )]
+-
+
+&cmd.+lower #211=$+lower *:
+  /@@ done in functions for speed to prevent @dol 1 2 3=+lower str @@/
+  [switch(
+    grab(attribute.reason attribute.perception attribute.willpower attribute.strength attribute.agility attribute.health [lattr(#111/skill.*)],*.%0*),
+    SKILL.*,u(#211/fn.lower.skill,after(#$,.)),
+    ATTRIBUTE.*,u(#211/fn.lower.attribute,after(#$,.)),
+    pemit(%#,[ansi(hb,>)] Invalid skill or attribute!)
+  )]
+-
+
+#
+&fn.raise.attribute #211=
+  switch(
+    [t(setr(n,chargen(attribute,%0,name)))]/@@ were we given a valid attribute? @@/
+    [t(get(%#/char`chargen`alevels))]/@@ does executor have at least one alevel to spend? @@/
+    [lt(setr(a,val(inc(chargen(get.attribute,%#,%0)))),7)],/@@ don't allow an attribute above 6 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid attribute!),
+    10*,pemit(%#,[ansi(hb,>)] You've already spent your attribute levels.),
+    110,pemit(%#,[ansi(hb,>)] Sorry, you can't have an attribute above 6.),
+    111,
+      /@@ decrease their remaining alevels @@/
+      [attrib_set(%#/char`chargen`alevels,val(dec(get(%#/char`chargen`alevels))))]
+      /@@ increase their attribute @@/
+      [chargen(set.attribute,%#,%0,val(%qa))]
+      [pemit(%#,[ansi(hb,>)] Increasing your [ansi(h,%qn)] attribute to [ansi(h,%qa)]. You have [ansi(h,setr(l,get(%#/char`chargen`alevels)))] attribute level[if(dec(%ql),s)] remaining to spend.)]
+  )
+-
+&fn.lower.attribute #211=
+  switch(
+    [t(setr(n,chargen(attribute,%0,name)))]/@@ were we given a valid attribute? @@/
+    [gte(setr(a,val(dec(chargen(get.attribute,%#,%0)))),1)],/@@ don't allow an attribute below 1 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid attribute!),
+    10,pemit(%#,[ansi(hb,>)] Sorry, you can't have an attribute below 1.),
+    11,
+      /@@ increase their remaining alevels @@/
+      [attrib_set(%#/char`chargen`alevels,val(inc(get(%#/char`chargen`alevels))))]
+      /@@ decrease their attribute @@/
+      [chargen(set.attribute,%#,%0,val(%qa))]
+      [pemit(%#,[ansi(hb,>)] Decreasing your [ansi(h,%qn)] attribute to [ansi(h,%qa)]. You have [ansi(h,setr(l,get(%#/char`chargen`alevels)))] attribute level[if(dec(%ql),s)] remaining to spend.)]
+  )
+-
+
+&fn.raise.skill #211=
+  switch(
+    [t(setr(n,chargen(skill,%0,name)))]/@@ were we given a valid skill? @@/
+    [gte(get(%#/char`chargen`spoints),setr(c,u(subfn.skill.cost,setr(s,inc(chargen(get.skill.raw,%#,%0))))))]/@@ does executor have te skill points to spend? @@/
+    [lte(inc(chargen(get.skill,%#,%0)),6)],/@@ don't allow a skill greater than 6 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid skill!),
+    10*,pemit(%#,[ansi(hb,>)] That would cost [ansi(h,%qc)] skill points, and you only have [ansi(h,setr(r,get(%#/char`chargen`spoints)))] point[if(dec(%qr),s)] remaining.),
+    110,pemit(%#,[ansi(hb,>)] Sorry, you can't have a skill above 6.),
+    111,
+      /@@ decrease their remaining spoints @@/
+      [attrib_set(%#/char`chargen`spoints,val(sub(get(%#/char`chargen`spoints),%qc)))]
+      /@@ increase their skill @@/
+      [chargen(set.skill,%#,%0,val(%qs))]
+      [pemit(%#,[ansi(hb,>)] Increasing your [ansi(h,%qn)] skill to [ansi(h,+%qs)]. You have [ansi(h,setr(r,get(%#/char`chargen`spoints)))] skill point[if(dec(%qr),s)] remaining to spend.)]
+  )
+-
+
+&fn.lower.skill #211=
+  switch(
+    [t(setr(n,chargen(skill,%0,name)))]/@@ were we given a valid skill? @@/
+    [gte(setr(s,dec(chargen(get.skill.raw,%#,%0))),0)],/@@ don't allow a skill lower than 0 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid skill!),
+    10,pemit(%#,[ansi(hb,>)] Sorry, you can't have a skill below 0.),
+    11,
+      /@@ increase their remaining spoints @@/
+      [attrib_set(%#/char`chargen`spoints,val(add(get(%#/char`chargen`spoints),u(subfn.skill.cost,chargen(get.skill.raw,%#,%0)))))]
+      /@@ decrease their skill @@/
+      [chargen(set.skill,%#,%0,val(%qs))]
+      [pemit(%#,[ansi(hb,>)] Decreasing your [ansi(h,%qn)] skill to [ansi(h,[if(%qs,+)]%qs)]. You have [ansi(h,setr(r,get(%#/char`chargen`spoints)))] skill point[if(dec(%qr),s)] remaining to spend.)]
+  )
+-
+
+&subfn.skill.cost #211=
+  /@@ returns cost in skill points to move from level %0 - 1 to %0. @@/
+  switch(%0,0,#-1,1,1,dec(%0))
+-
+
+# Exit from room 2 to room 3.
+@lock #215==#0 
+-
+
+@afail #215=
+  @pemit %#=[ansi(hb,>)] Checking character [ansi(h,%n)].;
+  @assert eq(get(%#/char`chargen`alevels),0)=
+    @pemit %#=[ansi(hb,>)] You need to spend your attribute levels.;
+  @assert eq(get(%#/char`chargen`spoints),0)=
+    @pemit %#=[ansi(hb,>)] You need to spend your skill points.;
+  @assert lmath(and,map(check.attribute,rea per wil str agi hea))=
+    @pemit %#=[ansi(hb,>)] You can't have an attribute greater than 6!;
+  @assert lmath(and,map(check.skill,lattr(%#/char`s`*)))=
+    @pemit %#=[ansi(hb,>)] You can't have a skill greater than 6!;
+  @pemit %#=[ansi(hb,>)] Checks passed. Proceeding...;
+  @oemit %#=%n moves on to Room 3.;
+  @tel %#=loc(me);
+-
+
+# need a blank @fail to prevent the 'You failed to enter' message.
+@fail #215=
+-
+
+&check.attribute #215=
+  lte(chargen(get.attribute,%#,%0),6)
+-
+
+&check.skill #215=
+  lte(chargen(get.skill,%#,last(%0,`)),6)

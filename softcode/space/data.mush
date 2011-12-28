@@ -1,0 +1,32 @@
+@set #351=safe no_command
+-
+@desc #351=Space data.
+-
+&INTERVAL #351=60
+-
+&PARENT.SHIP #351=#179
+-
+&DEFAULT.SPEED #351=1
+-
+&PARENT.CONSOLE #351=#204
+-
+&PARENT.JUMP #351=#393
+-
+&PARENT.SHUTTLE #351=#190
+-
+&SKILL.PILOT-FIG #351=pilot-fig
+-
+&SKILL.PILOT-CAP #351=pilot-cap
+-
+&SKILL.ENGINEER-CAP #351=engineer-cap
+-
+&SKILL.ENGINEER-FIG #351=engineer-fig
+-
+&SKILL.TURRET-GUN #351=turret-gun
+-
+&SKILL.ASTROGATION #351=astrogation
+-
+&SKILL.COMPUTERS #351=computers
+-
+&SKILL.SCIENCE #351=science
+-
