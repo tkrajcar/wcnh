@@ -32,6 +32,7 @@ module XP
     R.attrib_set("#{victim}/char`xp`available", new_available.to_s)
     Log.create!(player: victim, awarded_by: awarded_by, description: reason, change: change, old_total: old_total, new_total: new_total)
     R.objeval("#18", "mailsend(#{victim},XP Award/You have received an award of #{change.to_s.bold.yellow} XP from #{R.penn_name(awarded_by).bold} for: #{reason}")
+    Logs.log_syslog("XPAWARD","#{R.penn_name(awarded_by)} awarded #{change.to_s} XP to #{R.penn_name(victim)} for: #{reason}")
     return ">".bold.yellow + " Awarded #{change} XP to #{R.penn_name(victim)} for: #{reason}"
   end
 
