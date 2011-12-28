@@ -70,8 +70,8 @@ module XP
       nommers << nom.author
       total[nom.victim] ||= 0
       total[nom.victim] += 1
-#      nom.processed = true
-#      nom.save
+      nom.processed = true
+      nom.save
     end
     total.each do |player,noms|
       # award 3 xp per nom if total is <=100, 2 otherwise
