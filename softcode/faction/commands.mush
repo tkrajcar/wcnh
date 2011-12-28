@@ -183,4 +183,14 @@
   @assert [faction(isfaction,%0)]={@nspemit %#=[ansi(rh,>)] No such faction.};
   @nspemit %#=[faction(info,%0)]
 -
+&CMD.+FAC/ACTIVE #191=$+fac/active *:
+  @switch [faction(isfaction,%0)]
+          [or(orflags(%#,Wr),faction(ismember,%0,%#))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] Invalid faction.,
+          10,@nspemit %#=[ansi(c,<Faction>)] You are not a member of that faction.,
+          11,{@nspemit %#=[ansi(c,<Faction>)] Your active faction is now [ansi(wh,faction(name,%0))].;
+              &fac`active %#=%0
+             }
+-
 

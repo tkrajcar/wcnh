@@ -52,6 +52,8 @@
 -
 &DOC.ROSTER.PARSE #114=fac abbrev|Ansi printout of fac roster.
 -
+&DOC.ACTIVE #114=player|Returns default faction for player.
+-
 &DATA #114=#116
 -
 &FN.CREATE #114=
@@ -402,12 +404,12 @@
 -
 &FN.ACTIVE #114=
   switch(
-      [t(setr(0,faction(list.memberof,%0)))]
-      [hasattrval(%0,fac`active)],
+      [hasattrval(%0,fac`active)]
+      [t(setr(0,faction(list.memberof,%0)))],
 
-      0?,#-1 NO JOINED FACTIONS,
-      10,first(%q0),
-      11,get(%0/fac`active)
+      1?,get(%0/fac`active),
+      01,first(%q0),
+      #-1 NO JOINED FACTIONS
       )
 -
 
