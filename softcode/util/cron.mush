@@ -14,7 +14,7 @@
 -
 
 &CRON_JOB_STATSLOG #539=
-  think [rpc(Statistics.log,lwho())]
+  think [rpc(Logs.log_statistic,lwho())]
 -
 
 &CRON_TIME_NOMS #539=||Sun|01|00|
