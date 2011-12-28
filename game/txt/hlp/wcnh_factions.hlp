@@ -19,9 +19,17 @@ For more information on the Faction System, type 'help <command>'
 
 COMMANDS:
 
-+fac/boot       +fac/demote       +fac/details      +fac/info
-+fac/invite     +fac/join         +fac/leave        +fac/list
-+fac/promote    +fac/reject       +fac/roster       +fwho
++fac/active     +fac/boot         +fac/demote       +fac/details
++fac/info       +fac/invite       +fac/join         +fac/leave
++fac/list       +fac/promote      +fac/reject       +fac/roster
++fwho
+
+& +FAC/ACTIVE
+Syntax: +fac/active <faction>
+
+This command will set your default faction when you're a member of multiple
+factions.  With a default faction set, you do not have to specify a faction
+when using the +fwho and +fac/roster commands.
 
 & +FAC/INFO
 Syntax: +fac/info <faction>
