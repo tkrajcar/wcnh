@@ -100,7 +100,7 @@
   [if(
     setr(i,filter(filter.idle,lwho(%#))),
     %b[ansi(r,repeat(-,77))]%r
-    %b[ansi(y,Idle:)] [align(70,map(map.+who.short,sortby(sort.idle,%qi), ,\,%b))]%r
+    %b[ansi(y,Idle:)] [align(70,map(map.+who.short,sortby(sort.idle,%qi), ,\,%b), , ,%r[space(7)])]%r
   )]
   [footerbar(words(lwho(%#)) players online)]
 -
@@ -120,7 +120,7 @@
 -
 &map.+who.short #15=
   ansi(switch(hidden(%0)[orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))\(
-  [ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),squish(extract(timestring(idlesecs(%0)),1,2)))]
+  [squish(first(timestring(idlesecs(%0))))]
   \)
 -
 &filter.isconnected #15=[hasflag(%0,connected)]
