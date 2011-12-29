@@ -62,6 +62,7 @@
   think [tel(%0,extract(v(planet.[get(%0/char`startingplanet)]),1,1,|))];
   @pemit %#=[ansi(hb,>)] You have entered the game world.;
   &unapproved.players #111=[setunion(get(#111/unapproved.players),%0)];
+  @chan/on public=%0;
   @break [get(%0/char`declinefaction)];
   think [setq(0,switch(chargen(get.race,%0),Kilrathi,KC,ESC))];
   think [faction(addmember,%q0,%0)];
