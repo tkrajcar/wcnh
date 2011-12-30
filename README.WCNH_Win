@@ -4,6 +4,9 @@
 # This is to make the Vagrant shared folders mapping work.
 # If you do it right, you should see files in /mush and /systems when in the VM.
 
+# NOTE:
+# This is the WINDOWS version. If you are using Mac, see README.WCNH_Mac for instructions.
+
 # VAGRANT
 # 1: Install vagrant on your machine.
 sudo gem install vagrant

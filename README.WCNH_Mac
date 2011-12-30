@@ -1,0 +1,78 @@
+# PREREQUISITE
+# Make sure that you have a checkout of wcnh_systems at '../systems' or '../wcnh_systems' relative to this file.
+# For example, if this file is at /home/foo/mush/README.WCNHDEV, you should have a /home/foo/systems/Gemfile.
+
+# NOTE:
+# This is the MAC version. If you are using Windows, see README.WCNH_Win for instructions to use Vagrant to set up a virtual machine. Mac people get to compile the MUSH and run it directly. :D
+# Most of these commands are designed to be run in a terminal. iTerm2 is highly recommended. 
+
+# STEP 1: XCode
+# If on Lion, you should be able to install XCode from the App Store directly. It takes a long while.
+
+
+# STEP 2: RUBY/RVM
+# Macs ship with Ruby 1.8.7. We use Ruby 1.9.2. rvm is the best way to have multiple versions of Ruby on one mac, so we'll use that.
+# 2.1: Install rvm
+bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
+
+# 2.2: Install Ruby 1.9.2. This compiles from source, so it's normal to take awhile.
+rvm install 1.9.2
+
+# 2.3: Default to using Ruby 1.9.2.
+rvm use 1.9.2 --default
+
+# 2.4: Make sure we're running 1.9.2. Close all open terminal windows first, then open a new one.
+ruby -v
+# should be: ruby 1.9.2p290 (2011-07-09 revision 32553) [i686-linux]
+
+
+# STEP 3: HOMEBREW
+# Homebrew is a Ruby-based package manager for Mac OS. You can use it to install all sorts of handy things.
+/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+
+
+# STEP 4: YAJL
+# This is a small library used by the PennJSON layer. Unfortunately, the yajl formula currently in Homebrew is the 2.x tree and we need 1.x. Never fear, I created one for you.
+brew install https://raw.github.com/tkrajcar/homebrew/master/Library/Formula/yajl-1.rb
+
+
+# STEP 5: MONGODB
+# You can install this easily via Homebrew.
+brew install mongodb
+
+# Note that this does not auto-start mongodb (that's generally a good thing unless you have CPU cycles to spare).
+# There is a start_mongodb.sh file in the wcnh_mush/ tree for your convenience.
+
+
+# STEP 6: CONFIGURE PENN RUBY SERVER AND INSTALL GEMS
+# 6.1: Copy ~/Projects/wcnh_mush/game/ruby/config.yml.dist to config.yml, edit it, and add the line:
+#   - /Users/tkrajcar/Projects/wcnh_systems/ 
+# (or wherever your _systems checkout is)
+
+# 6.2: Install systems gems
+cd ~/Projects/wcnh_systems # or wherever your systems checkout is
+bundle install
+
+# 6.3: Install Penn gems
+cd ~/Projects/wcnh_mush/game/ruby
+bundle install
+# If this step ONLY installs yajl and not a bunch more, then you failed to setup config.yml properly :)
+
+
+# STEP 7: COMPILE PENNMUSH
+# 7.1: Configure
+cd ~/Projects/wcnh_mush
+./configure
+
+# 7.2: Compile
+make install
+
+# 7.3: Pull outdb.gz from Dropbox to mush/game/data.
+
+# 7.4: start the game
+sh game/restart
+
+# If the game comes up properly, it will be on port 2199 
+# Once you login, run: think [rpc(Ping.pong)] 
+# If it works, you should see PONG back at you. :D
+
