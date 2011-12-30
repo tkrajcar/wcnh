@@ -190,8 +190,8 @@ static int
 json_server_close_all(JSON_Server *info)
 {
 	/*
-	 * Note that this code is non-portable; it relies on Linux-specific
-	 * behavior on systems with a /proc file system. A portable (but less
+	 * Note that this code is non-portable; it relies on UNIX-specific
+	 * behavior on systems with a /dev file system. A portable (but less
 	 * elegant) solution is to simply close all file descriptors up to
 	 * sysconf(_SC_OPEN_MAX).
 	 */
@@ -201,7 +201,7 @@ json_server_close_all(JSON_Server *info)
 	int result = 1;
 
 	/* Open directory listing file descriptors for self. */
-	if (!(dir = opendir("/proc/self/fd"))) {
+	if (!(dir = opendir("/dev/fd"))) {
 		json_server_log(info, "close_all: opendir", errno);
 		return 0;
 	}
