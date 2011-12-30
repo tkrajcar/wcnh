@@ -7,7 +7,7 @@
 void json_server_shutdown(int reboot);
 
 /* Set input file descriptor. */
-void json_server_setfd(fd_set *input_set);
+void json_server_setfd(int *maxd, fd_set *input_set);
 
 /* Process input file descriptor. */
 void json_server_issetfd(fd_set *input_set);

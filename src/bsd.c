@@ -1102,7 +1102,7 @@ shovechars(Port_t port, Port_t sslport __attribute__ ((__unused__)))
       FD_SET(info_slave, &input_set);
 #endif
 #ifdef JSON_SERVER
-    json_server_setfd(&input_set);
+    json_server_setfd(&maxd, &input_set);
 #endif /* def JSON_SERVER */
     for (d = descriptor_list; d; d = d->next) {
       if (d->input.head) {

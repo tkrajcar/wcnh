@@ -164,6 +164,13 @@ Reserved names and numbers
 ==========================
 Method names beginning with "rpc." are reserved for internal use.
 
+Known issues
+============
+* Using @shutdown/reboot while the conversation server is running may leave
+  behind a zombie process. This is because PennMUSH might not reap the process
+  before it restarts. Use "@rpc stop" to stop the conversation server before
+  rebooting. This will also clean up any lingering zombie processes.
+
 Future
 ======
 * Support delta compression of the context.
