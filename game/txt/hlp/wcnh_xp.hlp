@@ -23,8 +23,20 @@
   in special events, helping with OOC/community tasks, ands o on.
 
 & +xp spending
-  XP will be able to be spent on improving your character. This functionality
-  is not yet implemented, but should be soon.
+  XP can be spent on improving your character. While other ways of spending XP
+  are soon to come, the primary use for XP right at the moment is to improve
+  your character's attributes and skills.
+
+  BE WARNED - ANY SPEND OF XP IS FINAL. BE REALLY SURE YOU WANT TO SPEND IT!
+
+  You can use '+xp/raise <attribute or skill>' to spend XP to raise an attribute
+  or skill.
+
+  Costs:
+  Any attribute raise: 160 XP.          Skill +0 to +1: 20 XP.
+                                        Skill +1 to +2: 20 XP.
+                                        Skill +2 to +3: 40 XP.
+                                        Skill +3 to +4: 60 XP. And so on.
 
 & +nom
   +nom
