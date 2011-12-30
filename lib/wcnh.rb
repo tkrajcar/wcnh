@@ -5,6 +5,7 @@ require 'mongoid'
 
 # Go find our MUSH library.
 $:.push(File.expand_path("../mush/game/ruby/lib"))
+$:.push(File.expand_path("../wcnh_mush/game/ruby/lib"))
 require 'pennmush-json'
 
 # Add systems/lib to LOAD_PATH.
