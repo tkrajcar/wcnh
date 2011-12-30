@@ -247,7 +247,57 @@
 
 &cmd.+nom2 #15=$+nom:
   @nspemit %#=[rpc(XP.nom_view,%#)];
+-
 
+&cmd.+xp/raise #15=$+xp/raise *:
+  think
+    [switch(
+      grab(attribute.reason attribute.perception attribute.willpower attribute.strength attribute.agility attribute.health [lattr(#111/skill.*)],*.%0*),
+      SKILL.*,u(fn.raise.skill,after(#$,.)),
+      ATTRIBUTE.*,u(fn.raise.attribute,after(#$,.)),
+      pemit(%#,[ansi(hb,>)] Invalid skill or attribute!)
+    )]
+-
+
+&fn.raise.skill #15=
+  switch(
+    [t(setr(n,chargen(skill,%0,name)))]/@@ were we given a valid skill? @@/
+    [gte(get(%#/char`xp`available),setr(c,u(subfn.skill.cost,setr(s,inc(chargen(get.skill.raw,%#,%0))))))]/@@ does executor have enough xpd? @@/
+    [lte(inc(chargen(get.skill,%#,%0)),6)],/@@ don't allow a skill greater than 6 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid skill!),
+    10*,pemit(%#,[ansi(hb,>)] That would cost [ansi(h,%qc)] available XP, and you only have [ansi(h,setr(r,get(%#/char`xp`available)))].),
+    110,pemit(%#,[ansi(hb,>)] Sorry, you can't have a skill above 6.),
+    111,
+      /@@ decrease their remaining spoints @@/
+      [attrib_set(%#/char`xp`available,val(sub(get(%#/char`xp`available),%qc)))]
+      /@@ increase their skill @@/
+      [chargen(set.skill,%#,%0,val(%qs))]
+      [pemit(%#,[ansi(hb,>)] Increasing your [ansi(h,%qn)] skill to [ansi(h,+%qs)] at a cost of [ansi(h,%qc)] XP. [ansi(h,get(%#/char`xp`available))] available XP remaining.)]
+      [syslog(XPSPEND,%n spending %qc XP to increase their [ansi(h,%qn)] skill to [ansi(h,+%qs)]. [get(%#/char`xp`available)] available XP remaining.)]
+  )
+-
+
+&fn.raise.attribute #15=
+  switch(
+    [t(setr(n,chargen(attribute,%0,name)))]/@@ were we given a valid attribute? @@/
+    [gte(get(%#/char`xp`available),160)]/@@ does executor have at least one alevel to spend? @@/
+    [lt(setr(a,val(inc(chargen(get.attribute,%#,%0)))),7)],/@@ don't allow an attribute above 6 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid attribute!),
+    10*,pemit(%#,[ansi(hb,>)] Raising an attribute costs [ansi(h,160)] available XP\, and you only have [ansi(h,get(%#/char`xp`available))].),
+    110,pemit(%#,[ansi(hb,>)] Sorry\, you can't have an attribute above 6.),
+    111,
+      /@@ decrease their remaining xp @@/
+      [attrib_set(%#/char`xp`available,val(sub(get(%#/char`xp`available),160)))]
+      /@@ increase their attribute @@/
+      [chargen(set.attribute,%#,%0,val(%qa))]
+      [pemit(%#,[ansi(hb,>)] Increasing your [ansi(h,%qn)] attribute to [ansi(h,%qa)] at a cost of [ansi(h,160)] available XP. [ansi(h,get(%#/char`xp`available))] remaining.)]
+      [syslog(XPSPEND,%n spending 160 XP to increase their [ansi(h,%qn)] attribute to [ansi(h,%qa)]. [get(%#/char`xp`available)] available XP remaining.)]
+  )
+-
+
+&subfn.skill.cost #15=
+  /@@ returns cost in XP to move from level %0 - 1 to %0. @@/
+  switch(%0,0,#-1,1,20,mul(dec(%0),20))
 -
 
 &cmd.+map #15=$+map:
