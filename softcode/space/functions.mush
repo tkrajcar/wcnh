@@ -118,7 +118,7 @@
   0
 -
 &FN.SPEED.BASE #208=
-  default(%0/space`maxspeed,10)
+  mul(default(%0/space`maxspeed,2),2)
 -
 &FN.SPEED #208=
     mul(
