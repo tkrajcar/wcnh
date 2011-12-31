@@ -273,7 +273,7 @@
 &FN.LIST.MEMBEROF #114=
   [ifelse(
     t(setr(0,pmatch(%0))),
-    squish(edit(grepi(v(data),fac.*,%q0\\b),FAC.,)),
+    squish(edit(regrepi(v(data),fac.*,%q0\\b),FAC.,)),
     #-1 INVALID PLAYER
     )]
 -
