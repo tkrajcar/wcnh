@@ -11,7 +11,9 @@ This is the list of work in-progress.
 * Review and implement doc strategy via chargen
 
 ### Code
-* Tie piloting skill to ship speed.
+* Tie jumping to astrogation skill. 
+* Framework for dealing with parents/classes.
+* Spec out a few basic classes.
 * Intercom command
 * Bay commands
 * Shuttles
@@ -36,7 +38,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-12-24-2011
+01-01-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -62,4 +64,5 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Modify scan to take an arg.
 * Comm command
 * Add spose messages to land/launch.
+* Tie piloting skill to ship speed.
 
