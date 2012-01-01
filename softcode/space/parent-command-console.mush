@@ -107,7 +107,7 @@
 @desc #204=
   A command console. It is currently [ifelse([hasattrval(%!,data.manned)],manned by [spacesys(mannedby,%!)],unmanned)].%r
   You may [ansi(yh,man)] or [ansi(yh,use)] this console.%r
-  While manning the console, [ansi(yh,con/help)].
+  See [ansi(yh,help space)] for more information. 
 -
 &LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,v(data.ship),%#)]
 -
