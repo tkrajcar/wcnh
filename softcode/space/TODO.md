@@ -11,7 +11,6 @@ This is the list of work in-progress.
 * Review and implement doc strategy via chargen
 
 ### Code
-* Tie jumping to astrogation skill. 
 * Framework for dealing with parents/classes.
 * Spec out a few basic classes.
 * Intercom command
@@ -65,4 +64,4 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Comm command
 * Add spose messages to land/launch.
 * Tie piloting skill to ship speed.
-
+* Tie jumping to astrogation skill. 

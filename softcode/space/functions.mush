@@ -131,7 +131,7 @@
           4,1.60,
           5,1.75,
           6,1.90,
-          7,2,
+          >6,2,
           1
           )
       )
@@ -466,6 +466,10 @@
 &FN.ISJUMP #208=
   strmatch(parent(%0),get(v(data)/parent.jump))
 -
+&SUBFN.JUMP.CALC #208=
+  [setq(0,switch(%2,>6,0,6,5,5,10,4,20,3,30,2,40,1,50,70))]
+  [add(%0,rand(sub(%q0,mul(%q0,2)),%q0))] [add(%1,rand(sub(%q0,mul(%q0,2)),%q0))]
+-
 &FN.JUMP #208=
   switch(
       [u(fn.isship,%0)]
@@ -485,9 +489,12 @@
             [tel(%0,loc(%q1))]
             [iter(spacesys(list.system.active,loc(%1)),spacesys(update.report,itext(0)))]
             [spacesys(spose,%0,arrives in-system admist a flash of light near the [rest(name(%q1))] jump point.)]
-            [set(%0,space`x:[get(%q1/space`x)])]
-            [set(%0,space`y:[get(%q1/space`y)])]
             [iter(spacesys(list.system.active,loc(%0)),spacesys(update.report,itext(0)))]
+            [spacesys(notify.consoles,%0,Jump complete.  New position: [setr(2,ulocal(subfn.jump.calc,get(%q1/space`x),get(%q1/space`y),spacesys(skill,%0,astrogation)))] 
+                                         \([ansi(y,[round(sub(100,dist2d(get(%q1/space`x),get(%q1/space`y),first(%q2),last(%q2))),0)]\% jump accuracy)]\).
+                                         )]
+            [set(%0,space`x:[first(%q2)])]
+            [set(%0,space`y:[last(%q2)])]
       )
 -
 &FN.HASSHUTTLE #208=
