@@ -1,0 +1,109 @@
+& SPACE
+The space system currently in use on WCNH is a work in progress with a focus on
+two primary goals: Minimize the elements of a simulator that require real-life
+understanding of complicated topics, and foster the roleplaying experience. We
+want space to be fun. We want it to be an aid in telling your character's
+story. We don't want it to be a headache, and we don't want players to have to 
+practice in a simulator for hours just to accurately roleplay a good pilot 
+character.
+ 
+The following commands are for use within the space system.  Most of them
+require that you "man" a console prior to using the command.
+ 
+board            hail           jump          man           land
+launch           plot           roster        scan          +scheck
+spose
+
+& BOARD
+Syntax: board <ship>
+        enter <ship>
+  
+Enter a specified landed ship, provided you are on the ship's roster.
+
+& HAIL
+Syntax: hail <contact ID>=<message>
+  
+Send a private message to another ship that is visible on sensors.
+
+& JUMP
+Syntax: jump <contact ID>
+  
+If the ship is equipped with a jump drive, initiate the jump sequence which
+will propel the ship through a jump node to a new system.
+
+& MAN
+Syntax: man <console>
+        use <console>
+        unman
+         
+Man or use a console, and subsequently unman it. You cannot man a console that
+someone else is already manning. 
+       
+& LAND
+Syntax: land <contact ID>
+ 
+Land the ship on a planet or station or in another ship's docking bay, provided
+the target is able to be landed on.
+
+& LAUNCH
+Syntax: launch
+ 
+Launch the landed ship.
+
+& PLOT
+Syntax: plot/calc <contact ID>
+        plot/engage
+        plot/stop
+         
+The first syntax will plot a course to a target destination that is visible on
+sensors.
+ 
+The second syntax engages a plotted course and moves the ship toward its
+destination.
+ 
+The third syntax stops a ship that is in motion.  The ship must be stopped
+before a new course can be plotted.
+
+& ROSTER
+Syntax: roster/add <person>=<status>
+        roster/list
+        roster/remove <person>
+         
+The first syntax adds a person to the ship's roster.  A valid <status> is
+"visitor" or "crew". Visitors can board the ship and view the ship's roster.
+Crew members can additionally man the ship's consoles.
+ 
+The second syntax displays the current ship's roster.
+ 
+The third syntax removes a person from the ship's roster.  Only the captain of
+the ship can add or remove people from the roster.
+
+& SCAN
+Syntax: scan
+        scan <contact ID>
+         
+The first syntax shows a list of contacts in your current system that are
+visible on sensors.
+ 
+The second syntax shows detailed information about a specific contact.
+
+& +SCHECK
+Syntax: +scheck/list
+        +scheck <skill>
+        +scheck/private <skill>
+         
+The +scheck command allows you to check skills in a manner similar to +check,
+but on the shipwide level.  The list syntax will show valid space related
+skills that can be checked.  Unless the private switch is specified, the
+results of the check will be visible to every other ship in the current system.
+For ships with multiple manned consoles, the operator with the highest skill is
+used for the check, regardless of who actually types the command.
+
+& SPOSE
+Syntax: spose <action>
+ 
+This command works just like the pose command, but allows a person manning a
+ship console to make a pose about the entire ship that will be prefixed by the
+ship's name.  All other ships in the current system will see the spose.
+ 
+
