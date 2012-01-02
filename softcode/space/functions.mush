@@ -117,6 +117,10 @@
 -
 &DOC.UPDATE.REPORT #208=ship|Updates ship's list of contacts and notifies of any changes.
 -
+&DOC.HASBAY #208=ship|1 if ship has a landable bay.
+-
+&DOC.CANJUMP #208=ship|1 if ship is capable of jumping.
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -670,4 +674,10 @@
       set(%0,data.roster:[trim(ldelete(setr(0,get(%0/data.roster)),match(%q0,%1:*)))]),
       #-1 INVALID SHIP OBJECT
       )
+-
+&FN.HASBAY #208=
+  0
+-
+&FN.CANJUMP #208=
+  1
 -

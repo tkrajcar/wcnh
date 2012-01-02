@@ -133,4 +133,25 @@
                  @wait %0/space`queue`move=think [spacesys(jump,%0,%1)]
                 }
 -
+&CMD.+SPACE/CLASSES #367=$+space/classes:@nspemit %#=
+  [titlebar(List of Classes)]%r
+  [ansi(y,align(15 6 4 4 5 5 5 5 7 5,Name,OnGrid,Cap?,Bay?,Jump?,Speed,Cargo,Armor,Shields,#Guns))]%r
+  [iter(
+      setr(0,lvthings(get(v(data)/bin.parents))),
+      align(
+          15 -6 4 4 5 5 5 5 7 -5,
+          [get(itext(0)/space`class)],
+          [words(children(itext(0)))],
+          [ifelse(spacesys(iscapship,itext(0)),Yes,No)],
+          [ifelse(spacesys(hasbay,itext(0)),Yes,No)],
+          [ifelse(spacesys(canjump,itext(0)),Yes,No)],
+          [num2adj(default(itext(0)/space`maxspeed,0))],
+          [num2adj(last(default(itext(0)/space`cargo,0:0),:))],
+          [num2adj(last(default(itext(0)/space`armor,0:0),:))],
+          [num2adj(last(default(itext(0)/space`shields,0:0),:))],
+          [first(default(itext(0)/space`guns,0|),|)]
+          ),
+      ,%r)]%r
+  [footerbar([words(%q0)] Classes)]
+-
 
