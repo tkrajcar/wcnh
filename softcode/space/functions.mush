@@ -10,7 +10,112 @@
 -
 @set #208=SAFE
 -
-@desc #208=Space Functions.
+@desc #208=
+  [center(Space System\(\) Documentation,79,-)]%r
+  %b%b+[repeat(-,73)]+%r
+  [align(2 20 18 33 2,,[ansi(c,SUBFUNCTION)],[ansi(c,ARGUMENTS)],[ansi(c,DESCRIPTION)],,,|)]%r
+  [map(map.doc,[lattr(me/doc.*)], ,%r)]%r
+  %b%b+[repeat(-,73)]+%r
+  [repeat(-,79)]
+-
+&MAP.DOC #208=
+  [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
+-
+&DOC.ACTIVATE #208=ship|Activate the ship so it's notified each cycle tick.
+-
+&DOC.ADDCONSOLE #208=ship:console|Sets up console to work with ship.
+-
+&DOC.ADVANCE #208=ship|Moves ship 1 step forward if destination is set.
+-
+&DOC.ADVANCE.CALC #208=ship|Returns next anticipated position if destination is set.
+-
+&DOC.CANBOARD #208=ship:player|Returns 1 if player can board ship.
+-
+&DOC.CANUSECONSOLE #208=console:player|Returns 1 if player can man console.
+-
+&DOC.CLASS #208=object|Returns object's class.
+-
+&DOC.CLONE.SHIP #208=ship|Makes an exact copy of ship.
+-
+&DOC.CYCLE #208=|Returns time in seconds until next space tick.
+-
+&DOC.DEACTIVATE #208=ship|Deactivates the ship for landing etc.
+-
+&DOC.DISTANCE #208=object1:object2|Returns distance between two objects.
+-
+&DOC.ETA #208=ship|Returns ETA in timestring format if destination is set.
+-
+&DOC.HASSHUTTLE #208=player|Returns 1 if player was given a free shuttle.
+-
+&DOC.HEADING #208=ship|Returns heading of ship.
+-
+&DOC.ISACTIVE #208=ship|Returns 1 if ship is active.
+-
+&DOC.ISCAPSHIP #208=ship|1 if it's a capship, 0 otherwise.
+-
+&DOC.ISCAPTAIN #208=ship:player|Returns 1 if player meets captain permissions for ship.
+-
+&DOC.ISCONSOLE #208=object|1 if object is a valid console.
+-
+&DOC.ISCREW #208=ship:player|1 if player meets crew permissions for ship.
+-
+&DOC.ISDOCKED #208=ship|1 if ship is in a valid landing area.
+-
+&DOC.ISGUEST #208=ship:player|1 if player meets guest permissions for ship.
+-
+&DOC.ISJUMP #208=object|1 if object is a valid jump point.
+-
+&DOC.ISMANNED #208=console|1 if console is currently manned.
+-
+&DOC.ISMANNING #208=console:player|1 if player is manning console.
+-
+&DOC.ISMOVING #208=ship|1 if ship has a move action queued.
+-
+&DOC.ISSHIP #208=ship|1 if it's a valid ship object.
+-
+&DOC.JUMP #208=ship:jump point|Jumps ship through jump point if both are valid.
+-
+&DOC.LAND #208=ship:target|Lands ship on target.
+-
+&DOC.LAUNCH #208=ship|Launches the ship.
+-
+&DOC.LIST.REPORT #208=ship|Space delimited list of visible contacts.
+-
+&DOC.LIST.SKILLS #208=|List of valid space skills for +scheck.
+-
+&DOC.LIST.SYSTEM.ACTIVE #208=system|Space delimited list of active ships in system.
+-
+&DOC.LIST.SYSTEM.ALL #208=system|Space delimited list of all objects in system.
+-
+&DOC.MANNEDBY #208=console|Returns name of person manning console.
+-
+&DOC.MOVE #208=object:x:y|Move object.
+-
+&DOC.NOTIFY.CONSOLES #208=ship|Sends message prefixed with ">" to manned consoles.
+-
+&DOC.NOTIFY.SHIP #208=ship|Sends non-prefixed message to everyone on ship.
+-
+&DOC.ROSTER #208=ship|Ascii formatted ship roster.
+-
+&DOC.ROSTER.ADD #208=ship:player:position|Add a player to a ship roster.
+-
+&DOC.ROSTER.REMOVE #208=ship:player|Remove a player from a ship roster.
+-
+&DOC.SCAN #208=ship|Ascii formatted list of visible contacts.
+-
+&DOC.SCAN.TARGET #208=target|Ascii formatted scan results for target.
+-
+&DOC.SETDEST #208=ship:x:y|Set the ship's intended destination.
+-
+&DOC.SKILL #208=ship:skill|Return the max skill value out of everyone manning a console on ship.
+-
+&DOC.SPEED #208=ship|Return skill-adjusted max speed value for ship on a 0-7 scale.
+-
+&DOC.SPEED.BASE #208=ship|Return base speed value of ship on a 0-7 scale.
+-
+&DOC.SPOSE #208=ship:message|Emits a name-prefixed ship pose to all active ships in system.
+-
+&DOC.UPDATE.REPORT #208=ship|Updates ship's list of contacts and notifies of any changes.
 -
 &DATA #208=#351
 -
@@ -118,7 +223,7 @@
   0
 -
 &FN.SPEED.BASE #208=
-  mul(default(%0/space`maxspeed,2),2)
+  mul(default(%0/space`maxspeed,0),2)
 -
 &FN.SPEED #208=
     mul(
@@ -329,21 +434,6 @@
     get(%0/data.consoles),
     nspemit(get(itext(0)/data.manned),[ansi(gh,>)] %1)
     )
--
-# Function: console()
-# Display a console's commands and their syntax
-&FN.CONSOLE #208=You type the console command.
--
-# Function: plot()
-# Display the plot commands and their syntax
-&FN.PLOT #208=You typed the plot command.
--
-# Function: roster()
-# Display the roster commands and their syntax
-&FN.ROSTER #208=You typed the roster command.
--
-# Function: shuttle()
-&FN.SHUTTLE #208=You typed the shuttle command.
 -
 # Function: iscrew(ship DBREF, player DBREF)
 # Returns true if the player is the ship's captain or a crew member
