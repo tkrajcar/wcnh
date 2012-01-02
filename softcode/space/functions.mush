@@ -228,17 +228,30 @@
 &FN.SPEED #208=
     mul(
       spacesys(speed.base,%0),
-      switch(
-          spacesys(skill,%0,ifelse(spacesys(iscapship,%0),pilot-cap,pilot-fig)),
-          1,1.15,
-          2,1.30,
-          3,1.45,
-          4,1.60,
-          5,1.75,
-          6,1.90,
-          >6,2,
-          1
-          )
+      add(
+        switch(
+            spacesys(skill,%0,ifelse(spacesys(iscapship,%0),pilot-cap,pilot-fig)),
+            1,0.575,
+            2,0.65,
+            3,0.725,
+            4,0.8,
+            5,0.875,
+            6,0.95,
+            >6,1,
+            0.5
+            ),
+        switch(
+            spacesys(skill,%0,ifelse(spacesys(iscapship,%0),engineer-cap,engineer-fig)),
+            1,0.575,
+            2,0.65,
+            3,0.725,
+            4,0.8,
+            5,0.875,
+            6,0.95,
+            >6,1,
+            0.5
+            )
+        )
       )
 -
 &SUBFN.RAD2DEG #208=
