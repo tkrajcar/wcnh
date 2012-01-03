@@ -11,18 +11,18 @@ This is the list of work in-progress.
 * Review and implement doc strategy via chargen
 
 ### Code
-* Framework for dealing with parents/classes.
+* Deal with cloning consoles in multi-room ships.
 * Spec out a few basic classes.
 * Intercom command
 * Bay commands
 * Shuttles
 * Shipyards
-* Handle multi-room ship cloning
 
 ## Work To Do Next
 
 This is the list of work that is next up to be tackled.
 
+* Write admin help files.
 
 ## Work In The Spec
 
@@ -37,7 +37,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-01-01-2011
+01-03-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -65,3 +65,5 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Add spose messages to land/launch.
 * Tie piloting skill to ship speed.
 * Tie jumping to astrogation skill. 
+* Framework for dealing with parents/classes.
+* Handle multi-room ship cloning

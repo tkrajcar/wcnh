@@ -625,14 +625,40 @@
       [setq(b,lock(%q1/zone,=%q1))]
       [setq(d,zone(%q1,%q1))]
       [setq(c,lock(%q1,=%q1))]
-      [set(%q1,roomname:[get(%0/roomname)])]
+      [set(%q1,enter_ok)]
+      [if(hasattrval(%0,roomname),set(%q1,roomname:[get(%0/roomname)]))]
       [powers(%q1,api)]
       [iter(
           spacesys(clone.consinroom,%0),
           [tel(itext(0),%q1)][spacesys(addconsole,%q1,itext(0))]
           )]
-      /@@ Todo: Handle multi-room ships [spacesys(clone.ship.rooms,%q1)] @@/
+      [if(hasattrval(%0,connected),ulocal(subfn.clone.ship.rooms,%0,%q1))]
       )
+-
+&SUBFN.CLONE.SHIP.ROOMS #208=
+# First create the rooms.  Do the rooms alphabetically just so we know the lists are ordered.
+  [iter(
+      setr(1,sort(lsearch(all,type,room,zone,%0),name)),
+      [setq(0,cat(%q0,clone(itext(0))))]
+      [setq(a,zone(last(%q0),%1))]
+      )]
+# Set the room to @tel to on boarding.    
+  [set(%1,connected:[extract(%q0,match(%q1,get(%0/connected)),1)])]
+# For each room, make an exit, link it appropriately.
+  [iter(
+      %q0,
+      iter(
+          setr(2,lexits(extract(%q1,inum(0),1))),
+          [setq(3,
+              cat(%q3,open(
+                        name(itext(0)),
+                        extract(%q0,match(%q1,loc(itext(0))),1),
+                        itext(1)
+                        ))
+              )]
+          [setq(b,zone(last(%q3),%1))]
+          )
+      )]
 -
 &FN.ISCONSOLE #208=
   t(strmatch(last(lparent(%0)),get(v(data)/parent.console)))
