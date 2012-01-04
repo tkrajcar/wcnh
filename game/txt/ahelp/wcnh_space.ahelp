@@ -1,0 +1,58 @@
+& +SPACE
+Admin stuff for GhettoSpace.
+ 
+Functions are on #208.  #208/startup will be used in most instances, but if a
+full reboot of the system is needed (including wiping active ships),
+#208/subfn.restart can be used.
+ 
+#367 has admin commands.  Consoles interact with the system by directly using
+these admin commands and referencing their ship object which is stored in an
+attribute on the console.  The ship object stores all other data about the
+ship. 
+ 
+Because most commands are used by consoles, using them directly typically
+results in a queue being placed on the ship followed by the action on the
+following space cycle.  To force an action immediately, either @notify
+<ship>/any after using one of the commands, or use one of the functions from
+#208.
+ 
++space/addcon        +space/advance         +space/classes 
++space/jump          +space/land            +space/launch
++space/stop
+
+& +SPACE/ADDCON
+Syntax: +space/addcon <ship>=<object>
+ 
+Add a console to a ship.  This will do all the parenting and whatnot.
+
+& +SPACE/ADVANCE
+Syntax: +space/advance <ship>
+ 
+Move a ship one "step" forward through a cycle toward its destination, provided
+it has a valid destination set.
+
+& +SPACE/CLASSES
+Syntax: +space/classes
+ 
+See a list of classes.
+
+& +SPACE/JUMP
+Syntax: +space/jump <ship>=<jump point>
+ 
+Manually jump a ship through a jump point.
+
+& +SPACE/LAND
+Syntax: +space/land <ship>=<target>
+ 
+Land a ship on a destination, provided it's within range and can be landed on.
+
+& +SPACE/LAUNCH
+Syntax: +space/launch <ship>
+ 
+Launch a ship, provided it is landed at a valid place.
+
+& +SPACE/STOP
+Syntax: +space/stop <stop>
+ 
+Stop a ship that is in motion.
+
