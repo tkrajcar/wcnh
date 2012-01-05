@@ -625,6 +625,8 @@
       [setq(a,parent(%q1,%0))]
       [setq(b,lock(%q1/zone,=%q1))]
       [setq(d,zone(%q1,%q1))]
+      [set(%q1,space`x:)]
+      [set(%q1,space`y:)]
       [setq(c,lock(%q1,=%q1))]
       [set(%q1,enter_ok)]
       [set(%q1,!no_command)]
