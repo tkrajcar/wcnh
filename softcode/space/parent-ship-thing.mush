@@ -9,6 +9,12 @@
 -
 @set #179=SAFE
 -
+@set #589=!SAFE NO_COMMAND
+-
+@wipe #589
+-
+@set #589=SAFE
+-
 @dol remove(lattr(#9),CONFORMAT NAMEFORMAT)=@cpattr #9/##=#179
 -
 @cpattr #9/conformat=#179/iconformat
@@ -57,4 +63,16 @@
 -
 &LOCK.CANLEAVE #179=[hasattrval(%!,data.docked)]
 -
-
+@idesc #589=You step into the airlock...
+-
+@aenter #589=@tel %#=[home(v(connected))]
+-
+@enter #589=
+-
+@leave #589=
+-
+&ICONFORMAT #589=
+-
+&CMD.INTERCOM #589=$intercom *:
+  @nszemit [zone(%!)]=[ansi(wh,\[)][ansi(g,INTERCOM)][ansi(wh,\])] %0
+-

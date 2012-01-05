@@ -11,9 +11,7 @@ This is the list of work in-progress.
 * Review and implement doc strategy via chargen
 
 ### Code
-* Modify landing/launching to handle multi-room ships.
 * Spec out a few basic classes.
-* Intercom command
 * Bay commands
 * Shuttles
 * Shipyards
@@ -22,14 +20,12 @@ This is the list of work in-progress.
 
 This is the list of work that is next up to be tackled.
 
-* Write admin help files.
 
 ## Work In The Spec
 
 This is the list of work needed to implement the spec.
 
 * Buying a Ship
-* In-ship Communication
 
 ## Idea Bucket
 
@@ -70,4 +66,6 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Deal with cloning consoles in multi-room ships.
 * Set new airlock exits no_warn
 * Set up airlock exit parent and add parenting to ship cloning.
+* Intercom command
+* Write admin help files.
 
