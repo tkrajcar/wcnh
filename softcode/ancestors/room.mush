@@ -30,10 +30,13 @@
         titlebar(
               [name(%!)]
                [if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%![flags(%!)]\))]
-               [if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)]
+               [if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)]                    
                [if(
-                  and(setr(8,zone(%q9)),not(strmatch(%q8,#222))),
-                  %b<[trim(regedit(name(%q8),lit(<\w*>),))]>
+                  and(
+                    setr(8,zone(%q9)),
+                    not(strmatch(%q8,#222))
+                    ),
+                  %b<[trim(ifelse(strmatch(last(lparent(%q8)),#179),rest(name(parent(%q8))),regedit(name(%q8),lit(<\w*>),)))]>
                   )],
               v(COLOR.Frame))
 -

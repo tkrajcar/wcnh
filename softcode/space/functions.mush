@@ -303,6 +303,7 @@
       0?,#-1 INVALID SHIP OBJECT,
       10,#-1 INVALID CONSOLE OBJECT,
       11,[set(%1,data.ship:%0)]
+         [setq(b,zone(%1,%0))]
          [powers(%1,api)]
          [powers(%1,pemit_all)]
          [setq(a,lock(%1,=%1))]
@@ -618,7 +619,7 @@
 -
 &FN.CLONE.SHIP #208=
   ifelse(
-      not(strmatch(parent(%0),get(v(data)/parent.ship))),
+      not(strmatch(last(lparent(%0)),get(v(data)/parent.ship))),
       #-1 INVALID SHIP PARENT,
       [setr(1,create(%1))]
       [setq(a,parent(%q1,%0))]
@@ -642,12 +643,14 @@
       [setq(0,cat(%q0,clone(itext(0))))]
       [setq(a,zone(last(%q0),%1))]
       )]
-# Set the room to @tel to on boarding.    
-  [set(%1,connected:[extract(%q0,match(%q1,get(%0/connected)),1)])]
-# For each room, make an exit, link it appropriately.
+# For each room, clone consoles, make exits, link appropriately.
   [iter(
       %q0,
-      iter(
+      [iter(
+          spacesys(clone.consinroom,extract(%q1,inum(0),1)),
+          [tel(itext(0),itext(1))][spacesys(addconsole,%1,itext(0))]
+          )]
+      [iter(
           setr(2,lexits(extract(%q1,inum(0),1))),
           [setq(3,
               cat(%q3,open(
@@ -657,7 +660,16 @@
                         ))
               )]
           [setq(b,zone(last(%q3),%1))]
-          )
+# Set up the exit hatch             
+          [if(
+            strmatch(name(itext(0)),Disembark),
+            [set(%1,connected:[last(%q3)])]
+            [link(last(%q3),variable)]
+            [setq(b,zone(last(%q3),%1))]
+            [set(last(%q3),dark)]
+            [powers(last(%q3),link)]
+            )]
+          )]
       )]
 -
 &FN.ISCONSOLE #208=

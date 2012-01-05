@@ -11,7 +11,8 @@ This is the list of work in-progress.
 * Review and implement doc strategy via chargen
 
 ### Code
-* Deal with cloning consoles in multi-room ships.
+* Set up airlock exit parent and add parenting to ship cloning.
+* Modify landing/launching to handle multi-room ships.
 * Spec out a few basic classes.
 * Intercom command
 * Bay commands
@@ -37,7 +38,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-01-03-2011
+01-04-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -66,4 +67,6 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Tie piloting skill to ship speed.
 * Tie jumping to astrogation skill. 
 * Framework for dealing with parents/classes.
-* Handle multi-room ship cloning
+* Handle multi-room ship cloningi
+* Deal with cloning consoles in multi-room ships.
+
