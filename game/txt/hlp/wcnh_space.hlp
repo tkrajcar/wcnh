@@ -10,9 +10,15 @@ character.
 The following commands are for use within the space system.  Most of them
 require that you "man" a console prior to using the command.
  
-board            hail           jump          man           land
-launch           plot           roster        scan          +scheck
-spose
+board            hail           intercom      jump          man
+land             launch         plot          roster        scan
++scheck          spose
+
+& INTERCOM
+Syntax: intercom <message>
+ 
+In ships with more than one room, this command can be used in any part of the
+ship to send a message to every other room on the ship.
 
 & BOARD
 Syntax: board <ship>
