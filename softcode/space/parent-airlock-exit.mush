@@ -13,14 +13,17 @@
 -
 @lset #209/basic=!no_inherit
 -
-@desc #209=[setq(0,[v(data.console)])]
-  [if([spacesys(isdocked,%q0)],
-    The airlock leads to [name([get(%q0/data.docked)])].,
-    The airlock is sealed shut.
-  )]
+&DESTINATION #209=[get(zone(%!)/data.docked)]
+-
+@desc #209=
+  The airlock [ifelse(spacesys(isdocked,zone(%!)),leads to the [ansi(wh,name(u(%!/destination)))],is sealed shut)].
 -
 @failure #209=You cannot go that way. The airlock is sealed shut.
 -
-&DESTINATION #209=[get([v(data.console)]/data.docked)]
+&LOCK.ISDOCKED #209=[spacesys(isdocked,zone(%!))]
 -
-&LOCK.ISDOCKED #209=[spacesys(isdocked,[v(data.console)])]
+@SUCCESS #209=You disembark to the [ansi(wh,name(u(%!/destination)))].
+-
+@OSUCCESS #209=exits to the [ansi(wh,name(u(%!/destination)))].
+-
+@ODROP #209=exits from the [ansi(wh,name(zone(home(%!))))].
