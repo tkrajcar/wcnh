@@ -121,6 +121,14 @@
 -
 &DOC.CANJUMP #208=ship|1 if ship is capable of jumping.
 -
+&DOC.HULL #208=ship|Current:Max
+-
+&DOC.STATUS #208=ship|Ascii printout of ship status.
+-
+&DOC.SHIELDS #208=ship|Current:Max
+-
+&DOC.CARGO #208=ship|Current:Max
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -723,4 +731,41 @@
 -
 &FN.CANJUMP #208=
   1
+-
+&FN.HULL #208=
+  [get(%0/space`armor`cur)]:[max(power(mul(get(%0/space`armor),10),2),10)]
+-
+&FN.SHIELDS #208=
+  [get(%0/space`shields`cur)]:[max(power(mul(get(%0/space`shields),10),2),10)]
+-
+&FN.CARGO #208=
+  [get(%0/space`cargo`cur)]:[mul(100,get(%0/space`cargo))]
+-
+&FN.CPU #208=
+  [get(%0/space`cpu`cur)]:[max(mul(10,get(%0/space`cpu)),10)]
+-
+&FN.REACTOR #208=
+  [get(%0/space`reactor`cur)]:[mul(100,get(%0/space`reactor))]
+-
+&FN.GUNS #208=
+  [get(%0/space`guns)]|[get(%0/space`guns`cur)]
+-
+&FN.STATUS #208=
+  [titlebar(Status: [name(%0)])]%r
+  [table(
+      [ansi(y,Class:)] [spacesys(class,%0)]|
+      [ansi(y,Hull Integrity:)] [mul(fdiv(first(setr(0,spacesys(hull,%0)),:),last(%q0,:)),100)]\% \([first(%q0,:)]/[last(%q0,:)]\)|
+      [ansi(y,Shields:)] [mul(fdiv(first(setr(1,spacesys(shields,%0)),:),last(%q1,:)),100)]\% \([first(%q1,:)]/[last(%q1,:)]\)|
+      [ansi(y,Cargo Bay:)] [first(setr(2,spacesys(cargo,%0)),:)] of [last(%q2,:)] m2|
+      [ansi(y,Reactor:)] [first(setr(3,spacesys(reactor,%0)),:)] of [last(%q3,:)] MW|
+      [ansi(y,Computer:)] [mul(fdiv(first(setr(4,spacesys(cpu,%0)),:),last(%q4,:)),100)]\% Avail.,
+      38,79,|
+      )]%r
+      [ansi(y,Gun Mounts:)]%r
+      [iter(
+          lnum(first(setr(4,spacesys(guns,%0)),|)),
+          %t<#@> [ifelse(gte(words(after(%q4,|)),#@),get(extract(after(%q4,|),#@,1)/title),-- UNINSTALLED --)],
+          ,%r
+          )]
+      %r[footerbar()]
 -

@@ -240,4 +240,7 @@
                     [ansi(gh,>)] ETA: [ansi(yh,%q0)],
                     [ansi(rh,>)] The ship is not in motion.
                     )]
--                   
+-
+&CMD.STATUS #204=$status:
+  @nspemit %#=[spacesys(status,v(data.ship))]
+-
