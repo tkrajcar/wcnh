@@ -60,6 +60,7 @@ Launch the landed ship.
 Syntax: plot/calc <contact ID>
         plot/engage
         plot/stop
+        plot/eta
          
 The first syntax will plot a course to a target destination that is visible on
 sensors.
@@ -69,6 +70,8 @@ destination.
  
 The third syntax stops a ship that is in motion.  The ship must be stopped
 before a new course can be plotted.
+ 
+The fourth syntax will show you your ETA to your current destination.
 
 & ROSTER
 Syntax: roster/add <person>=<status>
