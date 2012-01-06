@@ -1,6 +1,11 @@
 require 'wcnh'
 
 module Econ
+  # helper function
+  def self.credit_format(number) # return formatted (1,234.56) number
+    number.round(1,:floor).to_s.gsub(/(\d)(?=\d{3}+(?:\.|$))(\d{3}\..*)?/,'\1,\2')
+  end
+
   # Wallet object. Every IC player has a doc of this class, but there's nothing necessarily restricting it to players.
   class Wallet
     include Mongoid::Document
