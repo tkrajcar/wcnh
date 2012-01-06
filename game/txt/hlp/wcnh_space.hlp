@@ -12,7 +12,12 @@ require that you "man" a console prior to using the command.
  
 board            hail           intercom      jump          man
 land             launch         plot          roster        scan
-+scheck          spose
++scheck          spose          status
+
+& STATUS
+Syntax: status
+ 
+Display useful information about your ship.
 
 & INTERCOM
 Syntax: intercom <message>
