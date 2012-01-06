@@ -234,4 +234,10 @@
 &CMD.SCHECK/LIST #204=$+scheck/list:
   @nspemit %#=[ansi(gh,>)] Valid ship skills: [itemize(iter(spacesys(list.skills),capstr(lcstr(after(itext(0),.)))))].
 -
-
+&CMD.PLOT/ETA #204=$plot/eta:
+  @nspemit %#=[ifelse(
+                    setr(0,spacesys(eta,v(data.ship))),
+                    [ansi(gh,>)] ETA: [ansi(yh,%q0)],
+                    [ansi(rh,>)] The ship is not in motion.
+                    )]
+-                   

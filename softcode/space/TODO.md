@@ -13,7 +13,6 @@ This is the list of work in-progress.
 ### Code
 * Spec out a few basic classes.
 * Bay commands
-* Shuttles
 * Shipyards
 
 ## Work To Do Next
@@ -33,7 +32,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-01-05-2011
+01-06-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -68,4 +67,6 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Set up airlock exit parent and add parenting to ship cloning.
 * Intercom command
 * Write admin help files.
+* ETA command.
+* Shuttles
 
