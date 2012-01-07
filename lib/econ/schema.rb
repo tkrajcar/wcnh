@@ -12,7 +12,7 @@ module Econ
     include Mongoid::Timestamps
 
     identity :type => String # use a MUSH dbref for id
-    field :balance, :type => BigDecimal, :default => BigDecimal.new(0)
+    field :balance, :type => BigDecimal, :default => BigDecimal.new("0")
   end
 
   # Payments are recorded whenever an on-hand payment is made
@@ -36,7 +36,7 @@ module Econ
     field :lowercase_name, :type => String, :default => lambda { self._id.downcase }
     field :owner, :type => String # owner dbref
     field :accessors, :type => Array # array of dbrefs that can access
-    field :balance, :type => BigDecimal, :default => BigDecimal.new(0)
+    field :balance, :type => BigDecimal, :default => BigDecimal.new("0")
 
     index :lowercase_name
     index :accessors
@@ -50,9 +50,9 @@ module Econ
     field :account, :type => String #id (which is a string) of account
     field :type, :type => String #types: 'deposit' 'withdraw' 'access_add' 'access_rem' 'owner_change'
     field :who, :type => String # id (which is a dbref) of initiator
-    field :amount, :type => BigDecimal, :default => BigDecimal.new(0) # for deposit/withdraw
+    field :amount, :type => BigDecimal, :default => BigDecimal.new("0") # for deposit/withdraw
     field :change, :type => String # change message for access_add/rem/owner_change
-    field :balance, :type => BigDecimal, :default => BigDecimal.new(0) # balance after this Activity
+    field :balance, :type => BigDecimal, :default => BigDecimal.new("0") # balance after this Activity
 
     index :account
     index :type
