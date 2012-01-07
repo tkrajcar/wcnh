@@ -6,7 +6,7 @@
 
 require 'socket'
 
-PATH_TO_RUBY = '/usr/bin/ruby1.9.1'
+PATH_TO_RUBY = 'ruby'
 
 s1, s2 = UNIXSocket.pair
 
