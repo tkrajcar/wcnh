@@ -7,15 +7,5 @@
   @tel #100;
   @nuke me;
 -
-/@@ these are the steps - this doesn't work for mortals because of privilege issues... @@/
-&fn.createputdown #22=
-  [setq(0,create(%0 credits))]
-  [set(%q0,wizard)]
-  [parent(%q0,#22)]
-  [attrib_set(%q0/amount,%0)]
-  [link(%q0,#100)]
-  [power(%q0,api)]
-  [tel(%q0,%1)]
--
 
 &amount #22=0

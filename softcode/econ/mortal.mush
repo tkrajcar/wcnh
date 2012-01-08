@@ -22,7 +22,27 @@
 &cmd.pay #19=$pay *=*:@nspemit %#=[rpc(Econ.pay,%0,%1)]
 -
 
-&cmd.putdown #19=$put down *:@nspemit %#=[rpc(Econ.putdown,%0)]
+&cmd.putdown #19=$put down *:
+  @assert [t(setr(0,round(%0,1)))]=
+    @nspemit %#=[ansi(hg,>)] That's not even a number!;
+  @assert [or(orflags(%#,Wr),gte(%0,rpc(Econ.on_hand_balance,%#)))]=
+    @nspemit %#=[ansi(hg,>)] You don't have that many credits on hand!;
+  @assert [gte(%0,1)]=
+    @nspemit %#=[ansi(hg,>)] You need to put down at least [ansi(h,1)] credit.;
+  think
+    [syslog(ECONPUTDOWN,%n put down %0 credits in %L.)]
+    [rpc(Econ.grant,%#,mul(%q0,-1))]
+    [setq(1,create(%q0 credits))];
+
+  @parent %q1=#22;
+  &amount %q1=%q0;
+  @power %q1=api;
+  @set %q1=wizard;
+  think [tel(%q1,%L)];
+  @link %q1=#100;
+  @oemit %#=[ansi(hg,>)] [ansi(h,%n)] sets down [ansi(hy,%q0)] credits.;
+  @pemit %#=[ansi(hg,>)] You set down [ansi(hy,%q0)] credits.;
+
 -
 
 &cmd.account/list #19=$account/list:@nspemit %#=[rpc(Econ.account_list)]
