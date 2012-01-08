@@ -21,10 +21,11 @@ module Econ
     victim_name = R.penn_name(victim)
     Logs.log_syslog("ECONPAY","#{sender_name} paid #{victim_name} #{amount} credits.")
     R.nspemit(victim,">".bold.green + " #{sender_name.bold} pays you #{credit_format(amount).bold.yellow} credits.")
-    victim_wallet.balance = victim_wallet.balance + amount
-    victim_wallet.save
     sender_wallet.balance = sender_wallet.balance - amount
     sender_wallet.save
+    victim_wallet = Wallet.find_or_create_by(id: victim)
+    victim_wallet.balance = victim_wallet.balance + amount
+    victim_wallet.save
     ">".bold.green + " You pay #{victim_name.bold} #{credit_format(amount).bold.yellow} credits."
   end
 
