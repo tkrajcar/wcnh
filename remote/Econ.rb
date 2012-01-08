@@ -11,13 +11,17 @@ module Econ
     self.pay(person,amount)
   end
 
+  def self.pj_on_hand_balance(person)
+    self.on_hand_balance(person)
+  end
+
   def self.pj_grant(person,amount)
     self.grant(person,amount)
   end
 
-  def self.pj_putdown(amount)
-    self.putdown(amount)
-  end
+#  def self.pj_putdown(amount)
+#    self.putdown(amount)
+#  end
 
   def self.pj_account_list
     self.account_list
