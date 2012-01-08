@@ -24,7 +24,7 @@ vagrant ssh
 
 
 # RUBY
-# Unfortunately, the default ruby version on the box is 1.8.7, so we'll use rvm to get 1.9.2 on there.
+# Unfortunately, the default ruby version on the box is 1.8.7, so we'll use rvm to get 1.9.3 on there.
 # 1: Install rvm
 bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
 
@@ -32,15 +32,15 @@ bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscr
 
 # 2: Run 'rvm requirements' and install all packages described (using sudo).
 
-# 3: Install ruby 1.9.2p0 using rvm. This compiles it from source, so this takes a little bit too.
-rvm install 1.9.2
+# 3: Install ruby 1.9.3p0 using rvm. This compiles it from source, so this takes a little bit too.
+rvm install 1.9.3
 
-# 4: Tell rvm to use 1.9.2.
-rvm use 1.9.2 --default
+# 4: Tell rvm to use 1.9.3.
+rvm use 1.9.3 --default
 
-# 5: Disconnect from ssh and reconnect and make sure you're on 1.9.2
+# 5: Disconnect from ssh and reconnect and make sure you're on 1.9.3
 ruby -v
-# should be: ruby 1.9.2p290 (2011-07-09 revision 32553) [i686-linux]
+# should be: ruby 1.9.3p0 (2011-10-30 revision 33570)
 
 
 # MONGO
