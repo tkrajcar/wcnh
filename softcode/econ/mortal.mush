@@ -25,7 +25,7 @@
 &cmd.putdown #19=$put down *:
   @assert [t(setr(0,round(%0,1)))]=
     @nspemit %#=[ansi(hg,>)] That's not even a number!;
-  @assert [or(orflags(%#,Wr),gte(%0,rpc(Econ.on_hand_balance,%#)))]=
+  @assert [or(orflags(%#,Wr),gte(rpc(Econ.on_hand_balance,%#),%0))]=
     @nspemit %#=[ansi(hg,>)] You don't have that many credits on hand!;
   @assert [gte(%0,1)]=
     @nspemit %#=[ansi(hg,>)] You need to put down at least [ansi(h,1)] credit.;
