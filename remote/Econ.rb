@@ -11,6 +11,10 @@ module Econ
     self.pay(person,amount)
   end
 
+  def self.pj_grant(person,amount)
+    self.grant(person,amount)
+  end
+
   def self.pj_putdown(amount)
     self.putdown(amount)
   end

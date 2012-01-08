@@ -28,6 +28,12 @@ module Econ
     ">".bold.green + " You pay #{victim_name.bold} #{credit_format(amount).bold.yellow} credits."
   end
 
+  def self.grant(person, amount)
+    wallet = Wallet.find_or_create_by(id: R["enactor"])
+    wallet.balance = wallet.balance + amount
+    wallet.save
+  end
+
   def self.putdown(amount)
     w = Wallet.find_or_create_by(id: R["enactor"])
     amount = BigDecimal.new(amount.delete(',')).round(1,:floor)
