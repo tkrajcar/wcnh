@@ -29,9 +29,13 @@ module Econ
   end
 
   def self.grant(person, amount)
-    wallet = Wallet.find_or_create_by(id: R["enactor"])
-    wallet.balance = wallet.balance + amount
+    victim = R.pmatch(person)
+    raise ArgumentError if victim == "#-1"
+    Logs.log_syslog("ECONGRANT","#{R.penn_name(R["executor"])}(#{R["executor"]}) (enacted by #{R.penn_name(R["enactor"])}(#{R["enactor"]})) granted #{amount} credits to #{R.penn_name(victim)}(#{victim}).")
+    wallet = Wallet.find_or_create_by(id: victim)
+    wallet.balance = wallet.balance + BigDecimal.new(amount)
     wallet.save
+    ""
   end
 
   def self.on_hand_balance(person)
