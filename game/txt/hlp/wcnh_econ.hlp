@@ -1,0 +1,23 @@
+& cash
+  cash
+  
+  This command views your IC credits on-hand at the moment.
+
+See also: pay, put down
+
+& pay
+  pay <person>=<amount>
+
+  This command pays another player with IC credits you have on-hand. They must
+  be in the same room.
+
+See also: cash, put down
+
+& put down
+  put down <quantity>
+
+  This command is used to ICly set down a credit chip with the given quantity of
+  credits on it. This can be used to anonymously leave credits in a location.
+  Anyone can pick up the chip.
+
+See also: cash, pay
