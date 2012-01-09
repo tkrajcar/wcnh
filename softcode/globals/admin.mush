@@ -47,8 +47,8 @@
     @nspemit %#=[ansi(hb,>)] Player not found.;
   @nspemit %#=[titlebar(Background for [name(%q0)])]%r[u(#15/fn.bgquestions,%q0)]%r[footerbar()]
 -
-&CMD.@GEMIT #115=$@gemit *:
-  @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by [name(%#)]>%b)]%0
+&CMD.+GMEMIT #115=$+gmemit *:
+  @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by [name(%#)]>%b)][edit(escape(%0),\\,)]
 -
 &CMD.+VOUCHERS #115=$+vouchers *:
   @switch [t(setr(0,pmatch(%0)))]=
