@@ -48,7 +48,8 @@
   @nspemit %#=[titlebar(Background for [name(%q0)])]%r[u(#15/fn.bgquestions,%q0)]%r[footerbar()]
 -
 &CMD.+GMEMIT #115=$+gmemit *:
-  @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by [name(%#)]>%b)][edit(escape(%0),\\,)]
+  +bbpost Galactic Action/[timefmt($m/$d/$Y)] @ [timefmt($H:$M)]=[setr(0,edit(escape(%0),\\,))];
+  @dol lwho()=@nspemit ##=[if(orflags(##,Wr),<GEmit by [name(%#)]>%b)]%q0
 -
 &CMD.+VOUCHERS #115=$+vouchers *:
   @switch [t(setr(0,pmatch(%0)))]=
