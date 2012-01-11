@@ -1,0 +1,7 @@
+&CMD_+BBNEXT #353=$^\+bbn(ext|ew):
+  @switch setdiff(iter(setr(0,u(#352/VALID_GROUPS,%#,read)),get(##/MESS_LST)),setr(1,get(%#/BB_READ)))=,think pemit(%#,There are no unread postings on the Global Bulletin Board.),@fo %#=+bbread [iter(revwords(%q0),switch(setr(2,setdiff(setr(3,get(##/MESS_LST)),%q1)),,,setq(4,##)))][setq(2,setdiff(setr(3,get(%q4/MESS_LST)),%q1))][setq(1,first(sort(iter(%q2,member(%q3,##)))))][name(%q4)]/%q1
+-
+
+@set #353/cmd_+bbnext=regexp
+
+
