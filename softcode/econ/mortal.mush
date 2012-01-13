@@ -11,7 +11,8 @@
 # account/open <account>
 # account/close <account>
 
-@lock/use #19=FLAG^IC
+@lock/use #19=FLAG^IC|FLAG^ROYALTY|FLAG^WIZARD
+
 -
 &COMMAND_LOCK`FAILURE #341=[ansi(hg,>)] You can't use economy commands while OOC.
 -

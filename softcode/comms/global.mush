@@ -1,6 +1,6 @@
 # Comm system player globals.
 
-@lock/use #341=FLAG^IC
+@lock/use #341=FLAG^IC|FLAG^ROYALTY|FLAG^WIZARD
 -
 
 &COMMAND_LOCK`FAILURE #341=[ansi(hy,>)] You can't use comms while OOC.
