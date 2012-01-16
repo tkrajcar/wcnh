@@ -57,4 +57,6 @@
 &cmd.+xp/award #115=$+xp/award */*=*:
   @nspemit %#=[rpc(XP.award,%0,%1,%2)];
 -
-
+&CMD.+RACE/TICKETS #115=$+race/tickets:
+  @nspemit %#=[rpc(Shiprace.tickets)]
+-
