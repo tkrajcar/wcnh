@@ -1,6 +1,6 @@
-& +RACE
-Syntax: +race/roster
-        +race/purchase
+& RACE
+Syntax: race/roster
+        race/purchase
 
 Ship races are the WCNH version of an IC lottery. Once per day, the Enigma
 Sector Racing League holds an epic contest of piloting skill in a race that
@@ -9,9 +9,9 @@ traverses the Damioyn system.  The race is broadcast via IC comms on channel
 wager on specific pilots, and perhaps even participate in the races as a
 competitor themselves.
 
-Players can check the roster for the upcoming race using the +race/roster
+Players can check the roster for the upcoming race using the race/roster
 command.
 
 Players can place a 10 credit bet on the race by buying a ticket with the
-+race/purchase command, up to a maximum of 3 tickets per race.
+race/purchase command, up to a maximum of 3 tickets per race.
 
