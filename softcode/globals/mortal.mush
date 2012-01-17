@@ -305,10 +305,10 @@
 
 &data.map #15=[space(34)]Midgard O---------------+%r[space(42)]|[space(15)]|%r[space(33)]K'ta Mek O[space(6)]Ross 34F O%r[space(42)]|[space(15)]|%r[space(42)]|[space(8)]Epsilon|%r[space(34)]+-------O---------------O%r[space(34)]|[space(7)]|Granita[space(8)]|%r[space(34)]|[space(7)]|[space(15)]|%r[space(34)]|[space(7)]O Bistango[space(6)]|%r[space(12)]Speardon[space(14)]|[space(7)]|[space(15)]|%r[space(16)]O--------+[space(8)]|[space(7)]O---------------O--+%r[space(16)]|[space(8)]|[space(8)]|[space(4)]Cabrea[space(5)]Morpheus|%b%b|%r[space(10)]Vespus|[space(8)]|[space(8)]|[space(23)]|%b%b|%r[space(8)]+-------O--------O--------O-----------------------+%b%b|%r[space(8)]|[space(7)]|[space(5)]Pembroke%b%bChanel[space(23)]|%r[space(8)]O[space(7)]O--------------------------------------------+%r[space(5)]Damioyn%b%b%bCardell
 -
-&CMD.+RACE/ROSTER #15=$+race/roster:
+&CMD.RACE/ROSTER #15=$race/roster:
   @nspemit %#=[rpc(Shiprace.roster)]
 -
-&CMD.+RACE/PURCHASE #15=$+race/purchase:
+&CMD.RACE/PURCHASE #15=$race/purchase:
   @nspemit %#=[rpc(Shiprace.purchase,%#)]
 -
 
