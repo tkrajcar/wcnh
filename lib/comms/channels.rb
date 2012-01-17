@@ -94,16 +94,21 @@ module Comms
     channel.downcase!
     return "> ".bold.yellow + "No channel or shortcut named #{channel.bold} found!" unless mymbr = c.memberships.any_of({channel: channel}, {shortcut: channel}).first # find by channel or shortcut name
 
-    if mymbr.channel =~ REGEX_NUMERIC_CHANNEL
-      ch = mymbr.channel
-    else
-      ch = Channel.where(lowercase_name: mymbr.channel).first._id
+    real_channel_name = channel # for numerics
+    real_channel_name = Channel.where(lowercase_name: channel).first._id unless channel =~ REGEX_NUMERIC_CHANNEL # for named
+
+    self.channel_emit(real_channel_name, mymbr.active_handle, message)
+    ""
+  end
+
+  # call this to directly transmit to a channel...
+  # Note that handle is not checked to be valid. If you code something to use xmit,
+  # you should handle/register it so people can't spoof it.
+  def self.channel_emit(channel,handle,message)
+    Comlink.where("memberships.channel" => channel.downcase).each do |comm|
+      R.nspemit(comm.id,"<".yellow.bold + channel.bold + ">".yellow.bold + " " + handle.bold + ": ".yellow + message)
     end
-    Comlink.where("memberships.channel" => ch.downcase).each do |comm|
-      #mbr = comm.memberships.where(channel: channel).first
-      R.nspemit(comm.id,"<".yellow.bold + ch.bold + ">".yellow.bold + " " + mymbr.active_handle.bold + ": ".yellow + message)
-    end
-    Transmission.create!(channel: ch, from: R["enactor"], from_handle: mymbr.active_handle, text: message)
+    Transmission.create!(channel: channel, from: R["enactor"], from_handle: handle, text: message)
     ""
   end
 

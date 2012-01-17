@@ -58,6 +58,10 @@ module Comms
   def self.pj_channel_transmit(channel,message)
     self.channel_transmit(channel,message)
   end
+
+  def self.pj_channel_emit(channel,handle,message)
+    self.channel_emit(channel,handle,message)
+  end
   
   def self.pj_channel_create(name,description,permission_type,permission_value)
     self.channel_create(name,description,permission_type,permission_value)
