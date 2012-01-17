@@ -6,9 +6,9 @@ module Shiprace
   RACE_OBJ = "#639"
   RACE_CHAN = "100.00"
   RACE_HANDLE = "ESRL Announcer"
-  FILE_SHIPS = File.expand_path('./ships.txt', File.dirname(__FILE__)) 
-  FILE_NAMES = File.expand_path('./names.txt', File.dirname(__FILE__))  
-  
+  FILE_SHIPS = File.expand_path('./ships.txt', File.dirname(__FILE__))
+  FILE_NAMES = File.expand_path('./names.txt', File.dirname(__FILE__))
+
   def self.purchase(dbref)
     wallet = Econ::Wallet.find_or_create_by(id: dbref)
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
@@ -73,7 +73,7 @@ module Shiprace
     ret << footerbar
     ret
   end
-  
+
   def self.runrace
     racers = Racer.all
     victor, turn1, turn2 = rand(racers.length), rand(racers.length), rand(racers.length)
