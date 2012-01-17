@@ -4,7 +4,7 @@ module Shiprace
 
   PennJSON::register_object(self)
   R = PennJSON::Remote
-  
+
   def self.pj_purchase(dbref)
     self.purchase(dbref)
   end
