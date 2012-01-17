@@ -60,3 +60,7 @@
 &CMD.+RACE/TICKETS #115=$+race/tickets:
   @nspemit %#=[rpc(Shiprace.tickets)]
 -
+&CRON_TIME_SHIPRACE #539=|||21|00|
+-
+&CRON_JOB_SHIPRACE #539=think [rpc(Shiprace.runrace)]
+-
