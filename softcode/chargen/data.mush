@@ -27,7 +27,7 @@
 &SKILL_ATTRIBUTES #111=Name|Group|Complex|Base|Modifier|Description
 -
 
-&SKILL.ACROBATICS #111=Acrobatics|Athletic|1||
+&SKILL.ACROBATICS #111=Acrobatics|Athletic|1|||Used when attempting to perform any type of flips, somersaults, tightrope walking or other reasonably specialized feats of physical prowess. No default attribute as most of the feats covered by this skill require some minimum of professional training.
 -
 &SKILL.ANTIQUE-ARMS #111=Antique-Arms|Combat|1||
 -
@@ -37,17 +37,17 @@
 -
 &SKILL.BRAWLING #111=Brawling|Combat|0|STR|-1
 -
-&SKILL.CLIMBING #111=Climbing|Athletic|0|STR|-1
+&SKILL.CLIMBING #111=Climbing|Athletic|0|STR|-1|Used when needing to traverse any near vertical wall or otherwise difficult vertical obstacle (slippery ladder etc.) either with, or without ropes.
 -
 &SKILL.COMPUTERS #111=Computers|Knowledge|0|REA|-2
 -
-&SKILL.CON #111=Con|Social|0|WIL|-1
+&SKILL.CON #111=Con|Social|0|WIL|-1|Used when trying to deceive, lie or convince another person or persons something that they normally would not believe. Can be used both when dealing with an individual or when speaking to a crowd (Political speeches etc.).
 -
 &SKILL.CONSTRUCTION #111=Construction|Professional|0|STR|-2
 -
 &SKILL.DEMOLITIONS #111=Demolitions|Professional|1||
 -
-&SKILL.DISGUISE #111=Disguise|Social|0|WIL|-2
+&SKILL.DISGUISE #111=Disguise|Social|0|WIL|-2|Used for attempting to conceal your identity using various forms of clothing, makeup, masks or other accessories.
 -
 &SKILL.ECONOMICS #111=Economics|Knowledge|0|REA|-2
 -
@@ -61,15 +61,15 @@
 -
 &SKILL.FORTIFY #111=Fortify|Outdoor|0|STR|-1
 -
-&SKILL.GAMBLING #111=Gambling|Social|0|PER|-2
+&SKILL.GAMBLING #111=Gambling|Social|0|PER|-2|Used when running or playing a game for the purpose of wagering money or posessions. Provides general knowledge of how these types of games work and the various odds involved.
 -
 &SKILL.HEAVY-ARMS #111=Heavy-Arms|Combat|0|STR|-2
 -
-&SKILL.INTERROGATE #111=Interrogate|Social|0|WIL|-2
+&SKILL.INTERROGATE #111=Interrogate|Social|0|WIL|-2|Used when attempting to extract information from both willing and unwilling subjects. Involves knowing the right questions to ask as well as how to apply more aggressive tactics.
 -
-&SKILL.INTIMIDATE #111=Intimidate|Social|0|WIL|-1
+&SKILL.INTIMIDATE #111=Intimidate|Social|0|WIL|-1|Used when a character wishes to cow or awe another through force of personality.
 -
-&SKILL.LEADERSHIP #111=Leadership|Social|0|WIL|-1
+&SKILL.LEADERSHIP #111=Leadership|Social|0|WIL|-1|Used when commanding other willing individuals while acting as a higher authority. Involves both providing instruction in unique group tactics as well as being able to convey information about the 'bigger picture' in a concise manner.
 -
 &SKILL.MARTIAL-ARTS #111=Martial-Arts|Combat|1||
 -
@@ -81,17 +81,17 @@
 -
 &SKILL.RESEARCH #111=Research|Knowledge|0|REA|-1
 -
-&SKILL.RUNNING #111=Running|Athletic|0|HEA|-1
+&SKILL.RUNNING #111=Running|Athletic|0|HEA|-1|Used in the determination of how far/fast you can run or how successful a character might be at moving quickly across an uneven/broken surface.
 -
 &SKILL.SCIENCE #111=Science|Knowledge|0|REA|-2
 -
 &SKILL.SMALL-ARMS #111=Small-Arms|Combat|0|AGI|-2
 -
-&SKILL.STREETWISE #111=Streetwise|Social|0|PER|-1
+&SKILL.STREETWISE #111=Streetwise|Social|0|PER|-1|The general skill of knowing how to survive in an urban setting. Includes knowing how to act among certain stereotypes, and how read a potentially dangerous situations.
 -
 &SKILL.SURVIVAL #111=Survival|Outdoor|0|HEA|-1
 -
-&SKILL.SWIMMING #111=Swimming|Athletic|0|HEA|-1
+&SKILL.SWIMMING #111=Swimming|Athletic|0|HEA|-1|Used in the determination of how far/fast you can swim or how successful a character might be at swimming through dangerous/choppy/swift moving water.
 -
 &SKILL.TINKER #111=Tinker|Knowledge|0|REA|-2
 -
@@ -99,4 +99,4 @@
 -
 &SKILL.TURRET-GUN #111=Turret-Gun|Professional|0|AGI|-2
 -
-&SKILL.ZERO-G #111=Zero-G|Athletic|0|AGI|-2
+&SKILL.ZERO-G #111=Zero-G|Athletic|0|AGI|-2|Used when a character needs to function in a zero gravity environment, including moving, or even performing basic tasks due to the unique effects of weightlessness. No default attribute as working in zero gravity requires special training/exposure.
