@@ -1,0 +1,86 @@
+@set #595=!safe no_command
+-
+@wipe #595
+-
+@set #595=safe
+-
+@conformat #595=
+-
+@desc #595=
+  The following ships are available for purchase:%r%r
+  [ansi(y,align(9 20 8 6,Price,Class,Size,Avail.))]%r
+  [iter(
+      setunion(,setr(0,iter(lvthings(%!),spacesys(class,itext(0))))),
+      align(
+          9 20 8 5,
+          [u(fn.price,first(setr(1,u(fn.listclass,itext(0)))))]c,
+          itext(0),
+          ifelse(spacesys(iscapship,%q1),Capital,Fighter),
+          words(%q1)
+          ),
+      ,%r)]%r%r
+ [ansi(yh,ship/buy <class>=<title>)] to purchase a ship.%r
+ [ansi(yh,ship/inspect <class>)] to inspect the stats of a ship.%r-
+-          
+&FN.LISTCLASS #595=
+  squish(iter(lvthings(%!),if(strmatch(spacesys(class,itext(0)),%0),itext(0)),,))
+-
+&FN.ECON.BALANCE #595=
+  rpc(Econ.on_hand_balance,%0)
+-
+&FN.PRICE #595=
+  spacesys(value,%0)
+-
+&FN.ECON.TRANSFER #595=
+  rpc(Econ.grant,%0,%1)
+-
+&CMD.SHIP/INSPECT #595=$ship/inspect *:
+  @switch [gt(words(setr(0,u(fn.listclass,%0))),0)]=
+
+          0,@nspemit %#=[ansi(rh,>)] No ships of that class are available for purchase.,
+          1,@nspemit %#=[spacesys(status,first(%q0))]
+-
+&CMD.SHIP/BUY #595=$ship/buy *=*:
+  @switch [t(gt(words(setr(0,u(fn.listclass,%0))),0))]
+          [t(gt(u(fn.econ.balance,%#),setr(3,u(fn.price,setr(2,first(%q0))))))]
+          [not(hasattrval(%!,order.%#))]
+          [strmatch(%1,[v(prefix)] *)]=
+
+          0???,@nspemit %#=[ansi(rh,>)] No ships of that class are available for purchase.,
+          10??,@nspemit %#=[ansi(rh,>)] You don't have enough credits.,
+          110?,@nspemit %#=[ansi(rh,>)] You can only have one ship on order at a time.,
+          1110,@nspemit %#=[ansi(rh,>)] All ships constructed at this shipyard must have the prefix '[v(prefix)]'.,
+          1111,{@nspemit %#=[ansi(gh,>)] Purchasing a [capstr(%0)].  
+                            It will take [ansi(yh,[timestring(setr(1,u(fn.time.purchase,%#,%q3)))] \([mul(bound(chargen(get.skill,%#,construction),0,6),10)]\% skill bonus\))] 
+                            for your ship to be assembled.  You will be notified via [ansi(yh,@mail)] when your ship is ready.;
+                @set %!=order.%#:%0:[add(secs(),%q1)];
+                @tel %q2=[parent(%!)];
+                @name %q2=[v(prefix)] [rest(%1)];
+                @set %q2=data.roster:%#:CAPTAIN;
+                think u(fn.econ.transfer,%#,-%q3);
+                think syslog(SPACE,New ship \([spacesys(class,%q2)]\) purchased by [name(%#)]\(%#\) in [name(loc(%!))]\([loc(%!)]\).);
+                @wait %!/%q1={@nsremit loc(%!)=Maintenance crews carefully tow the [name(%q2)] out of a nearby construction bay.;
+                              @tel/silent %q2=loc(%!);
+                              @set %q2=data.docked:[loc(%!)];
+                              @wipe %!/order.%#;
+                              @mail %#=[name(%q2)]/Your newly purchased ship, the [name(%q2)], is ready for pickup at [name(loc(%!))] - [name(zone(loc(%!)))]!
+                             }
+               }
+-
+&FN.TIME.PURCHASE #595=
+  mul(
+    mul(div(%1,1000),60),
+    switch(
+        chargen(get.skill,%0,construction),
+        1,.9,
+        2,.8,
+        3,.7,
+        4,.6,
+        5,.5,
+        6,.4,
+        >6,.3,
+        1
+        )
+    )
+-
+      
