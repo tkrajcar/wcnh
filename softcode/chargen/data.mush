@@ -99,4 +99,4 @@
 -
 &SKILL.TURRET-GUN #111=Turret-Gun|Professional|0|AGI|-2
 -
-&SKILL.ZERO-G #111=Zero-G|Athletic|0|AGI|-2|Used when a character needs to function in a zero gravity environment, including moving, or even performing basic tasks due to the unique effects of weightlessness. No default attribute as working in zero gravity requires special training/exposure.
+&SKILL.ZERO-G #111=Zero-G|Athletic|0|AGI|-2|Used when a character needs to function in a zero gravity environment, including moving, or even performing basic tasks due to the unique effects of weightlessness. 
