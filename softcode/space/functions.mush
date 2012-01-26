@@ -684,6 +684,7 @@
             [set(last(%q3),dark no_warn)]
             [powers(last(%q3),link)]
             [powers(last(%q3),api)]
+            [alias(last(%q3),leave)]
             )]
           )]
       )]
