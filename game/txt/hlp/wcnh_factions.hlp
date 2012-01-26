@@ -19,10 +19,20 @@ For more information on the Faction System, type 'help <command>'
 
 COMMANDS:
 
-+fac/active     +fac/boot         +fac/demote       +fac/details
-+fac/info       +fac/invite       +fac/join         +fac/leave
-+fac/list       +fac/promote      +fac/reject       +fac/roster
-+fwho
++fac/active     +fac/assign       +fac/boot         +fac/demote
++fac/details    +fac/info         +fac/invite       +fac/join
++fac/leave      +fac/list         +fac/position     +fac/promote
++fac/reject     +fac/roster       +fwho
+
+& +FAC/ASSIGN
+Syntax: +fac/assign <faction>/<person>=<assignment>
+ 
+This command allows a leader to set a faction member's assignment
+
+& +FAC/POSITION
+Syntax: +fac/position <faction>/<person>=<position>
+ 
+This command allows a leader to set a faction member's position.
 
 & +FAC/ACTIVE
 Syntax: +fac/active <faction>
