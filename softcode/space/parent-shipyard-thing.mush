@@ -12,7 +12,7 @@
   [iter(
       setunion(,setr(0,iter(lvthings(%!),spacesys(class,itext(0))))),
       align(
-          9 20 8 5,
+          9 20 8 -5,
           [u(fn.price,first(setr(1,u(fn.listclass,itext(0)))))]c,
           itext(0),
           ifelse(spacesys(iscapship,%q1),Capital,Fighter),
@@ -23,7 +23,7 @@
  [ansi(yh,ship/inspect <class>)] to inspect the stats of a ship.%r-
 -          
 &FN.LISTCLASS #595=
-  squish(iter(lvthings(%!),if(strmatch(spacesys(class,itext(0)),%0),itext(0)),,))
+  squish(iter(lvthings(%!),if(strmatch(spacesys(class,itext(0)),%0),[itext(0)]%b),,))
 -
 &FN.ECON.BALANCE #595=
   rpc(Econ.on_hand_balance,%0)
