@@ -321,8 +321,8 @@
           [align(
             24 13 13 >4 19,
             [name(itext(0))]\([alias(itext(0))]\),
-            get(itext(0)/fac`%0`position),
-            get(itext(0)/fac`%0`assignment),
+            left(get(itext(0)/fac`%0`position),13),
+            left(get(itext(0)/fac`%0`assignment),13),
             ifelse(hasflag(itext(0),connected),ansi(gh,On),first(timestring(sub(secs(),convtime(get(itext(0)/last)))))),
             ifelse(t(setr(0,zone(loc(itext(0))))),left(name(%q0),19),OOC Area),
             )]
@@ -350,8 +350,8 @@
             [align(
                  24 13 13 >4 19,
                  [name(itext(0))]\([alias(itext(0))]\),
-                 get(itext(0)/fac`%0`position),
-                 get(itext(0)/fac`%0`assignment),
+                 left(get(itext(0)/fac`%0`position),13),
+                 left(get(itext(0)/fac`%0`assignment),13),
                  ansi(switch(idlesecs(itext(0)),>3600,r,>1800,m,>900,y,g),first(extract(timestring(idlesecs(itext(0))),1,2))),
                  ifelse(t(setr(0,zone(loc(itext(0))))),left(name(%q0),19),OOC Area),
                  )]
