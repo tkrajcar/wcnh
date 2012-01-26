@@ -17,6 +17,8 @@
 -
 @lset #204/command=!no_inherit
 -
+&DATA #204=#351
+-
 &COMMAND_LOCK`FAILURE #204=
   [ifelse(
     not(hasattrval(%!,data.ship)),
@@ -105,7 +107,10 @@
 )]
 -
 @desc #204=
-  A command console. It is currently [ifelse([hasattrval(%!,data.manned)],manned by [spacesys(mannedby,%!)],unmanned)].%r
+  A command console. It is currently [ifelse([hasattrval(%!,data.manned)],manned by [spacesys(mannedby,%!)],unmanned)].%r%r
+  The ship is currently [ifelse(spacesys(ismoving,setr(0,v(data.ship))),ansi(gh,moving),ansi(rh,stopped))].%r
+  Speed: [ifelse(spacesys(ismoving,%q0),mul(spacesys(speed,%q0),spacesys(interval)),0)] km/h%r
+  Heading: [ifelse(spacesys(ismoving,v(data.ship)),round(spacesys(heading,v(data.ship)),0),0)]m0%r%r
   You may [ansi(yh,man)] or [ansi(yh,use)] this console.%r
   See [ansi(yh,help space)] for more information. 
 -
@@ -228,6 +233,9 @@
       ([num2adj(%qr)])
       )]
   [switch(%0,/private,spacesys(notify.consoles,%1,The [ansi(h,name(%1))] %qm),spacesys(spose,%1,%qm))]
+-
+&CMD.SCHECK_DUMMY #204=$+scheck:
+  @nspemit %#=[ansi(rh,>)] Try [ansi(yh,+scheck <skill>)] or see [ansi(yh,help +scheck)] for more information.
 -
 @set #204/cmd.scheck=regexp
 -

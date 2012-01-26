@@ -778,3 +778,6 @@
 &FN.VALUE #208=
   get(%0/value)
 -
+&FN.INTERVAL #208=
+  get(v(data)/interval)
+-
