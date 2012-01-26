@@ -655,6 +655,7 @@
       setr(1,sort(lsearch(all,type,room,zone,%0),name)),
       [setq(0,cat(%q0,clone(itext(0))))]
       [setq(a,zone(last(%q0),%1))]
+      [set(last(%q0),describe:[get(itext(0)/describe)])]
       )]
 # For each room, clone consoles, make exits, link appropriately.
   [iter(

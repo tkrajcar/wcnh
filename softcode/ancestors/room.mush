@@ -16,7 +16,7 @@
 ### FORMATS
 &CONFORMAT #9=
   [footerbar(u(room_parent.check_active.fn,%!,%#),v(COLOR.Frame))]
-  [setq(1,add(u(room_parent.exit_name_max_adjust.fn,setr(0,lexits(%!))),2))]
+  [setq(1,add(u(room_parent.exit_name_max_adjust.fn,setr(0,ifelse(orflags(%#,Wr),lexits(%!),lvexits(%!)))),2))]
   [iter(
     lnum(max(words(%q0),words(%0))),
     %r
