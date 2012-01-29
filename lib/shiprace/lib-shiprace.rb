@@ -82,7 +82,7 @@ module Shiprace
     pot = (bank.balance * 0.75).to_i
 
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"Welcome to the Enigma Sector Racing League!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"We have #{racers.length} competitors in tonight's race through the Damioyn System!  Use +race/roster to check the roster!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"We have #{racers.length} competitors in tonight's race through the Damioyn System!  Use race/roster to check the roster!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"3.. 2.. 1.. And they're off!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"As they pass Damioyn III, #{racers[turn1].name} in the #{racers[turn1].ship} is in the lead!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"#{racers[turn2].name} in the #{racers[turn2].ship} is leading the pack as they pass Damioyn VI!")
