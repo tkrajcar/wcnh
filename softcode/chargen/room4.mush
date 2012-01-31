@@ -8,7 +8,7 @@
 # +finish (undocumented - result of +choose)
 
 @desc #217=
-  So close to being done! Admin will review your background and let you know if there are any issues, but in the meantime, you can start exploring and roleplaying your character. There's just three things left - accept our Terms of Service, choose whether you want to be placed into a starting faction, and select your starting location.
+  So close to being done! Admin will review your background and let you know if there are any issues, but in the meantime, you can start exploring and roleplaying your character. There's just two things left - accept our Terms of Service and select your starting location.
   %r%r
   [ansi(hy,For the commands\, see 'help chargen room 4'.)] 
 -
@@ -16,16 +16,6 @@
 &cmd.+tos #217=$+I accept the TOS:
   @pemit %#=[ansi(hb,>)] Great! You're good to go.;
   &char`tos %#=Accepted: [secs()]
--
-
-&cmd.+decline #217=$+decline faction:
-  @pemit %#=[ansi(hb,>)] You have selected to DECLINE faction membership out of the gate. Consider this carefully. Living outside the laws, as loose as they are, can be a VERY tough life. Especially if you are new to the game, this choice is NOT recommended. If you have changed your mind, type [ansi(h,+accept faction)].;
-  &char`declinefaction %#=1;
--
-
-&cmd.+accept #217=$+accept faction:
-  @pemit %#=[ansi(hb,>)] You have selected to ACCEPT faction membership.;
-  &char`declinefaction %#;
 -
 
 &cmd.+list #217=$+list:
@@ -55,7 +45,7 @@
 
 &tri.finalize #217=
   think [rpc(PlayerFile.register,get(%0/registered_email),%0)];
-  think [syslog(New player [name(%0)]\(%0\), [get(%0/registered_email)]. Starting on [get(%0/char`startingplanet)]. [if(get(%0/char`declinefaction),Faction DECLINED.)])];
+  think [syslog(New player [name(%0)]\(%0\), [get(%0/registered_email)]. Starting on [get(%0/char`startingplanet)].;
   &char`approved %0=[secs()];
   &char`noms %0=1;
   @set %0=IC;
@@ -63,11 +53,6 @@
   @pemit %#=[ansi(hb,>)] You have entered the game world.;
   &unapproved.players #111=[setunion(get(#111/unapproved.players),%0)];
   @chan/on public=%0;
-  @break [get(%0/char`declinefaction)];
-  think [setq(0,switch(chargen(get.race,%0),Kilrathi,KC,ESC))];
-  think [faction(addmember,%q0,%0)];
-  @swi [t(setr(1,faction(channel,%q0)))]=1,{@chan/on %q1=%0;@nscemit/noisy %q1=[ansi(h,name(%0) has joined [faction(name,%q0)]!)]};
-  @pemit %#=[ansi(hb,>)] You have joined the [ansi(h,[faction(name,%q0)])].;
 -
 
 &PLANET.CABREA #217=#349|Cabrea II is one of the prime worlds of the Kilrathi Commonwealth and their de-facto headquarters in the Sector.
