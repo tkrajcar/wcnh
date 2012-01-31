@@ -43,7 +43,7 @@
 
 &tri.finalize #217=
   think [rpc(PlayerFile.register,get(%0/registered_email),%0)];
-  think [syslog(New player [name(%0)]\(%0\), [get(%0/registered_email)]. Starting on [get(%0/char`startingplanet)].;
+  think [syslog(New player [name(%0)]\(%0\), [get(%0/registered_email)]. Starting on [get(%0/char`startingplanet)].)];
   &char`approved %0=[secs()];
   &char`noms %0=1;
   @set %0=IC;
