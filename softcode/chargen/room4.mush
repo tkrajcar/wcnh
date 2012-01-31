@@ -1,8 +1,6 @@
 # chargen room 4: discharge
 # help terms of service
 # +I accept the TOS
-# +decline faction
-# +accept faction (undocumented - result of +decline)
 # +list
 # +choose <planet> 
 # +finish (undocumented - result of +choose)
