@@ -312,3 +312,5 @@
   @nspemit %#=[rpc(Shiprace.purchase,%#)]
 -
 
+&cmd.+web/register #15=$+web/register *:
+  @nspemit %#=[rpc(Web.register,%0)]
