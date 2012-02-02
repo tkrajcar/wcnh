@@ -20,10 +20,14 @@
           ),
       ,%r)]%r%r
  [ansi(yh,ship/buy <class>=<title>)] to purchase a ship.%r
- [ansi(yh,ship/inspect <class>)] to inspect the stats of a ship.%r-
+ [ansi(yh,ship/inspect <class>)] to inspect the stats of a ship.%r
+ [ansi(yh,ship/appraise <ship>)] to find out what a ship is worth.%r
+ [ansi(yh,ship/sell <ship>)] to sell a ship that you own.%r-
 -          
 &FN.LISTCLASS #595=
   squish(iter(lvthings(%!),if(strmatch(spacesys(class,itext(0)),%0),[itext(0)]%b),,))
+-
+&MARKDOWN #595=.5
 -
 &FN.ECON.BALANCE #595=
   rpc(Econ.on_hand_balance,%0)
@@ -83,4 +87,24 @@
         )
     )
 -
-      
+&CMD.SHIP/APPRAISE #595=$ship/appraise *:
+  @assert [setr(Ship,locate(%!,%0,Tn))]=@nspemit %#=[ansi(rh,>)] That ship is not here.;
+
+  @nspemit %#=[ansi(gh,>)] The [name(%q<Ship>)] is worth [mul(v(Markdown),get(%q<Ship>/value))]c.
+-
+&CMD.SHIP/SELL #595=$ship/sell *:
+  @assert [setr(Ship,locate(%!,%0,Tn))]=@nspemit %#=[ansi(rh,>)] That ship is not here.;
+  @assert [spacesys(iscaptain,%q<Ship>,%#)]=@nspemit %#=[ansi(rh,>)] You do not own the [name(%q<Ship>)].;
+
+  think [setr(Ship.name,name(%q<Ship>))];
+
+  @name %q<Ship>=[setr(Ship.class,spacesys(class,%q<Ship>))][inc(words(u(fn.listclass,%q<Ship.class>)))];
+  think [setq(Ship.salePrice,mul(get(%q<Ship>/value),v(markdown)))];
+  @tel %q<Ship>=%!;
+  think u(fn.CleanShip,%q<Ship>);
+  think rpc(Econ.grant,%#,%q<Ship.salePrice>);
+  think syslog(SHIP SALE,%n sold the %q<Ship.name>\(%q<Ship.class> - %q<Ship>\) for %q<Ship.salePrice>c.);
+
+  @nspemit %#=[ansi(gh,>)] You are paid [ansi(yh,%q<Ship.salePrice>c)] for the %q<Ship.name>.
+-
+
