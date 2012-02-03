@@ -41,6 +41,7 @@ module XP
     return ">".bold.yellow + " You don't have any +noms remaining to give this week. +noms cycle weekly on Sunday evenings." unless remaining > 0
     victim = R.pmatch(target)
     return ">".bold.yellow + " That doesn't seem to be an approved player." unless R.xget(victim,"char`approved").to_i > 0
+    return ">".bold.yellow + " You can't +nom yourself!" unless victim != R["enactor"]
     already_nommed = Nomination.where(author: R["enactor"], processed: false).collect(&:victim)
     return ">".bold.yellow + " You've already +nommed that person this week!" if already_nommed.include?(victim)
 
