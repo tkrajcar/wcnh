@@ -35,9 +35,6 @@
 &cmd.message #341=$message *=*:@pemit %#=[rpc(Comms.message_send,%0,%1)]
 -
 
-&cmd.message/dnd #341=$message/dnd *:@pemit %#=This command has been temporarily removed.
--
-
 &cmd.message/unread #341=$message/unread:@pemit %#=[rpc(Comms.message_unread)]
 -
 
