@@ -108,6 +108,7 @@ module Comms
     Comlink.where("memberships.channel" => channel.downcase).each do |comm|
       R.nspemit(comm.id,"<".yellow.bold + channel.bold + ">".yellow.bold + " " + handle.bold + ": ".yellow + message)
     end
+    R.nscemit("Comms",channel.bold.yellow + "-" + handle.bold + "(" + R.penn_name(R["enactor"]) + "): " + message, "1")
     Transmission.create!(channel: channel, from: R["enactor"], from_handle: handle, text: message)
     ""
   end
