@@ -15,7 +15,7 @@ module Comms
     field :handles, :type => Array, :default => lambda { ["Anon" + Digest::SHA1.hexdigest(Time.now.to_s.split(//).sort_by{rand}.join).upcase[0..6]]}
     field :lowercase_handles, :type => Array, :default => lambda { [self.handles.first.downcase] }
     field :active_handle, :type => String, :default => lambda { self.handles.first }
-    field :dnd_on, :type => Boolean, :default => false
+    #field :dnd_on, :type => Boolean, :default => false
     field :unread_tightbeams, :type => Array, :default => []
 
     index :lowercase_handles, :unique => true # no need to index :handles at present as there are no commands that search it!

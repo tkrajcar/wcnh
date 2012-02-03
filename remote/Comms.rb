@@ -31,9 +31,9 @@ module Comms
     self.message_send(handle,message)
   end
 
-  def self.pj_message_dnd(status = "toggle")
-    self.message_dnd(status)
-  end
+#  def self.pj_message_dnd(status = "toggle")
+#    self.message_dnd(status)
+#  end
 
   def self.pj_message_unread
     self.message_unread

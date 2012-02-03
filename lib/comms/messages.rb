@@ -58,22 +58,22 @@ module Comms
     recipient.unread_tightbeams << tb.id
     recipient.save
 
-    R.nspemit(recipient.id, "> ".bold.yellow + "New tightbeam message received from #{sender.active_handle.bold}.") unless recipient.dnd_on
+    R.nspemit(recipient.id, "> ".bold.yellow + "New tightbeam message received from #{sender.active_handle.bold}.")
     return "> ".bold.yellow + "Tightbeam message sent to #{proper_handle.bold}."
   end
 
-  def self.message_dnd(status="toggle")
-    c = Comlink.find_or_create_by(id: R["enactor"])
-    if status == "on"
-      c.dnd_on = true
-    elsif status == "off"
-      c.dnd_on = false
-    else
-      c.dnd_on = !c.dnd_on
-    end
-    c.save
-    "> ".bold.yellow + "Do-not-disturb set to #{c.dnd_on ? "on".bold : "off".bold}."
-  end
+#  def self.message_dnd(status="toggle")
+#    c = Comlink.find_or_create_by(id: R["enactor"])
+#    if status == "on"
+#      c.dnd_on = true
+#    elsif status == "off"
+#      c.dnd_on = false
+#    else
+#      c.dnd_on = !c.dnd_on
+#    end
+#    c.save
+#    "> ".bold.yellow + "Do-not-disturb set to #{c.dnd_on ? "on".bold : "off".bold}."
+#  end
 
   def self.list_output(criteria, comlink, title, page=1, showfrom = false)
     ret = titlebar("#{title} (Page #{page})") + "\n"
