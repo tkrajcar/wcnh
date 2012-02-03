@@ -45,8 +45,6 @@
   message/list - list your most recent received messages.
   message/list <handle> [page <#>] - list messages from a handle.
   message <handle>=<message> - send a new message.
-  message/dnd <on|off> - turn 'Do Not Disturb' on/off. With DND on, you will
-    not receive notifiers when you receive new messages; only once per hour.
   message/unread - display all unread messages.
 
   See also: 'help comms handles' and 'help comms channels'
