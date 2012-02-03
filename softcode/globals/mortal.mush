@@ -102,6 +102,8 @@
     %b[ansi(r,repeat(-,77))]%r
     %b[ansi(y,Idle:)] [align(70,map(map.+who.short,sortby(sort.idle,%qi), ,\,%b), , ,%r[space(7)])]%r
   )]
+  %b[ansi(r,repeat(-,77))]%r
+  %b[wrap(fnord(),77,77,%r%b)]%r
   [footerbar(words(lwho(%#)) players online)]
 -
 &map.+who #15=
