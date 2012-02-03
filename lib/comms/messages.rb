@@ -1,6 +1,17 @@
 require 'wcnh'
 
 module Comms
+  def self.run_unread_message_notification
+    R.lwho().split(" ").each do |player|
+      next unless Comlink.exists?(conditions: {id: player})
+      c = Comlink.find(player)
+      if c.unread_tightbeams.length > 0
+        R.nspemit(player,"> ".bold.yellow + "You have " + c.unread_tightbeams.length.to_s.bold + " unread tightbeam message#{c.unread_tightbeams.length > 1 ? "s" : ""}.")
+      end
+    end
+    ""
+  end
+
   def self.message_unread
     c = Comlink.find_or_create_by(id: R["enactor"])
     return "> ".bold.yellow + "No unread messages." unless c.unread_tightbeams.length > 0

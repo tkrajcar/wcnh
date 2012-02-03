@@ -35,6 +35,10 @@ module Comms
 #    self.message_dnd(status)
 #  end
 
+  def self.pj_run_unread_message_notification
+    self.run_unread_message_notification
+  end
+
   def self.pj_message_unread
     self.message_unread
   end

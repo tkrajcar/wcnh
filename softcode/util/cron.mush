@@ -27,3 +27,16 @@
 -
 
 &CRON_JOB_ACTIVITY #539=think [rpc(XP.run_activity)]
+-
+
+&CRON_TIME_UNREADMESSAGES_1 #539=||||00|
+-
+&CRON_TIME_UNREADMESSAGES_2 #539=||||15|
+-
+&CRON_TIME_UNREADMESSAGES_3 #539=||||30|
+-
+&CRON_TIME_UNREADMESSAGES_4 #539=||||45|
+-
+
+&CRON_JOB_UNREADMESSAGES #539=
+  think [rpc(Comms.run_unread_message_notification)]
