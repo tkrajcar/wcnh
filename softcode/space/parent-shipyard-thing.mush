@@ -89,6 +89,7 @@
 -
 &CMD.SHIP/APPRAISE #595=$ship/appraise *:
   @assert [setr(Ship,locate(%!,%0,Tn))]=@nspemit %#=[ansi(rh,>)] That ship is not here.;
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] That is not a ship.;
 
   @nspemit %#=[ansi(gh,>)] The [name(%q<Ship>)] is worth [mul(v(Markdown),get(%q<Ship>/value))]c.
 -
