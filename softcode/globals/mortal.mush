@@ -58,7 +58,7 @@
     [align(1 38 38,
       , /@@ blank @@/
       Group: [ansi(h,chargen(skill,%q0,group))],
-      Base:
+      Base:%b
       [ifelse(chargen(skill,%q0,complex),
         [ansi(h,None \(Complex Skill\))],
         [ansi(h,chargen(skill,%q0,base)[chargen(skill,%q0,modifier)])]
