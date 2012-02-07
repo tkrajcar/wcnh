@@ -29,13 +29,14 @@
 
 &SKILL.ACROBATICS #111=Acrobatics|Athletic|1|||Used when attempting to perform any type of flips, somersaults, tightrope walking or other reasonably specialized feats of physical prowess. No default attribute as most of the feats covered by this skill require some minimum of professional training.
 -
-&SKILL.ANTIQUE-ARMS #111=Antique-Arms|Combat|1||
+&SKILL.ANTIQUE-ARMS #111=Antique-Arms|Combat|1|||Knowledge and use of antiquated weaponry - anything more than 100 years old. Swords, polearms, and 20th & 21st century slugthrowers.
 -
 &SKILL.ASTROGATION #111=Astrogation|Knowledge|0|REA|-2
 -
-&SKILL.BATTLESUIT #111=Battlesuit|Combat|1||
+&SKILL.BATTLESUIT #111=Battlesuit|Combat|1|||Used when attempting to pilot a personal powered battlesuit. Includes the use of integrated weapon systems and knowing how to push the suit in combat to get the most out of it.
 -
-&SKILL.BRAWLING #111=Brawling|Combat|0|STR|-1
+&SKILL.BRAWLING #111=Brawling|Combat|0|STR|-1|The art of fisticuffs, or bare handed fighting. Mostly applies to untrained street fighting, with no really fancy moves. This skill is used for all aspects of the fight, offensive and defensive.
+
 -
 &SKILL.CLIMBING #111=Climbing|Athletic|0|STR|-1|Used when needing to traverse any near vertical wall or otherwise difficult vertical obstacle (slippery ladder etc.) either with, or without ropes.
 -
@@ -51,9 +52,9 @@
 -
 &SKILL.ECONOMICS #111=Economics|Knowledge|0|REA|-2
 -
-&SKILL.ENGINEER-CAP #111=Engineer-Cap|Professional|0|REA|-3
+&SKILL.ENGINEER-CAP #111=Engineer-Cap|Professional|0|REA|-3|The fine art of maintaining, repairing, and generally working on the 'mechanics' of capital ships (ships with a bridge crew instead of a single pilot). This skill encompasses maintaining, repairing, and overall knowledge of all the ship's systems: power, engines, life support, weaponry, navigation, sensors, and so on.
 -
-&SKILL.ENGINEER-FIG #111=Engineer-Fig|Professional|0|REA|-2
+&SKILL.ENGINEER-FIG #111=Engineer-Fig|Professional|0|REA|-2|The fine art of maintaining, repairing, and generally working on the 'mechanics' of fighters and small craft (ships with a single pilot). This skill encompasses maintaining, repairing, and overall knowledge of all the ship's systems: power, engines, life support, weaponry, navigation, sensors, and so on.
 -
 &SKILL.FIRST-AID #111=First-Aid|Outdoor|0|PER|-1
 -
@@ -63,7 +64,8 @@
 -
 &SKILL.GAMBLING #111=Gambling|Social|0|PER|-2|Used when running or playing a game for the purpose of wagering money or posessions. Provides general knowledge of how these types of games work and the various odds involved.
 -
-&SKILL.HEAVY-ARMS #111=Heavy-Arms|Combat|0|STR|-2
+&SKILL.HEAVY-ARMS #111=Heavy-Arms|Combat|0|STR|-2|Knowledge in the ways and hows of large guns - squad-level weapons such as mounted/fixed machine guns, and person-portable weapons such as grenade/missile/rocket launchers, sniper rifles, etc. Applies to all long barreled character portable weapons, both projectile and energy based.
+
 -
 &SKILL.INTERROGATE #111=Interrogate|Social|0|WIL|-2|Used when attempting to extract information from both willing and unwilling subjects. Involves knowing the right questions to ask as well as how to apply more aggressive tactics.
 -
@@ -71,13 +73,14 @@
 -
 &SKILL.LEADERSHIP #111=Leadership|Social|0|WIL|-1|Used when commanding other willing individuals while acting as a higher authority. Involves both providing instruction in unique group tactics as well as being able to convey information about the 'bigger picture' in a concise manner.
 -
-&SKILL.MARTIAL-ARTS #111=Martial-Arts|Combat|1||
+&SKILL.MARTIAL-ARTS #111=Martial-Arts|Combat|1|||Whether it's Kung Fu or a mystic Kilrathi art, this skill is used when you've spent many years of study and training to gain specialized knowledge in unarmed fighting.
+
 -
 &SKILL.MEDICINE #111=Medicine|Knowledge|1||
 -
-&SKILL.PILOT-CAP #111=Pilot-Cap|Professional|0|PER|-3
+&SKILL.PILOT-CAP #111=Pilot-Cap|Professional|0|PER|-3|Short for Piloting-Capital Ships. Used to fly capital ships (ships with a bridge crew instead of a single pilot). In-system navigation, basic maneuvers, formations and fleet maneuvers, and evasive actions.
 -
-&SKILL.PILOT-FIG #111=Pilot-Fig|Professional|0|AGI|-2
+&SKILL.PILOT-FIG #111=Pilot-Fig|Professional|0|AGI|-2|Short for Piloting-Fighters. Used to fly fighters and small craft (ships with a single pilot). In-system navigation, basic maneuvers, dogfighting, and atmospheric operation.
 -
 &SKILL.RESEARCH #111=Research|Knowledge|0|REA|-1
 -
@@ -85,7 +88,7 @@
 -
 &SKILL.SCIENCE #111=Science|Knowledge|0|REA|-2
 -
-&SKILL.SMALL-ARMS #111=Small-Arms|Combat|0|AGI|-2
+&SKILL.SMALL-ARMS #111=Small-Arms|Combat|0|AGI|-2|Knowledge in the use of smaller pistols and hand weapons, including smaller automatic weapons. Includes both projectile and energy based weapons.
 -
 &SKILL.STREETWISE #111=Streetwise|Social|0|PER|-1|The general skill of knowing how to survive in an urban setting. Includes knowing how to act among certain stereotypes, and how read a potentially dangerous situations.
 -
@@ -93,7 +96,7 @@
 -
 &SKILL.SWIMMING #111=Swimming|Athletic|0|HEA|-1|Used in the determination of how far/fast you can swim or how successful a character might be at swimming through dangerous/choppy/swift moving water.
 -
-&SKILL.TINKER #111=Tinker|Knowledge|0|REA|-2
+&SKILL.TINKER #111=Tinker|Knowledge|0|REA|-2|This skill represents your character's general ability to jury-rig, patch, duct-tape, or MacGyver your way out of a mechanical or technical situation. Characters with a high Tinker skill are good at finding exactly the right part in the junkyard, adapting the the thirty-year-old cooling rods to work in a modern engine, and so on.
 -
 &SKILL.TRACKING #111=Tracking|Outdoor|0|PER|-2
 -
