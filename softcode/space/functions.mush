@@ -31,6 +31,8 @@
 -
 &DOC.CANBOARD #208=ship:player|Returns 1 if player can board ship.
 -
+&DOC.CANFLY #208=ship|Returns 1 if ship can be flown. Capships need >1 con manned.
+-
 &DOC.CANUSECONSOLE #208=console:player|Returns 1 if player can man console.
 -
 &DOC.CLASS #208=object|Returns object's class.
@@ -234,7 +236,7 @@
   lattr(v(data)/skill.*)
 -
 &FN.ISCAPSHIP #208=
-  0
+  ifelse(eq(default(%0/space`size,1),2),1,0)
 -
 &FN.SPEED.BASE #208=
   mul(default(%0/space`maxspeed,0),2)
@@ -680,7 +682,7 @@
             [set(%1,connected:[last(%q3)])]
             [link(last(%q3),variable)]
             [setq(b,zone(last(%q3),%1))]
-            [parent(last(%q3),get(v(data)/parent.airlock))]
+            [setq(d,parent(last(%q3),get(v(data)/parent.airlock)))]
             [set(last(%q3),dark no_warn)]
             [powers(last(%q3),link)]
             [powers(last(%q3),api)]
@@ -781,3 +783,10 @@
 &FN.INTERVAL #208=
   get(v(data)/interval)
 -
+&FN.CANFLY #208=
+  or(
+    not(spacesys(iscapship,%0)),
+    gt(words(filter(filter.mannedcons,get(%0/data.consoles))),1)
+    )
+-
+

@@ -11,20 +11,19 @@ This is the list of work in-progress.
 * Review and implement doc strategy via chargen
 
 ### Code
-* Spec out a few basic classes.
+
+* Capship flying (multiple consoles)
 * Bay commands
-* Shipyards
+* Surveying planets for small amounts of credits
 
 ## Work To Do Next
 
 This is the list of work that is next up to be tackled.
 
-
 ## Work In The Spec
 
 This is the list of work needed to implement the spec.
 
-* Buying a Ship
 
 ## Idea Bucket
 
@@ -32,7 +31,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 
 ## Completed
 
-01-06-2011
+01-26-2011
 
 * Create a README.md
 * Move the spec into SPEC.md
@@ -69,4 +68,7 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Write admin help files.
 * ETA command.
 * Shuttles
+* Spec out a few basic classes.
+* Shipyards
+* Selling a ship
 
