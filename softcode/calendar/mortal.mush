@@ -1,0 +1,20 @@
+@set #812=!safe !no_command
+-
+@wipe #812
+-
+@set #812=safe
+-
+&CMD.+CAL #812=$^\+cal$|^\+cal (.*)$:
+  @assert [or(not(t(%1)),eq(words(%1),2))]=@nspemit %#=[ansi(rh,>)] Try [ansi(yh,+cal)] or [ansi(yh,+cal <month> <year>)].%r
+                                                       [ansi(rh,>)] For example\, [ansi(yh,+cal jan 2012)].;
+  @nspemit %#=[rpc(Calendar.list,first(%1),last(%1))]                                           
+-
+@set #812/cmd.+cal=regexp
+-
+&CMD.+CAL/VIEW #812=$+cal/view *:
+  @nspemit %#=[rpc(Calendar.view,%0)]
+-
+&CMD.+CAL/SEARCH #812=$+cal/search *:
+  @nspemit %#=[rpc(Calendar.search,%0)]
+-
+
