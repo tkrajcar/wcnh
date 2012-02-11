@@ -24,7 +24,7 @@
           [not(spacesys(ismoving,%0))]
           [t(setr(1,locate(%0,%1,nT)))]
           [t(eq(spacesys(distance,%0,%q1),0))]
-          [t(hasattrval(%q1,data.landing))]=
+          [and(hasattrval(%q1,data.landing),spacesys(isbayopen,%q1))]=
 
           0????,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
           10???,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship must come to a complete stop first.,

@@ -252,3 +252,20 @@
 &CMD.STATUS #204=$status:
   @nspemit %#=[spacesys(status,v(data.ship))]
 -
+&CMD.BAY/OPEN #204=$bay/open:
+  @assert [spacesys(hasbay,v(data.ship))]=@nspemit %#=[ansi(rh,>)] This ship does not have a docking bay.;
+  @assert [not(spacesys(isbayopen,v(data.ship)))]=@nspemit %#=[ansi(rh,>)] The bay doors are already open.;
+
+  think [spacesys(openbay,v(data.ship))];
+  think [spacesys(spose,v(data.ship),opens its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Opening the bay doors.
+-
+&CMD.BAY/CLOSE #204=$bay/close:
+  @assert [spacesys(hasbay,v(data.ship))]=@nspemit %#=[ansi(rh,>)] This ship does not have a docking bay.;
+  @assert [spacesys(isbayopen,v(data.ship))]=@nspemit %#=[ansi(rh,>)] The bay doors are already closed.;
+
+  think [spacesys(closebay,v(data.ship))];
+  think [spacesys(spose,v(data.ship),closes its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Closing the bay doors.
+-
+

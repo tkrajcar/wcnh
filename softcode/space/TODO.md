@@ -12,8 +12,6 @@ This is the list of work in-progress.
 
 ### Code
 
-* Capship flying (multiple consoles)
-* Bay commands
 * Surveying planets for small amounts of credits
 
 ## Work To Do Next
@@ -71,4 +69,5 @@ This is a spot to collect ideas for future work that is not in the spec.
 * Spec out a few basic classes.
 * Shipyards
 * Selling a ship
+* Bay commands
 

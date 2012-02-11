@@ -733,7 +733,19 @@
       )
 -
 &FN.HASBAY #208=
-  0
+  hasattrval(%0/space`bay)
+-
+&FN.ISBAYOPEN #208=
+  or(
+    last(get(%0/space`bay),|),
+    not(spacesys(isship,%0))
+    )
+-
+&FN.OPENBAY #208=
+  set(%0,space`bay:[first(get(%0/space`bay),|)]|1)
+-
+&FN.CLOSEBAY #208=
+  set(%0,space`bay:[first(get(%0/space`bay),|)]|0)
 -
 &FN.CANJUMP #208=
   1
