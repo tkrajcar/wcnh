@@ -26,6 +26,7 @@ module Econ
     victim_wallet = Wallet.find_or_create_by(id: victim)
     victim_wallet.balance = victim_wallet.balance + amount
     victim_wallet.save
+    Payment.create!(from: R["enactor"], to: victim, amount: amount)
     ">".bold.green + " You pay #{victim_name.bold} #{credit_format(amount).bold.yellow} credits."
   end
 
