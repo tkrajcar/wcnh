@@ -15,6 +15,7 @@ player guides will be glad to help if able.
 If you find an error in the help files or have an idea of how to make one 
 better, please open a +ticket (see: 'help +ticket') and we'll check it out.
 
+& loc
 & local
   This page lists our local commands and topics. To view a page, type
   'help <page name>' (for example, 'help chargen').
