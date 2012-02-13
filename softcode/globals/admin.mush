@@ -62,7 +62,4 @@
 -
 &cmd.cash #115=$cash *:@nspemit %#=[rpc(Econ.cash,%0)]
 -
-&CRON_TIME_SHIPRACE #539=|||21|00|
--
-&CRON_JOB_SHIPRACE #539=think [rpc(Shiprace.runrace)]
--
+
