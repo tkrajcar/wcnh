@@ -4,8 +4,15 @@ module Econ
   R = PennJSON::Remote
 
   def self.cash(person)
-    w = Wallet.find_or_create_by(id: R["enactor"])
-    return ">".bold.green + " You have #{credit_format(w.balance).bold.yellow} credits on-hand."
+    victim = R.pmatch(person)
+    return ">".bold.green + " Invalid target!" unless victim != "#-1"
+    w = Wallet.find_or_create_by(id: victim)
+    if victim == R["enactor"]
+      who = "You have"
+    else
+      who = "#{R.penn_name(victim).bold} has"
+    end
+    return ">".bold.green + " #{who} #{credit_format(w.balance).bold.yellow} credits on-hand."
   end
 
   def self.pay(person,amount)
