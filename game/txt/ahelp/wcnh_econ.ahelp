@@ -1,0 +1,19 @@
+& ECON
+  Admin can use the following commands:
+
+  cash <player> - view a player's on-hand cash
+  account/list <player> - view a player's account/list
+
+  Also:
+
+  * Admin do not get checked for enough credits when they use 'pay'
+  * Admin can deposit to accounts without having enough credits on-hand
+  * Admin can view any account
+  * Admin can change access for any account
+  * Admin can close any acount
+
+  Keep in mind that your name is logged when you interact with accounts. For
+  hacking and other direct account manipulations, contact Rince for now and once
+  he gets tired of you bothering him he might write up some manipulation
+  commands.
+

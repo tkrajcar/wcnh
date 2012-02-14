@@ -21,3 +21,86 @@ See also: cash, put down
   Anyone can pick up the chip.
 
 See also: cash, pay
+
+& ACCOUNT
+  These files describe the WC:NH bank account system. Bank accounts are run by
+  the ESC/KC and are accessible from anywhere in the Sector using your tablet.
+
+  A couple key principles:
+
+  * Accounts are tracked by a name you give them
+  * You can have more than one account
+  * You can set who can withdraw from your account
+  * Anybody can deposit into any account if they know the name
+  * All activity on an account is tracked and viewable with account/view. Your
+    name is logged since you would have to ICly present identification.
+  * There is no cost or minimum balance for accounts 
+
+  For information on each command, type 'help <command>'.
+
+  COMMANDS:
+
+  account/access    account/close     account/deposit   account/list         
+  account/open      account/owner     account/view      account/withdraw 
+
+& ACCOUNT/ACCESS
+  account/access <account>=<+|-><person>
+
+  This command allows you to add (with +) or remove (with -) access to an 
+  account. Only owners can add or remove access. Access allows you to withdraw
+  and view an account. The person you add or remove is notified of this change.
+
+  Example:
+
+  account/access Demo=+Bob Smith
+  > Adding access for Bob Smith to account Demo.
+
+  account/access Demo=-Bob Smith
+  > Removing access for Bob Smith to account Demo.
+
+& ACCOUNT/CLOSE
+  account/close <account>
+
+  This command allows an owner to close an account. Closed accounts cannot be
+  deposited to, withdrawn from, or manipulated - they can only be viewed.
+
+  This command is permanent without admin intervention.
+
+& ACCOUNT/DEPOSIT
+  account/deposit <account>=<amount>
+
+  This allows you to deposit credits into an account. You must have the credits
+  on hand. You can deposit into any bank account as long as you know the name,
+  but your name is logged and visible to anyone with access to the account; 
+  ICly, you would have to present biometric identification to make a deposit.
+
+& ACCOUNT/LIST
+  account/list
+
+  This command lists all opened accounts you either own or have access to.
+
+& ACCOUNT/OPEN
+  account/open <name>
+
+  This command opens a new account with the specified name. You will need to use
+  this name every time you interact with the account, so keep it short (and IC).
+
+& ACCOUNT/OWNER
+  account/owner <account>=<new owner>
+
+  This command allows the owner of an account to transfer it to a new owner.
+  The new owner is notified that you made this change.
+
+& ACCOUNT/VIEW
+  account/view <account>
+
+  This command allows you to view the status and recent activity on an account
+  you either own or have access to.
+
+& ACCOUNT/WITHDRAW
+  account/withdraw <account>=<amount>
+
+  This allows you to withdraw credits from an account to your on-hand credits.
+  Naturally, you must have access to the account to withdraw from it.
+
+

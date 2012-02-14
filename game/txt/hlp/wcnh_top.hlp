@@ -21,11 +21,11 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   'help <page name>' (for example, 'help chargen').
 
   Pages in capital letters have sub pages.
-  
-  PAGES:
-  +BBOARD        +bg            cash           CHARGEN        COMMS          
-  FACTIONS       +finger        +guides        +map           +ooc           
-  pay            PLACES         put down       race           +set
-  SPACE          +staff         +TICKET        time           +where
-  +who           +XP
 
+  PAGES:
+
+  ACCOUNT        +BBOARD        +bg            cash           CHARGEN        
+  COMMS          FACTIONS       +finger        +guides        +map           
+  +ooc           pay            PLACES         put down       race           
+  +set           SPACE          +staff         +TICKET        time           
+  +where         +who           +XP   
