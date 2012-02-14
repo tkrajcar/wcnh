@@ -801,4 +801,12 @@
     gt(words(filter(filter.mannedcons,get(%0/data.consoles))),1)
     )
 -
+&FN.SURVEY #208=
+  [set(%0,space`survey:[trim([get(%0/space`survey)] %1:[secs()])])]
+  [rpc(Econ.grant,%2,setr(Payout,mul(chargen(get.skill,%2,science),rand(50,150))))]
+  %q<Payout>
+-
+&FN.SURVEY.LIST #208=
+  get(%0/space`survey)
+-
 
