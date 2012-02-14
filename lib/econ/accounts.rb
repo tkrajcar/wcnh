@@ -29,7 +29,7 @@ module Econ
   end
 
   def self.account_deposit(account, amount)
-    a = Account.where(lowercase_name: account).first
+    a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     w = Wallet.find_or_create_by(id: R["enactor"])
     amount = BigDecimal.new(amount.delete(',')).round(1,:floor)
@@ -43,7 +43,7 @@ module Econ
   end
 
   def self.account_withdraw(account, amount)
-    a = Account.where(lowercase_name: account).first
+    a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     w = Wallet.find_or_create_by(id: R["enactor"])
     amount = BigDecimal.new(amount.delete(',')).round(1,:floor)
@@ -59,7 +59,7 @@ module Econ
   end
 
   def self.account_view(account)
-    a = Account.where(lowercase_name: account).first
+    a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(R["enactor"]) || R.orflags(R["enactor"],"Wr").to_bool
     ret = titlebar("Account #{a._id} Details")
@@ -105,7 +105,7 @@ module Econ
   end
 
   def self.account_access(account, change)
-    a = Account.where(lowercase_name: account).first
+    a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     return ">".bold.green + " Only the owner may add or remove access." unless a.owner == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool
     return ">".bold.green + " That account is closed!" unless a.open?
@@ -134,7 +134,7 @@ module Econ
   end
 
   def self.account_owner(account,owner)
-    a = Account.where(lowercase_name: account).first
+    a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     return ">".bold.green + " Only the owner may transfer an account to a new owner." unless a.owner == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool
     return ">".bold.green + " That account is closed!" unless a.open?
@@ -159,7 +159,7 @@ module Econ
   end
 
   def self.account_close(account)
-    a = Account.where(lowercase_name: account).first
+    a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     return ">".bold.green + " Only the owner may close an account." unless a.owner == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool
     return ">".bold.green + " That account is already closed!" unless a.open?
