@@ -2,7 +2,7 @@
 -
 
 @asuccess #22=
-  think [syslog(ECONPUTDOWN,%n picked up [name(me)]([num(me)]) in [loc(me)].)];
+  think [syslog(ECONPUTDOWN,%n picked up [name(me)]([num(me)]) in [loc(loc(me))].)];
   think [rpc(Econ.grant,%#,v(amount))];
   @tel #100;
   @nuke me;
