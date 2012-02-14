@@ -11,6 +11,7 @@
   * Admin can view any account
   * Admin can change access for any account
   * Admin can close any acount
+  * Admin can rename any account
 
   Keep in mind that your name is logged when you interact with accounts. For
   hacking and other direct account manipulations, contact Rince for now and once

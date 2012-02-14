@@ -40,8 +40,9 @@ See also: cash, pay
 
   COMMANDS:
 
-  account/access    account/close     account/deposit   account/list         
-  account/open      account/owner     account/view      account/withdraw 
+  account/access    account/close     account/deposit   account/list
+  account/open      account/owner     account/rename    account/view
+  account/withdraw
 
 & ACCOUNT/ACCESS
   account/access <account>=<+|-><person>
@@ -90,6 +91,11 @@ See also: cash, pay
 
   This command allows the owner of an account to transfer it to a new owner.
   The new owner is notified that you made this change.
+
+& ACCOUNT/RENAME
+  account/rename <account>=<new name>
+
+  This command allows the owner of an account to rename it.
 
 & ACCOUNT/VIEW
   account/view <account>
