@@ -12,7 +12,14 @@ require that you "man" a console prior to using the command.
  
 board            hail           intercom      jump          man
 land             launch         plot          roster        scan
-+scheck          spose          status
++scheck          spose          status        survey
+
+& SURVEY
+Syntax: survey <contact ID>
+ 
+Survey a particular celestial such as a planet or asteroid for some credits, 
+the amount of which is dependent on your science skill.  A ship can only survey 
+a particular celestial once every 6 RL hours.
 
 & STATUS
 Syntax: status
