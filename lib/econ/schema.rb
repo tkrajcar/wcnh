@@ -32,8 +32,8 @@ module Econ
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    identity :type => String # name of account for id (normal case)
-    field :lowercase_name, :type => String, :default => lambda { self._id.downcase }
+    field :name, :type => String
+    field :lowercase_name, :type => String, :default => lambda { self.name.downcase }
     field :owner, :type => String # owner dbref
     field :accessors, :type => Array, :default => lambda { [self.owner] } # array of dbrefs that can access
     field :balance, :type => BigDecimal, :default => BigDecimal.new("0")
@@ -90,12 +90,19 @@ module Econ
     end
 
     def self.open(name, enactor, enactor_name)
-      a = Account.create!(id: name, owner: enactor)
+      a = Account.create!(name: name, owner: enactor)
       a.log_activity("open",enactor_name,0,"")
     end
 
+    def rename(newname, enactor, enactor_name)
+      self.name = newname
+      self.lowercase_name = newname.downcase
+      self.save
+      self.log_activity("rename",enactor_name,0,newname)
+    end
+
     def log_activity(type,who,amount,change_msg)
-      Logs.log_syslog("BANK#{type.upcase}","#{who} #{type} to account #{self._id}. #{change_msg} #{amount} - balance: #{self.balance}")
+      Logs.log_syslog("BANK#{type.upcase}","#{who} #{type} to account #{self._id} (#{self.name}). #{change_msg} #{amount} - balance: #{self.balance}")
       AccountActivity.create!(account: self._id, type: type, who: who, amount: amount, change: change_msg, balance: self.balance)
     end
   end
@@ -105,7 +112,7 @@ module Econ
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    field :account, :type => String #id (which is a string) of account
+    field :account, :type => String # ObjectId of account
     field :type, :type => String #types: 'deposit' 'withdraw' 'access_add' 'access_rem' 'owner_change' 'close' 'open'
     field :who, :type => String # Name of initiator. NOT A DBREF.
     field :amount, :type => BigDecimal, :default => BigDecimal.new("0") # for deposit/withdraw

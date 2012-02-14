@@ -72,4 +72,4 @@
 &cmd.account/close #19=$account/close *:@nspemit %#=[rpc(Econ.account_close,%0)]
 -
 
-
+&cmd.account/rename #19=$account/rename *=*:@nspemit %#=[rpc(Econ.account_rename,%0,%1)]

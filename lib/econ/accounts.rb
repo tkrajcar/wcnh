@@ -8,7 +8,7 @@ module Econ
     accounts = Account.where(accessors: victim).where(open: true)
     ret << " #{"Name".ljust(15)} #{"Own?"} #{"Balance".rjust(18)} Last Activity\n".cyan
     accounts.each do |account|
-      ret << account.id.ljust(16).bold
+      ret << account.name.ljust(16).bold
       if account.owner == victim
         ret << "Yes  ".bold.cyan
       else
@@ -39,7 +39,7 @@ module Econ
     a.deposit(R.penn_name(R["enactor"]), amount)
     w.balance = w.balance - amount
     w.save
-    ">".bold.green + " You deposit #{credit_format(amount).bold.yellow} credits to account #{a._id.to_s.bold}."
+    ">".bold.green + " You deposit #{credit_format(amount).bold.yellow} credits to account #{a.name.to_s.bold}."
   end
 
   def self.account_withdraw(account, amount)
@@ -55,14 +55,14 @@ module Econ
     a.withdraw(R.penn_name(R["enactor"]), amount)
     w.balance = w.balance + amount
     w.save
-    ">".bold.green + " You withdraw #{credit_format(amount).bold.yellow} credits from account #{a._id.to_s.bold}."
+    ">".bold.green + " You withdraw #{credit_format(amount).bold.yellow} credits from account #{a.name.to_s.bold}."
   end
 
   def self.account_view(account)
     a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(R["enactor"]) || R.orflags(R["enactor"],"Wr").to_bool
-    ret = titlebar("Account #{a._id} Details") + "\n"
+    ret = titlebar("Account #{a.name} Details") + "\n"
     ret << "Owner:".ljust(15).cyan 
     ret << R.penn_name(a.owner).ljust(30).bold
     ret << "Balance:".ljust(15).cyan
@@ -95,6 +95,8 @@ module Econ
         ret << "CLOSED  ".bold + "Account closed."
       when "open"
         ret << "OPENED  ".bold + "Account opened."
+      when "Rename"
+        ret << "RENAMED ".bold + "Renamed to " + activity.change.bold.yellow + "."
       else
         ret << activity.type
       end
@@ -119,17 +121,17 @@ module Econ
 
     if change[0] == "+"
       # adding someone
-      return ">".bold.green + " #{victim_name.bold.yellow} already has access to account #{a._id.bold}!" unless !a.accessors.include?(victim)
+      return ">".bold.green + " #{victim_name.bold.yellow} already has access to account #{a.name.bold}!" unless !a.accessors.include?(victim)
       a.add_access(victim, enactor_name, victim_name)
-      R.nspemit(victim,">".bold.green + " You have been granted access to bank account #{a._id.bold} by #{enactor_name.bold.yellow}.")
-      return ">".bold.green + " Adding access for #{victim_name.bold.yellow} to account #{a._id.bold}."
+      R.nspemit(victim,">".bold.green + " You have been granted access to bank account #{a.name.bold} by #{enactor_name.bold.yellow}.")
+      return ">".bold.green + " Adding access for #{victim_name.bold.yellow} to account #{a.name.bold}."
     else
       # removing someone
-      return ">".bold.green + " #{victim_name.bold.yellow} doesn't have access to account #{a._id.bold}!" unless a.accessors.include?(victim)
+      return ">".bold.green + " #{victim_name.bold.yellow} doesn't have access to account #{a.name.bold}!" unless a.accessors.include?(victim)
       return ">".bold.green + " You can't remove yourself, since you're the owner of the account! Use account/owner to switch owners first." unless a.owner != victim
       a.rem_access(victim, enactor_name, victim_name)
-      R.nspemit(victim,">".bold.green + " Your access to bank account #{a._id.bold} has been removed by #{enactor_name.bold.yellow}.")
-      return ">".bold.green + " Removing access for #{victim_name.bold.yellow} to account #{a._id.bold}."
+      R.nspemit(victim,">".bold.green + " Your access to bank account #{a.name.bold} has been removed by #{enactor_name.bold.yellow}.")
+      return ">".bold.green + " Removing access for #{victim_name.bold.yellow} to account #{a.name.bold}."
     end
   end
 
@@ -144,18 +146,18 @@ module Econ
     victim_name = R.penn_name(victim)
     enactor_name = R.penn_name(R["enactor"])
 
-    R.nspemit(victim, ">".bold.green + " #{enactor_name.bold.yellow} has transferred ownership of account #{a._id.bold} to you.")
+    R.nspemit(victim, ">".bold.green + " #{enactor_name.bold.yellow} has transferred ownership of account #{a.name.bold} to you.")
     a.change_owner(victim, enactor_name, victim_name)
-    return ">".bold.green + " You transfer ownership of account #{a._id.bold} to #{victim_name.bold.yellow}."
+    return ">".bold.green + " You transfer ownership of account #{a.name.bold} to #{victim_name.bold.yellow}."
   end
 
   def self.account_open(account)
-    return ">".bold.green + " Account names cannot be longer than 15 characters." unless account.length <= 15
+    return ">".bold.green + "Account names cannot be longer than 15 characters." unless account.length <= 15
     account_count = Account.where(owner: R["enactor"]).length
-    return ">".bold.green + " You've opened 10 accounts already! Contact an admin if you need more for some reason." unless account_count <= 10 || R.orflags(R["enactor"],"Wr").to_bool
+    return ">".bold.green + "You've opened 10 accounts already! Contact an admin if you need more for some reason." unless account_count <= 10 || R.orflags(R["enactor"],"Wr").to_bool
     return "> ".bold.green + "That account name is already in use." unless Account.where(lowercase_name: account.downcase).length == 0
     Account.open(account,R["enactor"],R.penn_name(R["enactor"]))
-    return "> ".bold.green + " Account #{account.bold} opened."
+    return "> ".bold.green + "Account #{account.bold} opened."
   end
 
   def self.account_close(account)
@@ -164,6 +166,17 @@ module Econ
     return ">".bold.green + " Only the owner may close an account." unless a.owner == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool
     return ">".bold.green + " That account is already closed!" unless a.open?
     a.close(R["enactor"], R.penn_name(R["enactor"]))
-    return ">".bold.green + " Account #{a._id.bold} has been closed."
+    return ">".bold.green + " Account #{a.name.bold} has been closed."
+  end
+
+  def self.account_rename(account,newname)
+    a = Account.where(lowercase_name: account.downcase).first
+    return ">".bold.green + " There's no account by that name." unless !a.nil?
+    return ">".bold.green + " Only the owner may rename an account." unless a.owner == R["enactor"] || R.orflags(R["enactor"],"Wr").to_bool
+    return ">".bold.green + " That account is closed!" unless a.open?
+    return "> ".bold.green + "That account name is already in use." unless Account.where(lowercase_name: newname.downcase).length == 0
+    oldname = a.name
+    a.rename(newname, R["enactor"], R.penn_name(R["enactor"]))
+    return ">".bold.green + " Account #{oldname.bold} has been renamed to #{newname.bold.yellow}."
   end
 end

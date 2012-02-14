@@ -54,5 +54,9 @@ module Econ
   def self.pj_account_close(name)
     self.account_close(name)
   end
+
+  def self.pj_account_rename(account,newname)
+    self.account_rename(account,newname)
+  end
 end
 
