@@ -58,7 +58,7 @@
                 @set %!=order.%#:%0:[add(secs(),%q1)];
                 @tel %q2=[parent(%!)];
                 @name %q2=[capstr(%1)];
-                @set %q2=data.roster:%#:CAPTAIN;
+                @set %q2=data.roster:%#:captain;
                 think u(fn.econ.transfer,%#,-%q3);
                 think syslog(SPACE,New ship \([spacesys(class,%q2)]\) purchased by [name(%#)]\(%#\) in [name(loc(%!))]\([loc(%!)]\).);
                 @wait %!/%q1={@nsremit loc(%!)=Maintenance crews carefully tow the [name(%q2)] out of a nearby construction bay.;

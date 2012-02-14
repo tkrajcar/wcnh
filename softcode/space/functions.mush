@@ -721,8 +721,8 @@
       [spacesys(isguest,%0,%1)],
 
       0?,#-1 INVALID SHIP OBJECT,
-      10,set(%0,data.roster:[trim([get(%0/data.roster)] %1:%2)]),
-      11,set(%0,data.roster:[regediti(get(%0/data.roster),%1:\\w*,%1:%2)])
+      10,set(%0,data.roster:[trim([get(%0/data.roster)] %1:[lcstr(%2)])]),
+      11,set(%0,data.roster:[regediti(get(%0/data.roster),%1:\\w*,%1:[lcstr(%2)])])
       )
 -
 &FN.ROSTER.REMOVE #208=
