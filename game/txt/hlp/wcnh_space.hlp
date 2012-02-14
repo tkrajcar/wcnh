@@ -18,8 +18,8 @@ land             launch         plot          roster        scan
 Syntax: survey <contact ID>
  
 Survey a particular celestial such as a planet or asteroid for some credits, 
-the amount of which is dependent on your science skill.  A ship can only survey 
-a particular celestial once every 6 RL hours.
+the amount of which is dependent on your science skill.  A ship can only survey
+a particular celestial once every 6 hours.
 
 & STATUS
 Syntax: status
