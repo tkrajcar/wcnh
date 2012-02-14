@@ -62,7 +62,7 @@ module Econ
     a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(R["enactor"]) || R.orflags(R["enactor"],"Wr").to_bool
-    ret = titlebar("Account #{a._id} Details")
+    ret = titlebar("Account #{a._id} Details") + "\n"
     ret << "Owner:".ljust(15).cyan 
     ret << R.penn_name(a.owner).ljust(30).bold
     ret << "Balance:".ljust(15).cyan
@@ -75,7 +75,7 @@ module Econ
     end
     ret << accessor_names.to_sentence
     ret << "\n"
-    ret << middlebar("RECENT ACTIVITY")
+    ret << middlebar("RECENT ACTIVITY") + "\n"
     ret << "#{"Date".ljust(14)} #{"By".ljust(20)} Type    Memo\n".cyan
     a.recent_activity.each do |activity|
       ret << activity.created_at.strftime("%m/%d/%y %H:%m ")
