@@ -25,12 +25,10 @@
 &DATA #203=#351
 -
 &CMD.SHUTTLE/CLAIM #203=$shuttle/claim *:
-  @switch [not(spacesys(hasshuttle,%#))]
-          [strmatch(first(%0),v(prefix))]=
+  @switch [not(spacesys(hasshuttle,%#))]=
 
-          0?,@nspemit %#=[ansi(rh,>)] You have already claimed your one free shuttle.,
-          10,@nspemit %#=[ansi(rh,>)] Your shuttle name must be prefixed with [ansi(wh,v(prefix))].,
-          11,{@nspemit %#=[ansi(gh,>)] You have claimed your one-time-only free shuttle.  Name: [setr(0,[ucstr(v(prefix))] [capstr(rest(%0))])];
+          0,@nspemit %#=[ansi(rh,>)] You have already claimed your one free shuttle.,
+          1,{@nspemit %#=[ansi(gh,>)] You have claimed your one-time-only free shuttle.  Name: [setr(0,[capstr(rest(%0))])];
               think [setr(1,spacesys(clone.ship,get(v(data)/parent.shuttle),%q0))];
               @nsremit [loc(%#)]=Maintenance crews direct the %q0 as it's towed in from a nearby shipyard.;
               @tel %q1=[loc(%#)];
