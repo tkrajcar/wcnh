@@ -23,8 +23,8 @@ module Econ
 #    self.putdown(amount)
 #  end
 
-  def self.pj_account_list
-    self.account_list
+  def self.pj_account_list(person)
+    self.account_list(person)
   end
 
   def self.pj_account_deposit(account,amount)

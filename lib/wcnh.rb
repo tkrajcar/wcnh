@@ -31,6 +31,10 @@ def footerbar
   ">-----------------------------------------------------------------------------<".red
 end
 
+def middlebar(text)
+  ">-#{arg.center(77,'-').bold.yellow}-<".red
+end
+
 def middlebar(arg = "")
   arg.center(79,"-").red.gsub(arg,arg.bold.yellow)
 end

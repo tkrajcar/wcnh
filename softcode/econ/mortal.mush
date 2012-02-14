@@ -46,7 +46,7 @@
 
 -
 
-&cmd.account/list #19=$account/list:@nspemit %#=[rpc(Econ.account_list)]
+&cmd.account/list #19=$account/list:@nspemit %#=[rpc(Econ.account_list,%#)]
 -
 
 &cmd.account/deposit #19=$account/deposit *=*:@nspemit %#=[rpc(Econ.account_deposit,%0,%1)]
