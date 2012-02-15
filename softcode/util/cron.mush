@@ -48,3 +48,7 @@
 
 &CRON_JOB_SHIPRACE #539=think [rpc(Shiprace.runrace)]
 -
+
+&CRON_TIME_WORKQUEUE #539=|||||
+-
+&CRON_JOB_WORKQUEUE #539=@trigger #65/tri.run

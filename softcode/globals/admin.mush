@@ -67,5 +67,16 @@
 &cmd.handle/list #115=$handle/list *:@pemit %#=[rpc(Comms.handle_list,%0)]
 -
 &cmd.comm/list #115=$comm/list *:@pemit %#=[rpc(Comms.channel_list,%0)]
-
+-
+&cmd.+dossier #115=$+dossier *:
+  /@@ Some regmatch trickery with the goal of %q0 = person, %q1 = page number. @@/
+  @pemit %#=
+    [ifelse(
+      regmatch(%0,(.+) page (\\d+),1:0 2:1),
+      ,
+      [setq(0,%0)][setq(1,1)]
+    )]
+    [rpc(Dossier.view,%q0,%q1)]
+-
+&cmd.+dossier/add #115=$+dossier/add *=*:@pemit %#=[rpc(Dossier.add,%0,%1)]
 
