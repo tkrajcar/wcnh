@@ -1,18 +1,32 @@
 @ADESCRIBE #8=th [ansi(c,>>>)] [ansi(h,%n)] looked at your description.
 -
 @DESCFORMAT #8=
-  [titlebar(
-    [if(
-      v(title),
-      v(title)%b
+  if(
+    or(controls(%#,%!),nearby(%#,%!)),
+    [titlebar(
+      [if(
+        v(title),
+        v(title)%b
+        )]
+      [name(me)]
       )]
-    [name(me)]
-    )]
-  %r
-  [if(
-    %0,
-    %0,
-    [name(me)] doesn't have a description quite yet.
-    )]
-  %r
-  [footerbar()]
+    %r
+    [if(
+      %0,
+      %0,
+      [name(me)] doesn't have a description quite yet.
+      )]
+    %r
+    [footerbar()],
+    You can't see that from here.
+  )
+-
+@CONFORMAT #8=
+  if(
+    and(%0,or(controls(%#,%!),nearby(%#,%!))),
+    Carrying:%r
+    [map(map.conformat,%0, , %r)]
+  )
+-
+&map.conformat #8=
+  [ansi(h,name(%0))][if(or(orflags(%#,Wr),controls(%#,%0)),\(%0[flags(%0)]\))]
