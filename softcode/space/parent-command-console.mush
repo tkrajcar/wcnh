@@ -273,14 +273,8 @@
   @assert [t(lte(%0,words(setr(Ship.report,spacesys(list.report,%q<Ship>)))))]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
   @assert [strmatch(spacesys(class,setr(Celestial,extract(%q<Ship.report>,%0,1))),Celestial)]=@nspemit %#=[ansi(rh,>)] You can only survey celestial objects like planets and asteroids.;
   @assert [eq(spacesys(distance,%q<Ship>,%q<Celestial>),0)]=@nspemit %#=[ansi(rh,>)] You are out of range.;
-  @assert [or(
-              gte(
-                  secs(),
-                  add(setr(Ship.survey_record,rest(grab(spacesys(survey.list,%q<Ship>),%q<Celestial>:*),:)),21600)
-                  ),
-              not(%q<Ship.survey_record>)
-              )]=
-          @nspemit %#=[ansi(rh,>)] You must wait at least [ansi(yh,timestring(sub(add(%q<Ship.survey_record>,21600),secs())))] 
+  @assert [gte(secs(),setr(Expires,add(spacesys(survey.last,%q<Ship>,%q<Celestial>),21600)))]=
+          @nspemit %#=[ansi(rh,>)] You must wait at least [ansi(yh,timestring(sub(%q<Expires>,secs())))] 
                       before anyone will be interested in purchasing new survey data for that celestial object.;
   
   think setr(Pay,spacesys(survey,%q<Ship>,%q<Celestial>,%#));

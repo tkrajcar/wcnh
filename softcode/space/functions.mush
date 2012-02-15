@@ -802,11 +802,11 @@
     )
 -
 &FN.SURVEY #208=
-  [set(%0,space`survey:[trim([get(%0/space`survey)] %1:[secs()])])]
+  [set(%0,space`survey`%1:[secs()])]
   [rpc(Econ.grant,%2,setr(Payout,mul(chargen(get.skill,%2,science),rand(25,100))))]
   %q<Payout>
 -
-&FN.SURVEY.LIST #208=
-  get(%0/space`survey)
+&FN.SURVEY.LAST #208=
+  default(%0/space`survey`%1,0)
 -
 
