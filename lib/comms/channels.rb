@@ -4,9 +4,11 @@ module Comms
   MAX_NUMERIC_CHANNELS = 5
   REGEX_NUMERIC_CHANNEL = /\d\d\d\.\d\d/
 
-  def self.channel_list
-    c = Comlink.find_or_create_by(id: R["enactor"])
-    ret = titlebar("Channel List") + "\n"
+  def self.channel_list(person)
+    victim = R.pmatch(person)
+    return ">".bold.green + " Invalid target!" unless victim != "#-1"
+    c = Comlink.find_or_create_by(id: victim)
+    ret = titlebar("Channel List for #{R.penn_name(victim)}") + "\n"
     ret << "#{'Alias'.ljust(7)} #{'Handle'.ljust(20)} #{'Name'.ljust(15)} Description\n".cyan
     Channel.all.find_all { |chan| chan.can_see?(R["enactor"])}.each do |channel|
       if mbr = c.memberships.where(channel: channel.lowercase_name).first

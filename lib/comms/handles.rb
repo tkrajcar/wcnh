@@ -4,9 +4,11 @@ module Comms
   R = PennJSON::Remote
   MAX_HANDLES = 10
 
-  def self.handle_list
-    c = Comlink.find_or_create_by(id: R["enactor"])
-    ret = titlebar("Comm Handles For #{R.penn_name(R["enactor"])}") + "\n"
+  def self.handle_list(person)
+    victim = R.pmatch(person)
+    return ">".bold.green + " Invalid target!" unless victim != "#-1"
+    c = Comlink.find_or_create_by(id: victim)
+    ret = titlebar("Comm Handles For #{R.penn_name(victim)}") + "\n"
     c.handles.each do |handle|
       ret << "  #{handle.bold.cyan}\n"
     end

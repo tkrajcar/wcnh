@@ -63,3 +63,9 @@
 &cmd.cash #115=$cash *:@nspemit %#=[rpc(Econ.cash,%0)]
 -
 &cmd.account/list #115=$account/list *:@nspemit %#=[rpc(Econ.account_list,%0)]
+-
+&cmd.handle/list #115=$handle/list *:@pemit %#=[rpc(Comms.handle_list,%0)]
+-
+&cmd.comm/list #115=$comm/list *:@pemit %#=[rpc(Comms.channel_list,%0)]
+
+

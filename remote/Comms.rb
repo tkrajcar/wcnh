@@ -3,8 +3,8 @@ require 'wcnh'
 module Comms
   PennJSON::register_object(self)
 
-  def self.pj_handle_list
-    self.handle_list
+  def self.pj_handle_list(person)
+    self.handle_list(person)
   end
 
   def self.pj_handle_register(handle)
@@ -47,8 +47,8 @@ module Comms
     self.message_unread
   end
 
-  def self.pj_channel_list
-    self.channel_list
+  def self.pj_channel_list(person)
+    self.channel_list(person)
   end
 
   def self.pj_channel_on(channel,shortcut)

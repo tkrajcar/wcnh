@@ -6,7 +6,7 @@
 &COMMAND_LOCK`FAILURE #341=[ansi(hy,>)] You can't use comms while OOC.
 -
 
-&cmd.handle/list #341=$handle/list:@pemit %#=[rpc(Comms.handle_list)]
+&cmd.handle/list #341=$handle/list:@pemit %#=[rpc(Comms.handle_list,%#)]
 -
 
 &cmd.handle/register #341=$handle/register *:@pemit %#=[rpc(Comms.handle_register,%0)]
@@ -44,7 +44,7 @@
 &cmd.message/sent_2 #341=$message/sent page *:@pemit %#=[rpc(Comms.message_sent,%0)]
 -
 
-&cmd.comm/list #341=$comm/list:@pemit %#=[rpc(Comms.channel_list)]
+&cmd.comm/list #341=$comm/list:@pemit %#=[rpc(Comms.channel_list,%#)]
 -
 
 &cmd.comm/on #341=$comm/on *:
