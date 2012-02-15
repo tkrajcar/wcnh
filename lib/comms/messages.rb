@@ -97,7 +97,8 @@ module Comms
         ret << "UNREAD> ".bold.red
         comlink.unread_tightbeams.delete(msg.id)
       end
-      ret << "Received #{msg.ic_timestamp.strftime("%m/%d/%Y %H:%M").bold}#{showfrom ? " from " + msg.from_handle.bold.white : ""}: ".cyan #TODO - correct for IC
+      to_handles_list = msg.to_handles.collect {|i| i.bold}.to_sentence
+      ret << "#{msg.ic_timestamp.strftime("%m/%d/%Y %H:%M").bold}#{showfrom ? " from " + msg.from_handle.bold.white : ""} to #{to_handles_list}: ".cyan #TODO - correct for IC
       ret << msg.body + "\n"
     end
     comlink.save # update unread_tightbeams field
