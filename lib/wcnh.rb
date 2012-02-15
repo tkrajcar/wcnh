@@ -38,3 +38,11 @@ end
 def middlebar(arg = "")
   arg.center(79,"-").red.gsub(arg,arg.bold.yellow)
 end
+
+def create_all_indexes
+  ret = []
+  $mongoid_classes.each do |klass|
+    ret << klass.create_indexes
+  end
+  ret
+end
