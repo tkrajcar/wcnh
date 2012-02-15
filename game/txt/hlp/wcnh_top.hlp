@@ -14,7 +14,6 @@ player guides will be glad to help if able.
 
 If you find an error in the help files or have an idea of how to make one 
 better, please open a +ticket (see: 'help +ticket') and we'll check it out.
-
 & loc
 & local
   This page lists our local commands and topics. To view a page, type
@@ -28,4 +27,14 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   COMMS          FACTIONS       +finger        +guides        +map           
   +ooc           pay            PLACES         put down       race           
   +set           SPACE          +staff         +TICKET        time           
-  +where         +who           +XP   
+  wanted         +where         +who           +XP   
+& wanted
+  wanted
+  wanted <entry number>
+
+  This command allows you to view the IC 'wanted' information, jointly published
+  by the Enigma Sector Consortium & the Kilrathi Commonwealth.
+
+  This information is fully IC and may be acted upon, however, please remember
+  that just because you see another player in a room with you, you may not know
+  who they are, or be able to recognize them.
