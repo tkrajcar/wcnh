@@ -136,7 +136,7 @@ module PlayerFile
     # Given a dbref, player name/alias, or email, look for a pfile.
     def self.locate(term)
       db = R.pmatch(term)
-      if(db =~ /^#\d/)
+      if(db != "#-1" && db =~ /^#\d/)
         # dbref match. Pull their pfile oid.
         begin
           Pfile.find(R.xget(db,"PFILE"))
