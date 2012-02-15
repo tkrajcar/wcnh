@@ -46,6 +46,7 @@
   message/list <handle> [page <#>] - list messages from a handle.
   message <handle>=<message> - send a new message.
   message/unread - display all unread messages.
+  message/sent [page <#>] - view messages you've sent
 
   See also: 'help comms handles' and 'help comms channels'
 & comms channels
