@@ -53,6 +53,15 @@ module Comms
     list_output(msgs, c, "Recent Tightbeam Messages", 1, true)
   end
 
+  def self.message_sent(page=1)
+    c = Comlink.find_or_create_by(id: R["enactor"])
+    msgs = Tightbeam.where(from: R["enactor"])
+
+    return "> ".bold.yellow + "No tightbeam messages sent." unless msgs.length > 0
+
+    list_output(msgs, c, "Tightbeam Messages Sent", page, true)
+  end
+
   def self.message_send(handle, message)
     sender = Comlink.find_or_create_by(id: R["enactor"])
     return "> ".bold.yellow + "Recipient handle not found." unless recipient = Comlink.where(lowercase_handles: handle.downcase).first

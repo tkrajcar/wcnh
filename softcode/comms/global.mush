@@ -38,6 +38,12 @@
 &cmd.message/unread #341=$message/unread:@pemit %#=[rpc(Comms.message_unread)]
 -
 
+&cmd.message/sent #341=$message/sent:@pemit %#=[rpc(Comms.message_sent,1)]
+-
+
+&cmd.message/sent_2 #341=$message/sent page *:@pemit %#=[rpc(Comms.message_sent,%0)]
+-
+
 &cmd.comm/list #341=$comm/list:@pemit %#=[rpc(Comms.channel_list)]
 -
 

@@ -27,6 +27,10 @@ module Comms
     self.message_list(handle,page)
   end
 
+  def self.pj_message_sent(page=1)
+    self.message_sent(page)
+  end
+
   def self.pj_message_send(handle,message)
     self.message_send(handle,message)
   end
