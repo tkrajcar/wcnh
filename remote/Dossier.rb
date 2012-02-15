@@ -22,4 +22,8 @@ module Dossier
   def self.pj_wanted_set(object,field,value)
     self.wanted_set(object,field,value)
   end
+
+  def self.pj_wanted_delete(object)
+    self.wanted_delete(object)
+  end
 end

@@ -79,4 +79,7 @@
     [rpc(Dossier.view,%q0,%q1)]
 -
 &cmd.+dossier/add #115=$+dossier/add *=*:@pemit %#=[rpc(Dossier.add,%0,%1)]
-
+-
+&cmd.wanted/set #115=$wanted/set */*=*:@pemit %#=[rpc(Dossier.wanted_set,%0,%1,%2)]
+-
+&cmd.wanted/delete #115=$wanted/delete *:@pemit %#=[rpc(Dossier.wanted_delete,%0)]

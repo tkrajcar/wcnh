@@ -316,3 +316,7 @@
 
 &cmd.+web/register #15=$+web/register *:
   @nspemit %#=[rpc(Web.register,%0)]
+-
+&cmd.wanted #15=$wanted:@nspemit %#=[rpc(Dossier.wanted_list)]
+-
+&cmd.wanted/view #15=$wanted *:@nspemit %#=[rpc(Dossier.wanted_view,%0)]
