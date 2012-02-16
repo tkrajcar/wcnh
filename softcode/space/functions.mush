@@ -803,7 +803,7 @@
 -
 &FN.SURVEY #208=
   [set(%0,space`survey`%1:[secs()])]
-  [rpc(Econ.grant,%2,setr(Payout,mul(chargen(get.skill,%2,science),rand(25,100))))]
+  [rpc(Econ.grant,%2,setr(Payout,mul(chargen(get.skill,%2,science),rand(15,60))))]
   %q<Payout>
 -
 &FN.SURVEY.LAST #208=
