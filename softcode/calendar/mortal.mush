@@ -7,7 +7,7 @@
 &CMD.+CAL #812=$^\+cal$|^\+cal (.*)$:
   @assert [or(not(t(%1)),eq(words(%1),2))]=@nspemit %#=[ansi(rh,>)] Try [ansi(yh,+cal)] or [ansi(yh,+cal <month> <year>)].%r
                                                        [ansi(rh,>)] For example\, [ansi(yh,+cal jan 2012)].;
-  @nspemit %#=[rpc(Calendar.list,first(%1),last(%1))]                                           
+  @nspemit %#=[rpc(Calendar.list,first(%1),last(%1))]
 -
 @set #812/cmd.+cal=regexp
 -
@@ -47,5 +47,8 @@
   @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
 
   @nspemit %#=[rpc(Calendar.event_change,get(%#/event),title,%0)]
+-
+&CMD.+EVENT/DELETE #812=$+event/delete *:
+  @nspemit %#=[rpc(Calendar.event_delete,%0)]
 -
 
