@@ -1,0 +1,18 @@
+&FN.NEW_DOSSIER_NOTE #65=
+  /@@ %0 = dossier target, %1 = author, %2 = content @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|4|[name(%0)](%0), by [name(%1)]|%2
+  )
+-
+&TRI.RUN #65=
+  @pemit %#=Running: [time()];
+  @dol [lattr(me/job_*)]=
+    {
+      think setq(0,v(##));
+      @swi extract(%q0,1,1,|)=+bbpost,{
+        +bbpost [extract(%q0,2,1,|)]/[extract(%q0,3,1,|)]=[extract(%q0,4,1,|)]
+        };
+      think attrib_set(#65/##);
+    };
+
