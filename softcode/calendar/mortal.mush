@@ -12,9 +12,40 @@
 @set #812/cmd.+cal=regexp
 -
 &CMD.+CAL/VIEW #812=$+cal/view *:
-  @nspemit %#=[rpc(Calendar.view,%0)]
+  @nspemit %#=[rpc(Calendar.event_view,%0)]
 -
 &CMD.+CAL/SEARCH #812=$+cal/search *:
   @nspemit %#=[rpc(Calendar.search,%0)]
+-
+&CMD.+EVENT/NEW #812=$+event/new:
+  think [rpc(Calendar.event_new,%#)]
+-
+&CMD.+EVENT/EDIT #812=$+event/edit *:
+  think [rpc(Calendar.event_edit,%#,%0)]
+-
+&CMD.+EVENT/DATE #812=$+event/date *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  think [rpc(Calendar.event_change,get(%#/event),date,%0)]
+-
+&CMD.+EVENT/TIME #812=$+event/time *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  think [rpc(Calendar.event_change,get(%#/event),time,%0)]
+-
+&CMD.+EVENT/LOC #812=$+event/loc *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  think [rpc(Calendar.event_change,get(%#/event),location,%0)]
+-
+&CMD.+EVENT/INFO #812=$+event/info *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  think [rpc(Calendar.event_change,get(%#/event),info,%0)]
+-
+&CMD.+EVENT/TITLE #812=$+event/title *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  think [rpc(Calendar.event_change,get(%#/event),title,%0)]
 -
 
