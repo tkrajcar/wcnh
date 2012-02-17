@@ -1,33 +1,5 @@
-require 'wcnh'
-
+# Bank account.
 module Econ
-  # helper function
-  def self.credit_format(number) # return formatted (1,234.56) number
-    number.round(1,:floor).to_s.gsub(/(\d)(?=\d{3}+(?:\.|$))(\d{3}\..*)?/,'\1,\2')
-  end
-
-  # Wallet object. Every IC player has a doc of this class, but there's nothing necessarily restricting it to players.
-  class Wallet
-    include Mongoid::Document
-    include Mongoid::Timestamps
-
-    identity :type => String # use a MUSH dbref for id
-    field :balance, :type => BigDecimal, :default => BigDecimal.new("0")
-  end
-
-  # Payments are recorded whenever an on-hand payment is made
-  class Payment
-    include Mongoid::Document
-    include Mongoid::Timestamps
-    field :from, :type => String # id (which is a dbref) of sending Wallet
-    field :to, :type => String # id (which is a dbref) of receiving Wallet, or "dropped" if result of 'put down'.
-    field :amount, :type => BigDecimal
-
-    index :from
-    index :to
-  end
-
-  # Bank account.
   class Account
     include Mongoid::Document
     include Mongoid::Timestamps
@@ -105,21 +77,5 @@ module Econ
       Logs.log_syslog("BANK#{type.upcase}","#{who} #{type} to account #{self._id} (#{self.name}). #{change_msg} #{amount} - balance: #{self.balance}")
       AccountActivity.create!(account: self._id, type: type, who: who, amount: amount, change: change_msg, balance: self.balance)
     end
-  end
-
-  # individual activity on an account.
-  class AccountActivity
-    include Mongoid::Document
-    include Mongoid::Timestamps
-
-    field :account, :type => String # ObjectId of account
-    field :type, :type => String #types: 'deposit' 'withdraw' 'access_add' 'access_rem' 'owner_change' 'close' 'open'
-    field :who, :type => String # Name of initiator. NOT A DBREF.
-    field :amount, :type => BigDecimal, :default => BigDecimal.new("0") # for deposit/withdraw
-    field :change, :type => String # change message for access_add/rem/owner_change
-    field :balance, :type => BigDecimal, :default => BigDecimal.new("0") # balance after this Activity
-
-    index :account
-    index :type
   end
 end
