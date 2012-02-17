@@ -1,0 +1,92 @@
+& calendar
+WCNH's calendar system is a conveient tool that's accessible by both players
+and administrators alike.  The calendar system can be used to plan, organize,
+and alert others to game-related events.
+
+The calendar takes the user's timezone into account.  By default, everything is
+in system time (PST).  In order to set your personal timezone, set your TZ
+attribute (&TZ me=<offset>).  The offset should be the numeric representation
+of your timezone.  I.e., -5 for EST, +0 for UTC.
+
+For basic calendar commands, see 'help +cal'.
+
+For commands related to adding, deleting, and modifying events, see 'help
+calendar events.'
+
+& +cal
+Syntax: +cal
+        +cal <month> <year>
+        +cal/view <id>
+
+The first syntax will show a list of upcoming events in the next 30 days.
+
+The second syntax will show a list of events in the indicated month.
+
+The third syntax will show details about a particular event.
+
+& calendar events
+Events can be added to the calendar by anyone, and can be used freely for
+anything as long as it's related to the game in some way.  The calendar system
+is OOC knowledge, but players are free to use it to draw attention to IC
+events.
+
+An event is created with the '+event/new' command.  Alternatively, if you have
+already created an event, you can make it available for editing with the
+'+event/edit' command.  Once you have created an event or loaded one for
+editing, you can use the various editing commands to change the details of your
+event.
+
+Commands:
++event/date       +event/delete       +event/edit       +event/info
++event/loc        +event/new          +event/new        +event/time
++event/title
+
+& +event/date
+Syntax: +event/date <day> <month> <year>
+
+This command will set the calendar date of an event that you are currently
+editing.  The <month> can be a numerical month or any identifiable portion of a
+month name.
+
+& +event/delete
+Syntax: +event/delete <id>
+
+This command will delete an event.  You can only delete events that you have
+created.
+
+& +event/edit
+Syntax: +event/edit <id>
+
+This command will allow you to edit an existing event.  You can only edit
+events that you have created.
+
+& +event/info
+Syntax: +event/info <text>
+
+This command allows you to set the detailed information for an event that you
+are currently editing.
+
+& +event/loc
+Syntax: +event/loc <text>
+
+This command allows you to specify where an event is going to happen.
+
+& +event/new
+Syntax: +event/new
+
+This command will create a new event and make it available for editing.
+
+& +event/time
+Syntax: +event/time <hour>:<minute> [AM|PM]
+
+This command will set the time of an event that you are currently editing.  You
+may specify AM/PM, or you may alternatively enter the time in 24-hour format
+without the AM/PM.  The time should be your own local time (provided you have
+your timezone set).  Everyone else will see the event in their own local time.
+
+& +event/title
+Syntax: +event/title <text>
+
+This command allows you to set the title for an event that you're currently
+editing.
+
