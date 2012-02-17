@@ -31,10 +31,11 @@ ruby -v
 /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
 
 
-# STEP 4: YAJL
-# This is a small library used by the PennJSON layer. Unfortunately, the yajl formula currently in Homebrew is the 2.x tree and we need 1.x. Never fear, I created one for you.
+# STEP 4: YAJL & PCRE
+# YAJL is a small library used by the PennJSON layer. Unfortunately, the yajl formula currently in Homebrew is the 2.x tree and we need 1.x. Never fear, I created one for you.
 brew install https://raw.github.com/tkrajcar/homebrew/master/Library/Formula/yajl-1.rb
-
+# PennMUSH also requires pcre as of 1.8.5
+brew install pcre
 
 # STEP 5: MONGODB
 # You can install this easily via Homebrew.
