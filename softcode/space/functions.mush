@@ -417,10 +417,11 @@
       )]
 -
 &FN.SPOSE #208=
-  iter(
+  [iter(
       spacesys(list.system.active,loc(%0)),
       spacesys(notify.consoles,itext(0),The [ansi(wh,name(%0))] %1)
-      )
+      )]
+  [if(t(%3),nscemit(Comms,[ansi(yh,SPOSE)]-[ansi(wh,name(%2))]: The [name(%0)] %1,1))]
 -
 &FN.LIST.SYSTEM.ACTIVE #208=
   filter(filter.active,u(fn.list.system.all,%0))
@@ -809,4 +810,7 @@
 &FN.SURVEY.LAST #208=
   default(%0/space`survey`%1,0)
 -
-
+&FN.HAIL #208=
+  [spacesys(notify.consoles,%2,[ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] from [ansi(wh,name(%0))]: %3)]
+  [nscemit(Comms,[ansi(yh,HAIL)]-[ansi(wh,name(%0))]\([name(%1)]\)->[ansi(wh,name(%2))]: %3,1)]
+-  
