@@ -41,7 +41,6 @@ module Shiprace
     names = []
     ships = []
     roster = {}
-    prefixes = ["SS", "ECS", "KCS"]
 
     File.open(FILE_NAMES, "r") do |file|
       while line = file.gets
@@ -51,12 +50,13 @@ module Shiprace
 
     File.open(FILE_SHIPS, "r") do |file|
       while line = file.gets
-        ships.<< "#{prefixes[rand(prefixes.length)]} #{line.chomp}"
+        ships.<< line.chomp
       end
     end
 
-    MAX_RACERS.times { roster[names.shuffle.first + " " + names.shuffle.first] = ships.shuffle.shift }
-
+    ships.shuffle!
+    names.shuffle!
+    MAX_RACERS.times { roster["#{names.shift} #{names.shift}"] = ships.shift }
     roster.each { |name, ship| Racer.create!(name: name, ship: ship) }
 
     return roster.length
@@ -93,8 +93,10 @@ module Shiprace
       bank.balance = bank.balance - pot
       bank.save
     end
-
-    Logs.log_syslog("SHIPRACE","Completing race.  Jackpot: #{pot}.  Winners: #{winners.length}")
+    
+    winners_names = []
+    winners.each { |winner| winners_names.<< R.penn_name(winner) }
+    Logs.log_syslog("SHIPRACE","Completing race.  Jackpot: #{pot}. #{winners.length} winners: #{winners_names.join(", ")}")
 
     winners.each do |winner|
       wallet = Econ::Wallet.find_or_create_by(id: winner.dbref)
@@ -104,8 +106,8 @@ module Shiprace
       R.mailsend(winner.dbref,"Ship Race Winner!/You won #{pot / winners.length} credits in a ship race by betting on the #{racers[victor].ship} piloted by #{racers[victor].name}!")
     end
 
-    Ticket.delete_all
-    Racer.delete_all
+    Ticket.destroy_all
+    Racer.destroy_all
     self.buildroster
 
     return
