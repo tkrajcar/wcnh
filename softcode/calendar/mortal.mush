@@ -4,6 +4,10 @@
 -
 @set #812=safe
 -
+@desc #812=Calendar System.
+-
+&TRIG.ACONNECT #812=@wait 1={@nspemit %0=[rpc(Calendar.list,,)]}
+-
 &CMD.+CAL #812=$^\+cal$|^\+cal (.*)$:
   @assert [or(not(t(%1)),eq(words(%1),2))]=@nspemit %#=[ansi(rh,>)] Try [ansi(yh,+cal)] or [ansi(yh,+cal <month> <year>)].%r
                                                        [ansi(rh,>)] For example\, [ansi(yh,+cal jan 2012)].;
