@@ -205,17 +205,14 @@
 
           0,@nspemit %#=[ansi(rh,>)] Invalid contact.,
           1,{@nspemit %#=[ansi(gh,>)] Message sent.;
-             think [spacesys(
-                           notify.consoles,extract(%q2,%0,1),
-                           [ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] from [ansi(wh,name(v(data.ship)))]: %1
-                           )]
+             think spacesys(hail,v(data.ship),%#,extract(%q2,%0,1),%1)
             }
 -
 &CMD.SPOSE #204=$spose *:
   @switch [spacesys(isactive,v(data.ship))]=
 
           0,@nspemit %#=[ansi(rh,>)] The Ship is currently landed.,
-          1,[spacesys(spose,v(data.ship),%0)]
+          1,[spacesys(spose,v(data.ship),%0,%#)]
 -
 &CMD.SCHECK #204=$^\+scheck(/private)? (.*):
   @swi/first [t(setr(0,grab(setr(1,spacesys(list.skills)),*.%2*)))]=
