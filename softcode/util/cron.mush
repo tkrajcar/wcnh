@@ -43,7 +43,7 @@
   @dol [setdiff(lwho(),)]={@swi [setr(0,extract(mail(##),2,1))]=>0,{@pemit ##=[ansi(hy,>)] You have [ansi(h,%q0)] unread @mail[if(gt(%q0,1),s)].}}
 -
 
-&CRON_TIME_SHIPRACE #539=|||21|00|
+&CRON_TIME_SHIPRACE #539=|||18|00|
 -
 
 &CRON_JOB_SHIPRACE #539=think [rpc(Shiprace.runrace)]

@@ -12,26 +12,30 @@ module Shiprace
   def self.purchase(dbref)
     wallet = Econ::Wallet.find_or_create_by(id: dbref)
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
+
     return "> ".red + "Betting is currently closed." unless Racer.all.length > 0
     return "> ".red + "You need at least 10c to place a bet." unless wallet.balance > 10
     return "> ".red + "You cannot have more than 3 tickets for one race." unless Ticket.where(dbref: dbref).length < 3
-    ticket = Ticket.create!(dbref: dbref)
-    racer = Racer.all[ticket.victor]
+
+    racer = Racer.all.shuffle.first
+    ticket = Ticket.create!(dbref: dbref, wager: 10, racer: racer.name)
+    
     wallet.balance = wallet.balance - 10
     wallet.save
     bank.balance = bank.balance + 10
     bank.save
+
     Logs.log_syslog("SHIPRACE","#{R.penn_name(R["enactor"])} purchased a race ticket for 10c.")
     return "> ".green + "You placed a bet of 10c on the #{racer.ship} piloted by #{racer.name}"
   end
 
   def self.tickets
-    return "> ".red + "No tickets purchased in the current race." unless tickets = Ticket.all
-    racers = Racer.all
+    tickets = Ticket.all
+    return "> ".red + "No tickets purchased in the current race." unless tickets.count > 0
     ret = titlebar("Race Tickets Purchased") + "\n"
-    ret << " Buyer".ljust(25).yellow + "Ship".ljust(25).yellow + "Pilot".yellow + "\n"
+    ret << " Buyer".ljust(25).yellow + "Ship".ljust(25).yellow + "Pilot".ljust(21).yellow + "Wager".yellow + "\n"
     tickets.each do |ticket|
-      ret << " #{R.penn_name(ticket.dbref).ljust(23)} #{racers[ticket.victor].ship.ljust(24)} #{racers[ticket.victor].name}\n"
+      ret << " #{R.penn_name(ticket.dbref).ljust(23)} #{Racer.where(name: ticket.racer).first.ship.ljust(24)} #{ticket.racer.ljust(20)} #{ticket.wager}\n"
     end
     ret << footerbar
     ret
@@ -75,18 +79,19 @@ module Shiprace
   end
 
   def self.runrace
-    racers = Racer.all
-    victor, turn1, turn2 = rand(racers.length), rand(racers.length), rand(racers.length)
-    winners = Ticket.where(victor: victor)
+    racers = Racer.all.sort { |a, b| a.skillcheck <=> b.skillcheck }.reverse
+    turn1, turn2 = racers[rand(racers.length)], racers[rand(racers.length)]
+    victor = racers.first
+    winners = Ticket.where(racer: victor.name)
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
     pot = (bank.balance * 0.75).to_i
 
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"Welcome to the Enigma Sector Racing League!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"We have #{racers.length} competitors in tonight's race through the Damioyn System!  Use race/roster to check the roster!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"3.. 2.. 1.. And they're off!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"As they pass Damioyn III, #{racers[turn1].name} in the #{racers[turn1].ship} is in the lead!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"#{racers[turn2].name} in the #{racers[turn2].ship} is leading the pack as they pass Damioyn VI!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"At the Damioyn VIII finish line, it's the #{racers[victor].ship} piloted by #{racers[victor].name}!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"As they pass Damioyn III, #{turn1.name} in the #{turn1.ship} is in the lead!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"#{turn2.name} in the #{turn2.ship} is leading the pack as they pass Damioyn VI!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"At the Damioyn VIII finish line, it's the #{victor.ship} piloted by #{victor.name}!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"There were #{winners.length} winning tickets with a jackpot of #{pot} credits.")
 
     if winners.length > 0
@@ -95,15 +100,14 @@ module Shiprace
     end
     
     winners_names = []
-    winners.each { |winner| winners_names.<< R.penn_name(winner) }
+    winners.each { |winner| winners_names.<< R.penn_name(winner.dbref) }
     Logs.log_syslog("SHIPRACE","Completing race.  Jackpot: #{pot}. #{winners.length} winners: #{winners_names.join(", ")}")
 
     winners.each do |winner|
       wallet = Econ::Wallet.find_or_create_by(id: winner.dbref)
       wallet.balance = wallet.balance + (pot / winners.length)
       wallet.save
-      Logs.log_syslog("SHIPRACE","#{R.name(winner.dbref)} won #{pot / winners.length}c.")
-      R.mailsend(winner.dbref,"Ship Race Winner!/You won #{pot / winners.length} credits in a ship race by betting on the #{racers[victor].ship} piloted by #{racers[victor].name}!")
+      R.mailsend(winner.dbref,"Ship Race Winner!/You won #{pot / winners.length} credits in a ship race by betting on the #{victor.ship} piloted by #{victor.name}!")
     end
 
     Ticket.destroy_all
@@ -118,12 +122,19 @@ module Shiprace
       field :name, type: String
       field :ship, type: String
       field :dbref, type: String
+      field :skill, type: Integer, default: lambda { rand(6) + 1 }
+      field :tickets, type: Array
+
+      def skillcheck
+        rand(5) - 2 + self.skill
+      end
   end
 
   class Ticket
       include Mongoid::Document
       field :dbref, type: String
-      field :victor, type: Integer, default: lambda { rand(MAX_RACERS) }
+      field :wager, type: Integer
+      field :racer, type: String
   end
 
 end
