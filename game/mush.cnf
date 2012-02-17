@@ -513,10 +513,12 @@ help_command events txt/events.txt
 #help_command +help txt/plushelp.txt
 help_command help txt/help.txt
 help_command news txt/news.txt
-
 help_command ahelp txt/ahelp.txt
+
 #ahelp_command anews txt/news.txt
 restrict_command ahelp admin
+restrict_command anews admin
+
 #restrict_command anews admin
 
 ###
@@ -806,8 +808,16 @@ only_ascii_in_names yes
 ### As of 1.7.7p6, you may also stack them on one directive:
 ###   player_flags flag1 flag2
 ###
-
 player_flags suspect
+
+# Players who are ENTER_OK can be given stuff.
+player_flags enter_ok
+
+# Players who are ANSI see attribute names hilighted.
+player_flags ansi
+
+# See the explanation for rooms and no_command.
+player_flags no_command
 
 # -- Default flags for exits
 
@@ -836,15 +846,6 @@ exit_flags
 room_flags no_command
 
 # -- Default flags for players
-
-# Players who are ENTER_OK can be given stuff.
-player_flags enter_ok
-
-# Players who are ANSI see attribute names hilighted.
-player_flags ansi
-
-# See the explanation for rooms and no_command.
-player_flags no_command
 
 # Players who are INHERIT allow all their objects to control them.
 # player_flags inherit
@@ -886,3 +887,5 @@ include alias.cnf
 ### Restrictions on command usage are in restrict.cnf
 ###
 include restrict.cnf
+ahelp_command ahelp txt/help.txt
+ahelp_command anews txt/news.txt
