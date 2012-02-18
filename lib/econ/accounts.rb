@@ -4,7 +4,7 @@ module Econ
   def self.account_list(person)
     victim = R.pmatch(person)
     return ">".bold.green + " Invalid target!" unless victim != "#-1"
-    ret = titlebar("Bank Account List For #{R.penn_name(victim)}")
+    ret = titlebar("Bank Account List For #{R.penn_name(victim)}") + "\n"
     accounts = Account.where(accessors: victim).where(open: true)
     ret << " #{"Name".ljust(15)} #{"Own?"} #{"Balance".rjust(18)} Last Activity".cyan + "\n"
     accounts.each do |account|
