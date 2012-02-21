@@ -155,7 +155,7 @@
           0??,@nspemit %#=[ansi(rh,>)] The ship is currently inactive.,
           10?,@nspemit %#=[ansi(rh,>)] The ship must be stopped before a new course can be calculated.,
           110,@nspemit %#=[ansi(rh,>)] Invalid contact ID.,
-          111,{think [spacesys(setdest,v(data.ship),setr(1,extract(%q0,%0,1)))];
+          111,{think [spacesys(setdest,v(data.ship),setr(1,extract(%q0,max(%0,1),1)))];
                @nspemit %#=[ansi(gh,>)] Plotting a course to [name(%q1)]...%r
                            [ansi(gh,>)] Course laid in.  Estimated time of arrival is 
                                         [ansi(yh,etimefmt($h hours $m minutes,add(stringsecs(spacesys(eta,v(data.ship))),60)))].
