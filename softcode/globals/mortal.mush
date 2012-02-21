@@ -80,7 +80,7 @@
 &cmd.+where #15=$+where:
   @pemit %#=[titlebar(Populated Zones)]%r
             [iter(
-                remove(setunion(iter(mwho(),zone(loc(itext(0)))),),#-1),
+                remove(setunion(iter(filter(filter.mortals,mwho()),zone(loc(itext(0)))),),#-1),
                 [name(itext(0))][if(
                                   not(or(strmatch(zone(itext(0)),#222),spacesys(isship,itext(0)))),
                                   \,%b[trim(regedit(name(zone(itext(0))),lit(<\w*>),))]
@@ -88,6 +88,9 @@
                                 \[[words(zwho(itext(0)))] players\],
                 ,%r)]%r
             [footerbar()]
+-
+&FILTER.MORTALS #15=
+  not(orflags(%0,Wr))
 -
 @set #15/cmd.+who=regexp
 -
