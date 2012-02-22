@@ -7,6 +7,7 @@ Bundler.setup
 require 'wirble'
 require File.expand_path('../lib/wcnh.rb', __FILE__)
 require 'irb'
+require 'awesome_print'
 Wirble.init
 Wirble.colorize
 IRB.start
