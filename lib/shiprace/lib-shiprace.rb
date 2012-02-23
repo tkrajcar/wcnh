@@ -9,33 +9,56 @@ module Shiprace
   FILE_SHIPS = File.expand_path('./ships.txt', File.dirname(__FILE__))
   FILE_NAMES = File.expand_path('./names.txt', File.dirname(__FILE__))
 
-  def self.purchase(dbref)
+  def self.purchase(dbref, skill=0)
     wallet = Econ::Wallet.find_or_create_by(id: dbref)
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
+    wager = 10
+    weights = []
+    weight_table = self.build_weights(skill)
 
     return "> ".red + "Betting is currently closed." unless Racer.all.length > 0
-    return "> ".red + "You need at least 10c to place a bet." unless wallet.balance > 10
+    return "> ".red + "You need at least 10c to place a bet." unless wallet.balance > wager
     return "> ".red + "You cannot have more than 3 tickets for one race." unless Ticket.where(dbref: dbref).length < 3
 
-    racer = Racer.all.shuffle.first
-    ticket = Ticket.create!(dbref: dbref, wager: 10, racer: racer.name)
+    Racer.all.each { |racer| weights.<< racer.weight(weight_table) }
+    racer = Racer.all.to_a.random(weights)
+    ticket = racer.tickets.create!(dbref: dbref, wager: wager)
     
-    wallet.balance = wallet.balance - 10
+    wallet.balance = wallet.balance - wager
     wallet.save
-    bank.balance = bank.balance + 10
+    bank.balance = bank.balance + wager
     bank.save
 
-    Logs.log_syslog("SHIPRACE","#{R.penn_name(R["enactor"])} purchased a race ticket for 10c.")
-    return "> ".green + "You placed a bet of 10c on the #{racer.ship} piloted by #{racer.name}"
+    Logs.log_syslog("SHIPRACE","#{R.penn_name(R["enactor"])} purchased a race ticket for #{wager}c.")
+    return "> ".green + "You placed a bet of #{wager}c on the #{racer.ship} piloted by #{racer.name}."
   end
 
+  def self.build_weights(skill)
+    case skill
+        when 2
+          hash = {1 => 3, 2 => 3, 3 => 2, 4 => 2, 5 => 1, 6 => 1}
+        when 3
+          hash = {1 => 1, 2 => 1, 3 => 1, 4 => 1, 5 => 1, 6 => 1}
+        when 4
+          hash = {1 => 1, 2 => 2, 3 => 3, 4 => 3, 5 => 2, 6 => 1}
+        when 5
+          hash = {1 => 1, 2 => 1, 3 => 2, 4 => 2, 5 => 3, 6 => 3}
+        when skill > 5
+          hash = {1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6}
+        else
+          hash = {1 => 6, 2 => 5, 3 => 4, 4 => 3, 5 => 2, 6 => 1}
+        end
+    
+    return hash
+  end
+  
   def self.tickets
     tickets = Ticket.all
     return "> ".red + "No tickets purchased in the current race." unless tickets.count > 0
     ret = titlebar("Race Tickets Purchased") + "\n"
     ret << " Buyer".ljust(25).yellow + "Ship".ljust(25).yellow + "Pilot".ljust(21).yellow + "Wager".yellow + "\n"
     tickets.each do |ticket|
-      ret << " #{R.penn_name(ticket.dbref).ljust(23)} #{Racer.where(name: ticket.racer).first.ship.ljust(24)} #{ticket.racer.ljust(20)} #{ticket.wager}\n"
+      ret << " #{R.penn_name(ticket.dbref).ljust(23)} #{ticket.racer.ship.ljust(24)} #{ticket.racer.name.ljust(20)} #{ticket.wager}\n"
     end
     ret << footerbar
     ret
@@ -82,7 +105,7 @@ module Shiprace
     racers = Racer.all.sort { |a, b| a.skillcheck <=> b.skillcheck }.reverse
     turn1, turn2 = racers[rand(racers.length)], racers[rand(racers.length)]
     victor = racers.first
-    winners = Ticket.where(racer: victor.name)
+    winners = victor.tickets
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
     pot = (bank.balance * 0.75).to_i
 
@@ -123,10 +146,14 @@ module Shiprace
       field :ship, type: String
       field :dbref, type: String
       field :skill, type: Integer, default: lambda { rand(6) + 1 }
-      field :tickets, type: Array
+      has_many :tickets, :class_name => "Shiprace::Ticket"
 
       def skillcheck
         rand(5) - 2 + self.skill
+      end
+
+      def weight(hash)
+        return hash[self.skill]
       end
   end
 
@@ -134,8 +161,23 @@ module Shiprace
       include Mongoid::Document
       field :dbref, type: String
       field :wager, type: Integer
-      field :racer, type: String
+      belongs_to :racer, :class_name => "Shiprace::Racer"
   end
 
+end
+
+class Array
+  def random(weights=nil)
+    return random(map {|n| n.send(weights)}) if weights.is_a? Symbol
+  
+    weights ||= Array.new(length, 1.0)
+    total = weights.inject(0.0) {|t,w| t+w}
+    point = rand * total
+   
+    zip(weights).each do |n,w|
+      return n if w >= point
+      point -= w
+    end
+  end
 end
 

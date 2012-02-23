@@ -578,6 +578,9 @@
   X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
   Landing Area: [ifelse(hasattrval(%0,data.landing),name(zone(get(%0/data.landing))),N/A)]
 -
+&FN.SCAN.LAND #208=
+  [u(loc(%0)/nameformat)]%r[u(loc(%0)/describe)]%r[u(loc(%0)/conformat,cat(lvplayers(loc(%0)),lvthings(loc(%0))))]
+-
 &FN.ISACTIVE #208=
   [t(member(get(v(data)/list.active),%0))]
 -
