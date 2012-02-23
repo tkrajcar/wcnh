@@ -3,7 +3,7 @@ module Econ
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    embeds_many :demand_factors, :class_name => "Econ::DemandFactor"
+    has_many :demand_factors, :class_name => "Econ::DemandFactor"
 
     field :name, :type => String
     field :lowercase_name, :type => String, :default => lambda { self.name.downcase }
