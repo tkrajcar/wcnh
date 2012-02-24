@@ -17,12 +17,13 @@ calendar events.'
 Syntax: +cal
         +cal <month> <year>
         +cal/view <id>
+        +cal <id>
 
 The first syntax will show a list of upcoming events in the next 30 days.
 
 The second syntax will show a list of events in the indicated month.
 
-The third syntax will show details about a particular event.
+The third and fourth syntax will show details about a particular event.
 
 & calendar events
 Events can be added to the calendar by anyone, and can be used freely for
