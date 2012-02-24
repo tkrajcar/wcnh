@@ -4,6 +4,7 @@ module Econ
     BASE_CARGO_RATE_MAX = 50.0
     TIME_FACTOR_MULTIPLIER = [0,0.8,1.0,1.5,2.0,3.0]
     GRADE_MULTIPLIER = [0,0.6,0.8,1.0,1.2,1.4,2.0]
+    TIME_FACTOR_INTERVALS = [0, 48.hours, 36.hours, 24.hours, 9.hours, 3.hours]
 
     include Mongoid::Document
     include Mongoid::Timestamps
@@ -12,11 +13,20 @@ module Econ
     field :grade, :type => Integer, :default => 3
     field :expires, :type => DateTime
     field :claimed, :type => Boolean
+    field :completed, :type => Boolean
     field :customer, :type => String
     field :size, :type => Integer
-    field :price
+    field :price, :type => Integer
+    field :visibility, :type => Integer
     belongs_to :source, :class_name => "Econ::Location"
     belongs_to :destination, :class_name => "Econ::Location"
+
+    index :source
+    index :destination
+    index :commodity
+    index :completed
+    index :claimed
+    index :visibility
 
 
     def self.generate
@@ -65,6 +75,10 @@ module Econ
       end
       p "Distance: #{distance}"
 
+
+      visibility = (1 + grade + time_factor + rand(-1..1)) / 2
+      p "Visibility: #{visibility}"
+
       price = rand(BASE_CARGO_RATE_MIN..BASE_CARGO_RATE_MAX) * (Math.sqrt(size) ** 1.5) * TIME_FACTOR_MULTIPLIER[time_factor] * GRADE_MULTIPLIER[grade] * distance
       #* Math.log(commodity.price_volatility * grade)) ** (1.0 + time_factor / 10)
       p "Price: #{price}. Price per unit: #{price / size}"
@@ -72,6 +86,10 @@ module Econ
         p "Discarding <1000c job."
         CargoJob.generate
       end
+      
+      expires = DateTime.now + TIME_FACTOR_INTERVALS[time_factor]
+
+      CargoJob.create!(commodity: commodity, expires: expires, grade: grade, claimed: false, completed: false, size: size, price: price.to_i, source: from[:location], destination: to[:location], visibility: visibility)
     end
   end
 end
