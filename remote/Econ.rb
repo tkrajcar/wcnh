@@ -58,5 +58,21 @@ module Econ
   def self.pj_account_rename(account,newname)
     self.account_rename(account,newname)
   end
+
+  def self.pj_cargojob_list
+    self.cargojob_list
+  end
+
+  def self.pj_cargojob_claim(job)
+    self.cargojob_claim(job)
+  end
+
+  def self.pj_cargojob_load(job,shipname)
+    self.cargojob_load(job,shipname)
+  end
+
+  def self.pj_cargojob_deliver(job)
+    self.cargojob_deliver(job)
+  end
 end
 

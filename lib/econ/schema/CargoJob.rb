@@ -4,15 +4,19 @@ module Econ
     BASE_CARGO_RATE_MAX = 50.0
     TIME_FACTOR_MULTIPLIER = [0,0.8,1.0,1.5,2.0,3.0]
     GRADE_MULTIPLIER = [0,0.6,0.8,1.0,1.2,1.4,2.0]
+    GRADE_WORDS = ['', 'surplus', 'low-grade', 'unremarkable', 'fine', 'exquisite']
     TIME_FACTOR_INTERVALS = [0, 48.hours, 36.hours, 24.hours, 9.hours, 3.hours]
 
     include Mongoid::Document
     include Mongoid::Timestamps
 
     belongs_to :commodity, :class_name => "Econ::Commodity"
+    field :number, :type => Integer, :default => lambda {Counters.next("cargojob")}
+
     field :grade, :type => Integer, :default => 3
     field :expires, :type => DateTime
     field :claimed, :type => Boolean
+    field :claimed_by, :type => String #dbref of claimant
     field :completed, :type => Boolean
     field :customer, :type => String
     field :size, :type => Integer
@@ -21,6 +25,7 @@ module Econ
     belongs_to :source, :class_name => "Econ::Location"
     belongs_to :destination, :class_name => "Econ::Location"
 
+    index :number, :unique => true
     index :source
     index :destination
     index :commodity
@@ -28,6 +33,9 @@ module Econ
     index :claimed
     index :visibility
 
+    def grade_text
+      GRADE_WORDS[self.grade] 
+    end
 
     def self.generate
       commodity = Econ::Commodity.all.to_a.shuffle.pop
@@ -80,7 +88,6 @@ module Econ
       p "Visibility: #{visibility}"
 
       price = rand(BASE_CARGO_RATE_MIN..BASE_CARGO_RATE_MAX) * (Math.sqrt(size) ** 1.5) * TIME_FACTOR_MULTIPLIER[time_factor] * GRADE_MULTIPLIER[grade] * distance
-      #* Math.log(commodity.price_volatility * grade)) ** (1.0 + time_factor / 10)
       p "Price: #{price}. Price per unit: #{price / size}"
       if price < 1000
         p "Discarding <1000c job."
