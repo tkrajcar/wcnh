@@ -1,8 +1,12 @@
+require File.expand_path('../../lib/wcnh.rb', __FILE__)
+require 'csv'
+
 Space::System.delete_all
 Econ::Location.delete_all
 Econ::Commodity.delete_all
 Econ::DemandFactor.delete_all
 Econ::Distance.delete_all
+Econ::CargoJob.delete_all
 
 midgard_system = Space::System.create!(name: "Midgard")
 vespus_system = Space::System.create!(name: "Vespus")
@@ -21,20 +25,16 @@ vespus_i = vespus_system.locations.create!(name: "Vespus I")
 cabrea_ii = cabrea_system.locations.create!(name: "Cabrea II")
 inferno = pembroke_system.locations.create!(name: "Inferno")
 
-live_animals = Econ::Commodity.create!(name: "live animals", master_price: 20, price_volatility: 2)
-live_animals.demand_factors.create!(location: sting, factor: 2)
-live_animals.demand_factors.create!(location: vespus_i, factor: 1)
-live_animals.demand_factors.create!(location: cabrea_ii, factor: -1)
-live_animals.demand_factors.create!(location: inferno, factor: 0)
-
-meat_products = Econ::Commodity.create!(name: "meat", master_price: 10, price_volatility: 1)
-meat_products.demand_factors.create!(location: sting.id, factor: 1)
-meat_products.demand_factors.create!(location: vespus_i, factor: -1)
-meat_products.demand_factors.create!(location: cabrea_ii, factor: 1)
-meat_products.demand_factors.create!(location: inferno, factor: 1)
-
-toys = Econ::Commodity.create!(name: "toys", master_price: 100, price_volatility: 3)
-toys.demand_factors.create!(location: vespus_i, factor: -1)
-toys.demand_factors.create!(location: cabrea_ii, factor: 1)
-
-
+CSV.foreach("data/commodities.csv") do |row|
+  commod = Econ::Commodity.create!(name: row[0].downcase, master_price: row[1], price_volatility: row[6])
+  i = 2
+  [sting, vespus_i, cabrea_ii, inferno].each do |location|
+    if row[i] == 'none'
+      p "Skipping #{commod.name} demand factor for #{location.name}."
+      i = i + 1
+      next
+    end
+    commod.demand_factors.create!(location: location, factor: row[i])
+    i = i + 1
+  end
+end
