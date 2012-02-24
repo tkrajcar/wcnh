@@ -33,16 +33,43 @@ module Econ
     index :claimed
     index :visibility
 
+    scope :open_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).asc(:expires) }
+
     def grade_text
-      GRADE_WORDS[self.grade] 
+      GRADE_WORDS[self.grade]
+    end
+
+    def to_mush
+      ret = self.number.to_s.rjust(5).bold.yellow
+      ret << " "
+      ret << "#{self.source.name}-#{self.destination.name}".ljust(18)
+      ret << " "
+      ret << self.size.to_s.rjust(4)
+      ret << Econ.credit_format(self.price).to_s.rjust(8).bold.yellow
+      ret << " "
+      expires_in = self.expires.to_time - DateTime.now
+      mm, ss = expires_in.divmod(60)
+      hh, mm = mm.divmod(60)
+      dd, hh = hh.divmod(24)
+      if dd > 0
+        ret << "#{dd}d "
+      else
+        ret << "   "
+      end
+      ret << "#{hh.to_s.rjust(2,'0')}:#{mm.to_s.rjust(2,'0')}"
+
+      ret << " "
+      ret << self.grade_text
+      ret << " "
+      ret << self.commodity.name
     end
 
     def self.generate
       commodity = Econ::Commodity.all.to_a.shuffle.pop
       p "Commodity: #{commodity.name}"
-      
+
       from_picklist = []
-      commodity.demand_factors.where(:factor.gte => -1) .each do |from_system|
+      commodity.demand_factors.where(:factor.gte => -1).each do |from_system|
         from_picklist << {location: from_system.location, weighted_factor: rand(1.0..1.5) ** (1 + (from_system.factor + 2) / 5)}
       end
       from_picklist.sort! {|x,y| x[:weighted_factor] <=> y[:weighted_factor]}
@@ -89,11 +116,7 @@ module Econ
 
       price = rand(BASE_CARGO_RATE_MIN..BASE_CARGO_RATE_MAX) * (Math.sqrt(size) ** 1.5) * TIME_FACTOR_MULTIPLIER[time_factor] * GRADE_MULTIPLIER[grade] * distance
       p "Price: #{price}. Price per unit: #{price / size}"
-      if price < 1000
-        p "Discarding <1000c job."
-        CargoJob.generate
-      end
-      
+
       expires = DateTime.now + TIME_FACTOR_INTERVALS[time_factor]
 
       CargoJob.create!(commodity: commodity, expires: expires, grade: grade, claimed: false, completed: false, size: size, price: price.to_i, source: from[:location], destination: to[:location], visibility: visibility)
