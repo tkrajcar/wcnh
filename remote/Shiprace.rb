@@ -6,7 +6,7 @@ module Shiprace
   R = PennJSON::Remote
 
   def self.pj_purchase(dbref, skill)
-    self.purchase(dbref, skill)
+    self.purchase(dbref, skill.to_i)
   end
 
   def self.pj_buildroster
