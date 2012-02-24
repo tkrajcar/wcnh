@@ -75,7 +75,7 @@
 &cmd.account/rename #19=$account/rename *=*:@nspemit %#=[rpc(Econ.account_rename,%0,%1)]
 -
 
-&cmd.cargo #19=$^cargo(/list)?:@nspemit %#=[rpc(Econ.cargojob_list)]
+&cmd.cargo #19=$^cargo(/list)?$:@nspemit %#=[rpc(Econ.cargojob_list)]
 -
 @set #19/cmd.cargo=regexp
 -
