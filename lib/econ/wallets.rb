@@ -5,7 +5,8 @@ module Econ
 
   # helper function
   def self.credit_format(number) # return formatted (1,234.56) number
-    number.round(1,:floor).to_s.gsub(/(\d)(?=\d{3}+(?:\.|$))(\d{3}\..*)?/,'\1,\2')
+    number = number.round(1,:floor) if number.class != Fixnum
+    number.to_s.gsub(/(\d)(?=\d{3}+(?:\.|$))(\d{3}\..*)?/,'\1,\2')
   end
 
   def self.cash(person)
