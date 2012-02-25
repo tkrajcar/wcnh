@@ -780,7 +780,7 @@
       [ansi(y,Engines:)] [mul(get(v(data)/interval),setr(5,spacesys(speed,%0)))] km/h \(+[mul(100,sub(fdiv(%q5,spacesys(speed.base,%0)),1))]\% skill bonus\)|
       [ansi(y,Hull Integrity:)] [mul(fdiv(first(setr(0,spacesys(hull,%0)),:),last(%q0,:)),100)]\% \([first(%q0,:)]/[last(%q0,:)]\)|
       [ansi(y,Shields:)] [mul(fdiv(first(setr(1,spacesys(shields,%0)),:),last(%q1,:)),100)]\% \([first(%q1,:)]/[last(%q1,:)]\)|
-      [ansi(y,Cargo Bay:)] [first(setr(2,spacesys(cargo,%0)),:)] of [last(%q2,:)] m2|
+      [ansi(y,Cargo Bay:)] [first(setr(2,spacesys(cargo,%0)),:)] of [last(%q2,:)] m3|
       [ansi(y,Reactor:)] [first(setr(3,spacesys(reactor,%0)),:)] of [last(%q3,:)] MW|
       [ansi(y,Computer:)] [mul(fdiv(first(setr(4,spacesys(cpu,%0)),:),last(%q4,:)),100)]\% Avail.,
       38,79,|
