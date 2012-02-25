@@ -58,7 +58,7 @@ module Econ
     ship = R.locate(port_location,shipname,"TF*")
 
     return "> ".bold.green + "There doesn't seem to be a ship by that name at #{job.source.name.bold}." if ship == "#-1"
-    return "> ".bold.green + "You're not on the crew list for the #{R.penn_name(ship).bold}." unless R.u("#25/SPACESYS.FN","canboard",ship,R["enactor"]).to_bool
+    return "> ".bold.green + "You're not on the crew list for the #{R.penn_name(ship).bold}." unless R.u("#25/SPACESYS.FN","iscrew",ship,R["enactor"]).to_bool
 
     # check remaining cargo capacity
     cur = R.xget(ship,"SPACE`CARGO`CUR").to_i
@@ -101,7 +101,7 @@ module Econ
     return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
     return "> ".bold.green + "That job hasn't been loaded yet!" unless job.is_loaded
     return "> ".bold.green + "That job has already been delivered!" if job.completed
-    return "> ".bold.green + "You're not on the crew list for the ship that job is on." unless R.u("#25/SPACESYS.FN","canboard",job.loaded_on,R["enactor"]).to_bool
+    return "> ".bold.green + "You're not on the crew list for the ship that job is on." unless R.u("#25/SPACESYS.FN","iscrew",job.loaded_on,R["enactor"]).to_bool
     port_location = R.xget(job.destination.space_object,"DATA.LANDING")
     return "> ".bold.green + "The ship that job's on isn't at #{job.destination.name.bold}." unless R.penn_loc(job.loaded_on) == port_location
     
