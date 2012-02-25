@@ -20,10 +20,10 @@ Econ::Distance.create!(system_a: pembroke_system, system_b: midgard_system, dist
 Econ::Distance.create!(system_a: pembroke_system, system_b: vespus_system, distance: 1)
 Econ::Distance.create!(system_a: midgard_system, system_b: vespus_system, distance: 5)
 
-sting = midgard_system.locations.create!(name: "Sting")
-vespus_i = vespus_system.locations.create!(name: "Vespus I")
-cabrea_ii = cabrea_system.locations.create!(name: "Cabrea II")
-inferno = pembroke_system.locations.create!(name: "Inferno")
+sting = midgard_system.locations.create!(name: "Sting", space_object: "#331")
+vespus_i = vespus_system.locations.create!(name: "Vespus I", space_object: "#170")
+cabrea_ii = cabrea_system.locations.create!(name: "Cabrea II", space_object: "#126")
+inferno = pembroke_system.locations.create!(name: "Inferno", space_object: "#150")
 
 CSV.foreach("data/commodities.csv") do |row|
   commod = Econ::Commodity.create!(name: row[0].downcase, master_price: row[1], price_volatility: row[6])

@@ -8,5 +8,8 @@ module Econ
 
     field :name, :type => String
     field :lowercase_name, :type => String, :default => lambda { self.name.downcase }
+    field :space_object, :type => String
+
+    index :lowercase_name
   end
 end
