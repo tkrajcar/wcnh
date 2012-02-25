@@ -4,7 +4,6 @@
   This command views your IC credits on-hand at the moment.
 
 See also: pay, put down
-
 & pay
   pay <person>=<amount>
 
@@ -12,7 +11,6 @@ See also: pay, put down
   be in the same room.
 
 See also: cash, put down
-
 & put down
   put down <quantity>
 
@@ -21,7 +19,6 @@ See also: cash, put down
   Anyone can pick up the chip.
 
 See also: cash, pay
-
 & ACCOUNT
   These files describe the WC:NH bank account system. Bank accounts are run by
   the ESC/KC and are accessible from anywhere in the Sector using your tablet.
@@ -43,7 +40,6 @@ See also: cash, pay
   account/access    account/close     account/deposit   account/list
   account/open      account/owner     account/rename    account/view
   account/withdraw
-
 & ACCOUNT/ACCESS
   account/access <account>=<+|-><person>
 
@@ -58,7 +54,6 @@ See also: cash, pay
 
   account/access Demo=-Bob Smith
   > Removing access for Bob Smith to account Demo.
-
 & ACCOUNT/CLOSE
   account/close <account>
 
@@ -66,7 +61,6 @@ See also: cash, pay
   deposited to, withdrawn from, or manipulated - they can only be viewed.
 
   This command is permanent without admin intervention.
-
 & ACCOUNT/DEPOSIT
   account/deposit <account>=<amount>
 
@@ -74,39 +68,84 @@ See also: cash, pay
   on hand. You can deposit into any bank account as long as you know the name,
   but your name is logged and visible to anyone with access to the account; 
   ICly, you would have to present biometric identification to make a deposit.
-
 & ACCOUNT/LIST
   account/list
 
   This command lists all opened accounts you either own or have access to.
-
 & ACCOUNT/OPEN
   account/open <name>
 
   This command opens a new account with the specified name. You will need to use
   this name every time you interact with the account, so keep it short (and IC).
-
 & ACCOUNT/OWNER
   account/owner <account>=<new owner>
 
   This command allows the owner of an account to transfer it to a new owner.
   The new owner is notified that you made this change.
-
 & ACCOUNT/RENAME
   account/rename <account>=<new name>
 
   This command allows the owner of an account to rename it.
-
 & ACCOUNT/VIEW
   account/view <account>
 
   This command allows you to view the status and recent activity on an account
   you either own or have access to.
-
 & ACCOUNT/WITHDRAW
   account/withdraw <account>=<amount>
 
   This allows you to withdraw credits from an account to your on-hand credits.
   Naturally, you must have access to the account to withdraw from it.
+& CARGO
+  These help files describe WCNH's cargo system. This system allows players with
+  ships to haul cargo around the Enigma Sector for a profit, and represents
+  players being contracted by NPC companies/organizations to haul cargo on a
+  per-job basis. Players will also eventually be able to buy and sell commoditi-
+  es outright, but that system is not yet online.
 
+  For more information, see:
 
+  'help cargo concepts' - general information about the system design
+  'help cargo commands' - commands for interacting with cargo
+& CARGO CONCEPTS
+  Here's some basic information about our system.
+
+  * The unit of measure for cargo is the m3, or cubic meter.
+  * There are a wide variety of commodities, and each commodity might appear in
+    various 'grades': surplus, low-grade, unremarkable, fine, and exquisite.
+  * Shipping prices to move a m3 of cargo are about the same no matter what the
+    commodity is, but higher-graded jobs will pay more, especially on items with
+    high price volatility.
+  * Each cargo job also has an expiration time. A new job can expire in anywhere
+    from a few hours to several days. Jobs with shorter expirations pay better.
+  * Not everyone can see the same jobs. Your Economics and Streetwise skills de-
+    termine what jobs you can see.
+  * You can use all of the cargo commands from anywhere (ICly you're using your
+    datapad).
+
+  Continued in 'help cargo concepts 2'
+& CARGO CONCEPTS 2
+  * Jobs can be claimed (see 'help cargo commands') by anyone who can see them,
+    loaded into a ship by the person that claimed the job (if they're on the
+    crew list of the ship), and delivered by anyone on the crew list of the
+    ship. Jobs are always paid to the person who claimed it. This allows people
+    with high business skills to run cargo companies even though they're not the
+    actual pilots, or help out pilots by claiming jobs that the pilots can't.
+  * The number of claimed, uncompleted jobs you can have at once is equal 
+    to your economics skill. Need to claim more jobs? Hire some crew!
+  * When a job expires:
+    - if it's not been claimed, it goes away
+    - if it's been claimed, but not loaded, it goes away
+    - if it's been loaded, but not delivered, you need to deliver it, but you 
+      won't get paid. Should've been quicker next time!
+& CARGO COMMANDS
+  Here are the commands for interacting with the cargo system. Be sure and read
+  'help cargo concepts' to understand how it works.
+
+  cargo - list all jobs you can see
+  cargo/claim <job #> - claim a job
+  cargo/load <job #>=<ship name> - load a job into a ship
+  cargo/deliver <job #> - deliver/unload a job
+
+  You can also use the 'manifest' command while manning a console to see what
+  cargo is on board your ship.
