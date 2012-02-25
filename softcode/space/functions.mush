@@ -761,7 +761,7 @@
   [get(%0/space`shields`cur)]:[max(power(mul(get(%0/space`shields),10),2),10)]
 -
 &FN.CARGO #208=
-  [get(%0/space`cargo`cur)]:[mul(100,get(%0/space`cargo))]
+  [get(%0/space`cargo`cur)]:[get(%0/space`cargo)]
 -
 &FN.CPU #208=
   [get(%0/space`cpu`cur)]:[max(mul(10,get(%0/space`cpu)),10)]
