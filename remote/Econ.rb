@@ -79,5 +79,9 @@ module Econ
     r=Econ::CargoJob.generate
     r.number.to_s
   end
+
+  def self.pj_cargojob_manifest(ship)
+    self.cargojob_manifest(ship)
+  end
 end
 

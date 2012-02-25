@@ -17,8 +17,8 @@ module Econ
     field :expires, :type => DateTime
     field :claimed, :type => Boolean
     field :claimed_by, :type => String #dbref of claimant
-    field :completed, :type => Boolean
-    field :is_loaded, :type => Boolean
+    field :completed, :type => Boolean, :default => false
+    field :is_loaded, :type => Boolean, :default => false
     field :customer, :type => String
     field :size, :type => Integer
     field :price, :type => Integer
@@ -34,7 +34,7 @@ module Econ
     index :claimed
     index :visibility
 
-    scope :open_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).asc(:expires) }
+    scope :open_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).where(is_loaded:false).asc(:expires) }
 
     def grade_text
       GRADE_WORDS[self.grade]
@@ -49,15 +49,19 @@ module Econ
       ret << Econ.credit_format(self.price).to_s.rjust(8).bold.yellow
       ret << " "
       expires_in = self.expires.to_time - DateTime.now
-      mm, ss = expires_in.divmod(60)
-      hh, mm = mm.divmod(60)
-      dd, hh = hh.divmod(24)
-      if dd > 0
-        ret << "#{dd}d "
+      if expires_in > 0
+        mm, ss = expires_in.divmod(60)
+        hh, mm = mm.divmod(60)
+        dd, hh = hh.divmod(24)
+        if dd > 0
+          ret << "#{dd}d "
+        else
+          ret << "   "
+        end
+        ret << "#{hh.to_s.rjust(2,'0')}:#{mm.to_s.rjust(2,'0')}"
       else
-        ret << "   "
+        ret << " EXPIRED".bold.red
       end
-      ret << "#{hh.to_s.rjust(2,'0')}:#{mm.to_s.rjust(2,'0')}"
 
       ret << " "
       ret << self.grade_text
