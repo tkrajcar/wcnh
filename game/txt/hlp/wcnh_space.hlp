@@ -11,8 +11,8 @@ The following commands are for use within the space system.  Most of them
 require that you "man" a console prior to using the command.
  
 board            hail           intercom      jump          man
-land             launch         plot          roster        scan
-+scheck          spose          status        survey
+land             launch         manifest      plot          roster
+scan             +scheck        spose         status        survey
 
 & SURVEY
 Syntax: survey <contact ID>
@@ -127,4 +127,7 @@ This command works just like the pose command, but allows a person manning a
 ship console to make a pose about the entire ship that will be prefixed by the
 ship's name.  All other ships in the current system will see the spose.
  
+& MANIFEST
+Syntax: manifest
 
+This command lists all cargo jobs that are aboard the ship.
