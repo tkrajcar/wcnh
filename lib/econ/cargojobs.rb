@@ -19,6 +19,13 @@ module Econ
         ret << "\n"
       end
     end
+    if CargoJob.loaded_and_claimed_by(R["enactor"]).count > 0
+      ret << middlebar("YOUR LOADED JOBS") + "\n"
+      CargoJob.loaded_and_claimed_by(R["enactor"]).each do |job|
+        ret << job.to_mush
+        ret << "\n"
+      end
+    end
     ret << footerbar()
   end
 
@@ -43,7 +50,7 @@ module Econ
   def self.cargojob_load(job,shipname)
     job = CargoJob.where(number: job).first
     return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
-    return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by = R["enactor"]
+    return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by == R["enactor"]
     return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
     return "> ".bold.green + "That job has already been loaded!" if job.is_loaded
 
@@ -64,8 +71,9 @@ module Econ
     R.attrib_set("#{ship}/SPACE`CARGO`CUR",(cur + job.size).to_s)
 
     job.is_loaded = true
+    job.loaded_on = ship
     job.save
-    Logs.log_syslog("CARGOJOBLAOD", "#{R.penn_name(R["enactor"])} loaded job #{job.number} into #{R.penn_name(ship)}(#{ship}).")
+    Logs.log_syslog("CARGOJOBLOAD", "#{R.penn_name(R["enactor"])} loaded job #{job.number} into #{R.penn_name(ship)}(#{ship}).")
 
     R.remit(port_location,"Ground crews begin loading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} into the #{R.penn_name(ship).bold}.")
 
@@ -85,5 +93,44 @@ module Econ
     max = R.xget(ship,"SPACE`CARGO`MAX").to_i
     ret << "      #{cur.to_s.bold.yellow} m3 of cargo on board. #{(max - cur).to_s.bold.yellow} m3 of space remaining.\n"
     ret << footerbar()
+  end
+
+
+  def self.cargojob_deliver(job)
+    job = CargoJob.where(number: job).first
+    return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
+    return "> ".bold.green + "That job hasn't been loaded yet!" unless job.is_loaded
+    return "> ".bold.green + "That job has already been delivered!" if job.completed
+    return "> ".bold.green + "You're not on the crew list for the ship that job is on." unless R.u("#25/SPACESYS.FN","canboard",job.loaded_on,R["enactor"]).to_bool
+    port_location = R.xget(job.destination.space_object,"DATA.LANDING")
+    return "> ".bold.green + "The ship that job's on isn't at #{job.destination.name.bold}." unless R.penn_loc(job.loaded_on) == port_location
+    
+    # handle expirations
+    if job.expires < DateTime.now
+      R.nspemit(R["enactor"],"> ".bold.green + "Unloading job #{job.number}. Sadly, the job expired, so it's worthless now.")
+      R.nspemit(job.claimed_by,"> ".bold.green + "Your claimed job #{job.number} was delivered, but the job expired.") unless job.claimed_by == R["enactor"]
+      Logs.log_syslog("CARGOJOBDELIVER", "#{R.penn_name(R["enactor"])} delivered job #{job.number}, but it expired.")
+    else
+      if R["enactor"] == job.claimed_by
+        R.nspemit(R["enactor"],"> ".bold.green + "Unloading job #{job.number}. #{job.price} credits paid.")
+      else
+        R.nspemit(R["enactor"],"> ".bold.green + "Unloading job #{job.number}. #{job.price} credits paid to #{R.penn_name(job.claimed_by)}.")
+        R.nspemit(job.claimed_by,"> ".bold.green + "Your claimed #{job.number} has been delivered. #{job.price} credits paid.")
+      end
+      Econ.grant(job.claimed_by,job.price)
+      Logs.log_syslog("CARGOJOBDELIVER", "#{R.penn_name(R["enactor"])} delivered job #{job.number}. #{job.price} credits paid.")
+    end
+    R.remit(port_location,"Ground crews begin unloading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} from the #{R.penn_name(job.loaded_on).bold}.")
+    # remove from ONBOARD
+    onboard = (R.xget(job.loaded_on,"SPACE`CARGO`ONBOARD") || "").split(' ')
+    onboard.delete(job.number.to_s)
+    R.attrib_set("#{job.loaded_on}/SPACE`CARGO`ONBOARD",onboard.join(' '))
+  
+    cur = R.xget(job.loaded_on,"SPACE`CARGO`CUR").to_i
+    R.attrib_set("#{job.loaded_on}/SPACE`CARGO`CUR",(cur - job.size).to_s)
+
+    job.completed = true
+    job.save
+    ""
   end
 end

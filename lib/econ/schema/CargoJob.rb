@@ -19,6 +19,7 @@ module Econ
     field :claimed_by, :type => String #dbref of claimant
     field :completed, :type => Boolean, :default => false
     field :is_loaded, :type => Boolean, :default => false
+    field :loaded_on, :type => String #dbref of ship job is loaded on
     field :customer, :type => String
     field :size, :type => Integer
     field :price, :type => Integer
@@ -35,6 +36,8 @@ module Econ
     index :visibility
 
     scope :open_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).where(is_loaded:false).asc(:expires) }
+    scope :loaded_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).where(is_loaded:true).asc(:expires) }
+    
 
     def grade_text
       GRADE_WORDS[self.grade]
