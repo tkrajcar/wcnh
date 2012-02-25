@@ -5,7 +5,7 @@ module Econ
     TIME_FACTOR_MULTIPLIER = [0,0.8,1.0,1.5,2.0,3.0]
     GRADE_MULTIPLIER = [0,0.6,0.8,1.0,1.2,1.4,2.0]
     GRADE_WORDS = ['', 'surplus', 'low-grade', 'unremarkable', 'fine', 'exquisite']
-    TIME_FACTOR_INTERVALS = [0, 48.hours, 36.hours, 24.hours, 9.hours, 3.hours]
+    TIME_FACTOR_INTERVALS = [0, 36.0..48.0, 24.0..36.0, 9.0..24.0, 3.0..9.0, 1.5..3.0]
 
     include Mongoid::Document
     include Mongoid::Timestamps
@@ -117,7 +117,7 @@ module Econ
       price = rand(BASE_CARGO_RATE_MIN..BASE_CARGO_RATE_MAX) * (Math.sqrt(size) ** 1.5) * TIME_FACTOR_MULTIPLIER[time_factor] * GRADE_MULTIPLIER[grade] * distance
       p "Price: #{price}. Price per unit: #{price / size}"
 
-      expires = DateTime.now + TIME_FACTOR_INTERVALS[time_factor]
+      expires = DateTime.now + rand(TIME_FACTOR_INTERVALS[time_factor]).hours
 
       CargoJob.create!(commodity: commodity, expires: expires, grade: grade, claimed: false, completed: false, size: size, price: price.to_i, source: from[:location], destination: to[:location], visibility: visibility)
     end
