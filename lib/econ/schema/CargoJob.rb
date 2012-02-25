@@ -40,7 +40,7 @@ module Econ
     end
 
     def to_mush
-      ret = self.number.to_s.rjust(5).bold.yellow
+      ret = self.number.to_s.rjust(5).bold
       ret << " "
       ret << "#{self.source.name}-#{self.destination.name}".ljust(18)
       ret << " "
