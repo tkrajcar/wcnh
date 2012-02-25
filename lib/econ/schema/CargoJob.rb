@@ -1,7 +1,7 @@
 module Econ
   class CargoJob
-    BASE_CARGO_RATE_MIN = 30.0
-    BASE_CARGO_RATE_MAX = 50.0
+    BASE_CARGO_RATE_MIN = 40.0
+    BASE_CARGO_RATE_MAX = 60.0
     TIME_FACTOR_MULTIPLIER = [0,0.8,1.0,1.5,2.0,3.0]
     GRADE_MULTIPLIER = [0,0.6,0.8,1.0,1.2,1.4,2.0]
     GRADE_WORDS = ['', 'surplus', 'low-grade', 'unremarkable', 'fine', 'exquisite']
@@ -95,7 +95,7 @@ module Econ
       time_factor = [1,1,1,2,2,3,3,4,5].shuffle[0]
       p "Time factor: #{time_factor}"
 
-      size = [rand(5..20),rand(20..100),rand(100..500)].shuffle[0]
+      size = [rand(3..15),rand(15..60),rand(60..120)].shuffle[0]
       p "Size: #{size}"
 
       distance_1 = Econ::Distance.where(system_a_id: from[:location].system._id).where(system_b_id: to[:location].system._id)
