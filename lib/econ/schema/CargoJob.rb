@@ -18,6 +18,7 @@ module Econ
     field :claimed, :type => Boolean
     field :claimed_by, :type => String #dbref of claimant
     field :completed, :type => Boolean
+    field :is_loaded, :type => Boolean
     field :customer, :type => String
     field :size, :type => Integer
     field :price, :type => Integer

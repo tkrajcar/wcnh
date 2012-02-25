@@ -36,5 +36,39 @@ module Econ
     job.claimed_by = R["enactor"]
     job.save
     Logs.log_syslog("CARGOJOBCLAIM", "#{R.penn_name(R["enactor"])} claimed job #{job.number} (#{job._id}).")
+    "> ".bold.green + "You claim job #{job.number.to_s.bold}."
+  end
+  
+
+  def self.cargojob_load(job,shipname)
+    job = CargoJob.where(number: job).first
+    return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
+    return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by = R["enactor"]
+    return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
+    return "> ".bold.green + "That job has already been loaded!" if job.is_loaded
+
+    port_location = R.xget(job.source.space_object,"DATA.LANDING")
+    ship = R.locate(port_location,shipname,"TF*")
+
+    return "> ".bold.green + "There doesn't seem to be a ship by that name at #{job.source.name.bold}." if ship == "#-1"
+    return "> ".bold.green + "You're not on the crew list for the #{R.penn_name(ship).bold}." unless R.u("#25/SPACESYS.FN","canboard",ship,R["enactor"]).to_bool
+
+    # check remaining cargo capacity
+    cur = R.xget(ship,"SPACE`CARGO`CUR").to_i
+    max = R.xget(ship,"SPACE`CARGO`MAX").to_i
+    return "> ".bold.green + "That ship only has #{max - cur} m3 of remaining cargo space." if (cur + job.size) > max
+
+    onboard = (R.xget(ship,"SPACE`CARGO`ONBOARD") || "").split(' ')
+    onboard << job.number.to_s
+    R.attrib_set("#{ship}/SPACE`CARGO`ONBOARD",onboard.join(' '))
+    R.attrib_set("#{ship}/SPACE`CARGO`CUR",(cur + job.size).to_s)
+
+    job.is_loaded = true
+    job.save
+    Logs.log_syslog("CARGOJOBLAOD", "#{R.penn_name(R["enactor"])} loaded job #{job.number} into #{R.penn_name(ship)}(#{ship}).")
+
+    R.remit(port_location,"Ground crews begin loading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} into the #{R.penn_name(ship).bold}.")
+
+    return "> ".bold.green + "Loading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} into the #{R.penn_name(ship).bold}."
   end
 end
