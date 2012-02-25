@@ -12,9 +12,9 @@ module Econ
       ret << job.to_mush
       ret << "\n"
     end
-    if CargoJob.open_and_claimed_by(R["enactor"]).count > 0
+    if CargoJob.unloaded_and_claimed_by(R["enactor"]).count > 0
       ret << middlebar("YOUR CLAIMED AND NOT YET LOADED JOBS") + "\n"
-      CargoJob.open_and_claimed_by(R["enactor"]).each do |job|
+      CargoJob.unloaded_and_claimed_by(R["enactor"]).each do |job|
         ret << job.to_mush
         ret << "\n"
       end
@@ -38,7 +38,7 @@ module Econ
     return "> ".bold.green + "Your economics & streetwise skills don't allow you to claim that job." if job.visibility > [economics_skill, streetwise_skill].max
     return "> ".bold.green + "That job is already claimed!" if job.claimed 
     return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
-    return "> ".bold.green + "Your economics skill only allows you to have #{economics_skill} claim#{economics_skill == 1 ? 's' : ''} active at once." if CargoJob.open_and_claimed_by(R["enactor"]).count >= economics_skill
+    return "> ".bold.green + "Your economics skill only allows you to have #{economics_skill} claim#{economics_skill > 1 ? 's' : ''} active at once." if CargoJob.open_and_claimed_by(R["enactor"]).count >= economics_skill
     job.claimed = true
     job.claimed_by = R["enactor"]
     job.save

@@ -35,7 +35,8 @@ module Econ
     index :claimed
     index :visibility
 
-    scope :open_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).where(is_loaded:false).asc(:expires) }
+    scope :open_and_claimed_by, ->(person) { where(claimed_by: person).where(:expires.gt => DateTime.now).where(completed:false).asc(:expires) }
+    scope :unloaded_and_claimed_by, ->(person) { where(claimed_by: person).where(:expires.gt => DateTime.now).where(completed:false).where(is_loaded:false).asc(:expires) }
     scope :loaded_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).where(is_loaded:true).asc(:expires) }
     
 
