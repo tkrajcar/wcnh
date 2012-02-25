@@ -277,4 +277,5 @@
   think setr(Pay,spacesys(survey,%q<Ship>,%q<Celestial>,%#));
   @nspemit %#=[ansi(gh,>)] You are paid [ansi(yh,%q<Pay>c)] by Von Sprechen Industries for your survey data.
 -
-
+&cmd.manifest #204=$manifest:
+  @nspemit %#=[spacesys(manifest,v(data.ship))]

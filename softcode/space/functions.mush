@@ -133,6 +133,8 @@
 -
 &DOC.VALUE #208=ship|Econ value of ship.
 -
+&DOC.MANIFEST #208=ship|Pre-formatted manifest for ship.
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -816,4 +818,6 @@
 &FN.HAIL #208=
   [spacesys(notify.consoles,%2,[ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] from [ansi(wh,name(%0))]: %3)]
   [nscemit(Comms,[ansi(yh,HAIL)]-[ansi(wh,name(%0))]\([name(%1)]\)->[ansi(wh,name(%2))]: %3,1)]
--  
+-
+&FN.MANIFEST #208=
+  [rpc(Econ.cargojob_manifest,%0)]

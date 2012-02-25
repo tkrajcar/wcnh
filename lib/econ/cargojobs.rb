@@ -13,7 +13,7 @@ module Econ
       ret << "\n"
     end
     if CargoJob.open_and_claimed_by(R["enactor"]).count > 0
-      ret << middlebar("YOUR CLAIMED JOBS") + "\n"
+      ret << middlebar("YOUR CLAIMED AND NOT YET LOADED JOBS") + "\n"
       CargoJob.open_and_claimed_by(R["enactor"]).each do |job|
         ret << job.to_mush
         ret << "\n"
@@ -70,5 +70,20 @@ module Econ
     R.remit(port_location,"Ground crews begin loading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} into the #{R.penn_name(ship).bold}.")
 
     return "> ".bold.green + "Loading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} into the #{R.penn_name(ship).bold}."
+  end
+
+  def self.cargojob_manifest(ship)
+    ret = titlebar("Cargo Manifest: #{R.penn_name(ship)}") + "\n"
+    jobnumbers = R.xget(ship,"SPACE`CARGO`ONBOARD") || ""
+    ret << "##### #{'Routing'.ljust(18)} Size   Value  Expires Manifest".cyan + "\n" if jobnumbers.split(' ').length > 0
+    jobnumbers.split(' ').each do |jobnumber|
+      job = CargoJob.where(number: jobnumber).first
+      ret << job.to_mush
+      ret << "\n"
+    end
+    cur = R.xget(ship,"SPACE`CARGO`CUR").to_i
+    max = R.xget(ship,"SPACE`CARGO`MAX").to_i
+    ret << "      #{cur.to_s.bold.yellow} m3 of cargo on board. #{(max - cur).to_s.bold.yellow} m3 of space remaining.\n"
+    ret << footerbar()
   end
 end
