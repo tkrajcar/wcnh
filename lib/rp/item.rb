@@ -9,6 +9,7 @@ module RP
     index :num, :unique => true
     field :title, type: String
     field :info, type: String
+    field :creator, type: String
     field :votes, type: Integer, :default => 0
     field :sticky, type: Boolean, :default => false
     
