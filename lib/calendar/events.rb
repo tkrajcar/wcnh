@@ -65,6 +65,7 @@ module Calendar
     when "info"
       event.info = criteria
       event.save
+      return "> ".bold.green + "Event details updated."
     when "location"
       event.location = criteria
       event.save
