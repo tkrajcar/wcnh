@@ -141,6 +141,7 @@ module Econ
     R.attrib_set("#{job.loaded_on}/SPACE`CARGO`CUR",(cur - job.size).to_s)
 
     job.completed = true
+    job.delivered = true
     job.save
     ""
   end

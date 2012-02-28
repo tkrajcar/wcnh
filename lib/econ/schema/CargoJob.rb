@@ -20,6 +20,7 @@ module Econ
     field :completed, :type => Boolean, :default => false
     field :is_loaded, :type => Boolean, :default => false
     field :loaded_on, :type => String #dbref of ship job is loaded on
+    field :delivered, :type => Boolean, :default => false
     field :customer, :type => String
     field :size, :type => Integer
     field :price, :type => Integer
