@@ -124,6 +124,7 @@ module Econ
     else
       if R["enactor"] == job.claimed_by
         R.nspemit(R["enactor"],"> ".bold.green + "Unloading job #{job.number}. #{job.price} credits paid.")
+        job.delivered = true
       else
         R.nspemit(R["enactor"],"> ".bold.green + "Unloading job #{job.number}. #{job.price} credits paid to #{R.penn_name(job.claimed_by)}.")
         R.nspemit(job.claimed_by,"> ".bold.green + "Your claimed #{job.number} has been delivered. #{job.price} credits paid.")
@@ -141,7 +142,6 @@ module Econ
     R.attrib_set("#{job.loaded_on}/SPACE`CARGO`CUR",(cur - job.size).to_s)
 
     job.completed = true
-    job.delivered = true
     job.save
     ""
   end
