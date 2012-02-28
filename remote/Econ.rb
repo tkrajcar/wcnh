@@ -79,6 +79,14 @@ module Econ
     self.cargojob_deliver(job)
   end
 
+  def self.pj_cargojob_assign(job,shipname)
+    self.cargojob_assign(job,shipname)
+  end
+
+  def self.pj_cargojob_unassign(job)
+    self.cargojob_unassign(job)
+  end
+
   def self.pj_cargojob_generate
     r=Econ::CargoJob.generate
     r.number.to_s
