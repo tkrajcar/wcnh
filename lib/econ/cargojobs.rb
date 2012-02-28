@@ -94,6 +94,8 @@ module Econ
     return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
     return "> ".bold.green + "That job is not claimed by you!" unless job.claimed_by == R["enactor"]
     return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
+    return "> ".bold.green + "You've already loaded that job, it's too late to unclaim it." if job.is_loaded
+    
     job.assigned_to = nil
     job.claimed = false
     job.claimed_by = nil
