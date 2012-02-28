@@ -67,6 +67,10 @@ module Econ
     self.cargojob_claim(job)
   end
 
+  def self.pj_cargojob_unclaim(job)
+    self.cargojob_unclaim(job)
+  end
+
   def self.pj_cargojob_load(job,shipname)
     self.cargojob_load(job,shipname)
   end

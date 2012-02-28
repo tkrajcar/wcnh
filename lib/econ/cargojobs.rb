@@ -45,7 +45,18 @@ module Econ
     Logs.log_syslog("CARGOJOBCLAIM", "#{R.penn_name(R["enactor"])} claimed job #{job.number} (#{job._id}).")
     "> ".bold.green + "You claim job #{job.number.to_s.bold}."
   end
-  
+
+  def self.cargojob_unclaim(job)
+    job = CargoJob.where(number: job).first
+    return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
+    return "> ".bold.green + "That job is not claimed by you!" unless job.claimed_by == R["enactor"]
+    return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
+    job.claimed = false
+    job.claimed_by = nil
+    job.save
+    Logs.log_syslog("CARGOJOBUNCLAIM", "#{R.penn_name(R["enactor"])} unclaimed job #{job.number} (#{job._id}).")
+    "> ".bold.green + "You unclaim job #{job.number.to_s.bold}."
+  end
 
   def self.cargojob_load(job,shipname)
     job = CargoJob.where(number: job).first
