@@ -134,6 +134,8 @@ See also: cash, pay
     actual pilots, or help out pilots by claiming jobs that the pilots can't.
   * The number of claimed, uncompleted jobs you can have at once is equal 
     to your economics skill. Need to claim more jobs? Hire some crew!
+  * You can assign a job to another player - they can then load it into any ship
+    as if they claimed it, but you still get paid once it's delivered, not them.
   * When a job expires:
     - if it's not been claimed, it goes away
     - if it's been claimed, but not loaded, it goes away
@@ -145,8 +147,11 @@ See also: cash, pay
 
   cargo - list all jobs you can see
   cargo/claim <job #> - claim a job
+  cargo/unclaim <job #> - unclaim a job
   cargo/load <job #>=<ship name> - load a job into a ship
   cargo/deliver <job #> - deliver/unload a job
+  cargo/assign <job #>=<person> - assign a job so somebody else can load it
+  cargo/unassign <job #> - unassign a job
 
   You can also use the 'manifest' command while manning a console to see what
   cargo is on board your ship.
