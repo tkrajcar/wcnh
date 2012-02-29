@@ -8,8 +8,8 @@ module RP
     self.toc
   end
   
-  def self.pj_create(category, title, info)
-    self.create(category, title, info)
+  def self.pj_create(category, title, info, creator)
+    self.create(category, title, info, creator)
   end
   
   def self.pj_view(id)
@@ -34,5 +34,13 @@ module RP
   
   def self.pj_remove(num)
     self.remove(num)
+  end
+  
+  def self.pj_vote(num, voter)
+    self.vote(num, voter)
+  end
+  
+  def self.pj_decay
+    self.decay
   end
 end

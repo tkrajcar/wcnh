@@ -1,19 +1,19 @@
 require 'wcnh'
 
 module RP
-  def self.create(category, title, info)
-    return "> ".bold.red + "Invalid category." unless cat = Category.where(:name => category).first
+  def self.create(category, title, info, creator)
+    return "> ".bold.red + "Invalid category." unless cat = Category.where(:name => Regexp.new(category,1)).first
     return "> ".bold.red + "Subject cannot exceed 30 characters." unless title.length <= 30
-    return "> ".bold.red + "Posting cannot exceed 300 characters." unless info.length <= 300
+    return "> ".bold.red + "Posting cannot exceed 500 characters." unless info.length <= 500
     
-    return "> ".bold.red + "Error while creating post." unless item = cat.items.create!(:title => title, :info => info)
+    return "> ".bold.red + "Error while creating post." unless item = cat.items.create!(:title => title, :info => info, :creator => creator)
     return "> ".bold.green + "Item ##{item.num} posted under '#{cat.name}'."
   end
   
   def self.view(num)
     return "> ".bold.red + "Invalid post number." unless item = Item.where(:num => num).first
     
-    ret = titlebar("#{item.title} (#{item.votes} votes)")+ "\n"
+    ret = titlebar("#{item.title} (#{item.votes.count} votes)")+ "\n"
     ret << "Date: ".yellow + item.created_at.strftime("%d %B %Y %H:%M %Z") + "\n"
     ret << "Author: ".yellow + R.penn_name(item.creator.to_s) + "\n"
     ret << "Category: ".yellow + item.category.name + "\n"
@@ -62,7 +62,7 @@ module RP
     ret = titlebar(header) + "\n"
     ret << "### Title".ljust(30).yellow + "Creator".ljust(25).yellow + "Votes Posted".yellow + "\n"
     criteria.desc(:votes, :created_at).skip(20 * (page - 1)).limit(20).each do |i|
-      ret << i.num.to_s.ljust(4) + i.title.to_s.ljust(26) + R.penn_name(i.creator.to_s).ljust(27) + i.votes.to_s.ljust(4) + i.created_at.strftime("%d/%m/%Y") + "\n" 
+      ret << i.num.to_s.ljust(4) + i.title.to_s.ljust(26) + R.penn_name(i.creator.to_s).ljust(27) + i.votes.count.to_s.ljust(4) + i.created_at.strftime("%d/%m/%Y") + "\n" 
     end
     ret << footerbar
     

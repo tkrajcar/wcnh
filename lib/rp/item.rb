@@ -10,9 +10,9 @@ module RP
     field :title, type: String
     field :info, type: String
     field :creator, type: String
-    field :votes, type: Integer, :default => 0
     field :sticky, type: Boolean, :default => false
     
     belongs_to :category, :class_name => "RP::Category"
+    embeds_many :votes, :class_name => "RP::Vote"
   end
 end

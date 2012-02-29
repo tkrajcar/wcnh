@@ -9,14 +9,14 @@
 &CMD.+RP #888=$+rp:
   @nspemit %#=[rpc(RP.toc)]
 -
-&CMD.+RP/CREATE #888=$+rp/create */*=*:
-  @nspemit %#=[rpc(RP.create,%0,%1,%2)]
+&CMD.+RP/POST #888=$+rp/post */*=*:
+  @nspemit %#=[rpc(RP.create,%0,%1,%2,%#)]
 -
 &CMD.+RP_ARGS #888=$+rp *:
   @nspemit %#=[ifelse(
                     isnum(%0),
                     rpc(RP.view,%0),
-                    rpc(RP.index,first(%0),if(gt(words(%0),1),last(%0)))
+                    rpc(RP.index,first(%0),ifelse(gt(words(%0),1),last(%0),1))
                     )]
 -
 &CMD.+RP/SEARCH #888=$+rp/search *:
@@ -30,5 +30,8 @@
 -
 &CMD.+RP/REMOVE #888=$+rp/remove *:
   @nspemit %#=[rpc(RP.remove,%0)]
+-
+&CMD.+RP/VOTE #888=$+rp/vote *:
+  @nspemit %#=[rpc(RP.vote,%0,%#)]
 -
 
