@@ -470,11 +470,11 @@
 -
 # Function: iscrew(ship DBREF, player DBREF)
 # Returns true if the player is the ship's captain or a crew member
-&FN.ISCREW #208=[firstof(
+&FN.ISCREW #208=[t(firstof(
                     member(setr(0,get(%0/data.roster)),%1:captain),
                     member(%q0,%1:crew),
                     orflags(%1,Wr),
-                    0)]
+                    0))]
 -
 &FN.ISGUEST #208=
   or(
