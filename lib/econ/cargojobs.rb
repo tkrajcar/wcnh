@@ -10,20 +10,31 @@ module Econ
     ret << " There don't seem to be any jobs available to you.\n" if available_jobs.count == 0
     available_jobs.each do |job|
       ret << job.to_mush
-      ret << "\n"
     end
     if CargoJob.unloaded_and_claimed_by(R["enactor"]).count > 0
       ret << middlebar("YOUR CLAIMED AND NOT YET LOADED JOBS") + "\n"
       CargoJob.unloaded_and_claimed_by(R["enactor"]).each do |job|
         ret << job.to_mush
-        ret << "\n"
+        ret << "      Assigned to #{R.penn_name(job.assigned_to).cyan.bold}.\n" unless job.assigned_to.nil?
+      end
+    end
+    if CargoJob.unloaded_and_assigned_to(R["enactor"]).count > 0
+      ret << middlebar("YOUR ASSIGNED AND NOT YET LOADED JOBS") + "\n"
+      CargoJob.unloaded_and_assigned_to(R["enactor"]).each do |job|
+        ret << job.to_mush
       end
     end
     if CargoJob.loaded_and_claimed_by(R["enactor"]).count > 0
-      ret << middlebar("YOUR LOADED JOBS") + "\n"
+      ret << middlebar("YOUR CLAIMED AND LOADED JOBS") + "\n"
       CargoJob.loaded_and_claimed_by(R["enactor"]).each do |job|
         ret << job.to_mush
-        ret << "\n"
+        ret << "      Assigned to #{R.penn_name(job.assigned_to).cyan.bold}.\n" unless job.assigned_to.nil?
+      end
+    end
+    if CargoJob.loaded_and_assigned_to(R["enactor"]).count > 0
+      ret << middlebar("YOUR ASSIGNED AND LOADED JOBS") + "\n"
+      CargoJob.loaded_and_assigned_to(R["enactor"]).each do |job|
+        ret << job.to_mush
       end
     end
     ret << footerbar()
@@ -45,12 +56,62 @@ module Econ
     Logs.log_syslog("CARGOJOBCLAIM", "#{R.penn_name(R["enactor"])} claimed job #{job.number} (#{job._id}).")
     "> ".bold.green + "You claim job #{job.number.to_s.bold}."
   end
-  
+
+  def self.cargojob_assign(job,person)
+    victim = R.pmatch(person)
+
+    job = CargoJob.where(number: job).first
+    return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
+    return "> ".bold.green + "That's not a valid player!" if victim == "#-1"
+    return "> ".bold.green + "You can't assign jobs to yourself. Use cargo/unassign." if victim == R["enactor"]
+    return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by == R["enactor"]
+    return "> ".bold.green + "That job has already been loaded - it's too late to assign it." if job.is_loaded
+    return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
+    job.assigned_to = victim
+    job.save
+    Logs.log_syslog("CARGOJOBASSIGN", "#{R.penn_name(R["enactor"])} assigned job #{job.number} (#{job._id}) to #{R.penn_name(victim)}.")
+    R.nspemit(victim,"> ".bold.green + "#{R.penn_name(R["enactor"]).bold} has assigned cargo job #{job.number.to_s.bold.yellow} to you.")
+    "> ".bold.green + "You assign job #{job.number.to_s.bold} to #{R.penn_name(victim).bold.yellow}."
+  end
+
+  def self.cargojob_unassign(job)
+    job = CargoJob.where(number: job).first
+    return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
+    return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by == R["enactor"]
+    return "> ".bold.green + "That job isn't assigned!" if job.assigned_to.nil?
+    return "> ".bold.green + "That job has already been loaded - it's too late to unassign it." if job.is_loaded
+    return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
+    R.nspemit(job.assigned_to,"> ".bold.green + "#{R.penn_name(R["enactor"]).bold} has unassigned cargo job #{job.number.to_s.bold.yellow} from you.")
+    job.assigned_to = nil
+    job.save
+    Logs.log_syslog("CARGOJOBUNASSIGN", "#{R.penn_name(R["enactor"])} unassigned job #{job.number} (#{job._id})}.")
+    "> ".bold.green + "You unassign job #{job.number.to_s.bold}."
+  end
+
+
+  def self.cargojob_unclaim(job)
+    job = CargoJob.where(number: job).first
+    return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
+    return "> ".bold.green + "That job is not claimed by you!" unless job.claimed_by == R["enactor"]
+    return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
+    return "> ".bold.green + "You've already loaded that job, it's too late to unclaim it." if job.is_loaded
+    
+    job.assigned_to = nil
+    job.claimed = false
+    job.claimed_by = nil
+    job.save
+    Logs.log_syslog("CARGOJOBUNCLAIM", "#{R.penn_name(R["enactor"])} unclaimed job #{job.number} (#{job._id}).")
+    "> ".bold.green + "You unclaim job #{job.number.to_s.bold}."
+  end
 
   def self.cargojob_load(job,shipname)
     job = CargoJob.where(number: job).first
     return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
-    return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by == R["enactor"]
+    if job.assigned_to.nil?
+      return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by == R["enactor"]
+    else
+      reutrn "> ".bold.green + "That job isn't assigned to you!" unless job.assigned_to = R["enactor"]
+    end
     return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
     return "> ".bold.green + "That job has already been loaded!" if job.is_loaded
 
@@ -76,7 +137,7 @@ module Econ
     Logs.log_syslog("CARGOJOBLOAD", "#{R.penn_name(R["enactor"])} loaded job #{job.number} into #{R.penn_name(ship)}(#{ship}).")
 
     R.remit(port_location,"Ground crews begin loading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} into the #{R.penn_name(ship).bold}.")
-
+    R.nspemit(job.claimed_by,"> ".bold.green + "Job #{job.number.to_s.bold} has been loaded into the #{R.penn_name(ship).bold.yellow}.") unless job.assigned_to.nil?
     return "> ".bold.green + "Loading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} into the #{R.penn_name(ship).bold}."
   end
 
@@ -113,6 +174,7 @@ module Econ
     else
       if R["enactor"] == job.claimed_by
         R.nspemit(R["enactor"],"> ".bold.green + "Unloading job #{job.number}. #{job.price} credits paid.")
+        job.delivered = true
       else
         R.nspemit(R["enactor"],"> ".bold.green + "Unloading job #{job.number}. #{job.price} credits paid to #{R.penn_name(job.claimed_by)}.")
         R.nspemit(job.claimed_by,"> ".bold.green + "Your claimed #{job.number} has been delivered. #{job.price} credits paid.")

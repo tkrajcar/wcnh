@@ -81,6 +81,13 @@
 -
 &cmd.cargo/claim #19=$cargo/claim *:@nspemit %#=[rpc(Econ.cargojob_claim,%0)]
 -
+&cmd.cargo/unclaim #19=$cargo/unclaim *:@nspemit %#=[rpc(Econ.cargojob_unclaim,%0)]
+-
 &cmd.cargo/load #19=$cargo/load *=*:@nspemit %#=[rpc(Econ.cargojob_load,%0,%1)]
 -
 &cmd.cargo/deliver #19=$cargo/deliver *:@nspemit %#=[rpc(Econ.cargojob_deliver,%0)]
+-
+&cmd.cargo/assign #19=$cargo/assign *=*:@nspemit %#=[rpc(Econ.cargojob_assign,%0,%1)]
+-
+&cmd.cargo/unassign #19=$cargo/unassign *:@nspemit %#=[rpc(Econ.cargojob_unassign,%0)]
+

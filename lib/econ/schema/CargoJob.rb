@@ -1,7 +1,7 @@
 module Econ
   class CargoJob
-    BASE_CARGO_RATE_MIN = 30.0
-    BASE_CARGO_RATE_MAX = 45.0
+    BASE_CARGO_RATE_MIN = 25.0
+    BASE_CARGO_RATE_MAX = 35.0
     TIME_FACTOR_MULTIPLIER = [0,0.8,1.0,1.5,2.0,3.0]
     GRADE_MULTIPLIER = [0,0.6,0.8,1.0,1.2,1.4,2.0]
     GRADE_WORDS = ['', 'surplus', 'low-grade', 'unremarkable', 'fine', 'exquisite']
@@ -17,9 +17,11 @@ module Econ
     field :expires, :type => DateTime
     field :claimed, :type => Boolean
     field :claimed_by, :type => String #dbref of claimant
+    field :assigned_to, :type => String
     field :completed, :type => Boolean, :default => false
     field :is_loaded, :type => Boolean, :default => false
     field :loaded_on, :type => String #dbref of ship job is loaded on
+    field :delivered, :type => Boolean, :default => false
     field :customer, :type => String
     field :size, :type => Integer
     field :price, :type => Integer
@@ -34,10 +36,13 @@ module Econ
     index :completed
     index :claimed
     index :visibility
+    index :assigned_to
 
     scope :open_and_claimed_by, ->(person) { where(claimed_by: person).where(:expires.gt => DateTime.now).where(completed:false).asc(:expires) }
     scope :unloaded_and_claimed_by, ->(person) { where(claimed_by: person).where(:expires.gt => DateTime.now).where(completed:false).where(is_loaded:false).asc(:expires) }
+    scope :unloaded_and_assigned_to, ->(person) { where(assigned_to: person).where(:expires.gt => DateTime.now).where(completed:false).where(is_loaded:false).asc(:expires) }
     scope :loaded_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).where(is_loaded:true).asc(:expires) }
+    scope :loaded_and_assigned_to, ->(person) { where(assigned_to: person).where(completed:false).where(is_loaded:true).asc(:expires) }
     
 
     def grade_text
@@ -66,11 +71,11 @@ module Econ
       else
         ret << " EXPIRED".bold.red
       end
-
       ret << " "
       ret << self.grade_text
       ret << " "
       ret << self.commodity.name
+      ret << "\n"
     end
 
     def self.generate
