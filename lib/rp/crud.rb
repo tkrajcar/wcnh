@@ -53,7 +53,7 @@ module RP
       ret << (i.items.count > 0 ? i.items.desc(:created_at).first.created_at.strftime("%d %b %y") : "Never").ljust(11) 
       ret << i.desc.to_s[0,40] + "\n"
     end
-    ret << list("Top 5 Posts", Item.all.limit(5), 1) + "\n"
+    ret << list("Top 5 Posts", Item.all.limit(5), 1) 
     
     return ret
   end
