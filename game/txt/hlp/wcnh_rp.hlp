@@ -1,0 +1,76 @@
+& RP
+ 
+The RP system is the WCNH version of Craigslist.  It's the the easiest way to
+find whatever you might be looking for.  Are you a business owner looking for
+employees to hire?  Check the Resumes category.  Perhaps you're a new player
+who's looking to integrate into an existing plot or IC organization.  The Hooks
+and Jobs categories are what you're looking for.
+ 
+The +rp system is OOC information, but players are free to use the posts as a
+catalyst for establishing IC relationships.  In other words, if you see a post
+you're interested in pursuing ICly, simply page the author and the two of you
+can work out a way to make it ICly feasible.
+ 
+Posts in the +rp system are meant to be quick and to the point.  They are
+limited to 500 characters, and they timeout after 3 days unless they've been
+stickied or have been voted for.  Anyone can vote for a post with the +rp/vote
+command, but you can only vote for a particular post once per day.  A post
+loses one vote every three days until it has no votes left, and then it will
+timeout.
+ 
+If a post is popular or has particularly useful information and you think it
+should become a permanent fixture, you can ask an admin to make it sticky for
+you.
+ 
+COMMANDS:
+ 
++rp           +rp/post          +rp/recent          +rp/remove
++rp/top       +rp/vote
+ 
+& +RP
+ 
+Syntax: +rp
+        +rp <category> [page <num>]
+        +rp <post number>
+ 
+The first syntax of this command displays a top-level list of all +rp
+categories along with the top 5 most popular posts across all categories.
+ 
+The second syntax will show the index of posts for the specified category.  It
+can take an optional 'page <num>' argument for categories that contain more
+than 20 posts.
+ 
+The third syntax will show the details of a particular post.
+ 
+& +RP/POST
+ 
+Syntax: +rp/post <category>/<title>=<details>
+ 
+This command allows you to post a new +rp post in the indicated category.
+ 
+& +RP/RECENT
+ 
+Syntax: +rp/recent <hours>
+ 
+This command will show you all of the +rp postings that were created within the
+last specified number of hours.
+ 
+& +RP/REMOVE 
+ 
+Syntax: +rp/remove <post number>
+ 
+This command will remove a post.  You can only remove posts that you created.
+ 
+& +RP/TOP
+ 
+Syntax: +rp/top
+ 
+This command will show the top 10 most popular posts across all categories.
+ 
+& +RP/VOTE
+ 
+Syntax: +rp/vote <post number>
+ 
+This command allows you to vote for a post.  You can only vote for a particular
+post once every 24 hours.
+

@@ -8,35 +8,35 @@ player guides will be glad to help if able.
   For the list of standard MUSH commands, type:   help commands
   For the list of standard MUSH topics, type:     help topics
   For an alphabetical list of all help entries:   help entries   
-
+ 
   For a list of commands specific to WCNH, type:  help local
   To view the Terms of Service, type:             help terms of service
-
+ 
 If you find an error in the help files or have an idea of how to make one 
 better, please open a +ticket (see: 'help +ticket') and we'll check it out.
 & loc
 & local
   This page lists our local commands and topics. To view a page, type
   'help <page name>' (for example, 'help chargen').
-
+ 
   Pages in capital letters have sub pages.
-
+ 
   PAGES:
-
-  ACCOUNT        +BBOARD        +bg            CALENDAR       CARGO
-  cash           CHARGEN        COMMS          FACTIONS       +finger
-  +guides        +map           +ooc           pay            PLACES
-  put down       race           +set           SPACE          +staff
-  +TICKET        time           WANTED         +where         +who
-  +XP
-
+ 
+  ACCOUNT        +BBOARD        +bg            CALENDAR       CARGO          
+  cash           CHARGEN        COMMS          FACTIONS       +finger        
+  +guides        +map           +ooc           pay            PLACES         
+  put down       race           RP             +set           SPACE          
+  +staff         +TICKET        time           WANTED         +where         
+  +who           +XP 
+ 
 & wanted
   wanted
   wanted <entry number>
-
+ 
   This command allows you to view the IC 'wanted' information, jointly published
   by the Enigma Sector Consortium & the Kilrathi Commonwealth.
-
+ 
   This information is fully IC and may be acted upon, however, please remember
   that just because you see another player in a room with you, you may not know
   who they are, or be able to recognize them.
