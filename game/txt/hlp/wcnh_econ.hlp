@@ -152,6 +152,8 @@ See also: cash, pay
   cargo/deliver <job #> - deliver/unload a job
   cargo/assign <job #>=<person> - assign a job so somebody else can load it
   cargo/unassign <job #> - unassign a job
+  cargo/transfer <job #>=<ship name> - transfer a job, once loaded, to another
+                                       ship at the same location
 
   You can also use the 'manifest' command while manning a console to see what
   cargo is on board your ship.
