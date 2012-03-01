@@ -22,13 +22,29 @@ module RP
         i.votes.first.destroy
         i.save
         decayed += 1
-      elsif (i.votes.count == 0 && i.created_at < DateTime.now - 3.days) then
+      elsif (i.votes.count == 0 && i.created_at < DateTime.now - 3.days && !i.sticky) then
         i.destroy
         destroyed += 1
       end
       
-      return "#{decayed} decayed and #{destroyed} destroyed."
+      Logs.log_syslog("RP", "Decay cycle ran with #{decayed} votes decayed and #{destroyed} posts removed.")
     end
+  end
+  
+  def self.sticky(num)
+    return "> ".bold.red + "Invalid post number." unless item = Item.where(:num => num).first
+    return "> ".bold.red + "Post ##{item.num} is already sticky." if item.sticky
+    item.sticky = true
+    item.save
+    return "> ".bold.green + "Post ##{item.num} entitled '#{item.title}' is now sticky."
+  end
+  
+  def self.unstick(num)
+    return "> ".bold.red + "Invalid post number." unless item = Item.where(:num => num).first
+    return "> ".bold.red + "Post ##{item.num} is not sticky." if !item.sticky
+    item.sticky = false
+    item.save
+    return "> ".bold.green + "Post ##{item.num} entitled '#{item.title}' is no longer sticky."
   end
   
 end

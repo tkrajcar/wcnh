@@ -43,4 +43,24 @@ module RP
   def self.pj_decay
     self.decay
   end
+  
+  def self.pj_sticky(num)
+    self.sticky(num)
+  end
+  
+  def self.pj_unstick(num)
+    self.unstick(num)
+  end
+  
+  def self.pj_addcat(name)
+    self.addcat(name)
+  end
+  
+  def self.pj_remcat(name)
+    self.remcat(name)
+  end
+  
+  def self.pj_desc(name, desc)
+    self.desc(name, desc)
+  end
 end

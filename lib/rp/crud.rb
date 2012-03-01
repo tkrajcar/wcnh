@@ -7,13 +7,16 @@ module RP
     return "> ".bold.red + "Posting cannot exceed 500 characters." unless info.length <= 500
     
     return "> ".bold.red + "Error while creating post." unless item = cat.items.create!(:title => title, :info => info, :creator => creator)
+    
+    Logs.log_syslog("RP", "New post ##{item.num} '#{title}' in '#{cat.name}' by #{charname = R.penn_name(creator)}(#{creator}).")
+    R.nscemit("Public", "New +RP posting (##{item.num}) in '#{cat.name}' by #{charname} entitled '#{title}'.", 1.to_s)
     return "> ".bold.green + "Item ##{item.num} posted under '#{cat.name}'."
   end
   
   def self.view(num)
     return "> ".bold.red + "Invalid post number." unless item = Item.where(:num => num).first
     
-    ret = titlebar("#{item.title} (#{item.votes.count} votes)")+ "\n"
+    ret = titlebar("#{'[Sticky] ' if item.sticky}#{item.title} (#{item.votes.count} votes)")+ "\n"
     ret << "Date: ".yellow + item.created_at.strftime("%d %B %Y %H:%M %Z") + "\n"
     ret << "Author: ".yellow + R.penn_name(item.creator.to_s) + "\n"
     ret << "Category: ".yellow + item.category.name + "\n"
@@ -46,7 +49,9 @@ module RP
     ret = titlebar("+RP Postings: Category Listing") + "\n"
     ret << "Category".ljust(20).yellow + "Posts  Last Post  Description".yellow + "\n"
     Category.all.each do |i|
-      ret << i.name.ljust(22) + i.items.count.to_s.ljust(5) + i.items.desc(:created_at).first.created_at.strftime("%d %b %y").ljust(11) + i.desc.to_s[0,40] + "\n"
+      ret << i.name.ljust(22) + i.items.count.to_s.ljust(5)
+      ret << (i.items.count > 0 ? i.items.desc(:created_at).first.created_at.strftime("%d %b %y") : "Never").ljust(11) 
+      ret << i.desc.to_s[0,40] + "\n"
     end
     ret << list("Top 5 Posts", Item.all.limit(5), 1) + "\n"
     
@@ -60,9 +65,9 @@ module RP
   
   def self.list(header, criteria, page)
     ret = titlebar(header) + "\n"
-    ret << "### Title".ljust(30).yellow + "Creator".ljust(25).yellow + "Votes Posted".yellow + "\n"
+    ret << "### Title".ljust(37).yellow + "Creator".ljust(25).yellow + "Votes Posted".yellow + "\n"
     criteria.desc(:votes, :created_at).skip(20 * (page - 1)).limit(20).each do |i|
-      ret << i.num.to_s.ljust(4) + i.title.to_s.ljust(26) + R.penn_name(i.creator.to_s).ljust(27) + i.votes.count.to_s.ljust(4) + i.created_at.strftime("%d/%m/%Y") + "\n" 
+      ret << i.num.to_s.ljust(4) + "#{'[Sticky] ' if i.sticky}#{i.title}".ljust(33) + R.penn_name(i.creator.to_s).ljust(27) + i.votes.count.to_s.ljust(4) + i.created_at.strftime("%d/%m/%Y") + "\n" 
     end
     ret << footerbar
     
@@ -71,8 +76,34 @@ module RP
   
   def self.remove(num)
     return "> ".bold.red + "Invalid post number." unless item = Item.where(:num => num).first
+    if !(R.orflags(R["enactor"], "Wr").to_bool || R["enactor"] == item.creator) then
+      return "> ".bold.red + "You can only remove your own posts."
+    end
     return "> ".bold.red + "Error while accessing post." unless item.destroy
     
     return "> ".bold.green + "Removing post ##{item.num}."
+  end
+  
+  def self.addcat(name)
+    return "> ".bold.red + "Invalid category name." unless Category.where(:name => Regexp.new(name,1)).count == 0
+    return "> ".bold.red + "Error while creating category." unless Category.create!(:name => name)
+    Logs.log_syslog("RP", "#{R.penn_name(enactor = R["enactor"])}(#{enactor}) created new category '#{name}'.")
+    return "> ".bold.green + "New category '#{name}' created."
+  end
+  
+  def self.remcat(name)
+    return "> ".bold.red + "No such category." unless cat = Category.where(:name => Regexp.new(name,1)).first
+    cat.items.each { |i| i.votes.destroy_all}
+    cat.items.destroy_all
+    return "> ".bold.red + "Error while deleting category." unless cat.destroy
+    Logs.log_syslog("RP", "#{R.penn_name(enactor = R["enactor"])}(#{enactor}) deleted category '#{name}'.")
+    return "> ".bold.green + "Category '#{cat.name}' and all posts removed."
+  end
+  
+  def self.desc(name, desc)
+    return "> ".bold.red + "No such category." unless cat = Category.where(:name => Regexp.new(name,1)).first
+    cat.desc = desc
+    cat.save
+    return "> ".bold.green + "Category description for '#{cat.name}' updated."
   end
 end
