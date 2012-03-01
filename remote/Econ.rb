@@ -95,5 +95,9 @@ module Econ
   def self.pj_cargojob_manifest(ship)
     self.cargojob_manifest(ship)
   end
+
+  def self.pj_cargojob_transfer(job,to_ship)
+    self.cargojob_transfer(job,to_ship)
+  end
 end
 

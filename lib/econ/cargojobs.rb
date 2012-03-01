@@ -110,7 +110,7 @@ module Econ
     if job.assigned_to.nil?
       return "> ".bold.green + "You don't have that job claimed!" unless job.claimed_by == R["enactor"]
     else
-      reutrn "> ".bold.green + "That job isn't assigned to you!" unless job.assigned_to = R["enactor"]
+      return "> ".bold.green + "That job isn't assigned to you!" unless job.assigned_to = R["enactor"]
     end
     return "> ".bold.green + "That job has expired." if job.expires < DateTime.now
     return "> ".bold.green + "That job has already been loaded!" if job.is_loaded
@@ -194,5 +194,52 @@ module Econ
     job.completed = true
     job.save
     ""
+  end
+
+  def self.cargojob_transfer(job,to_ship)
+    job = CargoJob.where(number: job).first
+    return "> ".bold.green + "That doesn't seem to be a valid job." if job.nil?
+    return "> ".bold.green + "That job hasn't been loaded yet!" unless job.is_loaded
+    return "> ".bold.green + "That job has already been delivered!" if job.completed
+    return "> ".bold.green + "You're not on the crew list for the ship that job is on." unless R.u("#25/SPACESYS.FN","iscrew",job.loaded_on,R["enactor"]).to_bool
+    return "> ".bold.green + "The ship that job is on isn't landed!" unless R.hasattrval(job.loaded_on,"DATA.DOCKED").to_bool
+
+    port_location = R.loc(job.loaded_on)
+    ship = R.locate(port_location,to_ship,"TF*")
+
+    return "> ".bold.green + "There doesn't seem to be a ship by that name nearby." if ship == "#-1"
+    return "> ".bold.green + "The job is already on that ship!" if ship == job.loaded_on
+    return "> ".bold.green + "You're not on the crew list for the #{R.penn_name(ship).bold}." unless R.u("#25/SPACESYS.FN","iscrew",ship,R["enactor"]).to_bool
+
+    # check remaining cargo capacity
+    cur = R.xget(ship,"SPACE`CARGO`CUR").to_i
+    max = R.xget(ship,"SPACE`CARGO`MAX").to_i
+    return "> ".bold.green + "That ship only has #{max - cur} m3 of remaining cargo space." if (cur + job.size) > max
+
+    # load job on destination
+    onboard = (R.xget(ship,"SPACE`CARGO`ONBOARD") || "").split(' ')
+    onboard << job.number.to_s
+    R.attrib_set("#{ship}/SPACE`CARGO`ONBOARD",onboard.join(' '))
+    R.attrib_set("#{ship}/SPACE`CARGO`CUR",(cur + job.size).to_s)
+
+    # remove job from source
+    onboard = (R.xget(job.loaded_on,"SPACE`CARGO`ONBOARD") || "").split(' ')
+    onboard.delete(job.number.to_s)
+    R.attrib_set("#{job.loaded_on}/SPACE`CARGO`ONBOARD",onboard.join(' '))
+
+    cur = R.xget(job.loaded_on,"SPACE`CARGO`CUR").to_i
+    R.attrib_set("#{job.loaded_on}/SPACE`CARGO`CUR",(cur - job.size).to_s)
+
+    Logs.log_syslog("CARGOJOBTRANSFER", "#{R.penn_name(R["enactor"])} transferred job #{job.number} from #{R.penn_name(job.loaded_on)} to #{R.penn_name(ship)}(#{ship}).")
+
+    # TODO: Better notification
+
+    R.remit(port_location,"Ground crews begin unloading #{job.size} m3 of #{job.grade_text} #{job.commodity.name} from the #{R.penn_name(job.loaded_on).bold}, and loading it into the #{R.penn_name(ship).bold}.")
+    R.nspemit(job.claimed_by,"> ".bold.green + "Job #{job.number.to_s.bold} has been transferred to the #{R.penn_name(ship).bold.yellow}.") unless job.claimed_by == R["enactor"]
+    R.nspemit(job.assigned_to,"> ".bold.green + "Job #{job.number.to_s.bold} has been transferred to the #{R.penn_name(ship).bold.yellow}.") unless job.assigned_to == R["enactor"] || job.assigned_to.nil?
+
+    job.loaded_on = ship
+    job.save
+    return "> ".bold.green + "Transferring job #{job.number.to_s.bold} to the #{R.penn_name(ship).bold.yellow}."
   end
 end

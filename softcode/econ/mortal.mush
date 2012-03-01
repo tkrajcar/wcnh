@@ -90,4 +90,6 @@
 &cmd.cargo/assign #19=$cargo/assign *=*:@nspemit %#=[rpc(Econ.cargojob_assign,%0,%1)]
 -
 &cmd.cargo/unassign #19=$cargo/unassign *:@nspemit %#=[rpc(Econ.cargojob_unassign,%0)]
+-
+&cmd.cargo/transfer #19=$cargo/transfer *=*:@nspemit %#=[rpc(Econ.cargojob_transfer,%0,%1)]
 
