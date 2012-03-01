@@ -109,7 +109,7 @@ module Econ
       time_factor = [1,1,1,2,2,3,3,4,5].shuffle[0]
       p "Time factor: #{time_factor}"
 
-      size = [rand(3..15),rand(15..60),rand(60..120)].shuffle[0]
+      size = [rand(3..15),rand(15..50),rand(50..100),rand(100..200)].shuffle[0]
       p "Size: #{size}"
 
       distance_1 = Econ::Distance.where(system_a_id: from[:location].system._id).where(system_b_id: to[:location].system._id)
