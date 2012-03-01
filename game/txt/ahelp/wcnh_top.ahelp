@@ -1,8 +1,8 @@
 & AHELP
 This is the admin-only help for WC:NH. 
-
+ 
   PAGES:
-
+ 
   +DOSSIER       ECON           +FACTION       +PFILE         +RP            
   +SPACE         +TICKET        WANTED   
 
@@ -10,39 +10,39 @@ This is the admin-only help for WC:NH.
   This command allows you to make notes about IC matters relating to characters.
   Plot hooks that should be used, IC loans, or anything else related to a chara-
   cter's IC life should be tracked here. (OOC matters are handled via +pfile).
-
+ 
   This command can also be used to track information on objects (such as ships).
-
+ 
   Commands: 
-
+ 
   +dossier <person or object>
   +dossier/add <person or object>=<note>
-
+ 
   Dossier notes are also auto-posted (after a short delay) to +bb 4.
 & WANTED
   Admin can add or manipulate the wanted system using these commands:
-
+ 
   wanted/set <object>/<field>=<value> - set a field on a wanted object
   wanted/delete <object> - delete a wanted object.
-
+ 
   Fields are: amount, info, name, contact, and visible.
-
+ 
   To create a new entry, use 'wanted/set <number>/name=<object/known name>.
   <number> can be any four-digit number. The first time you run wanted/set, a
   new entry will be automatically created.
-
+ 
   All new entries default to visible: false, so make sure and set it to true
   when done. Changes are not publicized to players, so use a News Net +bbpost
   or something similar to announce it.
-
+ 
 & +RP
 Commands for admin.
-
+ 
 +rp/addcat <name> - Add a category.
 +rp/remcat <name> - Remove a category.
 +rp/desc <cat>=<desc> - Describe a category.
 +rp/sticky <num> - Make a post sticky.
 +rp/unstick <num> - Remove sticky status.
-
+ 
 Additionally, admin can remove any post, regardless of who the author was.
 
