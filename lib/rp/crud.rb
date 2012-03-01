@@ -59,8 +59,9 @@ module RP
   end
   
   def self.recent(hours)
-    range = DateTime.now - hours.hours..DateTime.now
-    return list("+RP Postings: Last #{hours} Hours", Item.where(created_at: range), 1)
+    return "> ".bold.red + "Invalid number of hours." unless hours.to_i > 0
+    range = DateTime.now - hours.to_i.hours..DateTime.now
+    return list("+RP Postings: Last #{hours.to_i} Hours", Item.where(created_at: range), 1)
   end
   
   def self.list(header, criteria, page)
