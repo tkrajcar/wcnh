@@ -42,7 +42,7 @@ module RP
   end
   
   def self.top
-    return list("+RP Postings: Top Posts", Item.all.limit(10), 1)
+    return list("+RP Postings: Top Posts", Item.all, 1, 10)
   end
   
   def self.toc
@@ -53,7 +53,7 @@ module RP
       ret << (i.items.count > 0 ? i.items.desc(:created_at).first.created_at.strftime("%d %b %y") : "Never").ljust(11) 
       ret << i.desc.to_s[0,40] + "\n"
     end
-    ret << list("Top 5 Posts", Item.all.limit(5), 1) 
+    ret << list("Top 5 Posts", Item.all, 1, 5) 
     
     return ret
   end
@@ -64,10 +64,10 @@ module RP
     return list("+RP Postings: Last #{hours.to_i} Hours", Item.where(created_at: range), 1)
   end
   
-  def self.list(header, criteria, page)
+  def self.list(header, criteria, page, limit=20)
     ret = titlebar(header) + "\n"
     ret << "### Title".ljust(37).yellow + "Creator".ljust(25).yellow + "Votes Posted".yellow + "\n"
-    criteria.desc(:votes, :created_at).skip(20 * (page - 1)).limit(20).each do |i|
+    criteria.desc(:votes, :created_at).skip(20 * (page - 1)).limit(limit).each do |i|
       ret << i.num.to_s.ljust(4) + "#{'[Sticky] ' if i.sticky}#{i.title}".ljust(33) + R.penn_name(i.creator.to_s).ljust(27) + i.votes.count.to_s.ljust(4) + i.created_at.strftime("%d/%m/%Y") + "\n" 
     end
     ret << footerbar
