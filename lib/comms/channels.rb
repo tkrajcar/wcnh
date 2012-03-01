@@ -95,9 +95,8 @@ module Comms
     c = Comlink.find_or_create_by(id: R["enactor"])
     channel.downcase!
     return "> ".bold.yellow + "No channel or shortcut named #{channel.bold} found!" unless mymbr = c.memberships.any_of({channel: channel}, {shortcut: channel}).first # find by channel or shortcut name
-
-    real_channel_name = channel # for numerics
-    real_channel_name = Channel.where(lowercase_name: channel).first._id unless channel =~ REGEX_NUMERIC_CHANNEL # for named
+    real_channel_name = mymbr.channel # for numerics
+    real_channel_name = Channel.where(lowercase_name: mymbr.channel).first._id unless mymbr.channel =~ REGEX_NUMERIC_CHANNEL # for named
 
     self.channel_emit(real_channel_name, mymbr.active_handle, message)
     ""
