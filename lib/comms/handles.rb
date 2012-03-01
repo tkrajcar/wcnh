@@ -22,6 +22,8 @@ module Comms
     return "> ".bold.yellow + "That's too long for a handle." unless handle.length <= 20
 
     c = Comlink.find_or_create_by(id: R["enactor"])
+    return "> ".bold.yellow + "You already have the maximum number of handles (#{MAX_HANDLES.to_s.bold}) registered." unless c.handles.length < MAX_HANDLES || R.orflags(R["enactor"],"Wr").to_bool
+
     c.handles.push handle
     c.lowercase_handles.push handle.downcase
     c.save
