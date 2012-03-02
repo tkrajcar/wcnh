@@ -52,4 +52,11 @@
 
   This shows you an IC map of our systems and how they're connected, via jump
   point.
+& +911
+Syntax: +911 <reason>
+ 
+This command will send an emergency request for an administrator.  This is for
+situations when you need an administrator for a time-sensitive issue, such as
+an in-character combat situation.  For problems that don't require an immediate
+resolution, use +ticket.
 
