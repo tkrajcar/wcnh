@@ -323,3 +323,9 @@
 &cmd.wanted #15=$wanted:@nspemit %#=[rpc(Dossier.wanted_list)]
 -
 &cmd.wanted/view #15=$wanted *:@nspemit %#=[rpc(Dossier.wanted_view,%0)]
+-
+&CMD.+911 #15=$+911 *:
+  @nspemit %#=[ansi(gh,>)] Your request has been sent.  Any available administrators will contact you shortly.;
+  @nscemit/noisy Admin=[ansi(rh,911 REQUEST)] by [ansi(wh,name(%#))]\(%#\) at [name(loc(%#))]\([loc(%#)]\) because: %0
+-
+
