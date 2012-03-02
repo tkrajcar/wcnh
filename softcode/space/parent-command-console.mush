@@ -201,11 +201,14 @@
               }
 -
 &CMD.HAIL #204=$hail *=*:
-  @switch [t(lte(%0,words(setr(2,spacesys(update.report,v(data.ship))))))]=
+  @switch [or(
+              t(lte(%0,words(setr(2,spacesys(update.report,v(data.ship)))))),
+              t(setr(targetPos,match(iter(%q2,name(itext(0)),,|),%0*,|)))
+              )]=
 
           0,@nspemit %#=[ansi(rh,>)] Invalid contact.,
           1,{@nspemit %#=[ansi(gh,>)] Message sent.;
-             think spacesys(hail,v(data.ship),%#,extract(%q2,%0,1),%1)
+             think spacesys(hail,v(data.ship),%#,extract(%q2,ifelse(isnum(%0),%0,%q<targetPos>),1),%1)
             }
 -
 &CMD.SPOSE #204=$spose *:
