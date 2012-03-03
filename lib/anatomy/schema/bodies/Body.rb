@@ -13,11 +13,14 @@ module Anatomy
     
     after_initialize :assemble
     
-    @@parts = {}
+    class << self
+      attr_accessor :parts
+    end
+    @parts = {}
     
     protected
     def assemble
-      @@parts.each do |i, j|
+      self.class.parts.each do |i, j|
         self.parts.create({name: i}, j)
       end
     end

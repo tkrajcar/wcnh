@@ -4,7 +4,7 @@ module Anatomy
   
   class Human < Body
     
-    @@parts = {
+    @parts = {
       "Head" => Anatomy::Head,
       "Torso" => Anatomy::Torso,
       "LArm" => Anatomy::Arm,
