@@ -13,12 +13,12 @@
       [first(extract(%q<geti>,3,1,|),:)] of [last(extract(%q<geti>,3,1,|),:)],
       ,%r)]%r
   [footerbar()]%r
-  [ansi(yh,work on <phase>)] to work on something once every 6 RL hours.
+  [ansi(yh,work on <phase>)] to work on something once every 3 RL hours.
 -
 &CMD.WORK #975=$work on *:
   @assert [t(setr(Board.phase,grab(lattr(%!/PHASE.*),PHASE.[ucstr(edit(%0,%b,_))]*)))]=@nspemit %#=[ansi(rh,>)] Invalid project phase.;
   @assert [lt(first(setr(Board.current,extract(get(%!/%q<Board.phase>),3,1,|)),:),last(%q<Board.current>,:))]=@nspemit %#=[ansi(rh,>)] That phase is completed.;
-  @assert [gte(secs(),setr(Char.canwork,add(default(%!/last.%#,0),21600)))]=
+  @assert [gte(secs(),setr(Char.canwork,add(default(%!/last.%#,0),10800)))]=
           @nspemit %#=[ansi(rh,>)] You can work on the project again in [ansi(yh,timestring(sub(%q<Char.canwork>,secs())))].;
   
   @nsremit loc(%#)=[name(%#)] does some work on the [ansi(wh,after(lcstr(edit(%q<Board.phase>,_,%b)),.))] phase of the [name(%!)] and 
