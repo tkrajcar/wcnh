@@ -11,7 +11,7 @@ module Anatomy
     
     embeds_many :parts, :class_name => "Anatomy::Part"
     
-    after_initialize :assemble
+    after_create :assemble
     
     class << self
       attr_accessor :parts
@@ -21,8 +21,12 @@ module Anatomy
     protected
     def assemble
       self.class.parts.each do |i, j|
-        self.parts.create({name: i}, j)
+        part = self.parts.create({name: i}, j[0])
+        j[1..j.length].each do |k|
+          part.update_attribute(k.keys.first, k[k.keys.first])
+        end
       end
+      self.save
     end
     
     public
