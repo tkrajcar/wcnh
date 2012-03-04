@@ -23,7 +23,7 @@
   
   @nsremit loc(%#)=[name(%#)] does some work on the [ansi(wh,after(lcstr(edit(%q<Board.phase>,_,%b)),.))] phase of the [name(%!)] and 
                    [ifelse(
-                        gte(
+                        gt(
                           setr(Char.succ,add(rand(-2,2),chargen(get.skill,%#,first(get(%!/%q<Board.phase>),|)))),
                           setr(Board.diff,extract(get(%!/%q<Board.phase>),2,1,|))
                           ),
@@ -31,6 +31,10 @@
                         ansi(rh,fails)
                         )]!;
   @set %!=last.%#:[secs()];
-  @set %!=%q<Board.phase>:[replace(get(%!/%q<Board.phase>),3,[min(add(first(%q<Board.current>,:),%q<Char.succ>),last(%q<Board.current>,:))]:[last(%q<Board.current>,:)],|)];
+  @set %!=%q<Board.phase>:[replace(
+                                get(%!/%q<Board.phase>),
+                                3,
+                                [add(first(%q<Board.current>,:),sub(%q<Char.succ>,%q<Board.diff>))]:[last(%q<Board.current>,:)]
+                                ,|)];
 -
 
