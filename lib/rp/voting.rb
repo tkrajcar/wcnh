@@ -26,9 +26,9 @@ module RP
         i.destroy
         destroyed += 1
       end
-      
-      Logs.log_syslog("RP", "Decay cycle ran with #{decayed} votes decayed and #{destroyed} posts removed.")
     end
+    
+    Logs.log_syslog("RP", "Decay cycle ran with #{decayed} votes decayed and #{destroyed} posts removed.")
   end
   
   def self.sticky(num)

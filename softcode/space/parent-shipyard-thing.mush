@@ -15,7 +15,7 @@
           9 20 8 -5,
           [u(fn.price,first(setr(1,u(fn.listclass,itext(0)))))]c,
           itext(0),
-          ifelse(spacesys(iscapship,%q1),Capital,Fighter),
+          ifelse(spacesys(iscapship,first(%q1)),Capital,Fighter),
           words(%q1)
           ),
       ,%r)]%r%r

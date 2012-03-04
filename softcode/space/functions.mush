@@ -547,7 +547,7 @@
 &FN.HICMD #208=[ansi(hu,%0)]
 -
 &FN.SCAN #208=
-  [titlebar(Sensor Report: [name(%0)])]%r%b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
+  [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r%b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
   %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
   [iter(
       setr(1,spacesys(list.report,%0)),
