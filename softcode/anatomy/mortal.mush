@@ -1,0 +1,8 @@
+&CMD.MED/SCAN #15=$med/scan *:
+  @assert [or(
+              setr(isAdmin,and(orflags(%#,Wr),pmatch(%0))),
+              setr(target,locate(%#,%0,nP))
+              )]=@nspemit %#=[ansi(rh,>)] Invalid target.;
+  @nspemit %#=[rpc(Anatomy.scan,ifelse(t(%q<isAdmin>),pmatch(%0),%q<target>))]
+-
+
