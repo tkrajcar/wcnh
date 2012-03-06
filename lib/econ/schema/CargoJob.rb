@@ -128,7 +128,7 @@ module Econ
       visibility = (1 + grade + time_factor + rand(-1..1)) / 2
       p "Visibility: #{visibility}"
 
-      price = rand(BASE_CARGO_RATE_MIN..BASE_CARGO_RATE_MAX) * (size ** 0.7) * TIME_FACTOR_MULTIPLIER[time_factor] * GRADE_MULTIPLIER[grade] * (distance ** 0.7)
+      price = rand(BASE_CARGO_RATE_MIN..BASE_CARGO_RATE_MAX) * (size ** 0.8) * TIME_FACTOR_MULTIPLIER[time_factor] * GRADE_MULTIPLIER[grade] * (distance ** 0.7)
       p "Price: #{price}. Price per unit: #{price / size}"
 
       expires = DateTime.now + rand(TIME_FACTOR_INTERVALS[time_factor]).hours
