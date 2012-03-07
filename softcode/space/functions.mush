@@ -570,7 +570,7 @@
       [u(%0/describe)]%r%r
       Location%r%t
       X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
-      [ansi(rh,Landing Area)]: [ifelse(hasattrval(%0,data.landing),[ansi(gh,Yes)],No)]
+      [ansi(rh,Landing Area)]: [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),[ansi(gh,Yes)],No)]
       )]%r
   [footerbar(Class: [edit(%q0,_,%b)])]
 -
@@ -578,7 +578,7 @@
   [u(%0/describe)]%r
   Location%r%t
   X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
-  Landing Area: [ifelse(hasattrval(%0,data.landing),name(zone(get(%0/data.landing))),N/A)]
+  Landing Area: [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),name(zone(get(%0/data.landing))),N/A)]
 -
 &FN.SCAN.LAND #208=
   [u(loc(%0)/nameformat)]%r[u(loc(%0)/describe)]%r[u(loc(%0)/conformat,cat(lvplayers(loc(%0)),lvthings(loc(%0))))]
