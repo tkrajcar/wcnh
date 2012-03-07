@@ -36,7 +36,7 @@
                     setr(8,zone(%q9)),
                     not(strmatch(%q8,#222))
                     ),
-                  %b<[trim(ifelse(strmatch(last(lparent(%q8)),#179),rest(name(parent(%q8))),regedit(name(%q8),lit(<\w*>),)))]>
+                  %b<[trim(ifelse(strmatch(last(lparent(%q8)),#179),rest(name(parent(%q8))),before(name(%q8),<)))]>
                   )],
               v(COLOR.Frame))
 -
