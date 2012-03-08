@@ -7,11 +7,11 @@ module Anatomy
     @parts = {
       "Head" => [Anatomy::Head, {:mass => 6.0}],
       "Torso" => [Anatomy::Torso, {:mass => 21.0}],
-      "LArm" => [Anatomy::Arm, {:mass => 6.5}],
-      "RArm" => [Anatomy::Arm, {:mass => 6.5}],
+      "Left Arm" => [Anatomy::Arm, {:mass => 6.5}],
+      "Right Arm" => [Anatomy::Arm, {:mass => 6.5}],
       "Groin" => [Anatomy::Groin, {:mass => 2.5}],
-      "LLeg" => [Anatomy::Leg, {:mass => 11.0}],
-      "RLeg" => [Anatomy::Leg, {:mass => 11.0}]
+      "Left Leg" => [Anatomy::Leg, {:mass => 11.0}],
+      "Right Leg" => [Anatomy::Leg, {:mass => 11.0}]
       }
   end
   

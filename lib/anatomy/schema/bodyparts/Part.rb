@@ -14,6 +14,13 @@ module Anatomy
     def getPctMassOfBody
       self.mass / self.body.getMassTotal
     end
+    
+    def applyDamage(force)
+      damage = (0.012 / self.mass) * force
+      self.pctHealth = [self.pctHealth -= damage, 0].max.round(2)
+      self.save
+      return self
+    end
   end
   
 end

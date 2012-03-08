@@ -41,6 +41,16 @@ module Anatomy
       self.parts.each { |i| total += i.mass }
       return total
     end
+    
+    def applyDamage(force, target=nil)
+      if (part = self.parts.find_index { |i| i.name == target }) then
+        self.parts[part].applyDamage(force)
+      elsif (!part && target) then
+        return nil
+      else
+        self.parts[rand(self.parts.length - 1)].applyDamage(force)
+      end
+    end
   end
   
 end
