@@ -20,7 +20,9 @@ module Comms
     ret = titlebar("All Unread Messages") + "\n"
     msgs.each do |msg_id|
       next unless msg = Tightbeam.find(msg_id)
-      ret << "Received #{msg.ic_timestamp.strftime("%m/%d/%Y %H:%M").bold} from #{msg.from_handle.bold.white}: ".cyan #TODO - correct for IC
+      tz = GAME_TIME
+      tz = R.xget(R["enactor"],"TZ").to_i if R.hasattr(R["enactor"],"TZ").to_bool
+      ret << "Received #{msg.ic_timestamp.in_time_zone(tz).strftime("%m/%d/%Y %H:%M").bold} from #{msg.from_handle.bold.white}: ".cyan #TODO - correct for IC
       ret << msg.body + "\n"
     end
     c.unread_tightbeams = []
@@ -107,7 +109,11 @@ module Comms
         comlink.unread_tightbeams.delete(msg.id)
       end
       to_handles_list = msg.to_handles.collect {|i| i.bold}.to_sentence
-      ret << "#{msg.ic_timestamp.strftime("%m/%d/%Y %H:%M").bold}#{showfrom ? " from " + msg.from_handle.bold.white : ""} to #{to_handles_list}: ".cyan #TODO - correct for IC
+
+      tz = GAME_TIME
+      tz = R.xget(R["enactor"],"TZ").to_i if R.hasattr(R["enactor"],"TZ").to_bool
+      ret << "#{msg.ic_timestamp.in_time_zone(tz).strftime("%m/%d/%Y %H:%M").bold}#{showfrom ? " from " + msg.from_handle.bold.white : ""} to #{to_handles_list}: ".cyan
+
       ret << msg.body + "\n"
     end
     comlink.save # update unread_tightbeams field

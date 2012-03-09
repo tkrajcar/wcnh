@@ -23,6 +23,9 @@ Mongoid.configure do |config|
 end
 Mongoid.logger = Logger.new(STDOUT)
 
+# Global timezone - reset this if MUSH server timezone is ever changed.
+GAME_TIME = ActiveSupport::TimeZone["Pacific Time (US & Canada)"].utc_offset / 3600
+
 def titlebar(arg)
   ">--".red + "[".bold.red + arg.to_s.bold + "]".bold.red + ("-" * (73 - arg.length) + "<").red
 end
