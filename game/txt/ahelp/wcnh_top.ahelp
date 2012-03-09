@@ -3,8 +3,8 @@ This is the admin-only help for WC:NH.
  
   PAGES:
  
-  +DOSSIER       ECON           +FACTION       +PFILE         +RP            
-  +SPACE         +TICKET        WANTED   
+  COMBAT         +DOSSIER       ECON           +FACTION       +PFILE         
+  +RP            +SPACE         +TICKET        WANTED   
 
 & +DOSSIER
   This command allows you to make notes about IC matters relating to characters.
@@ -45,4 +45,29 @@ Commands for admin.
 +rp/unstick <num> - Remove sticky status.
  
 Additionally, admin can remove any post, regardless of who the author was.
+
+& COMBAT
+Commands for admin.
+ 
++heal <player> - Completely heal the player.
++injure <player>=<damage> - Apply damage to a player in a random location.
++injure <player>/<hitloc>=<damage> - Apply damage in a particular hitloc.
+ 
+The <damage> can be either numeric (joules) or one of "light", "moderate", or
+"heavy".  Here is a quick guide for the relative power of some attacks.
+ 
+LIGHT
+ 
+100 - Average human punch
+200 - Baseball bat
+ 
+MODERATE
+ 
+500 - Average handgun
+ 
+HEAVY
+
+1200 - M1 Carbine
+1700 - M16 Rifle
+400000 - Hit by a car at 60mph
 

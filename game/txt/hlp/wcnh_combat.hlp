@@ -1,0 +1,28 @@
+& COMBAT
+Our combat system on WCNH focuses on storytelling first and complexity second.
+It's a system that's meant to supplement roleplaying, not replace it.  Combat
+requires the presence of a GM (Game Master) who is responsible for declaring
+any rules or circumstances that may be unique to the specific combat scene.  At
+the GM's direction, players will alternate between roleplaying and running
+certain combat commands.  These commands roll some dice and perform several
+complex calculations behind the scenes, and a user-friendly result is displayed
+for the player.
+ 
+If you find yourself in need of a GM for combat.  Use the '+911' command to
+call for one.
+ 
+See help on the following commands that are related to combat:
+ 
++check      med/scan
+
+& MED/SCAN
+Syntax: med/scan <target>
+ 
+This command displays the medical status of the target.  ICly, this is
+representative of your character using a medical function on a datapad to scan
+a target.
+ 
+A target's total injury level is a result of all the injuries sustained to 
+various body parts.  Injuries are healed a little bit at a time, once every
+hour.
+
