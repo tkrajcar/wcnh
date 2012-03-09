@@ -56,7 +56,7 @@
 
 &CRON_TIME_GENERATECARGOJOBS #539=||||00|
 -
-&CRON_JOB_GENERATECARGOJOBS #539=@dol [lnum(2)]=think [rpc(Econ.cargojob_generate)]
+&CRON_JOB_GENERATECARGOJOBS #539=think [rpc(Econ.cargojob_generate)]
 -
 &CRON_TIME_RPDECAY #539=|||02|17|
 -

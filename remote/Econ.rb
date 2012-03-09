@@ -88,8 +88,7 @@ module Econ
   end
 
   def self.pj_cargojob_generate
-    r=Econ::CargoJob.generate
-    r.number.to_s
+    self.cargojob_generate
   end
 
   def self.pj_cargojob_manifest(ship)
