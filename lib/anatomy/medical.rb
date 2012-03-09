@@ -38,4 +38,10 @@ module Anatomy
     end
   end
   
+  def self.cronHeal
+    injured = Anatomy::Body.all.to_a.select { |i| i.getPctHealth < 1.0 }
+    injured.each { |i| i.doHeal }
+    return 
+  end
+  
 end

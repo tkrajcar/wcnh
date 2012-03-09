@@ -45,7 +45,9 @@ module Anatomy
     end
     
     def applyDamage(force, target=nil)
-      if (part = self.parts.find_index { |i| i.name == target }) then
+      target = target ? target.downcase : target
+      
+      if (part = self.parts.find_index { |i| i.name.downcase == target }) then
         self.parts[part].applyDamage(force)
       elsif (!part && target) then
         return nil
