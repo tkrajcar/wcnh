@@ -41,19 +41,21 @@ module Ticket
   end
 
   def self.view(ticket)
+    tz = GAME_TIME
+    tz = R.xget(R["enactor"],"TZ").to_i if R.hasattr(R["enactor"],"TZ").to_bool
     t = Ticket.where(number: ticket).first
     isadmin = R.orflags(R["enactor"],"Wr").to_bool
     return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && (t.requester == R["enactor"] || isadmin))
     ret = titlebar("Ticket #{t.number.to_s}: #{t.title[0..60]}") + "\n"
     ret << "Requester: ".cyan + R.penn_name(t.requester || "")[0..20].ljust(20)
-    ret << "Opened:  ".cyan + t.opened.strftime("%m/%d/%y %H:%M").ljust(20)
+    ret << "Opened:  ".cyan + t.opened.in_time_zone(tz).strftime("%m/%d/%y %H:%M").ljust(20)
     ret << "Status: ".cyan + (t.status == "open" ? "Open".bold.on_blue : "Closed".green ) + "\n"
     if isadmin
       ret << "Assigned:  ".cyan + (t.assignee ? R.penn_name(t.assignee)[0..20].ljust(20) : "None".ljust(20))
     else
       ret << "Assigned:  ".cyan + (t.assignee ? "Yes".ljust(20) : "No".ljust(20))
     end
-    ret << "Updated: ".cyan + (t.updated ? t.updated.strftime("%m/%d/%y %H:%M").ljust(20) : "Never".ljust(20)) + "\n"
+    ret << "Updated: ".cyan + (t.updated ? t.updated.in_time_zone(tz).strftime("%m/%d/%y %H:%M").ljust(20) : "Never".ljust(20)) + "\n"
     ret << middlebar("BODY") + "\n"
     ret << t.body + "\n"
     comments = t.comments
@@ -66,7 +68,7 @@ module Ticket
         if c.private
           ret << "ADMIN-".bold.red
         end
-        ret << "#{R.penn_name(c.author).white.bold} at #{c.timestamp.strftime("%m/%d/%y %H:%M").bold}: " .cyan
+        ret << "#{R.penn_name(c.author).white.bold} at #{c.timestamp.in_time_zone(tz).strftime("%m/%d/%y %H:%M").bold}: " .cyan
         ret << c.text << "\n"
       end
     end
