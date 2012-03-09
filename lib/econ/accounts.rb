@@ -2,6 +2,8 @@ require 'wcnh'
 
 module Econ
   def self.account_list(person)
+    tz = GAME_TIME
+    tz = R.xget(R["enactor"],"TZ").to_i if R.hasattr(R["enactor"],"TZ").to_bool
     victim = R.pmatch(person)
     return ">".bold.green + " Invalid target!" unless victim != "#-1"
     ret = titlebar("Bank Account List For #{R.penn_name(victim)}") + "\n"
@@ -21,7 +23,7 @@ module Econ
       if date.nil?
         ret << "None Yet".cyan
       else
-        ret << date.strftime("%m/%d/%y ").cyan
+        ret << date.in_time_zone(tz).strftime("%m/%d/%y ").cyan
       end
 
       ret << "\n"
@@ -60,6 +62,8 @@ module Econ
   end
 
   def self.account_view(account)
+    tz = GAME_TIME
+    tz = R.xget(R["enactor"],"TZ").to_i if R.hasattr(R["enactor"],"TZ").to_bool
     a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
     return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(R["enactor"]) || R.orflags(R["enactor"],"Wr").to_bool
@@ -79,7 +83,7 @@ module Econ
     ret << middlebar("RECENT ACTIVITY") + "\n"
     ret << "#{"Date".ljust(14)} #{"By".ljust(20)} Type    Memo\n".cyan
     a.recent_activity.each do |activity|
-      ret << activity.created_at.strftime("%m/%d/%y %H:%m ")
+      ret << activity.created_at.in_time_zone(tz).strftime("%m/%d/%y %H:%M ")
       ret << activity.who.ljust(21)
       case activity.type
       when "deposit"
