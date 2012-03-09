@@ -321,6 +321,8 @@
          [powers(%1,api)]
          [powers(%1,pemit_all)]
          [setq(a,lock(%1,=%1))]
+         [set(%1,listen_parent)]
+         [set(%1,monitor)]
          [set(%0,data.consoles:[trim([get(%0/data.consoles)] %1)])]
          )]
 -

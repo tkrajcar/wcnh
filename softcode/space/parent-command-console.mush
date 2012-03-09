@@ -282,3 +282,9 @@
 -
 &cmd.manifest #204=$manifest:
   @nspemit %#=[spacesys(manifest,v(data.ship))]
+-
+&LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!
+-
+@set #204/listen.leave=regexp
+-
+
