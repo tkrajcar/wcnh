@@ -22,9 +22,9 @@ module Anatomy
     end
     
     return "> ".bold.red + "Invalid target bodypart.  'med/scan <target>' for a list." unless result = target.applyDamage(force, part)
-    Logs.log_syslog("COMBAT", "#{R.penn_name(R["enactor"])} +injured #{R.penn_name(dbref)}'s #{result.name.downcase} with #{force}N of force.")
+    Logs.log_syslog("COMBAT", "#{R.penn_name(R["enactor"])} +injured #{R.penn_name(dbref)}'s #{result.name.downcase} with #{force}J of force.")
     R.nsremit(R.penn_loc(dbref), "[#{'COMBAT'.bold.red}] #{R.penn_name(dbref)} takes a blow to the #{result.name.downcase}!")
-    return "> ".bold.green + "#{force}N force applied to #{R.penn_name(dbref)}'s #{result.name.downcase}."
+    return "> ".bold.green + "#{force}J force applied to #{R.penn_name(dbref)}'s #{result.name.downcase}."
   end
   
   def self.heal(dbref)
