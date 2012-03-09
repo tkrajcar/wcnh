@@ -13,6 +13,8 @@ module Anatomy
     
     after_create :assemble
     
+    @@AUTOHEAL_MIN = 0
+    @@AUTOHEAL_AMOUNT = 0.03
     class << self
       attr_accessor :parts
     end
@@ -50,6 +52,13 @@ module Anatomy
       else
         self.parts[rand(self.parts.length - 1)].applyDamage(force)
       end
+    end
+    
+    def doHeal
+      self.parts.select { |i| i.pctHealth < 1.0 && i.pctHealth >= @@AUTOHEAL_MIN }.each do |j|
+        j.pctHealth = [j.pctHealth + @@AUTOHEAL_AMOUNT, 1.0].min.round(2)
+      end
+      self.save
     end
   end
   

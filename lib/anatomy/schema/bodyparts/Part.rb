@@ -10,6 +10,7 @@ module Anatomy
     field :name, type: String, :default => lambda { self.name.split(":").last }
     
     embedded_in :body, :class_name => "Anatomy::Body"
+    embedded_in :treatment, :class_name => "Anatomy::Treatment"
     
     def getPctMassOfBody
       self.mass / self.body.getMassTotal
@@ -17,7 +18,7 @@ module Anatomy
     
     def applyDamage(force)
       damage = (0.012 / self.mass) * force
-      self.pctHealth = [self.pctHealth -= damage, 0].max.round(2)
+      self.pctHealth = [self.pctHealth - damage, 0].max.round(2)
       self.save
       return self
     end
