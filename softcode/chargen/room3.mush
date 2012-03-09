@@ -35,7 +35,7 @@
   th [setq(0,val(%0))];
   @assert setr(1,grab(lattr(me/question.required.*) [lattr(me/question.optional.*)],question.*.%q0))=
     @pemit %#=[ansi(hb,>)] That's not a valid question!;
-  @pemit %#=[ansi(hb,>)] [ansi(h,v(%q1))]: [default(%#/char`bg`%q0`a,No answer yet.)]
+  @pemit %#=[ansi(hb,>)] [ansi(h,u(%q1,%#))]: [default(%#/char`bg`%q0`a,No answer yet.)]
 -
 
 # Exit from room 3 to room 4.
