@@ -10,7 +10,6 @@ module Anatomy
     field :name, type: String, :default => lambda { self.name.split(":").last }
     
     embedded_in :body, :class_name => "Anatomy::Body"
-    embedded_in :treatment, :class_name => "Anatomy::Treatment"
     
     def getPctMassOfBody
       self.mass / self.body.getMassTotal

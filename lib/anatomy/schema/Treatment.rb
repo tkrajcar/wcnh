@@ -8,8 +8,8 @@ module Anatomy
     
     field :healer, type: String
     field :success, type: Integer
+    field :part, type: String
     
-    embeds_one :region, :class_name => "Anatomy::Part"
     belongs_to :body, :class_name => "Anatomy::Body"
     
     @@TIMEOUT = 6.hours
@@ -23,10 +23,12 @@ module Anatomy
     end
     
     def doTreat
-      if self.class.heal_range.include?(self.region.pctHealth) && self.success > 0 then
-        self.region.pctHealth = [self.region.pctHealth + self.success.round(1) / 100, 1.0].min.round(2)
-        self.region.save
-        return self.region
+      part = self.body.parts.find_index { |i| i.name == self.part }
+      part = self.body.parts[part]
+      if self.class.heal_range.include?(part.pctHealth) && self.success > 0 then
+        part.pctHealth = [part.pctHealth + (self.success.round(2) / 100), 1.0].min
+        part.save
+        return part
       else return nil
       end
     end

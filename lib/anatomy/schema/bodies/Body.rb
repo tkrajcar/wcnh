@@ -14,7 +14,7 @@ module Anatomy
     
     after_create :assemble
     
-    @@AUTOHEAL_MIN = 0
+    @@AUTOHEAL_MIN = 0.8
     @@AUTOHEAL_AMOUNT = 0.03
     class << self
       attr_accessor :parts

@@ -12,11 +12,11 @@ module Anatomy
     self.injure(dbref, part.length > 0 ? part : nil, damage)
   end
   
-  def self.pj_heal(dbref)
-    self.heal(dbref)
-  end
-  
   def self.pj_cronHeal
     self.cronHeal
+  end
+  
+  def self.pj_heal(healer, dbref, part, skill_medicine, skill_firstaid)
+    self.heal(healer, dbref, part, skill_medicine, skill_firstaid)
   end
 end
