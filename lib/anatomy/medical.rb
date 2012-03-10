@@ -39,8 +39,25 @@ module Anatomy
   end
   
   def self.cronHeal
-    injured = Anatomy::Body.all.to_a.select { |i| i.getPctHealth < 1.0 }
-    injured.each { |i| i.doHeal }
+    injured = Body.all.to_a.select { |i| i.getPctHealth < 1.0 }
+    
+    injured.each do |i|
+      parts = i.doHeal
+      
+      i.treatments.each do |j|
+        parts << j.doTreat
+      end
+      
+      if parts.compact!.length > 0 then
+        partnames = Array.new(parts.length) { |i| parts[i].name.downcase }
+        R.nspemit(i.dbref, "The injuries to your #{partnames.itemize} are feeling a little better.".yellow)
+      else
+        R.nspemit(i.dbref, "None of your injuries are feeling any better.".yellow)
+      end
+    end
+    
+    Treatment.cleanup
+
     return 
   end
   

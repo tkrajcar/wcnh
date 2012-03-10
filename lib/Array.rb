@@ -11,4 +11,11 @@ class Array
       point -= w
     end
   end
+  
+  def itemize
+    return nil if self.length == 0
+    return self.first.to_s if self.length == 1
+    return "#{self.first} and #{self.last}" if self.length == 2
+    return self[0,self.length - 1].join(", ") + ", and " + self.last.to_s
+  end
 end

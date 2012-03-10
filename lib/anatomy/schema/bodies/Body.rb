@@ -10,6 +10,7 @@ module Anatomy
     index :dbref, :unique => true
     
     embeds_many :parts, :class_name => "Anatomy::Part"
+    has_many :treatments, :class_name => "Anatomy::Treatment"
     
     after_create :assemble
     
@@ -57,10 +58,15 @@ module Anatomy
     end
     
     def doHeal
+      healed = []
+      
       self.parts.select { |i| i.pctHealth < 1.0 && i.pctHealth >= @@AUTOHEAL_MIN }.each do |j|
         j.pctHealth = [j.pctHealth + @@AUTOHEAL_AMOUNT, 1.0].min.round(2)
+        healed << j
       end
+      
       self.save
+      return healed
     end
   end
   
