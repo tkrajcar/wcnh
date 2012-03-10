@@ -13,7 +13,7 @@ call for one.
  
 See help on the following commands that are related to combat:
  
-+check      med/scan
++911        +check        med/heal         med/scan
 
 & MED/SCAN
 Syntax: med/scan <target>
@@ -25,4 +25,31 @@ a target.
 A target's total injury level is a result of all the injuries sustained to 
 various body parts.  Injuries are healed a little bit at a time, once every
 hour.
+
+& MED/HEAL
+Syntax: med/heal <target>=<area>
+ 
+This command will heal a target's injuries, provided you have the appropriate
+skills.  The <area> is a body location obtained from the 'med/scan' command.
+ 
+If the target's area is above 80% health, they cannot benefit from further
+medical treatment.  The injury will finish healing over time.
+ 
+If the target's area is between 60% and 80% health, then they can benefit from
+first aid.  The higher your first aid skill, the more likely you are to
+successfully treat the injury.  As long as the injured area is above 60%
+health, you can also treat yourself.
+ 
+If the target's area is between 40% and 60% health, then they can benefit from
+either the first aid skill or the medicine skill.  The command will
+automatically pick your best skill.
+ 
+If the target's area is below 40% health, they can only be healed by the
+medicine skill.
+ 
+Once a target area has been treated, it cannot be treated again for 6 hours.
+Every time the healing cron runs (once per hour), the treated area will
+improve, provided the healer succeeded on their skill check.  If the healer
+botches their skill check (-1 or worse), they will do further damage to the
+target.
 
