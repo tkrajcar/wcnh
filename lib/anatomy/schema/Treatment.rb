@@ -23,7 +23,7 @@ module Anatomy
     end
     
     def doTreat
-      if self.class.heal_range.include?(self.region.pctHealth) then
+      if self.class.heal_range.include?(self.region.pctHealth) && self.success > 0 then
         self.region.pctHealth = [self.region.pctHealth + self.success.round(1) / 100, 1.0].min.round(2)
         self.region.save
         return self.region

@@ -48,7 +48,8 @@ module Anatomy
         parts << j.doTreat
       end
       
-      if parts.compact!.length > 0 then
+      parts = parts.compact.uniq
+      if parts.length > 0 then
         partnames = Array.new(parts.length) { |i| parts[i].name.downcase }
         R.nspemit(i.dbref, "The injuries to your #{partnames.itemize} are feeling a little better.".yellow)
       else
@@ -59,6 +60,20 @@ module Anatomy
     Treatment.cleanup
 
     return 
+  end
+  
+  def self.heal(healer, dbref, part)
+    if !(target = Body.where(:dbref => dbref).first) then
+       target = raceToClass(R.xget(dbref, "char`race")).create!(:dbref => dbref)
+    end
+    
+    unless part = target.parts[target.parts.find_index { |i| i.name.downcase == part }]
+      return "> ".bold.red + "Invalid body part.  'med/scan <target>' to see a list of valid parts."
+    end
+    
+    unless part.pctHealth < 1.0
+      return "> ".bold.red + "#{R.penn_name(dbref)}'s #{part.name.downcase} is uninjured.  Check 'med/scan <target>'."
+    end
   end
   
 end
