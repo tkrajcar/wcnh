@@ -792,7 +792,7 @@
       [ansi(y,Gun Mounts:)]%r
       [iter(
           lnum(first(setr(4,spacesys(guns,%0)),|)),
-          %t<#@> [ifelse(gte(words(after(%q4,|)),#@),get(extract(after(%q4,|),#@,1)/title),-- UNINSTALLED --)],
+          %t<#@> [ifelse(gte(words(after(%q4,|)),#@),get(extract(after(%q4,|),#@,1)/title),Laser Canon)],
           ,%r
           )]
       %r[footerbar()]
