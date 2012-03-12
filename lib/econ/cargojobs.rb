@@ -245,8 +245,8 @@ module Econ
 
   def self.cargojob_generate
     available_job_count = CargoJob.where(claimed: false).where(:expires.gte => DateTime.now).count
-    Logs.log_syslog("CARGOJOBGENERATOR","Running cargo generator. #{available_job_count.to_s} jobs available.")
-    if available_job_count <= 25
+    #Logs.log_syslog("CARGOJOBGENERATOR","Running cargo generator. #{available_job_count.to_s} jobs available.")
+    if available_job_count <= 20
       self.generate_one_job
       self.generate_one_job
     else
