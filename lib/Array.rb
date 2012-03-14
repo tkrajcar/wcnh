@@ -18,4 +18,8 @@ class Array
     return "#{self.first} and #{self.last}" if self.length == 2
     return self[0,self.length - 1].join(", ") + ", and " + self.last.to_s
   end
+  
+  def to_mush
+    self.to_s.gsub(/[\[\],"]/, '')
+  end
 end
