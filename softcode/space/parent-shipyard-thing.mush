@@ -45,8 +45,8 @@
           1,@nspemit %#=[spacesys(status,first(%q0))]
 -
 &CMD.SHIP/BUY #595=$ship/buy *=*:
-  @switch [t(gt(words(setr(0,u(fn.listclass,%0))),0))]
-          [t(gt(u(fn.econ.balance,%#),setr(3,u(fn.price,setr(2,first(%q0))))))]
+  @switch [t(words(setr(0,u(fn.listclass,%0))))]
+          [t(gte(u(fn.econ.balance,%#),setr(3,u(fn.price,setr(2,first(%q0))))))]
           [not(hasattrval(%!,order.%#))]=
 
           0??,@nspemit %#=[ansi(rh,>)] No ships of that class are available for purchase.,
