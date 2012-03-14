@@ -1,0 +1,11 @@
+&CMD.INJURE #115=$+injure *=*:
+  @assert [t(setr(Player,pmatch(first(%0,/))))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+  
+  @nspemit %#=[rpc(Anatomy.injure,pmatch(first(%0,/)),rest(%0,/),%1)]
+-
+&CMD.HEAL #115=$+heal *:
+  @assert [t(pmatch(%0))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+
+  @nspemit %#=[rpc(Anatomy.heal_admin,pmatch(%0))]
+-
+

@@ -69,6 +69,15 @@ module Anatomy
     return 
   end
   
+  def self.cronUncon
+    wakeup = []
+    Body.where(:conscious => false).each do |i|
+      wakeup << i.dbref if (i.checkUncon == true)
+      i.save
+    end
+    return wakeup.to_mush
+  end
+  
   def self.heal(healer, dbref, part, skill_medicine, skill_firstaid)
     skill_medicine = skill_medicine.to_i
     skill_firstaid = skill_firstaid.to_i

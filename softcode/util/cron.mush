@@ -62,4 +62,12 @@
 -
 &CRON_JOB_RPDECAY #539=think [rpc(RP.decay)]
 -
+&CRON_TIME_HEAL #539=||||03|
+-
+&CRON_JOB_HEAL #539=think [rpc(Anatomy.cronHeal)]
+-
+&CRON_TIME_HEAL.UNCON #539=||||03 18 33 48|
+-
+&CRON_JOB_HEAL.UNCON #539=@dol [rpc(Anatomy.cronUncon)]={@nspemit ##=[ansi(y,You awake from your unconscious state!)]}
+-
 

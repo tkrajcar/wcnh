@@ -6,6 +6,7 @@ module Anatomy
     include Mongoid::Document
     
     field :dbref, type: String
+    field :conscious, type: Boolean, :default => true
     
     index :dbref, :unique => true
     
@@ -67,6 +68,20 @@ module Anatomy
       
       self.save
       return healed
+    end
+    
+    def checkUncon
+      if (self.conscious && rand() > self.getPctHealth) then
+        self.conscious = false
+        self.save
+        return self.conscious
+      elsif (!self.conscious && rand() < self.getPctHealth) then
+        self.conscious = true
+        self.save
+        return self.conscious
+      else
+        return nil
+      end
     end
   end
   

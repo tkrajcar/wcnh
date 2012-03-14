@@ -21,13 +21,12 @@ module Anatomy
     else force = damage.to_i
     end
     
-    return "> ".bold.red + "Invalid target bodypart.  'med/scan <target>' for a list." unless result = target.applyDamage(force, part)
+    return "> ".bold.red + "Invalid target bodypart.  'med/scan <target>' for a list." unless result = damage(target, part, force)
     Logs.log_syslog("COMBAT", "#{R.penn_name(R["enactor"])} +injured #{R.penn_name(dbref)}'s #{result.name.downcase} with #{force}J of force.")
-    R.nsremit(R.penn_loc(dbref), "[#{'COMBAT'.bold.red}] #{R.penn_name(dbref)} takes a blow to the #{result.name.downcase}!")
     return "> ".bold.green + "#{force}J force applied to #{R.penn_name(dbref)}'s #{result.name.downcase}."
   end
   
-  def self.heal(dbref)
+  def self.heal_admin(dbref)
     if !(target = Body.where(:dbref => dbref).first) then
        target = raceToClass(R.xget(dbref, "char`race")).create!(:dbref => dbref)
     end
