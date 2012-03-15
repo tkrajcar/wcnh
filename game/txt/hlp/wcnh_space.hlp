@@ -10,9 +10,17 @@ character.
 The following commands are for use within the space system.  Most of them
 require that you "man" a console prior to using the command.
  
-board            hail           intercom      jump          man
-land             launch         manifest      plot          roster
-scan             +scheck        spose         status        survey
+bay              board          hail          intercom      jump
+man              land           launch        manifest      plot
+roster           scan           +scheck       spose         status
+survey
+
+& BAY
+Syntax: bay/open
+        bay/close
+ 
+When a ship has a bay, these commands will open and close it, respectively.
+You must be manning one of the ship's consoles.
 
 & SURVEY
 Syntax: survey <contact ID>
