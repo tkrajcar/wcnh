@@ -328,4 +328,5 @@
   @nspemit %#=[ansi(gh,>)] Your request has been sent.  Any available administrators will contact you shortly.;
   @nscemit/noisy Admin=[ansi(rh,911 REQUEST)] by [ansi(wh,name(%#))]\(%#\) at [name(loc(%#))]\([loc(%#)]\) because: %0
 -
-
+&cmd.+coinflip #15=$+coinflip:
+  @remit [loc(%#)]=[ansi(hb,>)] [ansi(h,%n)] flips a coin: [ansi(hy,ifelse(rand(2),HEADS,TAILS))]
