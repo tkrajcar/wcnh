@@ -162,7 +162,7 @@
               }
 -
 &CMD.PLOT/ENGAGE #204=$plot/engage:
-  +space/advance [v(data.ship)]
+  +space/advance [v(data.ship)]=1
 -
 &CMD.PLOT/STOP #204=$plot/stop:
   +space/stop [v(data.ship)]
