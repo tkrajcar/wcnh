@@ -4,10 +4,10 @@
   assistance. It is recommended that you read over all these chargen files 
   before beginning the process, to avoid having to start over.
   
-  Topic          Updated    Summary 
-  OVERVIEW      [11/28/11]  A general overview of the new chargen system.
-  COMMANDS      [11/28/11]  A list of the chargen-system commands.
-  ROOM          [11/28/11]  Specific help for each room of chargen.
+  Topic       Summary 
+  OVERVIEW    A general overview of the new chargen system.
+  COMMANDS    A list of the chargen-system commands.
+  ROOM        Specific help for each room of chargen.
  
   Type 'help chargen <subtopic>' to access a subtopic.
 & chargen overview
@@ -136,6 +136,10 @@ I dearly hope this is self-explanatory.
 +set alias <alias>
 An alias is a short form of your name, something easier to type than the full
 thing. It must be 5 letters or less.
+
++set tz <UTC/GMT offset>
+This allows you to set your local timezone relative to GMT. For example,
+Eastern Standard Time is -5, Pacific Standard Time is -8, and so on.
 
 onwards
 Once you've set all the above, type 'onwards' to move to the next room.
