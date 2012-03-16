@@ -58,13 +58,13 @@
   think [setq(Ship.wasstopped,t(after(%0,=)))];
   think [setq(Ship.dest,get(%q0/space`destination))];
 
-  think [switch(
+  think [ifelse(
                 %q<Ship.wasstopped>,
-                0,spacesys(advance,%q0),
                 [spacesys(notify.ship,%q0,The ship lurches slightly as it accelerates.)]
                 [spacesys(notify.consoles,%q0,Course engaged. Destination: %q<Ship.dest>.%r
                                               [ansi(gh,>)] Speed: [ulocal(fn.speed.parse,%q0)] [ansi(y,ETA: [spacesys(eta,%q0)])].
-                                              )]
+                                              )],
+                spacesys(advance,%q0)
                 )];
 
   @assert [hasattrval(%q0,space`destination)];
