@@ -1,9 +1,10 @@
-# chargen room 1: age, race, concept, name, gender, alias.
+# chargen room 1: age, race, concept, name, gender, alias, timezone.
 # +set age <years>
 # +set race <race>
 # +set gender <gender>
 # +set concept <concept>
 # +set name <firstname> <lastname>
+# +set tz <timezone>
 
 
 @desc #40=
@@ -12,7 +13,7 @@
   [ansi(hr,Please read '[ansi(hru,help chargen)]'. Right now. :\))] 
   And continue to read it throughout the chargen process. It will provide you with information, FAQs, and other helpful information.
   %r%r
-  In this room you will set your age, race, concept, sex/gender, & name.
+  In this room you will set your age, race, concept, sex/gender, timezone, & name.
   %r%r
   [ansi(hy,For the commands\, see 'help chargen room 1'.)] 
 -
@@ -67,6 +68,10 @@
     ,{@pemit %#=[ansi(hb,>)] Name set to [ansi(h,name(%#))].}
 -
 
+&cmd.+settz #40=$+set tz *:
+  &tz %#=[setr(0,val(%0))];
+  @pemit %#=[ansi(hb,>)] UTC interval set to [ansi(hy,[if(gte(%q0,0),+)]%q0)]. Your local time should be: [time(%#)];
+
 # Exit from room 1 to room 2.
 @lock #212==#0 
 -
@@ -84,6 +89,8 @@
     @pemit %#=[ansi(hb,>)] You need to set your alias.;
   @assert or(orflags(%#,Wr),gte(words(name(%#)),2))=
     @pemit %#=[ansi(hb,>)] You need to set your name.;
+  @assert hasattr(%#,tz)=
+    @Pemit %#=[ansi(hb,>)] You need to set your timezone.;
   @pemit %#=[ansi(hb,>)] Checks passed. Proceeding...;
   @oemit %#=%n moves on to Room 2.;
   @tel %#=loc(me);
