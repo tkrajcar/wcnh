@@ -100,6 +100,8 @@
                @power %1=pemit;
                &data.manned %1=;
                &data.ship %1=%0;
+               @set %1=listen_parent;
+               @set %1=monitor;
                @set %0=data.consoles:[trim([get(%0/data.consoles)] %1)];
                @lock %1==%1;
                @set %1=!no_command
