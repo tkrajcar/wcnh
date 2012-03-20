@@ -52,8 +52,7 @@ module Econ
     def to_mush
       ret = self.number.to_s.rjust(5).bold
       ret << " "
-      ret << "#{self.source.name}-#{self.destination.name}".ljust(18)
-      ret << " "
+      ret << "#{self.source.name}-#{self.destination.name}".ljust(22)
       ret << self.size.to_s.rjust(4)
       ret << Econ.credit_format(self.price).to_s.rjust(8).bold.yellow
       ret << " "
@@ -74,7 +73,7 @@ module Econ
       ret << " "
       ret << self.grade_text
       ret << " "
-      ret << self.commodity.name
+      ret << self.commodity.name[0..15]
       ret << "\n"
     end
 
