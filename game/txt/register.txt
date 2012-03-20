@@ -1,4 +1,2 @@
-Sorry, we had to temporarily disable player registration due to a PennMUSH bug.
-To get a character in the meantime, please log in as a guest via
-'connect guest guest' and ask on the Help channel and we'll create you one.
-Thanks and sorry for the inconvenience!
+WCNH uses e-mail based registration. Use 'register "first last" my@email.com'.
+For example: register "Joe Smith" joe@smith.com 
