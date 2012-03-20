@@ -2,7 +2,7 @@ require 'httparty'
 
 class WebAPIClient
   include ::HTTParty
-  base_uri 'http://localhost:3000/api'
+  base_uri 'http://wcmush.com/api'
 
   def self.register(email, password, current_dbref, current_name)
     begin
