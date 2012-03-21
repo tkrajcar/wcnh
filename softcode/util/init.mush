@@ -147,7 +147,12 @@
 &FNORD.FN #25=
   rpc(Silly.fnord)
 -
-
+&ISSHIP.FN #25=
+  spacesys(ISSHIP,%0)
+-
+&SHIPCLASS.FN #25=
+  [ifelse(hastype(%@,ROOM),spacesys(CLASS,%0),#-1 PERMISSION DENIED)]
+-
 ### ACTUAL MAKE-IT-GO-NESS
 &DESCRIBE #25=Global @functions go here, in the format 'funname.fn'%rAlso global attributes, in the format 'funname.attr', with the contents of the attribute being the list of attribute flags assigned.%r%r[AttribReport(%!)]%r
 -
