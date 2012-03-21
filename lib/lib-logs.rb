@@ -8,7 +8,7 @@ module Logs
     where_name = R.penn_name(where)
     where_zone = R.zone(where)
     where_zone_name = R.penn_name(where_zone)
-    players_present = R.filter("#LAMBDA/HASFLAG(\%0,CONNECTED)",R.lplayers(where)).split(' ')
+    players_present = R.lvplayers(where).split(' ')
     Roleplay.create!(who: who,
                     who_name: who_name, 
                     where: where, 
