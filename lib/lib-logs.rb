@@ -15,7 +15,7 @@ module Logs
                     where_zone: where_zone,
                     where_zone_name: where_zone_name,
                     what: what)
-    cemit = "#{'['.bold.black}#{where_name}(#{where})#{']'.bold.black}"
+    cemit = "[#{where_name}-#{where}]".green
     cemit += " <#{who_name}>" if was_emit.to_bool
     cemit += " #{what}"
     R.nscemit("+RP",cemit,"1")
