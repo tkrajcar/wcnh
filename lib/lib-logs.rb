@@ -8,13 +8,15 @@ module Logs
     where_name = R.penn_name(where)
     where_zone = R.zone(where)
     where_zone_name = R.penn_name(where_zone)
+    players_present = R.filter("#LAMBDA/HASFLAG(\%0,CONNECTED)",R.lplayers(where)).split(' ')
     Roleplay.create!(who: who,
                     who_name: who_name, 
                     where: where, 
                     where_name: where_name,
                     where_zone: where_zone,
                     where_zone_name: where_zone_name,
-                    what: what)
+                    what: what, 
+                    players_present: players_present)
     cemit = "[#{where_name}-#{where}]".green
     cemit += " <#{who_name}>" if was_emit.to_bool
     cemit += " #{what}"
@@ -67,6 +69,8 @@ module Logs
     index :where_zone
     field :where_zone_name, :type => String
     field :what, :type => String
+    field :players_present, :type => Array
+    index :players_present
   end
 
   class Syslog
