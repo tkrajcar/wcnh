@@ -3,7 +3,7 @@ require 'wcnh'
 module Logs
   R = PennJSON::Remote
 
-  def self.log_rp(who,where,what)
+  def self.log_rp(who,where,what,was_emit=0)
     who_name = R.penn_name(who)
     where_name = R.penn_name(where)
     where_zone = R.zone(where)
@@ -15,6 +15,10 @@ module Logs
                     where_zone: where_zone,
                     where_zone_name: where_zone_name,
                     what: what)
+    cemit = "#{'['.bold.black}#{where_name}(#{where})#{']'.bold.black}"
+    cemit += " <#{who_name}>" if was_emit.to_bool
+    cemit += " #{what}"
+    R.nscemit("+RP",cemit,"1")
     ""
   end
 

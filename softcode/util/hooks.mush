@@ -3,7 +3,7 @@
 # This should handle the following RP commands:
 # @emit \\ say " pose : semipose ;
 
-&HOOK.SAY #21=[if(hasflag(%#,IC),u(logrp,%#,%L,%n says\, "[rest(%u)]"))]
+&HOOK.SAY #21=[if(hasflag(%#,IC),u(logrp,%#,%L,%n says\, "[rest(%u)]",0))]
 -
 
 &HOOK.POSE #21=
@@ -15,7 +15,7 @@
       %n [rest(%u)]
     )
   )]
-  [if(hasflag(%#,IC),u(logrp,%#,%L,%q0))]
+  [if(hasflag(%#,IC),u(logrp,%#,%L,%q0,0))]
 -
 
 &HOOK.SEMIPOSE #21=
@@ -27,10 +27,10 @@
       %n[rest(%u)]
     )
   )]
-  [if(hasflag(%#,IC),u(logrp,%#,%L,%q0))]
+  [if(hasflag(%#,IC),u(logrp,%#,%L,%q0,0))]
 -
 
-&HOOK.EMIT #21=[if(hasflag(%#,IC),u(logrp,%#,%L,rest(%u)))]
+&HOOK.EMIT #21=[if(hasflag(%#,IC),u(logrp,%#,%L,rest(%u),1))]
 -
 
-&LOGRP #21=[rpc(Logs.log_rp,%0,%1,%2)]
+&LOGRP #21=[rpc(Logs.log_rp,%0,%1,%2,%3)]
