@@ -33,4 +33,4 @@
 &HOOK.EMIT #21=[if(hasflag(%#,IC),u(logrp,%#,%L,rest(%u),1))]
 -
 
-&LOGRP #21=[rpc(Logs.log_rp,%0,%1,%2,%3)]
+&LOGRP #21=[rpc(Logs.log_rp,%0,%1,trim(%2,%r%t%b),%3)]
