@@ -9,7 +9,7 @@ module Zones
   def self.history(bc)
     history = Checkout.where(bc: bc)
     return "> ".red + "No records found." unless history.length > 0
-    ret = titlebar("History for #{R.penn_name(bc)}\n")
+    ret = titlebar("History for #{R.penn_name(bc)}") + "\n"
     ret << " User".ljust(20).yellow + "Checked Out".yellow  + "\n"
     history.each do |i|
       ret << " #{R.penn_name(i.dbref).ljust(20)} #{i.time.strftime("%m/%d/%y %H:%M")}\n"

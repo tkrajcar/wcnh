@@ -1,0 +1,25 @@
+&DATA_ZONES #467=#228
+-
+&CMD.+ZONE/CHECKOUT #467=$+zone/checkout *:
+  @switch [setr(0,zones(bc.checkout,%0))]=
+
+          #-1 NO RESULTS,@nspemit %#=[ansi(y,<Zones>)] No such zone.,
+          #-1 INVALID ZMO,@nspemit %#=[ansi(y,<Zones>)] That is not a valid ZMO.,
+          #-1 MULTIPLE MATCHES,@nspemit %#=[ansi(y,<Zones>)] Specify one of: [iter(filter(#227/filter.zmo,lsearch(all,type,thing,name,%0)),[name(itext(0))]\([itext(0)]\),,\,%b)],
+          #-1 NO BUILDER,@nspemit %#=[ansi(y,<Zones>)] That zone does not have a builder.,
+          {@nspemit %#=[ansi(y,<Zones>)] [name(%q0)] checked out.  Password: [setr(1,zones(bc.pwgen))];
+           @fo me={@newpass %q0=%q1};
+           think [rpc(Zones.checkout,%q0,%#)];
+           think [syslog(ZONES,[name(%q0)]\(%q0\) checked out by [name(%#)]\(%#\).  Password will cycle in 90 seconds.)];
+           @wait 90={@fo me=@newpass %q0=[zones(bc.pwgen)]}
+          }
+-
+&CMD.+ZONE/LIST #467=$+zone/list*:
+  @assert [t(%0)]=@nspemit %#=[zones(list.zones,get(v(data_zones)/zones_master))];
+
+  think setr(Zone,zones(findzone,trim(%0)));
+
+  @assert [not(gt(words(%q<Zone>),1))]=@nspemit %#=[ansi(rh,>)] Specify one of: [itemize(iter(%q<Zone>,[name(itext(0))]\([itext(0)]\),,|),|)];
+
+  @nspemit %#=[zones(list.zones,%q<Zone>)]
+-          
