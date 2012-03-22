@@ -51,7 +51,9 @@
   @tel %q<Zone>=%q<BC>;
   @chzone %q<BC>=%q<Zone>;
   &BC %q<Zone>=%q<BC>;
+  think setr(oldZone,zone(%q<Zone>));
   @chown %q<Zone>=%q<BC>;
+  @switch t(%q<oldZone>)=1,{@chzone %q<Zone>=%q<oldZone>};
   @set %q<Zone>=!halt;
   think syslog(ZONES,[name(%q<Zone>)]\(%q<Zone>\) assigned to [name(%q<BC>)]\(%q<BC>\) by [name(%#)].);
   @nspemit %#=[ansi(gh,>)] [name(%q<Zone>)]\(%q<Zone>\) assigned to [name(%q<BC>)]\(%q<BC>\) and @tel'd to the BC's inventory.
