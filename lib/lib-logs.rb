@@ -8,7 +8,8 @@ module Logs
     where_name = R.penn_name(where)
     where_zone = R.zone(where)
     where_zone_name = R.penn_name(where_zone)
-    players_present = R.lvplayers(where).split(' ')
+    players_present = R.lvplayers(where)
+    players_present = players_present.split(' ') unless players_present.nil?
     Roleplay.create!(who: who,
                     who_name: who_name, 
                     where: where, 

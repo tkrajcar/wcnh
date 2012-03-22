@@ -36,4 +36,7 @@
 &HOOK.WHISPER #21=[cemit(+RP,[ansi(g,\[[name(%L)]\(%L\)\])] <WHISPER> %n to [rest(%u)],1)]
 -
 
+&HOOK.REMIT #21=[setq(c,rest(%u))][u(logrp,%#,before(%qc,=),after(%qc,=),1)]
+-
+
 &LOGRP #21=[rpc(Logs.log_rp,%0,%1,trim(%2,%r%t%b),%3)]
