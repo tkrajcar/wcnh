@@ -465,9 +465,9 @@
   [nszemit(%0,%1)]
 -
 &FN.NOTIFY.CONSOLES #208=
-  iter(
-    get(%0/data.consoles),
-    nspemit(get(itext(0)/data.manned),[ansi(gh,>)] %1)
+  nsremit(
+    setunion(iter(get(%0/data.consoles),loc(itext(0))),),
+    [ansi(gh,>)] %1
     )
 -
 # Function: iscrew(ship DBREF, player DBREF)
