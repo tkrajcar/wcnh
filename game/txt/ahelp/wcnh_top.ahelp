@@ -4,8 +4,8 @@ This is the admin-only help for WC:NH.
   PAGES:
  
   COMBAT         +DOSSIER       ECON           +FACTION       +PFILE         
-  +RP            +SPACE         +TICKET        WANTED   
-
+  +RP            +SPACE         +TICKET        WANTED         +ZONE 
+ 
 & +DOSSIER
   This command allows you to make notes about IC matters relating to characters.
   Plot hooks that should be used, IC loans, or anything else related to a chara-
@@ -70,4 +70,22 @@ HEAVY
 1200 - M1 Carbine
 1700 - M16 Rifle
 400000 - Hit by a car at 60mph
+
+& +ZONE
+Admin commands for building.
+ 
++zone/list - See a hierarchial list of zones.
++zone/create <name> - Make a new zone.
++zone/assign <zone>=<parent zone> - Put a zone under a parent zone.
++zone/makebc <player obj> - Make a new BC.  You must @pcreate the BC first.
++zone/bc <zone>=<bc> - Assign a BC to a zone.
++zone/history <zone> - See the checkout history for a zone's BC.
++zone/checkout <zone> - Checkout a BC to do some building work.
+ 
+It is preferable always to use these commands when dealing with
+zoning/building.  Everything is sure to be properly zoned/chowned/powered/etc.
+when you use these commands.
+ 
+Guides can additionally use +zone/checkout and +zone/list in the event that you
+want to farm out some building work.
 
