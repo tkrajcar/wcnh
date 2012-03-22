@@ -41,7 +41,8 @@
   @assert [t(hasattrval(%0,data.docked))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is already in space.;
   @assert [not(spacesys(ismoving,%0))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is already moving. [ansi(yh,timestring(spacesys(cycle)))] until orbit.;
   @assert [t(hasattrval(loc(%0),space`loc))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Landing zone has an invalid space loc.;
-  @assert [spacesys(isbayopen,get(loc(%0)/space`loc))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The bay doors are closed.;
+  @assert [spacesys(isbayopen,setr(Spaceloc,get(loc(%0)/space`loc)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The bay doors are closed.;
+  @assert [or(not(spacesys(isship,%q<Spaceloc>)),spacesys(isactive,%q<Spaceloc>))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You cannot launch while the ship you're docked in is landed.;
 
   @nspemit [u(fn.caller)]=[ansi(gh,>)] Launching the [name(%0)].;
   think [spacesys(notify.consoles,%0,Launch sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] until orbit.)];
