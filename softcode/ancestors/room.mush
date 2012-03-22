@@ -75,5 +75,5 @@
 -
 &ROOM_PARENT.DISPLAY_SHIPS.FN #9=%r[align(6 72,ansi(h[v(COLOR.Frame)],Ships:),itemize(map(ROOM_PARENT.FORMAT_SHIPNAME.FN,%0, ,|),|))]
 -
-&ROOM_PARENT.FORMAT_SHIPNAME.FN #9=[ansi(h,name(%0))]\[[shipclass(%0)]\]
+&ROOM_PARENT.FORMAT_SHIPNAME.FN #9=[ansi(h,name(%0))]\[[ansi(c,shipclass(%0))]\]
 
