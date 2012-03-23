@@ -155,7 +155,7 @@
             [iter(
                  setr(s,spacesys(shipsbycaptain,%ql)),
                  align(30 15 30,
-                      [name(itext(0))],
+                      [name(itext(0))]\([ansi(c,[itext(0)])]\),
                       [get(itext(0)/space`class)],
                       [name(setr(c,loc(itext(0))))]\([ansi(c,%qc)]\)
                       ),
