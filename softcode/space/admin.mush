@@ -157,7 +157,11 @@
                  align(30 15 30,
                       [name(itext(0))]\([ansi(c,[itext(0)])]\),
                       [get(itext(0)/space`class)],
-                      [name(setr(c,zone(room(itext(0)))))]\([ansi(c,%qc)]\)
+                      [ifelse(
+                             setr(c,zone(setr(r,room(itext(0))))),
+                             [name(%qc)]\([ansi(c,%qc)]\),
+                             [name(%qr)]\([ansi(c,%qr)]\)
+                             )]
                       ),
                  ,%r)]%r
             [footerbar(words(%qs) Ships)]
