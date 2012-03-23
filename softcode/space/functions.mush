@@ -135,6 +135,8 @@
 -
 &DOC.MANIFEST #208=ship|Pre-formatted manifest for ship.
 -
+&DOC.SHIPSBYCAPTAIN #209=player|Return list of ships captained by player.
+-
 &DATA #208=#351
 -
 @startup #208=
