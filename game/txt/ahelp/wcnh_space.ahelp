@@ -18,7 +18,7 @@ following space cycle.  To force an action immediately, either @notify
  
 +space/addcon        +space/advance         +space/classes 
 +space/jump          +space/land            +space/launch
-+space/stop
++space/ships         +space/stop
 
 & +SPACE/ADDCON
 Syntax: +space/addcon <ship>=<object>
@@ -55,4 +55,9 @@ Launch a ship, provided it is landed at a valid place.
 Syntax: +space/stop <stop>
  
 Stop a ship that is in motion.
+
+& +SPACE/SHIPS
+Syntax: +space/ships <player>
+
+List ships captained by a player.
 
