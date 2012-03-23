@@ -146,4 +146,18 @@
       ,%r)]%r
   [footerbar([words(%q0)] Classes)]
 -
-
+&CMD.+SPACE/SHIPS #367=$+space/ships *:
+  @switch [setr(l,pmatch(%0))]=
+          #-1,@nspemit %#=Invalid player.,
+          @nspemit %#=
+            [titlebar(Ships belonging to [name(%ql)])]%r
+            [ansi(y,align(30 15 30,Name,Class,Location))]%r
+            [iter(
+                 setr(s,spacesys(shipsbycaptain,%ql)),
+                 align(30 15 30,
+                      [name(itext(0))],
+                      [get(itext(0)/space`class)],
+                      [name(setr(c,loc(itext(0))))]\([ansi(c,%qc)]\)
+                      ),
+                 ,%r)]%r
+            [footerbar(words(%qs) Ships)]

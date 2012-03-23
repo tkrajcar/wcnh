@@ -823,3 +823,22 @@
 -
 &FN.MANIFEST #208=
   [rpc(Econ.cargojob_manifest,%0)]
+-
+&FN.SHIPSBYCAPTAIN #208=
+  ifelse(
+        strlen(
+            setr(s,squish(
+              iter(
+                  iter(
+                      cat(children(#179),children(#589)),
+                      children(itext(0))
+                      ),
+                  if(
+                    strmatch(get(itext(0)/data.roster),*%0:captain*),
+                    itext(0)
+                    )
+                  )
+               ))
+              ),
+        %qs,#-1 NO SHIPS FOUND
+        )   
