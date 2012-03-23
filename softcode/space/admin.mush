@@ -148,20 +148,23 @@
 -
 &CMD.+SPACE/SHIPS #367=$+space/ships *:
   @switch [setr(l,pmatch(%0))]=
-          #-1,@nspemit %#=Invalid player.,
-          @nspemit %#=
-            [titlebar(Ships belonging to [name(%ql)])]%r
-            [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
-            [iter(
-                 setr(s,spacesys(shipsbycaptain,%ql)),
-                 align(30 15 30,
-                      [name(itext(0))]\([ansi(c,[itext(0)])]\),
-                      [get(itext(0)/space`class)],
-                      [ifelse(
-                             setr(c,zone(setr(r,room(itext(0))))),
-                             [name(%qc)]\([ansi(c,%qc)]\),
-                             [name(%qr)]\([ansi(c,%qr)]\)
-                             )]
-                      ),
-                 ,%r)]%r
-            [footerbar(words(%qs) Ships)]
+          #-1,@nspemit %#=[ansi(rh,>)] Invalid player.,
+          {@switch [setr(s,spacesys(shipsbycaptain,%ql))]=
+                   #-1 NO SHIPS FOUND,@nspemit %#=[ansi(rh,>)] Player owns no ships.,
+                   @nspemit %#=
+                   [titlebar(Ships belonging to [name(%ql)])]%r
+                   [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
+                   [iter(
+                        setr(s,spacesys(shipsbycaptain,%ql)),
+                        align(30 15 30,
+                             [name(itext(0))]\([ansi(c,[itext(0)])]\),
+                             [get(itext(0)/space`class)],
+                             [ifelse(
+                                    setr(c,zone(setr(r,room(itext(0))))),
+                                    [name(%qc)]\([ansi(c,%qc)]\),
+                                    [name(%qr)]\([ansi(c,%qr)]\)
+                                    )]
+                             ),
+                        ,%r)]%r
+                   [footerbar(words(%qs) Ships)]
+           }

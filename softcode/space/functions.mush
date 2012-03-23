@@ -827,20 +827,23 @@
   [rpc(Econ.cargojob_manifest,%0)]
 -
 &FN.SHIPSBYCAPTAIN #208=
-  ifelse(
-        strlen(
-            setr(s,squish(
-              iter(
-                  iter(
-                      lvthings(get(v(data)/bin.parents)),
-                      children(itext(0))
-                      ),
-                  if(
-                    strmatch(get(itext(0)/data.roster),*%0:captain*),
-                    itext(0)
-                    )
-                  )
-               ))
-              ),
-        %qs,#-1 NO SHIPS FOUND
+  switch(
+        [pmatch(%0)]
+        [strlen(
+            setr(r,squish(
+                         iter(
+                             iter(
+                                 lvthings(get(v(data)/bin.parents)),
+                                 children(itext(0))
+                                 ),
+                             if(
+                               strmatch(get(itext(0)/data.roster),*%0:captain*),
+                               itext(0)
+                               )
+                             )
+                         ))
+                )],
+        #-1?,#-1 NOT A PLAYER,
+        *0,#-1 NO SHIPS FOUND,
+        %qr
         )   
