@@ -832,7 +832,7 @@
             setr(s,squish(
               iter(
                   iter(
-                      cat(children(#179),children(#589)),
+                      lvthings(get(v(data)/bin.parents)),
                       children(itext(0))
                       ),
                   if(

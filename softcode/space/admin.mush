@@ -132,7 +132,7 @@
       setr(0,lvthings(get(v(data)/bin.parents))),
       align(
           15 -6 4 4 5 5 5 5 7 -5,
-          [get(itext(0)/space`class)],
+          [get(itext(0)/space`class)]\([ansi(c,[itext(0)])]\),
           [words(children(itext(0)))],
           [ifelse(spacesys(iscapship,itext(0)),Yes,No)],
           [ifelse(spacesys(hasbay,itext(0)),Yes,No)],
@@ -151,13 +151,13 @@
           #-1,@nspemit %#=Invalid player.,
           @nspemit %#=
             [titlebar(Ships belonging to [name(%ql)])]%r
-            [ansi(y,align(30 15 30,Name,Class,Location))]%r
+            [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
             [iter(
                  setr(s,spacesys(shipsbycaptain,%ql)),
                  align(30 15 30,
                       [name(itext(0))]\([ansi(c,[itext(0)])]\),
                       [get(itext(0)/space`class)],
-                      [name(setr(c,loc(itext(0))))]\([ansi(c,%qc)]\)
+                      [name(setr(c,zone(room(itext(0)))))]\([ansi(c,%qc)]\)
                       ),
                  ,%r)]%r
             [footerbar(words(%qs) Ships)]
