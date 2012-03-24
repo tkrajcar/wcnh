@@ -31,5 +31,9 @@ module Calendar
   def self.pj_event_delete(id)
     self.event_delete(id)
   end
+  
+  def self.pj_notify
+    self.notify
+  end
 
 end

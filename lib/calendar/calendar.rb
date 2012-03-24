@@ -18,5 +18,14 @@ module Calendar
     ret << footerbar
     ret
   end
+  
+  def self.notify
+    range = DateTime.now..DateTime.now + 30.minutes
+    events = Event.where(date: range)
+    events.each do |i|
+      R.nscemit("Public", "[#{"CALENDAR".cyan}] Event no. #{i.num}, '#{i.title}', begins in #{((i.date.to_time - Time.now) / 60).to_i} minutes.", "0")
+    end
+    return
+  end
 
 end  

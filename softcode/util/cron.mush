@@ -70,4 +70,8 @@
 -
 &CRON_JOB_HEAL.UNCON #539=@dol [rpc(Anatomy.cronUncon)]={@nspemit ##=[ansi(y,You awake from your unconscious state!)]}
 -
+&CRON_TIME_EVENTREMINDER #539=||||00 15 30 45|
+-
+&CRON_JOB_EVENTREMINDER #539=think [rpc(Calendar.notify)]
+-
 
