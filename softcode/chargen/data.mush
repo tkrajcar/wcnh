@@ -46,7 +46,7 @@
 -
 &SKILL.CONSTRUCTION #111=Construction|Professional|0|STR|-2
 -
-&SKILL.DEMOLITIONS #111=Demolitions|Professional|1||
+&SKILL.DEMOLITIONS #111=Demolitions|Professional|1|||This skill represents your character's general ability to identify, create, set, arm, disarm, and dismantle explosive devices, from pipe bombs and small fireworks to large military ordnance. Characters with a high Demolitions skill can create improvised explosive devices, disarm planted explosives, and have knowledge on proper placement of demolitions for desired yields.
 -
 &SKILL.DISGUISE #111=Disguise|Social|0|WIL|-2|Used for attempting to conceal your identity using various forms of clothing, makeup, masks or other accessories.
 -
