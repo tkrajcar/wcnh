@@ -159,7 +159,7 @@ module Econ
   def self.account_open(account)
     return ">".bold.green + "Account names cannot be longer than 15 characters." unless account.length <= 15
     account_count = Account.where(owner: R["enactor"]).length
-    return ">".bold.green + "You've opened 10 accounts already! Contact an admin if you need more for some reason." unless account_count <= 10 || R.orflags(R["enactor"],"Wr").to_bool
+    return ">".bold.green + "You've opened 40 accounts already! Contact an admin if you need more for some reason." unless account_count <= 40 || R.orflags(R["enactor"],"Wr").to_bool
     return "> ".bold.green + "That account name is already in use." unless Account.where(lowercase_name: account.downcase).length == 0
     Account.open(account,R["enactor"],R.penn_name(R["enactor"]))
     return "> ".bold.green + "Account #{account.bold} opened."
