@@ -28,7 +28,8 @@
   @assert [spacesys(isbayopen,%q1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The bay doors are closed.;
   @assert [nand(
               spacesys(iscapship,%0),
-              spacesys(isship,%q1)
+              spacesys(isship,%q1),
+              not(spacesys(isstation,%q1))
               )]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] is too large to fit.;
 
   @nspemit [u(fn.caller)]=[ansi(gh,>)] Landing [name(%0)] on [name(%q1)].;

@@ -847,3 +847,6 @@
         *0,#-1 NO SHIPS FOUND,
         %qr
         )   
+-
+&FN.ISSTATION #208=
+  ifelse(eq(default(%0/space`size,1),9),1,0)
