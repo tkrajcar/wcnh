@@ -50,6 +50,9 @@
   think [tel(%0,extract(v(planet.[get(%0/char`startingplanet)]),1,1,|))];
   @pemit %#=[ansi(hb,>)] You have entered the game world.;
   &unapproved.players #111=[setunion(get(#111/unapproved.players),%0)];
+  @fo %0=handle/register [name(%0)];
+  @fo %0=handle/use [name(%0)];
+  @fo %0=comm/on 100.00;
   @chan/on public=%0;
 -
 
