@@ -35,6 +35,7 @@ module Ticket
     return ">".bold.cyan + " Invalid assignee!" unless R.orflags(p,"Wr").to_bool || victim == "none"
     t.assignee = (victim == "none" ? nil : p)
     t.updated = DateTime.now
+    t.comments.create!(author: R["enactor"], text: "+ticket assigned to #{victim == "none" ? "nobody" : R.penn_name(p)}.", private: true)
     t.save
     team_notify("#{R.penn_name(R["enactor"]).bold} has assigned ticket ##{t.number.to_s.bold.white} to #{victim == "none" ? "nobody".bold.yellow : R.penn_name(p).bold.yellow}.")
     ">".bold.cyan + " Ticket #{t.number.to_s.bold} assigned to #{victim == "none" ? "nobody".bold : R.penn_name(p).bold}."
