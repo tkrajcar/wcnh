@@ -94,14 +94,22 @@
 -
 @set #15/cmd.+who=regexp
 -
+@set #15/cmd.+who2=regexp
+-
 &cmd.+who #15=$^[\+@]?who$:
-  @nspemit %#=
+  @nspemit %#=u(fn.who,filter(filter.unidle,lwho(%#)),1)
+-
+&cmd.+who2 #15=$^[\+@]?who (.+)$:
+  @nspemit %#=[setq(0,%1)][u(fn.who,filterbool(filter.name,lwho(%#)),0)]
+-
+
+&fn.who #15=
   [titlebar(+who)]%r
   %b[ansi(y,align(3 25 >8 >8 29,Sta,Name\(Alias\),Idle,On For,ifelse(orflags(%#,Wr),Location,Doing)))]%r
   %b[ansi(r,--- [repeat(-,25)] [repeat(-,8)] [repeat(-,8)] [repeat(-,29)])]%r
-  [map(map.+who,filter(filter.unidle,lwho(%#)), ,%r)]%r
+  [map(map.+who,%0, ,%r)]%r
   [if(
-    setr(i,filter(filter.idle,lwho(%#))),
+    and(%1,setr(i,filter(filter.idle,lwho(%#)))),
     %b[ansi(r,repeat(-,77))]%r
     %b[ansi(y,Idle:)] [align(70,map(map.+who.short,sortby(sort.idle,%qi), ,\,%b), , ,%r[space(7)])]%r
   )]
@@ -133,6 +141,8 @@
 &filter.unidle #15=lte(idlesecs(%0),3600)
 -
 &filter.idle #15=gt(idlesecs(%0),3600)
+-
+&filter.name #15=match(name(%0),%q0*,|)
 -
 &sort.idle #15=sub(idlesecs(%0),idlesecs(%1))
 -
