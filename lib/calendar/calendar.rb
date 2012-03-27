@@ -10,9 +10,9 @@ module Calendar
 
     return "> ".bold.red + "No events found." unless (events.count > 0)
     ret = titlebar("Calendar Events from #{start.strftime("%b %d %Y")} to #{range.last.strftime("%b %d %Y")}") + "\n"
-    ret << " Num".ljust(5).yellow + "Title".ljust(25).yellow + "Creator".ljust(25).yellow + "Time (TZ = #{tz})".yellow + "\n"
+    ret << " Num".ljust(5).yellow + "Title".ljust(29).yellow + "Creator".ljust(25).yellow + "Time (TZ = #{tz})".yellow + "\n"
     events.all.each do |event|
-      ret << " #{event.num}".ljust(5) + event.title.to_s.ljust(25) + R.penn_name(event.creator.to_s).ljust(25) + event.date.new_offset(tz).strftime("%d %b %Y @ %H:%M")
+      ret << " #{event.num}".ljust(5) + event.title.to_s[0,29].ljust(29) + R.penn_name(event.creator.to_s).ljust(25) + event.date.new_offset(tz).strftime("%d %b %Y @ %H:%M")
       ret << "\n"
     end
     ret << footerbar
