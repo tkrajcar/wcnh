@@ -97,7 +97,8 @@
           1,{@nspemit %#=[ansi(c,<Faction>)] You have joined [ansi(wh,setr(2,faction(name,%0)))]!;
              think [set(%#,fac`invites:[squish(remove(%q0,ucstr(%0)))])];
              think [if(t(setr(1,faction(channel,%0))),nscemit(%q1,[ansi(wh,name(%#))] has joined [ansi(wh,%q2)]!,noisy))];
-             think [faction(addmember,%0,%#)]
+             think [faction(addmember,%0,%#)];
+             @chan/on %q1=%#
             },
             @nspemit %#=[ansi(c,<Faction>)] You don't have a pending invitation to join that faction.
 -
