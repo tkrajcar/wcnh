@@ -98,5 +98,9 @@ module Econ
   def self.pj_cargojob_transfer(job,to_ship)
     self.cargojob_transfer(job,to_ship)
   end
+
+  def self.pj_location_distance(a,b)
+    Econ::Distance.find_distance(a,b).to_s
+  end
 end
 

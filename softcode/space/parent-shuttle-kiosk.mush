@@ -65,7 +65,7 @@
             }
 -
 &FN.TRAVEL.CALC #203=
-  mul(abs(mul(v(shuttle.multiplier),sub(member(v(list.destinations),%0),member(v(list.destinations),%1)))),60)  
+  val(mul(add(1,power(val(rpc(Econ.location_distance,xget(%0,space`loc),xget(%1,space`loc))),0.8)),150))
 -
 &LIST.DESTINATIONS #203=#223 #428 #387 #349 
 -
