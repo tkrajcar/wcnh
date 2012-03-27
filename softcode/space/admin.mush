@@ -148,24 +148,43 @@
   [footerbar([words(%q0)] Classes)]
 -
 &CMD.+SPACE/SHIPS #367=$+space/ships *:
-  @switch [setr(l,pmatch(%0))]=
-          #-1,@nspemit %#=[ansi(rh,>)] Invalid player.,
-          {@switch [setr(s,spacesys(shipsbycaptain,%ql))]=
-                   #-1 NO SHIPS FOUND,@nspemit %#=[ansi(rh,>)] Player owns no ships.,
-                   @nspemit %#=
-                   [titlebar(Ships belonging to [name(%ql)])]%r
-                   [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
-                   [iter(
-                        setr(s,spacesys(shipsbycaptain,%ql)),
-                        align(30 15 30,
-                             [name(itext(0))]\([ansi(c,[itext(0)])]\),
-                             [get(itext(0)/space`class)],
-                             [ifelse(
-                                    setr(c,zone(setr(r,room(itext(0))))),
-                                    [name(%qc)]\([ansi(c,%qc)]\),
-                                    [name(%qr)]\([ansi(c,%qr)]\)
-                                    )]
-                             ),
-                        ,%r)]%r
-                   [footerbar(words(%qs) Ships)]
-           }
+  @assert [setr(l,pmatch(%0))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+  @assert [setr(s,spacesys(shipsbycaptain,%ql))]=@nspemit %#=[ansi(rh,>)] Player owns no ships.;
+  @nspemit %#=
+    [titlebar(Ships belonging to [name(%ql)])]%r
+    [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
+    [iter(
+         setr(s,spacesys(shipsbycaptain,%ql)),
+         align(30 15 30,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              [get(itext(0)/space`class)],
+              [ifelse(
+                     setr(c,zone(setr(r,room(itext(0))))),
+                     [name(%qc)]\([ansi(c,%qc)]\),
+                     [name(%qr)]\([ansi(c,%qr)]\)
+                     )]
+              ),
+         ,%r)]%r
+    [footerbar(words(%qs) Ships)]
+-
+&CMD.+SPACE/CLASS #367=$+space/class *:
+  @assert [setr(c,spacesys(findclass,%0))]=@nspemit %#=[ansi(rh,>)] That is not a class.;
+  @nspemit %#=
+    [titlebar(List of [get(%qc/space`class)] class ships)]%r
+    [ansi(y,align(25 25 25,Name,Owner,Located in Zone))]%r
+    [iter(
+         setr(s,children(%qc)),
+         align(25 25 25,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              [if(setr(p,spacesys(getcaptain,itext(0))),
+                 [name(%qp)]\([ansi(c,%qp)]\),
+                 [ansi(rh,NONE)]
+                 )],
+              [ifelse(
+                     setr(z,zone(setr(r,room(itext(0))))),
+                     [name(%qz)]\([ansi(c,%qz)]\),
+                     [name(%qr)]\([ansi(c,%qr)]\)
+                     )]
+              ),
+         ,%r)]%r
+    [footerbar(words(%qs) Ships)]

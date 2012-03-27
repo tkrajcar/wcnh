@@ -139,6 +139,10 @@
 -
 &DOC.ISSTATION #208=ship|1 if ship is a station.
 -
+&DOC.FINDCLASS #208=dbref or string|firstof match against list of classes and list of class names. Returns dbref of class. Dbref input used to verify ISCLASS, partial string match returns dbref of class name.
+-
+&DOC.GETCAPTAIN #208=ship|Returns dbref of ship's captain.
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -852,3 +856,35 @@
 -
 &FN.ISSTATION #208=
   ifelse(eq(default(%0/space`size,1),9),1,0)
+-
+&FN.FINDCLASS #208=
+  firstof(
+         setinter(
+                 %0,
+                 setr(l,lvthings(get(v(data)/bin.parents)))
+                 ),
+         if(setr(p,element(
+                          iter(
+                              %ql,
+                              get(itext(0)/space`class)
+                              ,,|),
+                          *%0*,|)),
+           elements(
+                   %ql,
+                   %qp
+                   ),
+           0)
+         ,#-1)
+-
+&FN.GETCAPTAIN #208=
+  switch(
+        [spacesys(isship,%0)]
+        [setr(c,trim(
+                    grab(
+                        get(%0/data.roster),
+                        *:captain),
+                    :captain)
+                    )],
+        0*,#-1 NOT A SHIP,
+        1,#-1 NO CAPTAIN,
+        %qc)
