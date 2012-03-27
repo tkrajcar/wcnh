@@ -18,7 +18,7 @@ following space cycle.  To force an action immediately, either @notify
  
 +space/addcon        +space/advance         +space/classes 
 +space/class         +space/jump            +space/land
-+space/launch        +space/ships         +space/stop
++space/launch        +space/ships           +space/stop
 
 & +SPACE/ADDCON
 Syntax: +space/addcon <ship>=<object>
