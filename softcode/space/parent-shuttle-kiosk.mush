@@ -46,7 +46,7 @@
   @switch [lte(secs(),last(setr(0,extract(v(passengers),match(v(passengers),%#:*))),:))]=
 
           1,@nspemit %#=[ansi(rh,>)] You will arrive at your destination in [ansi(yh,timestring(sub(last(%q0,:),secs())))].,
-          0,{@nsoemit %#=[name(%#)] disembarks from the shuttle at [ansi(wh,extract(%q0,2,1,:))].;
+          0,{@nsoemit %#=[name(%#)] disembarks from the shuttle at [ansi(wh,name(extract(%q0,2,1,:)))].;
              @set %!=passengers:[remove(v(passengers),%q0)];
              @tel %#=[extract(%q0,2,1,:)]
             }
