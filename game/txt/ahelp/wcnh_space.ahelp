@@ -58,6 +58,10 @@ Stop a ship that is in motion.
 
 & +SPACE/SHIPS
 Syntax: +space/ships <player>
-
+ 
 List ships captained by a player.
-
+ 
+& +SPACE/CLASS
+Syntax: +space/class <class dbref or name>
+ 
+List ships of class <class>. 
