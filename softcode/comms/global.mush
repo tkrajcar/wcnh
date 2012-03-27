@@ -67,3 +67,5 @@
 &cmd.comm/transmit #341=$-* *:@pemit %#=[rpc(Comms.channel_transmit,%0,%1)]
 -
 
+&cmd.comm/tightbeam #341=$comm/tightbeam *=*:@pemit %#=[rpc(Comms.channel_tightbeam,%0,%1)]
+

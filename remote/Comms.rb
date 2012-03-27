@@ -74,4 +74,8 @@ module Comms
   def self.pj_channel_create(name,description,permission_type,permission_value)
     self.channel_create(name,description,permission_type,permission_value)
   end
+
+  def self.pj_channel_tightbeam(channel,message)
+    self.channel_tightbeam(channel,message)
+  end
 end

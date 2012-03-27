@@ -118,4 +118,20 @@ module Comms
     ch = Channel.create!(id: name, description: description, permission_type: permission_type, permission_value: permission_value)
     ""
   end
+
+  def self.channel_tightbeam(channel,message)
+    c = Comlink.find_or_create_by(id: R["enactor"])
+    channel.downcase!
+    return "> ".bold.yellow + "No channel named #{channel.bold} found!" unless mymbr = c.memberships.where(channel: channel).first
+    real_channel_name = Channel.where(lowercase_name: mymbr.channel).first._id
+
+    Comlink.where("memberships.channel" => channel).each do |comlink|
+      next if comlink._id == R["enactor"]
+      mbr = comlink.memberships.where(channel: channel).first
+      handle = mbr.active_handle
+      self.message_send(handle,"<<#{real_channel_name}-channel tightbeam>> #{message}")
+    end
+
+    return "> ".bold.yellow + "Tightbeam message sent to all members of secured channel #{real_channel_name.bold}."
+  end
 end
