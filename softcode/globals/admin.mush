@@ -83,3 +83,6 @@
 &cmd.wanted/set #115=$wanted/set */*=*:@pemit %#=[rpc(Dossier.wanted_set,%0,%1,%2)]
 -
 &cmd.wanted/delete #115=$wanted/delete *:@pemit %#=[rpc(Dossier.wanted_delete,%0)]
+-
+&cmd.+ticket/claim #115=$+ticket/claim *:@pemit %#=[rpc(Ticket.assign,%0    ,%#)]
+
