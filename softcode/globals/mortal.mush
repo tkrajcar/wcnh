@@ -152,7 +152,9 @@
 -
 &fn.rooms_with_connected_players #15=[setunion(iter(mwho(),loc(##)),)]
 -
-&cmd.+ooc #15=$+ooc *:th [setr(0,[name(%#)][switch(%0,:*,%b[after(%0,:)],;*,after(%0,;),%b[ansi(hx,says%,%b")]%0[ansi(hx,")])])][remit(loc(%#),ansi(hx,<+OOC>) %q0))][nscemit(+OOC,[ansi(m,\[[name(loc(%#))]-[loc(%#)]\])] %q0,1)]
+@set #15/cmd.+ooc=regexp
+-
+&cmd.+ooc #15=$^[\+]?ooc (.*)$:th [setr(0,[name(%#)][switch(%1,:*,%b[after(%1,:)],;*,after(%1,;),%b[ansi(hx,says%,%b")]%1[ansi(hx,")])])][remit(loc(%#),ansi(hx,<+OOC>) %q0))][nscemit(+OOC,[ansi(m,\[[name(loc(%#))]-[loc(%#)]\])] %q0,1)]
 -
 
 # Ticket system globals
