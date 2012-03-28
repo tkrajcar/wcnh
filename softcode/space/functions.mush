@@ -797,12 +797,19 @@
       [ansi(y,Computer:)] [mul(fdiv(first(setr(4,spacesys(cpu,%0)),:),last(%q4,:)),100)]\% Avail.,
       38,79,|
       )]%r
-      [ansi(y,Gun Mounts:)]%r
-      [iter(
-          lnum(first(setr(4,spacesys(guns,%0)),|)),
-          %t<#@> [ifelse(gte(words(after(%q4,|)),#@),get(extract(after(%q4,|),#@,1)/title),Laser Canon)],
-          ,%r
-          )]
+      [align(38 30,
+            [ansi(y,Gun Mounts:)]%r
+            [iter(
+                 lnum(first(setr(4,spacesys(guns,%0)),|)),
+                 %t<#@> [ifelse(gte(words(after(%q4,|)),#@),get(extract(after(%q4,|),#@,1)/title),Laser Cannon)],
+                 ,
+                 %r)],
+
+            [if(
+               hasattrval(%0,data.landing),
+               [ansi(y,Bay Doors Open)]: [ifelse(spacesys(isbayopen,%0),[ansi(gh,Yes)],No)]
+               )]
+            )]%r
       %r[footerbar()]
 -
 &FN.VALUE #208=
