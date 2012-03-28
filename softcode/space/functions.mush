@@ -143,6 +143,10 @@
 -
 &DOC.GETCAPTAIN #208=ship|Returns dbref of ship's captain.
 -
+&DOC.FINDEXIT #208=ship:exit|firstof match against exit dbref or name to verify that an exit is in the same location as a ship.
+-
+&DOC.ISTAXIWAY #208=exit|1 if exit is taxiable. 
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -895,3 +899,27 @@
         0*,#-1 NOT A SHIP,
         1,#-1 NO CAPTAIN,
         %qc)
+-
+&FN.FINDEXIT #208=
+  firstof(
+         setinter(
+                 %1,
+                 setr(l,lexits(room(%0)))
+                 ),
+         if(setr(e,element(
+                          iter(
+                              %ql,
+                              name(##)
+                              ,,|),
+                          *%1*,|)),
+           elements(
+                   %ql,
+                   %qe
+                   ),
+           0)
+         ,#-1)
+-
+&FN.ISTAXIWAY #208=
+  hasattrval(%0/data.taxiway)
+
+
