@@ -580,7 +580,7 @@
       [u(%0/describe)]%r%r
       Location%r%t
       X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
-      [ansi(rh,Landing Area)]: [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),[ansi(gh,Yes)],No)]
+      [ansi(rh,Landing Area)]: [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),[ansi(gh,Yes)]%r[ansi(rh,Bay Doors Open)]: [ifelse(spacesys(isbayopen,%0),[ansi(gh,Yes)],No)],No)]
       )]%r
   [footerbar(Class: [edit(%q0,_,%b)])]
 -
