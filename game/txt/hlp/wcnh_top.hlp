@@ -25,11 +25,10 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
  
   +911           ACCOUNT        +BBOARD        +bg            CALENDAR       
   CARGO          cash           CHARGEN        COMBAT         COMMS          
-  FACTIONS       +finger        +guides        +map           +ooc           
-  pay            PLACES         put down       race           +RP            
-  +set           SPACE          +staff         +TICKET        time           
-  WANTED         +where         +who           +XP 
- 
+  FACTIONS       +finger        +guides        +LOG           +map           
+  +ooc           pay            PLACES         put down       race           
+  RP             +set           SPACE          +staff         +TICKET        
+  time           WANTED         +where         +who           +XP  
 & wanted
   wanted
   wanted <entry number>
@@ -40,3 +39,23 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   This information is fully IC and may be acted upon, however, please remember
   that just because you see another player in a room with you, you may not know
   who they are, or be able to recognize them.
+& +log
+  On WCNH, by default, all roleplay poses, emits, etc are logged. This is for
+  several reasons: #1, to reward players with XP, +noms, and other perks based
+  on the amount they roleplay, and #2, to allow players and staff to retrieve
+  logs easily, both after scenes and in real-time, eliminating the need for
+  "re-poses".
+
+  There may be instances where you might wish to temporarily disable this
+  logging. You will not receive any XP or other game benefits for any poses
+  while logging is disabled and will not be able to retrieve logs of disabled
+  poses. You will also be periodically reminded you have logging disabled.
+
+  Note that, as outlined in our TOS, we recommend truly private/confidential
+  OOC matters to be handled off-game. ('help terms of service2')
+
+  Commands:
+  +log/off - Disable logging of your poses/emits/etc.
+  +log/on - Re-enable logging.
+  +log/last - View the last 5 poses you've seen, whether yours or not.
+  +log/last page <#> - View more pages of poses you've seen.
