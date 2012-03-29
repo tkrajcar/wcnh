@@ -42,6 +42,7 @@ module BBoard
       count = 0
       self.posts.where(created_at: range).each do |i|
         i.old = true
+        i.save
         count += 1
       end
       p "#{count} posts timed out."
