@@ -24,10 +24,8 @@ module BBoard
     has_many :subscriptions, :class_name => "BBoard::Subscription"
     
     def can_read?(dbref)
-      return true if self.permission_type.nil?
-      return true if R.orflags(dbref, "Wr").to_bool
       return true if self.permission_type == "announce"
-      return false
+      return self.can_write?(dbref)
     end
     
     def can_write?(dbref)
