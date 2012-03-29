@@ -6,23 +6,41 @@ module Logs
   def self.log_rp(who,where,what,was_emit=0)
     who_name = R.penn_name(who)
     where_name = R.penn_name(where)
-    where_zone = R.zone(where)
-    where_zone_name = R.penn_name(where_zone)
-    players_present = R.lvplayers(where)
-    players_present = players_present.split(' ') unless players_present.nil?
-    Roleplay.create!(who: who,
-                    who_name: who_name, 
-                    where: where, 
-                    where_name: where_name,
-                    where_zone: where_zone,
-                    where_zone_name: where_zone_name,
-                    what: what, 
-                    players_present: players_present)
+    if to_log = R.default("#{who}/CHAR`LOGROLEPLAY","1").to_bool
+      where_zone = R.zone(where)
+      where_zone_name = R.penn_name(where_zone)
+      players_present = R.lvplayers(where)
+      players_present = players_present.split(' ') unless players_present.nil?
+      Roleplay.create!(who: who,
+                      who_name: who_name, 
+                      where: where, 
+                      where_name: where_name,
+                      where_zone: where_zone,
+                      where_zone_name: where_zone_name,
+                      what: what, 
+                      players_present: players_present)
+    end
     cemit = "[#{where_name}-#{where}]".green
     cemit += " <#{who_name}>" if was_emit.to_bool
-    cemit += " #{what}"
+    cemit += to_log ? " #{what}" : " Blocked (#{who_name})"
     R.nscemit("+RP",cemit,"1")
     ""
+  end
+
+  def self.roleplay_last(page)
+    ret = titlebar("Last Seen Poses, Page #{page}") + "\n"
+    poses = Roleplay.where(players_present: R["enactor"]).desc(:timestamp)
+    if page.to_i > 0 # paginate
+      poses = poses.skip(5 * (page.to_i - 1)).limit(5)
+    end
+    poses.each do |pose|
+      ret << pose.where_name.bold.cyan
+      ret << ": "
+      ret << pose.what
+      ret << "\n"
+    end
+    ret << footerbar
+    return ret
   end
 
   def self.log_statistic(lwho)

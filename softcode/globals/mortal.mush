@@ -342,3 +342,17 @@
 -
 &cmd.+coinflip #15=$+coinflip:
   @remit [loc(%#)]=[ansi(hb,>)] [ansi(h,%n)] flips a coin: [ansi(hy,ifelse(rand(2),HEADS,TAILS))]
+-
+&cmd.+log/on #15=$+log/on:
+  &CHAR`LOGROLEPLAY %#=1;
+  @pemit %#=[ansi(h,> )] Roleplay logging enabled.
+-
+&cmd.+log/off #15=$+log/off:
+  &CHAR`LOGROLEPLAY %#=0;
+  @pemit %#=[ansi(h,> )] Roleplay logging disabled. You will no longer receive XP for roleplaying until logging is re-enabled.
+-
+&cmd.+log/last #15=$+log/last:
+  @pemit %#=[rpc(Logs.roleplay_last,1)]
+-
+&cmd.+log/last2 #15=$+log/last page *:
+  @pemit %#=[rpc(Logs.roleplay_last,%0)]

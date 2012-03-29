@@ -74,4 +74,12 @@
 -
 &CRON_JOB_EVENTREMINDER #539=think [rpc(Calendar.notify)]
 -
-
+&CRON_TIME_LOGBLOCKED_1 #539=||||05|
+-
+&CRON_TIME_LOGBLOCKED_2 #539=||||20|
+-
+&CRON_TIME_LOGBLOCKED_3 #539=||||35|
+-
+&CRON_TIME_LOGBLOCKED_4 #539=||||50|
+-
+&CRON_JOB_LOGBLOCKED #539=@dol [lwho()]=@swi [default(##/CHAR`LOGROLEPLAY,1)]=0,{@pemit %#=[ansi(h,> )] [ansi(hy,WARNING)]: You currently have RP logging disabled.
