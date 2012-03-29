@@ -13,7 +13,7 @@ require that you "man" a console prior to using the command.
 bay              board          hail          intercom      jump
 man              land           launch        manifest      plot
 roster           scan           +scheck       spose         status
-survey
+survey           taxi
 
 & BAY
 Syntax: bay/open
@@ -139,3 +139,9 @@ ship's name.  All other ships in the current system will see the spose.
 Syntax: manifest
 
 This command lists all cargo jobs that are aboard the ship.
+& TAXI
+Syntax: taxi <exit>
+ 
+This command will taxi the ship through an exit. The exit must be a taxiway.
+ 
+Capital ships are too large to taxi.

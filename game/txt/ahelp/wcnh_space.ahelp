@@ -19,6 +19,7 @@ following space cycle.  To force an action immediately, either @notify
 +space/addcon        +space/advance         +space/classes 
 +space/class         +space/jump            +space/land
 +space/launch        +space/ships           +space/stop
++space/taxi
 
 & +SPACE/ADDCON
 Syntax: +space/addcon <ship>=<object>
@@ -65,3 +66,10 @@ List ships captained by a player.
 Syntax: +space/class <class dbref or name>
  
 List ships of class <class>. 
+
+& +SPACE/TAXI
+Syntax: +space/taxi <ship>=<exit>
+ 
+Taxis a ship through an exit. Exit can be a name or dbref.
+ 
+Capital ships cannot taxi. Taxiways are indicated by &DATA.TAXIWAY=1 on the exit.
