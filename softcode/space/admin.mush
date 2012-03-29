@@ -188,3 +188,16 @@
               ),
          ,%r)]%r
     [footerbar(words(%qs) Ships)]
+-
+&CMD.+SPACE/TAXI #367=$+space/taxi *=*:
+  @assert [spacesys(isship,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.;
+  @assert [t(setr(d,hasattrval(%0,data.docked)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] There's nowhere to taxi in space.;
+  @assert [not(spacesys(ismoving,%0))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] This ship is moving. You can't taxi if you're already moving.;
+  @assert [setr(e,spacesys(findexit,%0,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid taxiway.;
+  @assert [spacesys(istaxiway,%qe)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] [ansi(c,name(%qe))] is not a taxiway.;
+  @assert [not(spacesys(iscapship,%0))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] is too large to taxi.;
+  @nspemit [u(fn.caller)]=[ansi(gh,>)] Taxiing through [ansi(c,name(%qe))].;  think [spacesys(notify.consoles,%0,Taxi sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] remaining.)];
+  @nsremit [loc(%0)]=The [ansi(wh,name(%0))] fires a burst of thrust and begins to move along the ground.;
+  think [spacesys(notify.ship,%0,The ship lurches as it rolls along the ground.)];
+  think [spacesys(activate,%0)];
+  @wait %0/space`queue`move=think [spacesys(taxi,%0,%qe)]

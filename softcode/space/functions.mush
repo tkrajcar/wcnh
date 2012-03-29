@@ -147,6 +147,8 @@
 -
 &DOC.ISTAXIWAY #208=exit|1 if exit is taxiable. 
 -
+&DOC.TAXI #208=ship:exit|Taxis a ship through an exit.
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -921,5 +923,24 @@
 -
 &FN.ISTAXIWAY #208=
   hasattrval(%0/data.taxiway)
-
-
+-
+&FN.TAXI #208=
+  switch(
+        [spacesys(isship,%0)]
+        [spacesys(isdocked,%0)]
+        [if(setr(e,spacesys(findexit,%0,%1)),1,0)]
+        [t(spacesys(istaxiway,%qe))]
+        [not(spacesys(iscapship,%0))],
+        0????,#-1 INVALID SHIP OBJECT,
+        10???,#-1 SHIP NOT DOCKED,
+        110??,#-1 EXIT NOT FOUND,
+        1110?,#-1 NOT A TAXIWAY,
+        11110,#-1 CAPSHIPS CANNOT TAXI,
+        11111,
+             [nsremit(loc(%0),The [ansi(wh,name(%0))] taxis towards [ansi(wh,name(loc(%qe)))].)]
+             [tel(%0,loc(%qe))]A
+             [nsremit(loc(%0,The [ansi(wh,name(%0))] taxis in from [ansi(wh,name(home(%qe)))].)]
+             [set(%0,data.docked:[loc(%qe)])]
+             [spacesys(notify.consoles,%0,Taxi procedure complete.)]
+             [spacesys(notify.ship,%0,The ship shudders as it comes to a halt.)]
+        )

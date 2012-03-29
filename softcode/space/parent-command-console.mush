@@ -82,6 +82,9 @@
 &HELP.+SCHECK #204=
   +scheck <skill> or +scheck/private <skill>|Check a ship skill.
 -
+&HELP.TAXI #204=
+  taxi <exit>|Taxis a ship through a taxiway.
+-
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
 
@@ -282,6 +285,9 @@
 -
 &cmd.manifest #204=$manifest:
   @nspemit %#=[spacesys(manifest,v(data.ship))]
+-
+&CMD.TAXI #204=$taxi *:
+  +space/taxi [v(data.ship)]=%0
 -
 &LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!
 -
