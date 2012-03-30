@@ -11,14 +11,5 @@ module BBoard
     
     has_many :subscriptions, :class_name => "BBoard::Subscription"
   end
-   
-  class Subscription
-    include Mongoid::Document
-    
-    field :read_posts, type: Array
-    
-    belongs_to :user, :class_name => "BBoard::User"
-    belongs_to :category, :class_name => "BBoard::Category"
-  end
   
 end
