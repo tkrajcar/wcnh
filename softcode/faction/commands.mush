@@ -16,6 +16,7 @@
                @nspemit %q1=[ansi(c,<Faction>)] You have been removed from [ucstr(%0)].;
                think [faction(remmember,%0,%q1)];
                @switch [t(member(cwho(setr(2,faction(channel,%0))),%q1))]=1,{@channel/off %q2=%q1};
+               @fo %q1=comm/off %0;
                @wipe %q1/fac`%0
               }
 -
@@ -82,6 +83,7 @@
               think [faction(remmember,%0,%#)];
               @switch [t(member(cwho(setr(0,faction(channel,%0))),%#))]=1,{@channel/off %q0=%#};
               @cemit/noisy %q0=[ansi(wh,name(%#))] has quit [ucstr(%0)]!;
+              @fo %#=comm/off %0;
               @wipe %#/fac`%0
              }
 -
