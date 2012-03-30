@@ -15,10 +15,12 @@ module BBoard
     has_many :posts, :class_name => "BBoard::Post"
     has_many :subscriptions, :class_name => "BBoard::Subscription"
     
-    validates_uniqueness_of :name, :case_sensitive => false, :message => "Category name must be unique."
-    validates_presence_of :name, :message => "Category name cannot by blank."
+    validates_uniqueness_of :name, case_sensitive: false, message: "Category name must be unique."
+    validates_presence_of :name, message: "Category name cannot be blank."
     
-    validates_format_of :ansi, :with => /^([hn]|)([gybmcw]|)$/, :message => "Invalid ansi code."
+    validates_format_of :ansi, with: /^([hn]|)([gybmcw]|)$/, message: "Invalid ansi code."
+
+    validates_numericality_of :timeout, allow_nil: true, greater_than: 0, message: "Timeout must be an integer number of days."
     
     def can_read?(dbref)
       return true if self.permission_type == "announce"
