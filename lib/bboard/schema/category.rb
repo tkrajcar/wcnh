@@ -18,7 +18,7 @@ module BBoard
     validates_uniqueness_of :name, :case_sensitive => false, :message => "Category name must be unique."
     validates_presence_of :name, :message => "Category name cannot by blank."
     
-    validates_format_of :ansi, :with => /^([hn]||)[gybmcw]$/, :message => "Invalid ansi code."
+    validates_format_of :ansi, :with => /^([hn]|)([gybmcw]|)$/, :message => "Invalid ansi code."
     
     def can_read?(dbref)
       return true if self.permission_type == "announce"
