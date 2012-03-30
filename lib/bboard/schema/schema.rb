@@ -11,21 +11,7 @@ module BBoard
     
     has_many :subscriptions, :class_name => "BBoard::Subscription"
   end
-  
-  class Post
-    include Mongoid::Document
-    include Mongoid::Timestamps
-    
-    field :sticky, type: Boolean, :default => false
-    field :author, type: String
-    field :title, type: String
-    field :body, type: String
-    field :parent_id , type: String # Posts that are threads belong to a parent post.
-    field :old, type: Boolean, :default => false # Posts that timeout are invisible but archived
-    
-    belongs_to :category, :class_name => "BBoard::Category"
-  end
-  
+   
   class Subscription
     include Mongoid::Document
     

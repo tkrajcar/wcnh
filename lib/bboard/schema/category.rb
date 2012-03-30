@@ -35,10 +35,9 @@ module BBoard
     
     def cleanup
       return nil if self.timeout.nil?
-      range = (DateTime.now - self.timeout.days)..DateTime.now
       count = 0
-      self.posts.where(created_at: range).each do |i|
-        i.old = true
+      self.posts.where(:created_at.lt => DateTime.now - self.timeout.days).each do |i|
+        i.delete
         i.save
         count += 1
       end
