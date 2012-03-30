@@ -56,7 +56,7 @@
 -
 &SKILL.FIRST-AID #111=First-Aid|Outdoor|0|PER|-1|First-Aid covers applying medical knowledge to wounds. In contrast to Medicine, First-Aid covers "improvisational healing", normally performed outside of a hospital, ambulance, or other actual first aid facility; applying bandages, dressing wounds, improvising splints, and so on. 
 -
-&SKILL.FORGERY #111=Forgery|Professional|1||Forgery covers all aspects of making, adapting, or imitating objects, documents, or other physical objects, with the intent to deceive. Electronic forgery, hacking, and so on, is usually covered by Computers.
+&SKILL.FORGERY #111=Forgery|Professional|1|||Forgery covers all aspects of making, adapting, or imitating objects, documents, or other physical objects, with the intent to deceive. Electronic forgery, hacking, and so on, is usually covered by Computers.
 -
 &SKILL.FORTIFY #111=Fortify|Outdoor|0|STR|-1|The skill of building field fortifications and temporary improvements, like foxholes, improvised shelters, and so on. Crosses over with Construction, which is used for more permanent constructs.
 -
@@ -72,7 +72,7 @@
 -
 &SKILL.MARTIAL-ARTS #111=Martial-Arts|Combat|1|||Whether it's Kung Fu or a mystic Kilrathi art, this skill is used when you've spent many years of study and training to gain specialized knowledge in unarmed fighting.
 -
-&SKILL.MEDICINE #111=Medicine|Knowledge|1||Medicine covers all aspects of advanced medical knowledge; surgery, proper trauma care, diagnosis of diseases and other conditions, and so on. In contrast to First-Aid, Medicine is normally used for more 'scientific' knowledge rather than 'applied', and is more commonly used for complex treatments, procedures, diagnoses, and so on.
+&SKILL.MEDICINE #111=Medicine|Knowledge|1|||Medicine covers all aspects of advanced medical knowledge; surgery, proper trauma care, diagnosis of diseases and other conditions, and so on. In contrast to First-Aid, Medicine is normally used for more 'scientific' knowledge rather than 'applied', and is more commonly used for complex treatments, procedures, diagnoses, and so on.
 -
 &SKILL.PILOT-CAP #111=Pilot-Cap|Professional|0|PER|-3|Short for Piloting-Capital Ships. Used to fly capital ships (ships with a bridge crew instead of a single pilot). In-system navigation, basic maneuvers, formations and fleet maneuvers, and evasive actions.
 -
