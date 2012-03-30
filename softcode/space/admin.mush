@@ -128,11 +128,11 @@
 -
 &CMD.+SPACE/CLASSES #367=$+space/classes:@nspemit %#=
   [titlebar(List of Classes)]%r
-  [ansi(y,align(15 6 4 4 5 5 5 5 7 5,Name,OnGrid,Cap?,Bay?,Jump?,Speed,Cargo,Armor,Shields,#Guns))]%r
+  [ansi(y,align(18 6 4 4 5 5 5 5 7 5,Name,OnGrid,Cap?,Bay?,Jump?,Speed,Cargo,Armor,Shields,#Guns))]%r
   [iter(
       setr(0,lvthings(get(v(data)/bin.parents))),
       align(
-          15 -6 4 4 5 5 5 5 7 -5,
+          18 -6 4 4 5 5 5 5 7 -5,
           [get(itext(0)/space`class)]\([ansi(c,[itext(0)])]\),
           [words(children(itext(0)))],
           [ifelse(spacesys(iscapship,itext(0)),Yes,No)],
