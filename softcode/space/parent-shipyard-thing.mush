@@ -22,7 +22,8 @@
  [ansi(yh,ship/buy <class>=<title>)] to purchase a ship.%r
  [ansi(yh,ship/inspect <class>)] to inspect the stats of a ship.%r
  [ansi(yh,ship/appraise <ship>)] to find out what a ship is worth.%r
- [ansi(yh,ship/sell <ship>)] to sell a ship that you own.%r-
+ [ansi(yh,ship/sell <ship>)] to sell a ship that you own.%r
+ [ansi(yh,ship/compare)] to list available classes in a comparison table.%r-
 -          
 &FN.LISTCLASS #595=
   squish(iter(lvthings(%!),if(strmatch(spacesys(class,itext(0)),%0),[itext(0)]%b),,))
@@ -106,4 +107,22 @@
 
   @nspemit %#=[ansi(gh,>)] You are paid [ansi(yh,%q<Ship.salePrice>c)] for the %q<Ship.name>.
 -
-
+&CMD.SHIP/COMPARE #595=$ship/compare:
+  @nspemit %#=
+    [titlebar(Ship classes for sale at [name(setr(r,room(%!)))][if(setr(z,name(zone(%qr))),%b-%b[name(zone(%qr))])])]%r
+    [ansi(y,align(14 8 9 6 9 9 6 >10,Name,Scale,Speed,Cargo,Armor,Shields,#Guns,Cost))]%r
+    [iter(
+          setr(l,unique(sort(iter(lvthings(%!),parent(itext(0))),d))),
+          align(
+               14 8 9 6 9 9 6 >10,
+               [get(itext(0)/space`class)],
+               [ifelse(spacesys(iscapship,itext(0)),Capital,Fighter)],
+               [num2adj(default(itext(0)/space`maxspeed,0))],
+               [default(itext(0)/space`cargo`max,0)],
+               [num2adj(last(default(itext(0)/space`armor,0:0),:))],
+               [num2adj(last(default(itext(0)/space`shields,0:0),:))],
+               [first(default(itext(0)/space`guns,0|),|)],
+               [ansi(hy,default(itext(0)/value,0))]
+          ),
+        ,%r)]%r
+    [footerbar([words(%ql)] Classes)]
