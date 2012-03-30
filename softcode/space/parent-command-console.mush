@@ -88,7 +88,7 @@
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
 
-          0,@nspemit %#=[spacesys(scan.land,%q0))],
+          0,@nspemit %#=[spacesys(scan.land,%q0)],
           1,@nspemit %#=[spacesys(scan,%q0)]
 -
 &CMD.SCAN.TARGET #204=$scan *:

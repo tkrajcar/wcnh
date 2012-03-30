@@ -22,7 +22,7 @@
   [iter(
     lnum(max(words(%q0),words(%qo))),
     %r
-    [ljust(switch(extract(%qo,#@,1),,,ansi(v(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))],39))),39)][ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[v(COLOR.EXIT)],\<)][ansi(edit(v(COLOR.EXIT),h,),name(#$))][ansi(h[v(COLOR.EXIT)],\>)],%q1)] [ansi(edit(v(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],
+    [ljust(switch(extract(%qo,#@,1),,,ansi(v(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))],30))),30)][ljust(if(and(hasattrval(extract(%q0,#@,1),data.taxiway),match(%@,#208)),[ansi(hy,\[TAXIWAY\])]),9)] [ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[v(COLOR.EXIT)],\<)][ansi(edit(v(COLOR.EXIT),h,),name(#$))][ansi(h[v(COLOR.EXIT)],\>)],%q1)] [ansi(edit(v(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],
     %b,
     )]
 -
