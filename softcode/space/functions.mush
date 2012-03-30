@@ -149,6 +149,8 @@
 -
 &DOC.TAXI #208=ship:exit|Taxis a ship through an exit.
 -
+&DOC.GETDESTOBJ #208=ship|Returns destination object of ship.
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -199,6 +201,7 @@
       [if(
           strmatch(%q0,setr(1,get(%0/space`destination))),
           [wipe(%0/space`destination)]
+          [wipe(%0/space`destination.obj)]
           [u(fn.notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
           [u(fn.notify.consoles,%0,Arrived at destination %q1.  Speed is now 0 km/h.)]
           )],
@@ -604,6 +607,7 @@
 -
 &FN.SETDEST #208=
   [set(%0,space`destination:[get(%1/space`x)] [get(%1/space`y)])]
+  [set(%0,space`destination.obj:%1)]
 -
 &FN.ISJUMP #208=
   strmatch(parent(%0),get(v(data)/parent.jump))
@@ -944,3 +948,9 @@
              [spacesys(notify.consoles,%0,Taxi procedure complete.)]
              [spacesys(notify.ship,%0,The ship shudders as it comes to a halt.)]
         )
+-
+&FN.GETDESTOBJ #208= 
+  [firstof(
+           default(%0/space`destination.obj,0),
+           #-1 NO DESTINATION SET
+          )]
