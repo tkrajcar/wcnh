@@ -151,6 +151,14 @@
 -
 &DOC.GETDESTOBJ #208=ship|Returns destination object of ship.
 -
+&DOC.FINDSHIP.UNLOAD #208=ship:ship dbref or string|Locates %1 in %0's bay by partial string match or dbref verify.
+-
+&DOC.FINDSHIP.LOAD #208=ship:ship dbref or string|Locates %1 at %0's location by partial string match or dbref verify.
+-
+&DOC.LOAD.SHIP #208=ship:victim-ship:enactor-dbref|Checks permissions and loads victim-ship aboard ship.
+-
+&DOC.UNLOAD.SHIP #208=ship:victim-ship:enactor-dbref|Checks permissions and unloads victim-ship from ship.
+-
 &DATA #208=#351
 -
 @startup #208=
