@@ -19,7 +19,7 @@ module BBoard
     
     category.posts.each_index do |i|
       post = category.posts[i]
-      ret << "#{index}/#{i + 1}".ljust(8) + post.title.ljust(27) + post.created_at.strftime("%a %b %d").ljust(14) + 
+      ret << "#{index}/#{i + 1}".ljust(8) + post.title.ljust(27) + post.created_at.strftime("%a %b %d").ljust(14) + post.author
     end
     ret << footerbar
     
