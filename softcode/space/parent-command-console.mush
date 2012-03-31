@@ -271,6 +271,23 @@
   think [spacesys(spose,v(data.ship),closes its bay doors.)];
   @nspemit %#=[ansi(gh,>)] Closing the bay doors.
 -
+&CMD.BAY/SHIPS #204=$bay/ships:
+  @assert [spacesys(hasbay,v(data.ship))]=@nspemit %#=[ansi(rh,>)] This ship does not have a docking bay.;
+  @nspemit %#=
+              [titlebar(Ships in the [name(v(data.ship))]'s bay:)]%r
+              [itemize(setr(s,squish(iter(
+                                  iter(
+                                      lvthings(get(v(data.ship)/data.landing)),
+                                      if(
+                                        spacesys(isship,itext(0)),
+                                        itext(0)
+                                        )
+                                      ),
+                                  [ansi(hw,name(itext(0)))]\[
+                                  [ansi(c,spacesys(class,itext(0)))]\]
+                                  ,,|))),|)]%r
+              [footerbar(words(%qs,|) ships)]
+-
 &CMD.SURVEY #204=$survey *:
   @assert [not(spacesys(isdocked,setr(Ship,v(data.ship))))]=@nspemit %#=[ansi(rh,>)] The ship is currently docked.;
   @assert [t(lte(%0,words(setr(Ship.report,spacesys(list.report,%q<Ship>)))))]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
@@ -288,6 +305,14 @@
 -
 &CMD.TAXI #204=$taxi *:
   +space/taxi [v(data.ship)]=%0
+-
+&CMD.UNLOAD/SHIP #204=$unload/ship *:
+  @assert [setr(t,spacesys(findship.unload,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  +space/unload/ship [v(data.ship)]=%qt
+-
+&CMD.LOAD/SHIP #204=$load/ship *:
+  @assert [setr(t,spacesys(findship.load,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  +space/load/ship [v(data.ship)]=%qt
 -
 &LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!
 -

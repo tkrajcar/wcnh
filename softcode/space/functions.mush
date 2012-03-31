@@ -954,3 +954,105 @@
            default(%0/space`destination.obj,0),
            #-1 NO DESTINATION SET
           )]
+-
+&FN.UNLOAD.SHIP #208=
+  switch(
+        [spacesys(isship,%0)]
+        [spacesys(hasbay,%0)]
+        [spacesys(isdocked,%0)]
+        [spacesys(isship,%1)]
+        [not(spacesys(iscapship,%1))]
+        [spacesys(isdocked,%1)]
+        [spacesys(isbayopen,%0)]
+        [spacesys(canboard,%0,%2)]
+        [spacesys(canboard,%1,%2)]
+        [match(get(%1/data.docked),get(%0/data.landing))],
+        0?????????,#-1 INVALID ACTOR SHIP,
+        10????????,#-1 ACTOR SHIP HAS NO BAY,
+        110???????,#-1 ACTOR SHIP NOT DOCKED,
+        1110??????,#-1 INVALID VICTIM SHIP,
+        11110?????,#-1 VICTIM SHIP IS CAPSHIP,
+        111110????,#-1 VICTIM SHIP NOT DOCKED,
+        1111110???,#-1 ACTOR SHIP BAY DOORS CLOSED,
+        11111110??,#-1 ACTOR SHIP PERMISSION DENIED,
+        111111110?,#-1 VICTIM SHIP PERMISSION DENIED,
+        1111111111,
+               [nsremit(loc(%1),The [ansi(wh,name(%1))] is lifted free of the [ansi(wh,name(%0))]'s docking bay by the bay's loader arms. )]
+               [tel(%1,loc(%0))]
+               [nsremit(loc(%1),The [ansi(wh,name(%1))] is lifted out of the [ansi(wh,name(%0))]'s docking bay by massive loader arms, and is placed on the ground.)]
+               [set(%1,data.docked:[loc(%1)])]
+               [spacesys(notify.consoles,%0,The [name(%1)] has been unloaded successfully from the [name(%0)].)]
+               [spacesys(notify.consoles,%1,The [name(%1)] has been unloaded successfully from the [name(%0)].)]
+               [spacesys(notify.ship,%1,The ship shudders and rocks as it is deposited on the ground by the [name(%0)]'s loader arms.)]
+        ,#-1 SHIP NOT IN BAY)
+-
+&FN.LOAD.SHIP #208=
+  switch(
+        [match(%0,%1)]
+        [spacesys(isship,%0)]
+        [spacesys(hasbay,%0)]
+        [spacesys(isdocked,%0)]
+        [spacesys(isship,%1)]
+        [not(spacesys(iscapship,%1))]
+        [spacesys(isdocked,%1)]
+        [spacesys(isbayopen,%0)]
+        [spacesys(canboard,%0,%2)]
+        [spacesys(canboard,%1,%2)]
+        [match(loc(%0),loc(%1))],
+        0??????????,#-1 CANNOT LOAD SELF,
+        10?????????,#-1 INVALID ACTOR SHIP,
+        110????????,#-1 ACTOR SHIP HAS NO BAY,
+        1110???????,#-1 ACTOR SHIP NOT DOCKED,
+        11110??????,#-1 INVALID VICTIM SHIP,
+        111110?????,#-1 VICTIM SHIP IS CAPSHIP,
+        1111110????,#-1 VICTIM SHIP NOT DOCKED,
+        11111110???,#-1 ACTOR SHIP BAY DOORS CLOSED,
+        111111110??,#-1 ACTOR SHIP PERMISSION DENIED,
+        1111111110?,#-1 VICTIM SHIP PERMISSION DENIED,
+        11111111111,
+                [nsremit(loc(%1),The [ansi(wh,name(%1))] is lifted into the [ansi(wh,name(%0))]'s docking bay by the bay's loader arms.)]
+                [tel(%1,get(%0/data.landing))]
+                [nsremit(loc(%1),The [ansi(wh,name(%1)])] is lifted into the [ansi(wh,name(%0))]'s docking bay by the bay's loader arms, and placed upon the deck.)]
+                [set(%1,data.docked:[get(%0/data.landing)])]
+                [spacesys(notify.consoles,%0,The [name(%1)] has been loaded successfully aboard the [name(%0)].)]
+                [spacesys(notify.consoles,%1,The [name(%1)] has been loaded successfully aboard the [name(%0)].)]
+                [spacesys(notify.ship,%1,The ship shudders and rocks as it is deposited in the bay of the [name(%0)].)]
+        ,#-1 SHIPS NOT ADJACENT)
+-
+&FN.FINDSHIP.LOAD #208=
+  firstof(
+         setinter(
+                  %1,
+                  setr(l,lvthings(room(%0)))
+                  ),
+         if(setr(e,element(
+                          iter(
+                              %ql,
+                              name(##)
+                              ,,|),
+                          *%1*,|)),
+            elements(
+                    %ql,
+                    %qe
+                    ),
+            0)
+         ,#-1)
+-
+&FN.FINDSHIP.UNLOAD #208=
+  firstof(
+         setinter(
+                  %1,
+                  setr(l,lvthings(get(%0/data.landing)))
+                  ),
+         if(setr(e,element(
+                          iter(
+                              %ql,
+                              name(##)
+                              ,,|),
+                          *%1*,|)),
+            elements(
+                    %ql,
+                    %qe
+                    ),
+            0)
+         ,#-1)

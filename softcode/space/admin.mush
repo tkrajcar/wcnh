@@ -201,3 +201,45 @@
   think [spacesys(notify.ship,%0,The ship lurches as it rolls along the ground.)];
   think [spacesys(activate,%0)];
   @wait %0/space`queue`move=think [spacesys(taxi,%0,%qe)]
+-
+&CMD.+SPACE/UNLOAD/SHIP #367=$+space/unload/ship *=*:
+  @assert [spacesys(isship,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(hasbay,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] has no bay.;
+  @assert [spacesys(isdocked,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] is not docked.;
+  @assert [spacesys(isship,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid victim ship object.;
+  @assert [not(spacesys(iscapship,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Capships cannot be unloaded. How did that happen?!;
+  @assert [spacesys(isdocked,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] is not docked.;
+  @assert [spacesys(isbayopen,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The bay doors on the [name(%0)] are closed.;
+  @assert [spacesys(canboard,%0,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%0)].;
+  @assert [spacesys(canboard,%1,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%1)].;
+  @assert [match(get(%1/data.docked),get(%0/data.landing))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] is not in the [name(%0)]'s bay.;
+  @assert [not(or(spacesys(ismoving,%0),spacesys(ismoving,%1)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Both ships must be at rest.;
+  @nspemit [u(fn.caller)]=[ansi(gh,>)] Unloading the [ansi(c,name(%1))].;
+  @nsremit [loc(%0)]=The [ansi(wh,name(%0))]'s bay shows activity as the ship's docking arms begin to unload a ship.;
+  @nsremit [loc(%1)]=The bay's loader arms move towards the [ansi(wh,name(%1))].;
+  think [spacesys(notify.ship,%1,The ship lurches as it is lifted by the [name(%0)]'s loading arms.)];
+  think [spacesys(activate,%1)];
+  think [spacesys(activate,%0)];
+  @wait %0/space`queue`move=think [spacesys(unload.ship,%0,%1,[u(fn.caller)])];
+  @wait %1/space`queue`move=think %b
+-
+&CMD.+SPACE/LOAD/SHIP #367=$+space/load/ship *=*:
+  @assert [not(match(%0,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You can't load yourself!;
+  @assert [spacesys(isship,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(hasbay,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] has no bay.;
+  @assert [spacesys(isdocked,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] is not docked.;
+  @assert [spacesys(isship,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid victim ship object.;
+  @assert [not(spacesys(iscapship,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Capital ships cannot be loaded.;
+  @assert [spacesys(isdocked,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] is not docked.;
+  @assert [spacesys(isbayopen,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The bay doors on the [name(%0)] are closed.;
+  @assert [spacesys(canboard,%0,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%0)].;
+  @assert [spacesys(canboard,%1,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%1)].;
+  @assert [match(loc(%0),loc(%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] and [name(%0)] are not adjacent.;
+  @assert [not(or(spacesys(ismoving,%0),spacesys(ismoving,%1)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Both ships must be at rest.;
+  @nspemit [u(fn.caller)]=[ansi(gh,>)] Loading the [ansi(c,name(%1))].;
+  @nsremit [loc(%0)]=The [ansi(wh,name(%0))]'s docking arms move towards the [ansi(wh,name(%1))].;
+  think [spacesys(notify.ship,%1,The ship lurches as it is lifted by the [name(%0)]'s loading arms.)];
+  think [spacesys(activate,%1)];
+  think [spacesys(activate,%0)];
+  @wait %0/space`queue`move=think [spacesys(load.ship,%0,%1,[u(fn.caller)])];
+  @wait %1/space`queue`move=think %b
