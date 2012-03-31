@@ -11,4 +11,8 @@ module BBoard
   def self.pj_index(cat)
     self.index(cat)
   end
+  
+  def self.pj_read(cat, num)
+    self.read(cat, num)
+  end
 end

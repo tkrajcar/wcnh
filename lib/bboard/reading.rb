@@ -49,4 +49,28 @@ module BBoard
     return ret
   end
   
+  def self.read(cat, num)
+    if (cat.to_i > 0) then
+      category = Category.all.to_a[cat.to_i - 1]
+    else
+      category = Category.where(:name => cat).first
+    end
+    
+    return "> ".bold.red + "No such category," if category.nil?
+    
+    index = Category.all.to_a.find_index(category) + 1
+    post = category.posts[num.to_i - 1]
+    
+    return "> ".bold.red + "Message #{index}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
+    
+    ret = titlebar(category.name) + "\n"
+    ret << "Message: ".yellow + "#{index}/#{num}".ljust(17) + "Posted                    Author".yellow + "\n"
+    ret << post.title.ljust(26) + post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26) + R.penn_name(post.author) + "\n"
+    ret << footerbar + "\n"
+    ret << post.body + "\n"
+    ret << footerbar
+    
+    return ret
+  end
+  
 end
