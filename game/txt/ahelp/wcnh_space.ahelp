@@ -18,8 +18,8 @@ following space cycle.  To force an action immediately, either @notify
  
 +space/addcon        +space/advance         +space/classes 
 +space/class         +space/jump            +space/land
-+space/launch        +space/ships           +space/stop
-+space/taxi
++space/launch        +space/load/ship       +space/ships
++space/stop          +space/taxi            +space/unload/ship
 
 & +SPACE/ADDCON
 Syntax: +space/addcon <ship>=<object>
@@ -73,3 +73,15 @@ Syntax: +space/taxi <ship>=<exit>
 Taxis a ship through an exit. Exit can be a name or dbref.
  
 Capital ships cannot taxi. Taxiways are indicated by &DATA.TAXIWAY=1 on the exit.
+
+& +SPACE/LOAD/SHIP
+Syntax: +space/load/ship <ship>=<victim ship>
+ 
+Loads a victim ship aboard another ship, if it passes all checks and is 
+in the same location.
+
+& +SPACE/UNLOAD/SHIP
+Syntax: +space/unload/ship <ship>=<victim ship>
+ 
+Unloads a victim ship from a ship, if it passes all checks and is in 
+the ship's landing bay.

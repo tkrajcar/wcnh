@@ -11,16 +11,19 @@ The following commands are for use within the space system.  Most of them
 require that you "man" a console prior to using the command.
  
 bay              board          hail          intercom      jump
-man              land           launch        manifest      plot
-roster           scan           +scheck       spose         status
-survey           taxi
+man              land           load/ship     launch        manifest      
+plot             roster         scan          +scheck       spose
+status           survey         taxi          unload/ship
 
 & BAY
 Syntax: bay/open
         bay/close
+        bay/ships
  
 When a ship has a bay, these commands will open and close it, respectively.
 You must be manning one of the ship's consoles.
+ 
+bay/ships lists ships currently in the bay.
 
 & SURVEY
 Syntax: survey <contact ID>
@@ -145,3 +148,19 @@ Syntax: taxi <exit>
 This command will taxi the ship through an exit. The exit must be a taxiway.
  
 Capital ships are too large to taxi.
+
+& LOAD/SHIP
+Syntax: load/ship <ship>
+ 
+This command will load a ship aboard your ship, if your ship has a 
+landing bay. Ships which can be loaded are visible with 'scan' while 
+landed. You must be on the roster of both ships, and bay doors must be 
+open. This command may only be used while landed.
+
+& UNLOAD/SHIP
+Syntax: unload/ship <ship>
+ 
+This command will unload a ship from your ship, if the ship is in your 
+bay. Ships which can be unloaded are visible with 'bay/ships'. You must 
+be on the roster of both ships, and bay doors must be open. This command 
+may only be used while landed.
