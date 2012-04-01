@@ -3,18 +3,18 @@ The +RP system is the WCNH version of Craigslist. The +rp system is OOC informa-
 tion, but players are free to use the posts as a catalyst for establishing IC
 relationships.  In other words, if you see a post you're interested in pursuing
 ICly, simply contact the author and work out a way to make it ICly feasible.
-
+ 
 Posts in the +rp system are meant to be quick and to the point.  They are
 limited to 500 characters, and they time-out after 3 days unless they've been
 stickied or have been voted for.  Anyone can vote for a post with the +rp/vote
 command, but you can only vote for a particular post once per day.  A post
 loses one vote every three days until it has no votes left, and then it will
 timeout.
-
+ 
 If a post is popular or has particularly useful information and you think it
 should become a permanent fixture, you can ask an admin to make it sticky for
 you.
-
+ 
 COMMANDS:
 +rp - list post categories and top 5 overall posts.
 +rp <category> [page <num>] - list posts in a category.
@@ -24,3 +24,18 @@ COMMANDS:
 +rp/remove <#> - remove a post you created.
 +rp/vote <#> - vote for a particular post.
 +rp/top - view the top 10 most popular posts across all categories.
+ 
+Continued in 'help +RP2'
+
+& +RP2
+Syntax: +rp/on
+        +rp/off
+ 
+The +RP system has two additional commands that are used simply for advertising
+to other online players that you are actively looking for RP.  When you toggle
+your RP flag on, it will be announced on the RolePlay channel.  When you toggle
+the flag off, the channel will not be notified.  Players with their RP flags
+toggled on will be highlighter on +where, and will have a special '!' indicator
+on +who.
+ 
+
