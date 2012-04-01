@@ -20,6 +20,8 @@
 #include "parse.h"
 #include "confmagic.h"
 #include "function.h"
+#include "match.h"
+#include "lock.h"
 
 void local_functions(void);
 
@@ -35,10 +37,45 @@ FUNCTION(local_fun_silly)
 
 #endif
 
+FUNCTION(fun_lzone)
+{
+  dbref it;
+  dbref zone;
+  int i = 0;
+
+  it = match_thing(executor, args[0]);
+  if (!GoodObject(it)) {
+    safe_str(T(e_notvis), buff, bp);
+    return;
+  } else if (!Can_Examine(executor, it)) {
+    safe_str(T(e_perm), buff, bp);
+    return;
+  }
+  zone = Zone(it);
+  if (!GoodObject(zone)) {
+    safe_str("#-1", buff, bp);
+    return;
+  }
+
+  while (GoodObject(zone)) {
+    if (i) {
+      if (safe_chr(' ', buff, bp))
+        break;
+    }
+    i++;
+    safe_dbref(zone, buff, bp);
+    it = zone;
+    zone = Zone(zone);
+    if (zone == it)
+      break;
+  }
+}
+
 void
 local_functions(void)
 {
 #ifdef EXAMPLE
   function_add("SILLY", local_fun_silly, 1, 1, FN_REG);
 #endif
+  function_add("LZONE", fun_lzone, 1, 1, FN_REG);
 }
