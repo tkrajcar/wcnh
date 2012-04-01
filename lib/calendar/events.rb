@@ -37,6 +37,7 @@ module Calendar
     ret << "What: ".yellow + event.title.to_s + "\n"
     ret << "When: ".yellow + event.date.new_offset(tz).strftime("%B %d, %Y at %I:%M %p (%Z)") + "\n"
     ret << "Where: ".yellow + event.location.to_s + "\n"
+    ret << "Who: ".yellow + "#{event.participants.count} Registrations" + "\n"
     ret << "Event Details: ".yellow + event.info.to_s + "\n"
     ret << footerbar
     ret

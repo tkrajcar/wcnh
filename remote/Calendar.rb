@@ -35,5 +35,13 @@ module Calendar
   def self.pj_notify
     self.notify
   end
+  
+  def self.pj_register(num,dbref)
+    self.register(num,dbref)
+  end
+  
+  def self.pj_unregister(num,dbref)
+    self.unregister(num,dbref)
+  end
 
 end

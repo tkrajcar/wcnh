@@ -8,7 +8,7 @@ module Calendar
     index :num, :unique => true
     field :creator, type: String
     field :date, type: DateTime
-    field :participants, type: Array
+    field :participants, type: Array, :default => []
     field :location, type: String
     field :title, type: String
     field :info, type: String

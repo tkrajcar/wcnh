@@ -27,5 +27,27 @@ module Calendar
     end
     return
   end
+  
+  def self.register(num,dbref)
+    return "> ".bold.red + "No such calendar event number." unless event = Event.where(:num => num.to_i).first
+    return "> ".bold.red + "You are already registered for that event." unless event.participants.find_index(dbref).nil?
+    
+    event.participants << dbref
+    event.save
+    R.mailsend(event.creator,"Event ##{event.num} Registration/#{R.penn_name(dbref)} has registered for +cal #{event.num}.")
+    
+    return "> ".bold.green + "You are now registered for event no. #{event.num}."
+  end
+  
+  def self.unregister(num,dbref)
+    return "> ".bold.red + "No such calendar event number." unless event = Event.where(:num => num).first
+    return "> ".bold.red + "You are not registered for that event." unless index = event.participants.find_index(dbref)
+    
+    event.participants.delete_at(index)
+    event.save
+    R.mailsend(event.creator,"Event ##{event.num} Unregister/#{R.penn_name(dbref)} has cancelled their registration for +cal #{event.num}.")
+    
+    return "> ".bold.green + "You have cancelled your registration for event no. #{event.num}."
+  end
 
 end  
