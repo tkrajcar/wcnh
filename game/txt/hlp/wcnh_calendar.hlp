@@ -18,13 +18,18 @@ Syntax: +cal
         +cal <month> <year>
         +cal/view <id>
         +cal <id>
+        +cal/register <id>
+        +cal/unregister <id>
 
 The first syntax will show a list of upcoming events in the next 30 days.
 
 The second syntax will show a list of events in the indicated month.
 
 The third and fourth syntax will show details about a particular event.
-
+ 
+The fifth and sixth syntaxes allow you to register and unregister for a
+particular event.  The event creator will be notified via @mail.
+ 
 & calendar events
 Events can be added to the calendar by anyone, and can be used freely for
 anything as long as it's related to the game in some way.  The calendar system
