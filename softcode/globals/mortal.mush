@@ -85,16 +85,17 @@
                     not(xget(zone(itext(0)),IS.HIDDEN)),
                     [if(and(t(zone(itext(0))),not(spacesys(isship,itext(0)))),[ansi(y,name(zone(itext(0))))]\,%b)]
                     [ansi(yh,name(itext(0)))] - 
-                    [itemize(iter(lvplayers(itext(0)),name(itext(0)),,|),|)]
+                    [itemize(iter(lvplayers(itext(0)),if(not(hasflag(itext(0),unfindable)),ansi(ifelse(t(get(itext(0)/char`rp)),hg,n),name(itext(0)))),,|),|)]
                     )]
-                ,,%r)]%r
+                ,,%r)]%r%r
+            [ansi(hg,*)] - [ansi(hg,Highlighted)] players are looking for RP.%r
             [footerbar()]
 -
 &SORT.WHERE #15=
   [comp(zone(%0),zone(%1))]
 -
 &FILTER.MORTALS #15=
-  ncor(orflags(%0,Wr),hasflag(%0,unfindable))
+  ncor(orflags(%0,Wr),hasflag(%0,unfindable),strmatch(zone(loc(%0)),#343),not(get(%0/char`approved)))
 -
 @set #15/cmd.+who=regexp
 -
@@ -122,10 +123,22 @@
   [footerbar(words(lwho(%#)) players online)]
 -
 &map.+who #15=
-  %b[align(
-      >3 25 >8 >8 29,
-      switch(orflags(%0,Wr)[t(hidden(%0))][t(default(%0/char`approved,0))][hasflag(%0,IC)],10*,[ansi(hy,ADM)],11*,[ansi(hx,HID)],000*,[ansi(hm,NEW)],0011,[ansi(hg,IC)],[ansi(hr,OOC)]),
-      ansi(switch(hidden(%0)[orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))[if(hasattr(%0,alias),\([get(%0/alias)]\))],
+  [ifelse(setr(LFRP,t(get(%0/char`rp))),ansi(yh,!),%b)]
+  [rjust(switch(
+            [orflags(%0,Wr)]
+            [t(hidden(%0))]
+            [t(default(%0/char`approved,0))]
+            [hasflag(%0,IC)],
+            
+            10*,[ansi(hy,ADM)],
+            11*,[ansi(hx,HID)],
+            000*,[ansi(hm,NEW)],
+            0011,[ansi(hg,IC)],
+            [ansi(hr,OOC)]
+            ),3)][ifelse(%q<LFRP>,ansi(yh,!),%b)]
+  [align(
+      25 >8 >8 29,
+      [ansi(switch([hidden(%0)][orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))][if(hasattr(%0,alias),\([get(%0/alias)]\))],
       ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),
       extract(timestring(conn(%0)),1,2),
       mid(
@@ -133,7 +146,7 @@
           [ansi(hc,rjust(loc(%0),4))] [ansi(w,[name(loc(%0))])][if(zone(loc(%0)),-[ansi(c,name(zone(loc(%0))))])],
           doing(%0)
       ),0,29)
-    )]
+  )]
 -
 &map.+who.short #15=
   ansi(switch(hidden(%0)[orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))\(

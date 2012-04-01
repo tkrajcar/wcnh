@@ -54,6 +54,7 @@
   @fo %0=handle/use [name(%0)];
   @fo %0=comm/on 100.00;
   @chan/on public=%0;
+  @chan/on roleplay=%0;
 -
 
 &PLANET.CABREA #217=#349|Cabrea II is one of the prime worlds of the Kilrathi Commonwealth and their de-facto headquarters in the Sector.
