@@ -78,19 +78,23 @@
 # &cmd.+where #15=$+where:@pemit %#=[titlebar(+where)]%r[iter(u(fn.rooms_with_connected_players),ansi(h,name(##)): [u(fn.connected_players_in_room,##)], ,%r)]%r[footerbar(words(mwho()) players)]
 -
 &cmd.+where #15=$+where:
-  @pemit %#=[titlebar(Populated Zones)]%r
+  @pemit %#=[titlebar(Populated Areas)]%r
             [iter(
-                remove(setunion(iter(filter(filter.mortals,mwho()),zone(loc(itext(0)))),),#-1),
-                [name(itext(0))][if(
-                                  not(or(xget(itext(0),IS.HIDDEN),strmatch(zone(itext(0)),#222),spacesys(isship,itext(0)))),
-                                  \,%b[trim(before(name(zone(itext(0))),<))]
-                                  )]%b
-                                \[[words(zwho(itext(0)))] players\],
-                ,%r)]%r
+                sortby(sort.where,setunion(iter(filter(filter.mortals,mwho()),loc(itext(0))),)),
+                [if(
+                    not(xget(zone(itext(0)),IS.HIDDEN)),
+                    [setr(Zones,iter(rest(revwords(remove(zones(lzone,itext(0)),#222))),ansi(y,name(itext(0))),,\,%b))][if(t(%q<Zones>),\,%b)]
+                    [ansi(yh,name(itext(0)))] - 
+                    [itemize(iter(lvplayers(itext(0)),name(itext(0)),,|),|)]
+                    )]
+                ,,%r)]%r
             [footerbar()]
 -
+&SORT.WHERE #15=
+  [comp(zone(%0),zone(%1))]
+-
 &FILTER.MORTALS #15=
-  not(orflags(%0,Wr))
+  ncor(orflags(%0,Wr),hasflag(%0,unfindable))
 -
 @set #15/cmd.+who=regexp
 -
