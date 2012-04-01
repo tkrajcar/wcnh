@@ -56,4 +56,10 @@
 &CMD.+EVENT/DELETE #812=$+event/delete *:
   @nspemit %#=[rpc(Calendar.event_delete,%0)]
 -
+&CMD.+CAL/REGISTER #812=$+cal/register *:
+  @nspemit %#=[rpc(Calendar.register,%0,%#)]
+-
+&CMD.+CAL/UNREGISTER #812=$+cal/unregister *:
+  @nspemit %#=[rpc(Calendar.unregister,%0,%#)]
+-
 
