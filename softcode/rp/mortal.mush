@@ -38,7 +38,7 @@
   @assert [not(t(get(%#/char`rp)))]=@nspemit %#=[ansi(rh,>)] You are already flagged as looking for RP.;
   @nspemit %#=[ansi(gh,>)] You are now advertising as looking for RP.;
   &char`rp %#=1;
-  @nscemit/noisy Roleplay=[ansi(yh,name(%#))] is now looking for RP at [ansi(y,[name(loc(%#))][if(t(zone(loc(%#))),%b- [name(zone(loc(%#)))])])].
+  @nscemit/noisy Roleplay=[ansi(yh,name(%#))] is now looking for RP at [ansi(y,[name(loc(%#))][if(and(t(zone(loc(%#))),not(spacesys(isship,loc(%#)))),%b- [name(zone(loc(%#)))])])].
 -
 &CMD.+RP/OFF #888=$+rp/off:
   @assert [t(get(%#/char`rp))]=@nspemit %#=[ansi(rh,>)] You are not currently flagged as looking for RP.;
