@@ -10,6 +10,7 @@ module BBoard
     # global bboard user settings.
     
     has_many :subscriptions, :class_name => "BBoard::Subscription"
+    embeds_one :draft, :class_name => "BBoard::Draft"
   end
   
 end

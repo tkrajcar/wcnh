@@ -19,4 +19,24 @@ module BBoard
   def self.pj_post(author, cat, sub, txt)
     self.post(author, cat, sub, txt)
   end
+  
+  def self.pj_draft_start(dbref, cat, sub)
+    self.draft_start(dbref, cat, sub)
+  end
+  
+  def self.pj_draft_write(dbref, txt)
+    self.draft_write(dbref, txt)
+  end
+  
+  def self.pj_draft_proof(dbref)
+    self.draft_proof(dbref)
+  end
+  
+  def self.pj_draft_toss(dbref)
+    self.draft_toss(dbref)
+  end
+  
+  def self.draft_post(dbref)
+    self.draft_post(dbref)
+  end
 end
