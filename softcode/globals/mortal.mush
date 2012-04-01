@@ -83,7 +83,7 @@
                 sortby(sort.where,setunion(iter(filter(filter.mortals,mwho()),loc(itext(0))),)),
                 [if(
                     not(xget(zone(itext(0)),IS.HIDDEN)),
-                    [setr(Zones,iter(rest(revwords(remove(zones(lzone,itext(0)),#222))),ansi(y,name(itext(0))),,\,%b))][if(t(%q<Zones>),\,%b)]
+                    [if(and(t(zone(itext(0))),not(spacesys(isship,itext(0)))),[ansi(y,name(zone(itext(0))))]\,%b)]
                     [ansi(yh,name(itext(0)))] - 
                     [itemize(iter(lvplayers(itext(0)),name(itext(0)),,|),|)]
                     )]
