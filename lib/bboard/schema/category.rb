@@ -5,6 +5,7 @@ module BBoard
   class Category
     include Mongoid::Document
     
+    field :num, type: Integer, :default => lambda {Counters.next("BBCategory")}
     field :name, type: String
     field :ansi, type: String, :default => "n" # Ansi string for colorized boards in-game
     field :permission_type, type: String 
@@ -14,6 +15,9 @@ module BBoard
     
     has_many :posts, :class_name => "BBoard::Post"
     has_many :subscriptions, :class_name => "BBoard::Subscription"
+    
+    validates_uniqueness_of :num, message: "Board number is already being used."
+    validates_numericality_of :num, greater_than: 0, message: "Board number must be greater than 0."
     
     validates_uniqueness_of :name, case_sensitive: false, message: "Category name must be unique."
     validates_presence_of :name, message: "Category name cannot be blank."

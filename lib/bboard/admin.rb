@@ -10,7 +10,13 @@ module BBoard
   end
 
   def self.category_config(cat, opt, val)
-    return "> ".bold.red + "No such category." unless category = Category.where(:name => cat).first
+    if (cat.to_i > 0) then
+      category = Category.where(:num => cat).first
+    else
+      category = Category.where(:name => Regexp.new("(?i)#{cat}")).first
+    end
+    
+    return "> ".bold.red + "No such category." if category.nil?
     
     options = category.fields.keys[2,category.fields.keys.length]
     return "> ".bold.red + "Invalid config option.  Valid options: " + options.itemize if options.find_index(opt).nil?
