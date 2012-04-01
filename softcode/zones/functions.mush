@@ -16,14 +16,7 @@
   [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
 -
 &FN.LZONE #227=
-  switch(
-      [isdbref(%0)]
-      [not(strmatch(zone(%0),#-1))],
-
-      0?,#-1 NO SUCH OBJECT VISIBLE,
-      10,%0,
-      [setq(1,zone(%0))][u(subfn.lzone.loop,%q1)][trim(%q1)]
-      )
+  lzone(%0)
 -
 &SUBFN.LZONE.LOOP #227=
   [if(
