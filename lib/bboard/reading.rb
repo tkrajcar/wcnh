@@ -23,13 +23,9 @@ module BBoard
   end
   
   def self.index(cat)
-    if (cat.to_i > 0) then
-      category = Category.where(:num => cat).first
-    else
-      category = Category.where(:name => Regexp.new("(?i)#{cat}")).first
-    end
+    category = FindCategory(cat)
     
-    return "> ".bold.red + "No such category." if category.nil?
+    return "> ".bold.red + "You do not subscribe to that Group." if category.nil?
     
     ret = titlebar("Index: #{category.name}") + "\n"
     ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
@@ -38,21 +34,17 @@ module BBoard
     category.posts.each_index do |i|
       post = category.posts[i]
       ret << "#{category.num}/#{i + 1}".ljust(8) + post.title.ljust(35) + post.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(post.author)
+      ret << "\n"
     end
-    ret << "\n"
     ret << footerbar
     
     return ret
   end
   
   def self.read(cat, num)
-    if (cat.to_i > 0) then
-      category = Category.where(:num => cat).first
-    else
-      category = Category.where(:name => Regexp.new("(?i)#{cat}")).first
-    end
+    category = FindCategory(cat)
     
-    return "> ".bold.red + "No such category," if category.nil?
+    return "> ".bold.red + "You do not subscribe to that Group." if category.nil?
     
     post = category.posts[num.to_i - 1]
     
@@ -66,6 +58,16 @@ module BBoard
     ret << footerbar
     
     return ret
+  end
+  
+  def self.FindCategory(cat)
+    if (cat.to_i > 0) then
+      category = Category.where(:num => cat).first
+    else
+      category = Category.where(:name => Regexp.new("(?i)#{cat}")).first
+    end
+    
+    return category
   end
   
 end

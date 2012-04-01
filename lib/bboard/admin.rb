@@ -10,11 +10,7 @@ module BBoard
   end
 
   def self.category_config(cat, opt, val)
-    if (cat.to_i > 0) then
-      category = Category.where(:num => cat).first
-    else
-      category = Category.where(:name => Regexp.new("(?i)#{cat}")).first
-    end
+    category = FindCategory(cat)
     
     return "> ".bold.red + "No such category." if category.nil?
     

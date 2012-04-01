@@ -15,4 +15,8 @@ module BBoard
   def self.pj_read(cat, num)
     self.read(cat, num)
   end
+  
+  def self.pj_post(author, cat, sub, txt)
+    self.post(author, cat, sub, txt)
+  end
 end
