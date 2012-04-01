@@ -83,3 +83,8 @@
 &CRON_TIME_LOGBLOCKED_4 #539=||||50|
 -
 &CRON_JOB_LOGBLOCKED #539=@dol [lwho()]=@swi [default(##/CHAR`LOGROLEPLAY,1)]=0,{@pemit %#=[ansi(h,> )] [ansi(hy,WARNING)]: You currently have RP logging disabled.
+-
+&CRON_TIME_UNFINDABLE #539=||||01|
+-
+&CRON_JOB_UNFINDABLE #539=@dol [lwho()]=@swi [and(hasflag(##,unfindable),not(orflags(##,Wr)))]=1,{@nspemit %#=[ansi(h,>)] [ansi(hr,REMINDER:)] You are currently set UNFINDABLE.}
+-
