@@ -2,6 +2,21 @@ require 'wcnh'
 
 module BBoard
   
+  def self.list(dbref)
+    categories = Category.all
+    
+    ret = titlebar("Available Bulletin Board Groups") + "\n"
+    ret << "##   Group Name".ljust(37).yellow + "Member?".ljust(15).yellow + "Timeout (in days)".yellow + "\n"
+    ret << footerbar + "\n"
+    categories.each do |i|
+      ret << i.num.to_s.ljust(5) + i.name.ljust(33) + "No".ljust(10) + i.timeout.to_s + "\n"
+    end
+    
+    ret << footerbar + "\n"
+    ret << "To join groups, type '+bbjoin <group number or name>'" + "\n"
+    ret << footerbar
+  end
+  
   def self.toc
     categories = Category.all
     

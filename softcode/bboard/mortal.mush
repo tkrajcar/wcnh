@@ -1,0 +1,40 @@
+@set #1139=!safe !no_command
+-
+@wipe #1139
+-
+@set #1139=safe
+-
+&CMD.+BBLIST #1139=$@bblist:
+  @nspemit %#=[rpc(BBoard.list,%#)]
+-
+&CMD.+BBREAD #1139=$@bbread:
+  @nspemit %#=[rpc(BBoard.toc,%#)]
+-
+&CMD.+BBREAD_ARG #1139=$@bbread *:@nspemit %#=
+  [ifelse(
+         strmatch(%0,*/*),
+         rpc(BBoard.read,before(%0,/),after(%0,/)),
+         rpc(BBoard.index,%0)
+         )]
+-
+&CMD.+BBPOST_DRAFT #1139=$@bbpost:@nspemit %#=
+  [rpc(BBoard.draft_post,%#)]
+-
+&CMD.+BBPOST #1139=$@bbpost *:@nspemit %#=
+  [ifelse(
+        strmatch(%0,*/*=*),
+        rpc(BBoard.post,%#,before(%0,/),before(after(%0,/),=),after(%0,=)),
+        rpc(BBoard.draft_start,before(%0,/),after(%0,/))
+        )]
+-
+&CMD.+BBWRITE #1139=^(@bbwrite|@bb) (.+)$:@nspemit %#=
+  [rpc(BBoard.draft_write,%#,%1)]
+-
+@set #1139/cmd.+bbwrite=regexp
+-
+&CMD.+BBPROOF #1139=$@bbproof *:@nspemit %#=
+  [rpc(BBoard.draft_proof,%#)]
+-
+&CMD.+BBTOSS #1139=$@bbtoss:@nspemit %#=
+  [rpc(BBoard.draft_toss,%#)]
+-

@@ -4,6 +4,10 @@ module BBoard
   PennJSON::register_object(self)
   R = PennJSON::Remote
   
+  def self.pj_list(dbref)
+    self.list(dbref)
+  end
+  
   def self.pj_toc
     self.toc
   end
@@ -38,5 +42,13 @@ module BBoard
   
   def self.draft_post(dbref)
     self.draft_post(dbref)
+  end
+  
+  def self.pj_category_create(cat)
+    self.category_create(cat)
+  end
+  
+  def self.category_config(cat, opt, val)
+    self.category_config(cat, opt, val)
   end
 end
