@@ -3,9 +3,9 @@ This is the admin-only help for WC:NH.
  
   PAGES:
  
-  COMBAT         +DOSSIER       ECON           +FACTION       +PFILE         
-  +RP            +SPACE         +TICKET        WANTED         +ZONE 
- 
+  +acheck        COMBAT         +DOSSIER       ECON           +FACTION       
+  +PFILE         +RP            +SPACE         +TICKET        WANTED         
+  +ZONE 
 & +DOSSIER
   This command allows you to make notes about IC matters relating to characters.
   Plot hooks that should be used, IC loans, or anything else related to a chara-
@@ -34,7 +34,6 @@ This is the admin-only help for WC:NH.
   All new entries default to visible: false, so make sure and set it to true
   when done. Changes are not publicized to players, so use a News Net +bbpost
   or something similar to announce it.
- 
 & +RP
 Commands for admin.
  
@@ -70,7 +69,6 @@ HEAVY
 1200 - M1 Carbine
 1700 - M16 Rifle
 400000 - Hit by a car at 60mph
-
 & +ZONE
 Admin commands for building.
  
@@ -88,4 +86,11 @@ when you use these commands.
  
 Guides can additionally use +zone/checkout and +zone/list in the event that you
 want to farm out some building work.
+& +acheck
++acheck <player>=<skill/attribute>
 
+Runs an admin-side +check of <player>'s skill or attribute, displayed to
+everyone in the room, just like a normal +check.
+
+Normally players should run +check themselves in scenes, to discourage people
+whining about bad rolls.

@@ -59,3 +59,4 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   +log/on - Re-enable logging.
   +log/last - View the last 5 poses you've seen, whether yours or not.
   +log/last page <#> - View more pages of poses you've seen.
+
