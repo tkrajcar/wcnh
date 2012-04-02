@@ -19,11 +19,16 @@ status           survey         taxi          unload/ship
 Syntax: bay/open
         bay/close
         bay/ships
+        
+        bay/open/remote <ship name>
+        bay/close/remote <ship name>
  
 When a ship has a bay, these commands will open and close it, respectively.
 You must be manning one of the ship's consoles.
  
 bay/ships lists ships currently in the bay.
+ 
+The remote versions of the commands open the bay doors of a remote bay. You must be on the remote ship's roster, and you must be at zero distance.
 
 & SURVEY
 Syntax: survey <contact ID>
