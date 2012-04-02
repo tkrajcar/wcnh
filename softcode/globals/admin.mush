@@ -85,4 +85,21 @@
 &cmd.wanted/delete #115=$wanted/delete *:@pemit %#=[rpc(Dossier.wanted_delete,%0)]
 -
 &cmd.+ticket/claim #115=$+ticket/claim *:@pemit %#=[rpc(Ticket.assign,%0    ,%#)]
+-
+&cmd.+acheck #115=$+acheck *=*:
+  @assert setr(victim,pmatch(*%0))=
+    @nspemit %#=[ansi(hr,>)] Invalid player.;
+  @assert t(get(%q<victim>/char`approved))=
+    @nspemit %#=[ansi(hr,>)] That player hasn't finished chargen yet!;
+  @assert setr(0,
+            grab(attribute.reason attribute.perception attribute.willpower
+                 attribute.strength attribute.agility attribute.health
+                 [lattr(#111/skill.*)],
+                 *.%1*
+            )
+          )=
+    @nspemit %#=[ansi(hr,>)] Invalid attribute or skill.;
+  th [u(fn.acheck,public,%q<victim>,before(%q0,.),after(%q0,.),%#)]
 
+-
+&fn.acheck #115=[setq(m,[ansi(hb,>)] [ansi(h,[name(%4)])] [switch(%0,/private,privately%b)]+checks [ansi(h,name(%1))]'s [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1,%qm),nsremit(loc(%1),%qm)[nscemit(+RP,%qm,1)])]
