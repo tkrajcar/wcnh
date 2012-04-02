@@ -9,7 +9,7 @@ module BBoard
     ret << "##   Group Name".ljust(37).yellow + "Member?".ljust(15).yellow + "Timeout (in days)".yellow + "\n"
     ret << footerbar + "\n"
     categories.each do |i|
-      ret << i.num.to_s.ljust(5) + i.name.ljust(33) + "No".ljust(10) + i.timeout.to_s + "\n"
+      ret << i.num.to_s.ljust(5) + i.name.ljust(33) + "No".ljust(20) + i.timeout.to_s + "\n"
     end
     
     ret << footerbar + "\n"
@@ -17,7 +17,7 @@ module BBoard
     ret << footerbar
   end
   
-  def self.toc
+  def self.toc(dbref)
     categories = Category.all
     
     ret = titlebar("Categories") + "\n"
@@ -27,7 +27,7 @@ module BBoard
     categories.each do |i|
       last_post = i.posts.desc(:created_at).first
       last_post = last_post ? last_post.created_at.strftime("%a %b %d") : "Never"
-      ret << i.num.to_s.rjust(2).ljust(7) + i.name.ljust(30) + last_post.ljust(22) + i.posts.count.to_s + "\n"
+      ret << i.num.to_s.rjust(2).ljust(7) + i.name.ljust(30) + last_post.ljust(21) + i.posts.count.to_s + "\n"
     end
     
     ret << footerbar + "\n"
@@ -37,7 +37,7 @@ module BBoard
     return ret
   end
   
-  def self.index(cat)
+  def self.index(dbref, cat)
     category = FindCategory(cat)
     
     return "> ".bold.red + "You do not subscribe to that Group." if category.nil?

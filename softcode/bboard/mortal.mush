@@ -14,7 +14,7 @@
   [ifelse(
          strmatch(%0,*/*),
          rpc(BBoard.read,before(%0,/),after(%0,/)),
-         rpc(BBoard.index,%0)
+         rpc(BBoard.index,%#,%0)
          )]
 -
 &CMD.+BBPOST_DRAFT #1139=$@bbpost:@nspemit %#=
@@ -24,15 +24,16 @@
   [ifelse(
         strmatch(%0,*/*=*),
         rpc(BBoard.post,%#,before(%0,/),before(after(%0,/),=),after(%0,=)),
-        rpc(BBoard.draft_start,before(%0,/),after(%0,/))
+        rpc(BBoard.draft_start,%#,before(%0,/),after(%0,/))
         )]
 -
-&CMD.+BBWRITE #1139=^(@bbwrite|@bb) (.+)$:@nspemit %#=
-  [rpc(BBoard.draft_write,%#,%1)]
+&CMD.+BBWRITE2 #1139=$@bb *:@nspemit %#=
+  [rpc(BBoard.draft_write,%#,%0)]
 -
-@set #1139/cmd.+bbwrite=regexp
+&CMD.+BBWRITE #1139=$@bbwrite *:@nspemit %#=
+  [rpc(BBoard.draft_write,%#,%0)]
 -
-&CMD.+BBPROOF #1139=$@bbproof *:@nspemit %#=
+&CMD.+BBPROOF #1139=$@bbproof:@nspemit %#=
   [rpc(BBoard.draft_proof,%#)]
 -
 &CMD.+BBTOSS #1139=$@bbtoss:@nspemit %#=

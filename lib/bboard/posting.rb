@@ -22,7 +22,7 @@ module BBoard
     return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." if category.nil?
     return "> ".bold.red + "You are already in the middle of writing a bbpost." unless user.draft.nil?
     
-    draft = user.draft.create(:category_id => category.id, :title => sub)
+    draft = user.create_draft(:category_id => category.id, :title => sub)
     
     return "> ".bold.red + draft.errors.values.join(" ") unless draft.valid?
     
@@ -35,8 +35,8 @@ module BBoard
     
     return "> ".bold.red + "You do not have a bbpost in progress." if user.draft.nil?
     
-    draft.body += txt
-    draft.save
+    user.draft.body = (user.draft.body.nil? ? txt : user.draft.body + txt)
+    user.draft.save
     return "> ".bold.green + "Text added to bbpost."
   end
   
@@ -62,7 +62,7 @@ module BBoard
     
     return "> ".bold.red + "You do not have a bbpost in progress." if user.draft.nil?
     
-    user.draft.destroy!
+    user.draft.destroy
     return "> ".bold.green + "Your bbpost has been discarded."
   end
   
@@ -77,7 +77,7 @@ module BBoard
     category = Category.where(:id => user.draft.category_id)
     
     ret = post(user.id, category.name, user.draft.title, user.draft.body)
-    user.draft.destroy!
+    user.draft.destroy
     return ret  
   end
   

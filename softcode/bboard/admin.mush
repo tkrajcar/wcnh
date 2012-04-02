@@ -2,5 +2,5 @@
   [rpc(BBoard.category_create,%0)]
 -
 &CMD.+BBCONFIG #15=$@bbconfig */*=*:@nspemit %#=
-  [rpc(BBoard.category_config,before(%0,/),after(before(%0,=),/),after(%0,=))]
+  [rpc(BBoard.category_config,%0,%1,%2)]
 -

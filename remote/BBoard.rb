@@ -8,12 +8,12 @@ module BBoard
     self.list(dbref)
   end
   
-  def self.pj_toc
-    self.toc
+  def self.pj_toc(dbref)
+    self.toc(dbref)
   end
   
-  def self.pj_index(cat)
-    self.index(cat)
+  def self.pj_index(dbref, cat)
+    self.index(dbref, cat)
   end
   
   def self.pj_read(cat, num)
@@ -40,7 +40,7 @@ module BBoard
     self.draft_toss(dbref)
   end
   
-  def self.draft_post(dbref)
+  def self.pj_draft_post(dbref)
     self.draft_post(dbref)
   end
   
@@ -48,7 +48,7 @@ module BBoard
     self.category_create(cat)
   end
   
-  def self.category_config(cat, opt, val)
+  def self.pj_category_config(cat, opt, val)
     self.category_config(cat, opt, val)
   end
 end
