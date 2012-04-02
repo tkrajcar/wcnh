@@ -163,7 +163,7 @@
 -
 &sort.idle #15=sub(idlesecs(%0),idlesecs(%1))
 -
-&fn.check #15=[setq(m,[ansi(hb,>)] [ansi(h,[name(%1)])] [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1,%qm),nsremit(loc(%1),%qm))]
+&fn.check #15=[setq(m,[ansi(hb,>)] [ansi(h,[name(%1)])] [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1,%qm),nsremit(loc(%1),%qm)[nscemit(+RP,%qm,1)])]
 -
 &fn.connected_players_in_room #15=[itemize(iter(filter(filter.isconnected,lcon(%0)),name(##), ,|),|)]
 -
