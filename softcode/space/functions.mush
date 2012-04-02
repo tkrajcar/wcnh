@@ -1027,11 +1027,11 @@
                 [spacesys(notify.ship,%1,The ship shudders and rocks as it is deposited in the bay of the [name(%0)].)]
         ,#-1 SHIPS NOT ADJACENT)
 -
-&FN.FINDSHIP.LOAD #208=
+&FN.FINDSHIP.ROOM #208=
   firstof(
          setinter(
                   %1,
-                  setr(l,lvthings(room(%0)))
+                  setr(l,edit(lvthings(room(%0)),%0,))
                   ),
          if(setr(e,element(
                           iter(
@@ -1046,7 +1046,7 @@
             0)
          ,#-1)
 -
-&FN.FINDSHIP.UNLOAD #208=
+&FN.FINDSHIP.BAY #208=
   firstof(
          setinter(
                   %1,
