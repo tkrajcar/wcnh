@@ -307,12 +307,32 @@
   +space/taxi [v(data.ship)]=%0
 -
 &CMD.UNLOAD/SHIP #204=$unload/ship *:
-  @assert [setr(t,spacesys(findship.unload,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  @assert [setr(t,spacesys(findship.bay,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
   +space/unload/ship [v(data.ship)]=%qt
 -
 &CMD.LOAD/SHIP #204=$load/ship *:
-  @assert [setr(t,spacesys(findship.load,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  @assert [setr(t,spacesys(findship.room,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
   +space/load/ship [v(data.ship)]=%qt
+-
+&CMD.BAY/OPEN/REMOTE #204=$bay/open/remote *:
+  @assert [setr(t,spacesys(findship.room,setr(s,v(data.ship)),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  @assert [t(eq(spacesys(distance,%qt,%qs),0))]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  @assert [spacesys(canboard,%qt,%#)]=@nspemit %#=[ansi(rh,>)] You lack permission to access the [name(%qt)].;
+  @assert [spacesys(hasbay,%qt)]=@nspemit %#=[ansi(rh,>)] The [name(%qt)] has no bay.;
+  @assert [not(spacesys(isbayopen,%qt))]=@nspemit %#=[ansi(hr,>)] The bay doors are already open.;
+  think [spacesys(openbay,%qt)];
+  think [spacesys(spose,%qt,opens its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Opening the bay doors on the [name(%qt)].
+-
+&CMD.BAY/CLOSE/REMOTE #204=$bay/close/remote *:
+  @assert [setr(t,spacesys(findship.room,setr(s,v(data.ship)),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  @assert [t(eq(spacesys(distance,%qt,%qs),0))]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  @assert [spacesys(canboard,%qt,%#)]=@nspemit %#=[ansi(rh,>)] You lack permission to access the [name(%qt)].;
+  @assert [spacesys(hasbay,%qt)]=@nspemit %#=[ansi(rh,>)] The [name(%qt)] has no bay.;
+  @assert [spacesys(isbayopen,%qt)]=@nspemit %#=[ansi(hr,>)] The bay doors are already closed.;
+  think [spacesys(closebay,%qt)];
+  think [spacesys(spose,%qt,closes its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Closing the bay doors on the [name(%qt)].
 -
 &LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!
 -

@@ -4,7 +4,7 @@ module RP
   def self.create(category, title, info, creator)
     return "> ".bold.red + "Invalid category." unless cat = Category.where(:name => Regexp.new(category,1)).first
     return "> ".bold.red + "Subject cannot exceed 30 characters." unless title.length <= 30
-    return "> ".bold.red + "Posting cannot exceed 500 characters." unless info.length <= 500
+    return "> ".bold.red + "Posting cannot exceed 1500 characters." unless info.length <= 1500
     
     return "> ".bold.red + "Error while creating post." unless item = cat.items.create!(:title => title, :info => info, :creator => creator)
     

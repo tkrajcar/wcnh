@@ -37,12 +37,12 @@ module PlayerFile
   def self.view_connections(arg)
     return ">".red + " No file found for '#{arg}'." unless p = Pfile.locate(arg)
     ret = titlebar("Connections for #{p.email} (#{p._id.to_s})") + "\n"
-    p.connections.desc("disconnected").limit(20).each do |conn|
+    p.connections.desc(:disconnected).limit(20).each do |conn|
       ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + "-"
-      if conn.disconnected.class == DateTime
-        ret << conn.disconnected.strftime("%m/%d %H:%M ")
+      if conn.disconnected.to_s == ""
+        ret << "Connected  ".bold
       else
-        ret << "Connected   ".bold
+        ret << conn.disconnected.strftime("%m/%d %H:%M")
       end
       if conn.dbref
         ret << "#{conn.dbref} #{R.penn_name(conn.dbref)}"[0..15].ljust(15).yellow
@@ -62,13 +62,14 @@ module PlayerFile
     ret = titlebar("Pfiles with connections matching #{term}") + "\n"
     results.each do |p|
       ret << "#{R.penn_name(p.current_dbref).bold.cyan} (#{p.email.bold}/#{p._id.to_s}):\n"
-      p.connections.any_of({:host => /#{term}/i}, {:ip => /#{term}/i}).desc("disconnected").each do |conn|
+      p.connections.any_of({:host => /#{term}/i}, {:ip => /#{term}/i}).desc(:disconnected).each do |conn|
         ret << conn.connected.strftime("%m/%d/%Y %H:%M").cyan + " "
-        if conn.disconnected.class == DateTime
-          ret << conn.disconnected.strftime("%m/%d %H:%M")
-        else
+        if conn.disconnected.to_s == ""
           ret << "Connected  ".bold
+        else
+          ret << conn.disconnected.strftime("%m/%d %H:%M")
         end
+
         if conn.dbref
            ret << "#{conn.dbref} #{R.penn_name(conn.dbref)}"[0..15].ljust(15).yellow
          else
