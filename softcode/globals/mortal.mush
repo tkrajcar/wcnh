@@ -368,7 +368,19 @@
   @pemit %#=[ansi(h,> )] Roleplay logging disabled. You will no longer receive XP for roleplaying until logging is re-enabled.
 -
 &cmd.+log/last #15=$+log/last:
-  @pemit %#=[rpc(Logs.roleplay_last,1)]
+  @nspemit %#=[rpc(Logs.roleplay_last,1)]
 -
 &cmd.+log/last2 #15=$+log/last page *:
-  @pemit %#=[rpc(Logs.roleplay_last,%0)]
+  @nspemit %#=[rpc(Logs.roleplay_last,%0)]
+-
+&cmd.contract/list #15=$contract/list:
+  @nspemit %#=[rpc(Contract.list)]
+-
+&cmd.contract/respond #15=$contract/respond *:
+  @nspemit %#=[rpc(Contract.respond,%0)]
+-
+&cmd.contract/answer #15=$contract/answer */*=*:
+  @nspemit %#=[rpc(Contract.answer,%0,%1,%2)]
+-
+&cmd.contract/submit #15=$contract/submit *:
+  @nspemit %#=[rpc(Contract.submit,%0)]

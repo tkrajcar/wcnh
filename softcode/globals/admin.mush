@@ -103,3 +103,21 @@
 
 -
 &fn.acheck #115=[setq(m,[ansi(hb,>)] [ansi(h,[name(%4)])] [switch(%0,/private,privately%b)]+checks [ansi(h,name(%1))]'s [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1,%qm),nsremit(loc(%1),%qm)[nscemit(+RP,%qm,1)])]
+-
+&cmd.contract/new #115=$contract/new:
+  @nspemit %#=[rpc(Contract.create_new)]
+-
+&cmd.contract/title #115=$contract/title *:
+  @nspemit %#=[rpc(Contract.set_title,%0)]
+-
+&cmd.contract/date #115=$contract/date * * *:
+  @nspemit %#=[rpc(Contract.set_date,%0,%1,%2)]
+-
+&cmd.contract/background #115=$contract/background *:
+  @nspemit %#=[rpc(Contract.set_background,%0)]
+-
+&cmd.contract/question #115=$contract/question *=*:
+  @nspemit %#=[rpc(Contract.set_question,%0,%1)]
+-
+&cmd.contract/publish #115=$contract/publish:
+  @nspemit %#=[rpc(Contract.publish)]
