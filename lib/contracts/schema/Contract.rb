@@ -4,7 +4,7 @@ module Contract
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    field :number, :type => Integer, :default => lambda {Counters.next("ticket")}
+    field :number, :type => Integer, :default => lambda {Counters.next("contract")}
     index :number, :unique => true
     field :title, :type => String, :default => ""
     field :background, :type => String, :default => ""
