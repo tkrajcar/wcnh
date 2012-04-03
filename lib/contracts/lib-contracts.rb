@@ -5,11 +5,11 @@ module Contract
 
   def self.list
     ret = titlebar("Enigma Sector Procurement: Open & Recently Closed Contracts") + "\n"
-    ret << "  #### #{'Title'.ljust(30)} Closes".cyan + "\n"
+    ret << "  #### #{'Title'.ljust(50)} Closes".cyan + "\n"
     criteria = Contract.where(:close.gt => 1.week.ago)
     criteria = criteria.where(published: true) unless R.orflags(R["enactor"],"Wr").to_bool
     criteria.desc(:close).each do |contract|
-      ret << "  #{contract.number.to_s.rjust(4).bold.yellow} #{contract.title.ljust(30).bold} #{contract.close_string} #{contract.published ? "" : "UNPUBLISHED".bold.red}\n"
+      ret << "  #{contract.number.to_s.rjust(4).bold.yellow} #{contract.title.ljust(50).bold} #{contract.close_string} #{contract.published ? "" : "UNPUBLISHED".bold.red}\n"
     end
     ret << "\n  Use #{'contract <number>'.bold} to view details of an individual contract.\n"
     ret << footerbar
