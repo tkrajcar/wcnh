@@ -996,7 +996,7 @@
 -
 &FN.LOAD.SHIP #208=
   switch(
-        [match(%0,%1)]
+        [not(match(%0,%1))]
         [spacesys(isship,%0)]
         [spacesys(hasbay,%0)]
         [spacesys(isdocked,%0)]
