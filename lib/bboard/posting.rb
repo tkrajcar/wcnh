@@ -45,13 +45,13 @@ module BBoard
     
     return "> ".bold.red + "You do not have a bbpost in progress." if user.draft.nil?
     
-    category = Category.where(:id => user.draft.category_id)
+    category = Category.where(:_id => user.draft.category_id).first
     
     ret = titlebar("BB Post in Progress") + "\n"
     ret << "Group: #{category.name}" + "\n"
     ret << "Title: #{user.draft.title}" + "\n"
     ret << footerbar + "\n"
-    ret << user.draft.body + "\n"
+    ret << (user.draft.body.nil? ? "" : user.draft.body) + "\n"
     ret << footerbar
     
     return ret
@@ -74,7 +74,7 @@ module BBoard
       return "> ".bold.red + "Your post is empty.  Please add text with the '+bbwrite <text>' command or discard the posting with the '+bbtoss' command."
     end
     
-    category = Category.where(:id => user.draft.category_id)
+    category = Category.where(:_id => user.draft.category_id).first
     
     ret = post(user.id, category.name, user.draft.title, user.draft.body)
     user.draft.destroy
