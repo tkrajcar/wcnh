@@ -2,10 +2,10 @@
 This is the admin-only help for WC:NH. 
  
   PAGES:
- 
-  +acheck        COMBAT         +DOSSIER       ECON           +FACTION       
-  +PFILE         +RP            +SPACE         +TICKET        WANTED         
-  +ZONE 
+
+  +acheck        COMBAT         CONTRACT       +DOSSIER       ECON           
+  +FACTION       +PFILE         +RP            +SPACE         +TICKET        
+  WANTED         +ZONE  
 & +DOSSIER
   This command allows you to make notes about IC matters relating to characters.
   Plot hooks that should be used, IC loans, or anything else related to a chara-
@@ -94,3 +94,13 @@ everyone in the room, just like a normal +check.
 
 Normally players should run +check themselves in scenes, to discourage people
 whining about bad rolls.
+& CONTRACT
+contract/new - start working on a new contract
+contract/date <y m d> - set the OOC close-to-new-responses date
+contract/title <title> - set contract's title
+contract/background <text> - set the contract's background
+contract/question <#>=<text> - set the contract's questions
+contract/publish - publish a contract and enable it for bids (posts for you)
+contract/award <contract>=<org/individual name> - award contract (posts for you)
+contract/responses <contract> - View responses of a contract
+contract/response/view <contract>=<response> - View an individual's response

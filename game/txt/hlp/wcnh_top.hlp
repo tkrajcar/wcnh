@@ -25,10 +25,11 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
  
   +911           ACCOUNT        +BBOARD        +bg            CALENDAR       
   CARGO          cash           CHARGEN        COMBAT         COMMS          
-  FACTIONS       +finger        +guides        +LOG           +map           
-  +ooc           pay            PLACES         put down       race           
-  +RP             +set           SPACE          +staff         +TICKET        
-  time           WANTED         +where         +who           +XP  
+  CONTRACT       FACTIONS       +finger        +guides        +LOG           
+  +map           +ooc           pay            PLACES         put down       
+  race           RP             +set           SPACE          +staff         
+  +TICKET        time           WANTED         +where         +who           
+  +XP    
 & wanted
   wanted
   wanted <entry number>
@@ -59,4 +60,27 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   +log/on - Re-enable logging.
   +log/last - View the last 5 poses you've seen, whether yours or not.
   +log/last page <#> - View more pages of poses you've seen.
+& contract
+  The contract system represents the IC process that both the Consortium and
+  Commonwealth (unified under 'Enigma Sector Procurement') go through when they
+  have large jobs that need to be handled by an outside contractor. It's similar
+  to many real-world 'RFP'/procurement processes.
 
+  The contract system is used for all sorts of contract jobs, big and small.
+
+  Every contract has both background information and a set of questions. To bid
+  on a contract, you need to answer all of the questions on behalf of yourself
+  or your org, and then submit the response prior to the contract closing to new
+  bids. Responses will not be considered until they are submitted.
+
+  Contracts will be awarded within a few days of their close date, and the
+  "winner" is normally announced publically via the Procurement +bboard.
+
+  Commands:
+  contract/list - List all open and recently closed contracts.
+  contract/view <job #> - View details of a contract.
+  contract/answer <job #>/<question #>=<answer> - Record your answer to a 
+                                                  contract question.
+  contract/response <job #> - View your response to a contract.
+  contract/submit <job #> - Submit your completed response. Once submitted, you
+                            cannot change your answers.
