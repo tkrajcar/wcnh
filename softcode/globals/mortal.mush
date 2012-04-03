@@ -376,8 +376,11 @@
 &cmd.contract/list #15=$contract/list:
   @nspemit %#=[rpc(Contract.list)]
 -
-&cmd.contract/respond #15=$contract/respond *:
-  @nspemit %#=[rpc(Contract.respond,%0)]
+&cmd.contract/view #15=$contract *:
+  @nspemit %#=[rpc(Contract.view,%0)]
+-
+&cmd.contract/response #15=$contract/response *:
+  @nspemit %#=[rpc(Contract.response,%0)]
 -
 &cmd.contract/answer #15=$contract/answer */*=*:
   @nspemit %#=[rpc(Contract.answer,%0,%1,%2)]

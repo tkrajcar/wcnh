@@ -7,8 +7,12 @@ module Contract
     self.list
   end
 
-  def self.pj_respond(job)
-    self.respond(job)
+  def self.pj_view(contract)
+    self.view(contract)
+  end
+
+  def self.pj_response(contract)
+    self.response(contract)
   end
 
   def self.pj_answer(job,question,answer)
@@ -19,7 +23,7 @@ module Contract
     self.submit(job)
   end
 
-  def self.pj_new
+  def self.pj_create_new
     self.create_new
   end
 
@@ -41,5 +45,17 @@ module Contract
 
   def self.pj_publish
     self.publish
+  end
+
+  def self.pj_award(contract,firm)
+    self.award(contract,firm)
+  end
+
+  def self.pj_responses(contract)
+    self.responses(contract)
+  end
+  
+  def self.pj_response_view(contract,response)
+    self.response_view(contract,response)
   end
 end

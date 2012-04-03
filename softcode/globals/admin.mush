@@ -121,3 +121,12 @@
 -
 &cmd.contract/publish #115=$contract/publish:
   @nspemit %#=[rpc(Contract.publish)]
+-
+&cmd.contract/award #115=$contract/award *=*:
+  @nspemit %#=[rpc(Contract.award,%0,%1)]
+-
+&cmd.contract/responses #115=$contract/responses *:
+  @Nspemit %#=[rpc(Contract.responses,%0)]
+-
+&cmd.contract/response/view #115=$contract/response/view *=*:
+  @nspemit %#=[rpc(Contract.response_view,%0,%1)]

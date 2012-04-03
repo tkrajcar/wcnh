@@ -4,127 +4,177 @@ module Contract
   R = PennJSON::Remote
 
   def self.list
-    d = Contract.where(:close.gt => 1.week.ago).desc(:close)
-
-    ret = titlebar("Enigma Sector Procurement: Open/Recently Cosed Contracts") + "\n"
-    d.notes.desc("created_at").skip(20 * (page.to_i - 1)).limit(20).each do |note|
-      ret << "#{R.penn_name(note.author).white.bold} at #{note.created_at.strftime("%m/%d/%y %H:%M").bold}: " .cyan
-     ret << note.text << "\n"
+    ret = titlebar("Enigma Sector Procurement: Open & Recently Closed Contracts") + "\n"
+    ret << "  #### #{'Title'.ljust(30)} Closes".cyan + "\n"
+    criteria = Contract.where(:close.gt => 1.week.ago)
+    criteria = criteria.where(published: true) unless R.orflags(R["enactor"],"Wr").to_bool
+    criteria.desc(:close).each do |contract|
+      ret << "  #{contract.number.to_s.rjust(4).bold.yellow} #{contract.title.ljust(30).bold} #{contract.close_string} #{contract.published ? "" : "UNPUBLISHED".bold.red}\n"
     end
+    ret << "\n  Use #{'contract <number>'.bold} to view details of an individual contract.\n"
     ret << footerbar
     return ret
   end
 
-  def self.add(object,content)
-    dbref = R.locate(R["enactor"],object,"PTFailmny")
-    return "> ".bold + "I can't find that object." if dbref == "#-1"
-    return "> ".bold + "Multiple matches - be more specific or use the dbref." if dbref == "#-2"
-    d = Dossier.find_or_create_by(id: dbref)
-    R.u("#65/fn.new_dossier_note",dbref,R["enactor"],content)
-    d.add_note(content,R["enactor"])
-    "> ".bold + "You add a note to the dossier for #{R.penn_name(dbref).bold}."
-  end
-
-  def self.wanted_list
-    list = Wanted.desc(:amount)
-    list = list.where(visible:true) unless R.orflags(R["enactor"],"Wr").to_bool
-    return "> ".bold + "The wanted list is currently empty." unless list.count > 0
-    ret = titlebar("Wanted List") + "\n"
-    ret << "  #### #{'Name'.ljust(30)} Bounty Amount  Updated".cyan + "\n"
-    list.each do |wanted|
-      ret << "  "
-      ret << wanted._id.rjust(4).bold.yellow
-      ret << " "
-      ret << wanted.name.bold.ljust(38)
-      ret << wanted.amount.to_s.gsub(/(\d)(?=\d{3}+(?:\.|$))(\d{3}\..*)?/,'\1,\2').rjust(14).bold.cyan
-      ret << wanted.updated_at.strftime("  %m/%d/%y")
-      ret << " (INVISIBLE)".bold.red unless wanted.visible
-      ret << "\n"
+  def self.view(contract)
+    c = Contract.where(number: contract)
+    return "> ".bold + "That isn't a valid contract number." if c.count == 0
+    c = c.first
+    return "> ".bold + "That isn't a valid contract number." unless c.published || R.orflags(R["enactor"],"Wr").to_bool
+    ret = titlebar("Enigma Sector Procurement: Contract #{c.number}") + "\n"
+    ret << middlebar("BACKGROUND") + "\n"
+    ret << c.background
+    ret << "\n"
+    ret << middlebar("QUESTIONS TO BE ANSWERED BY RESPONDENTS") + "\n"
+    c.questions.asc(:number).each do |q|
+      ret << "#{q.number.to_s.bold}: #{q.text}\n"
     end
-    ret << "\n  Use #{'wanted <number>'.bold} to view more details of an entry.\n"
+    ret << middlebar("STATUS") + "\n"
+    if c.close > DateTime.now
+      ret << "Qualified individuals and organizations are encouraged to submit bids on this contract by its closing date of #{c.close.strftime('%m/%d/%y').bold}.\n"
+    else
+      ret << "This contract has been closed; no new responses are accepted."
+    end
     ret << footerbar
   end
 
-  def self.wanted_view(object)
-    d = Wanted.where(_id: object)
-    return "> ".bold + "That isn't a valid entry on the wanted list." if d.count == 0
-    d = d.first
-    return "> ".bold + "That isn't a valid entry on the wanted list." unless d.visible || R.orflags(R["enactor"],"Wr").to_bool
-    ret = titlebar("Wanted List Entry #{object}") + "\n"
-    ret << "Name:".ljust(30).cyan
-    ret << d.name.bold
-    ret << "\n"
-    ret << "Bounty Amount:".ljust(30).cyan
-    ret << d.amount.to_s.gsub(/(\d)(?=\d{3}+(?:\.|$))(\d{3}\..*)?/,'\1,\2').bold.yellow
-    ret << "\n"
-    ret << "Contact:".ljust(30).cyan
-    ret << d.contact
-    ret << "\n"
-    ret << "Info:".cyan
-    ret << "\n"
-    ret << d.info
-    ret << "\n"
-    ret << "                 THIS WANTED ENTRY IS NOT VISIBLE TO THE PUBLIC".bold.red + "\n" unless d.visible
+  def self.create_new
+    c = Contract.new
+    c.save
+    Logs::log_syslog("CONTRACTNEW","#{R.penn_name(R["enactor"])} created new contract #{c.number}.")
+    R.attrib_set("#{R["enactor"]}/CHAR`CONTRACT", c.number.to_s)
+    return "> ".bold  + "New contract #{c.number.to_s.bold} created."
+  end
+
+  def self.set_title(title)
+    c = Contract.where(number: R.xget(R["enactor"],"CHAR`CONTRACT")).first
+    c.title = title
+    c.save
+    return "> ".bold + "Set contract #{c.number} title to #{title}."
+  end
+
+  def self.set_background(background)
+    c = Contract.where(number: R.xget(R["enactor"],"CHAR`CONTRACT")).first
+    c.background = background
+    c.save
+    return "> ".bold + "Set contract #{c.number} background to #{background}."
+  end
+
+  def self.set_date(year,month,day)
+    c = Contract.where(number: R.xget(R["enactor"],"CHAR`CONTRACT")).first
+    c.close = Date.new(year.to_i,month.to_i,day.to_i)
+    c.save
+    return "> ".bold + "Set contract #{c.number} date to #{c.close.strftime('%m/%d/%y')}."
+  end
+
+  def self.set_question(question,text)
+    c = Contract.where(number: R.xget(R["enactor"],"CHAR`CONTRACT")).first
+    q = c.questions.find_or_create_by(number: question.to_i)
+    q.text = text
+    q.save
+    q.delete if text == ""
+    c.save
+    return "> ".bold + "Set contract #{c.number} question #{question} to #{text}."
+  end
+
+  def self.publish
+    c = Contract.where(number: R.xget(R["enactor"],"CHAR`CONTRACT")).first
+    return "> ".bold + "This contract has already been published!" if c.published
+    c.published = true
+    c.save
+    R.u("#65/fn.contract_publish",c.number.to_s,c.title,c.close.strftime('%m/%d/%y'))
+    return "> ".bold + "Contract #{c.number} published. +bbpost will occur automatically."
+  end
+
+  def self.response(contract)
+    c = Contract.where(number: contract)
+    return "> ".bold + "That isn't a valid contract number." if c.count == 0
+    c = c.first
+    return "> ".bold + "That isn't a valid contract number." unless c.published || R.orflags(R["enactor"],"Wr").to_bool
+    r = Response.where(author: R["enactor"], contract_id: c._id)
+    return "> ".bold + "You have not started a response to that contract yet! Use contract/answer first." unless r = r.first
+    ret = titlebar("Enigma Sector Procurement: Your Response To Contract #{c.number}") + "\n"
+    c.questions.asc(:number).each do |q|
+      ret << "#{q.number.to_s.bold}: #{q.text.cyan}\n"
+      a = r.answers.where(number: q.number).first
+      ret << (a.nil? ? "Not Yet Answered".bold.red : a.text) + "\n"
+    end
+      ret << (r.submitted ? "This response has been submitted and can no longer be changed.".bold : "You have not yet submitted this response.".bold.yellow) + "\n"
     ret << footerbar
   end
 
-  def self.wanted_set(object,field,value)
-    d = Wanted.find_or_initialize_by(id: object)
-    field.downcase!
-    fields = %w(amount info name contact visible)
-    return "> ".bold + "Invalid field. Valid fields are: #{fields.to_sentence}." unless fields.include?(field)
-    if field == "visible"
-      return "> ".bold + "Visible must be set to true or false." unless value == "true" || value == "false"
-      value = value.to_bool
+  def self.answer(contract,question,answer)
+    c = Contract.where(number: contract)
+    return "> ".bold + "That isn't a valid contract number." if c.count == 0
+    c = c.first
+    return "> ".bold + "That contract has not been published." unless c.published
+    return "> ".bold + "That contract is no longer open to new bids." unless DateTime.now < c.close
+    r = Response.find_or_create_by(author: R["enactor"], contract_id: c._id)
+    return "> ".bold + "You've already submitted your response to that contract!" if r.submitted
+    q = c.questions.where(number: question.to_i).first
+    a = r.answers.find_or_create_by(number: question.to_i)
+    a.text = answer
+    a.save
+    a.delete if answer == ""
+    r.save
+    return "> ".bold + "Set answer to question #{question} on contract #{c.number} to #{answer}."
+  end
+
+  def self.submit(contract)
+    c = Contract.where(number: contract)
+    return "> ".bold + "That isn't a valid contract number." if c.count == 0
+    c = c.first
+    return "> ".bold + "That contract has not been published." unless c.published
+    return "> ".bold + "That contract is no longer open to new bids." unless DateTime.now < c.close
+    r = Response.find_or_create_by(author: R["enactor"], contract_id: c._id)
+    return "> ".bold + "You've already submitted your response to that contract!" if r.submitted
+
+    r.submitted = true
+    r.save
+    Logs::log_syslog("CONTRACTNEW","#{R.penn_name(R["enactor"])} submitted a response to contract #{c.number}.")
+    return "> ".bold + "You submit your response for contract #{c.number}."
+  end
+
+  def self.award(contract,firm)
+    c = Contract.where(number: contract)
+    return "> ".bold + "That isn't a valid contract number." if c.count == 0
+    c = c.first
+    return "> ".bold + "That contract has not been published." unless c.published
+    return "> ".bold + "That contract has not closed yet." unless DateTime.now > c.close
+    return "> ".bold + "That contract has already been awarded." unless c.awarded_to = ""
+    c.awarded_to = firm
+    c.save
+
+    R.u("#65/fn.contract_award",c.number.to_s,c.title,firm)
+    return "> ".bold + "You award contract #{c.number} to #{firm}. +bbpost will happen automatically."
+  end
+
+  def self.responses(contract)
+    c = Contract.where(number: contract)
+    return "> ".bold + "That isn't a valid contract number." if c.count == 0
+    c = c.first
+    return "> ".bold + "That contract has not been published." unless c.published
+    ret = titlebar("Enigma Sector Procurement: Responses to Contract #{c.number}") + "\n"
+
+    c.responses.where(submitted: true).each do |response|
+      ret << "#{response.author.rjust(6).bold} Submitted by #{R.penn_name(response.author)}\n"
     end
-    if field == "amount"
-      return "> ".bold + "Amounts must be positive integers." unless value.to_i > 0
-      value = value.to_i
+    ret << footerbar()
+  end
+
+  def self.response_view(contract,response)
+    c = Contract.where(number: contract)
+    return "> ".bold + "That isn't a valid contract number." if c.count == 0
+    c = c.first
+    return "> ".bold + "That contract has not been published." unless c.published
+    r = Response.where(author: response, contract_id: c._id)
+    return "> ".bold + "Cannot find that response." unless r = r.first
+    ret = titlebar("Enigma Sector Procurement: #{R.penn_name(r.author)}'s Response To Contract #{c.number}") + "\n"
+    c.questions.asc(:number).each do |q|
+      ret << "#{q.number.to_s.bold}: #{q.text.cyan}\n"
+      a = r.answers.where(number: q.number).first
+      ret << (a.nil? ? "Not Yet Answered".bold.red : a.text) + "\n"
     end
-
-    d[field] = value
-    d.save
-    Logs::log_syslog("WANTED","#{R.penn_name(R["enactor"])} set #{field} on #{object} (#{d.name}) to #{value.to_s}.")
-    "> ".bold + "Updated #{field.bold} to #{value.to_s} for wanted item #{object.bold} (#{d.name.bold})." 
-  end
-
-  def self.wanted_delete(object)
-    d = Wanted.where(_id: object).first
-    return "> ".bold + "That isn't a valid entry on the wanted list." if d.nil?
-    d.delete
-    Logs::log_syslog("WANTED","#{R.penn_name(R["enactor"])} deleted #{object} (#{d.name}).")
-    return "> ".bold + "Deleted wanted entry #{object.bold}."
-  end
-
-  class Dossier
-    include Mongoid::Document
-    include Mongoid::Timestamps
-    identity :type => String # dbref
-
-    embeds_many :notes, :class_name => "Dossier::Note"
-
-    def add_note(note, author)
-      self.notes.create(:author => author, :text => note)
-    end
-  end
-
-  class Note
-    include Mongoid::Document
-    include Mongoid::Timestamps
-    embedded_in :dossier, :class_name => "Dossier::Dossier"
-    field :author, :type => String
-    field :text, :type => String
-  end
-
-  class Wanted
-    include Mongoid::Document
-    include Mongoid::Timestamps
-
-    identity :type => String # dbref
-    field :name, :type => String # we store the name because a player might re-@name to avoid a bounty.
-    field :amount, :type => Integer, :default => 0
-    field :info, :type => String, :default => ""
-    field :contact, :type => String, :default => ""
-    field :visible, :type => Boolean, :default => false
+    ret << footerbar
   end
 end
