@@ -332,7 +332,7 @@
   @nspemit %#=
     [titlebar(Universe Map)]%r
     [u(data.map)]%r
-    [ansi(hy,center(For a graphical map\, see http://www.wcmush.com/systems/,79))]%r
+    [ansi(hy,center(For a graphical map\, see http://wcmush.com/pages/inhabited-systems,79))]%r
     [footerbar()]
 -
 
