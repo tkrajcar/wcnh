@@ -78,7 +78,7 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
 
   Commands:
   contract/list - List all open and recently closed contracts.
-  contract/view <job #> - View details of a contract.
+  contract <job #> - View details of a contract.
   contract/answer <job #>/<question #>=<answer> - Record your answer to a 
                                                   contract question.
   contract/response <job #> - View your response to a contract.
