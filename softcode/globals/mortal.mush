@@ -85,10 +85,10 @@
                     not(xget(zone(itext(0)),IS.HIDDEN)),
                     [if(and(t(zone(itext(0))),not(spacesys(isship,itext(0)))),[ansi(y,name(zone(itext(0))))]\,%b)]
                     [ansi(yh,name(itext(0)))] - 
-                    [itemize(iter(lvplayers(itext(0)),if(not(hasflag(itext(0),unfindable)),ansi(ifelse(t(get(itext(0)/char`rp)),hg,n),name(itext(0)))),,|),|)]
+                    [itemize(iter(lvplayers(itext(0)),if(not(hasflag(itext(0),unfindable)),ansi(switch(t(get(itext(0)/char`rp))[gt(idle(itext(0)),3600)],?1,hx,1?,hg,n),name(itext(0)))),,|),|)]
                     )]
                 ,,%r)]%r%r
-            [ansi(hg,*)] - [ansi(hg,Highlighted)] players are looking for RP.%r
+            [ansi(hg,*)] - [ansi(hg,Highlighted)] players are looking for RP. [ansi(hx,Darkened)] players are idle >1hr.%r
             [footerbar()]
 -
 &SORT.WHERE #15=
@@ -102,10 +102,10 @@
 @set #15/cmd.+who2=regexp
 -
 &cmd.+who #15=$^[\+@]?who$:
-  @nspemit %#=u(fn.who,filter(filter.unidle,lwho(%#)),1)
+  @nspemit %#=u(fn.who,filter(filter.unidle,lports(%#)),1)
 -
 &cmd.+who2 #15=$^[\+@]?who (.+)$:
-  @nspemit %#=[setq(0,%1)][u(fn.who,filterbool(filter.name,lwho(%#)),0)]
+  @nspemit %#=[setq(0,%1)][u(fn.who,filterbool(filter.name,lports(%#)),0)]
 -
 
 &fn.who #15=
@@ -114,7 +114,7 @@
   %b[ansi(r,--- [repeat(-,25)] [repeat(-,8)] [repeat(-,8)] [repeat(-,29)])]%r
   [map(map.+who,%0, ,%r)]%r
   [if(
-    and(%1,setr(i,filter(filter.idle,lwho(%#)))),
+    and(%1,setr(i,filter(filter.idle,lports(%#)))),
     %b[ansi(r,repeat(-,77))]%r
     %b[ansi(y,Idle:)] [align(70,map(map.+who.short,sortby(sort.idle,%qi), ,\,%b), , ,%r[space(7)])]%r
   )]
@@ -123,13 +123,13 @@
   [footerbar(words(lwho(%#)) players online)]
 -
 &map.+who #15=
-  [ifelse(setr(LFRP,t(get(%0/char`rp))),ansi(yh,!),%b)]
+  [setq(p,player(%0))]
+  [ifelse(setr(LFRP,t(get(%qp/char`rp))),ansi(yh,!),%b)]
   [rjust(switch(
-            [orflags(%0,Wr)]
-            [t(hidden(%0))]
-            [t(default(%0/char`approved,0))]
-            [hasflag(%0,IC)],
-            
+            [orflags(%qp,Wr)]
+            [t(hidden(%qp))]
+            [t(default(%qp/char`approved,0))]
+            [hasflag(%qp,IC)],
             10*,[ansi(hy,ADM)],
             11*,[ansi(hx,HID)],
             000*,[ansi(hm,NEW)],
@@ -138,18 +138,19 @@
             ),3)][ifelse(%q<LFRP>,ansi(yh,!),%b)]
   [align(
       25 >8 >8 29,
-      [ansi(switch([hidden(%0)][orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))][if(hasattr(%0,alias),\([get(%0/alias)]\))],
+      [ansi(switch([hidden(%qp)][orflags(%qp,Wr)],1*,hx,01,hy,h),name(%qp))][if(hasattr(%qp,alias),\([get(%qp/alias)]\))],
       ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),
       extract(timestring(conn(%0)),1,2),
       mid(
         ifelse(orflags(%#,Wr),
-          [ansi(hc,rjust(loc(%0),4))] [ansi(w,[name(loc(%0))])][if(zone(loc(%0)),-[ansi(c,name(zone(loc(%0))))])],
-          doing(%0)
+          [ansi(hc,rjust(loc(%qp),4))] [ansi(w,[name(loc(%qp))])][if(zone(loc(%qp)),-[ansi(c,name(zone(loc(%qp))))])],
+          doing(%qp)
       ),0,29)
   )]
 -
 &map.+who.short #15=
-  ansi(switch(hidden(%0)[orflags(%0,Wr)],1*,hx,01,hy,h),name(%0))\(
+  [setq(p,player(%0))]
+  ansi(switch(hidden(%qp)[orflags(%qp,Wr)],1*,hx,01,hy,h),name(%qp))\(
   [squish(first(timestring(idlesecs(%0))))]
   \)
 -
@@ -159,7 +160,7 @@
 -
 &filter.idle #15=gt(idlesecs(%0),3600)
 -
-&filter.name #15=match(name(%0),%q0*,|)
+&filter.name #15=match(name(player(%0)),%q0*,|)
 -
 &sort.idle #15=sub(idlesecs(%0),idlesecs(%1))
 -
