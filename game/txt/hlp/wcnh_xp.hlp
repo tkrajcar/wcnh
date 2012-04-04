@@ -1,3 +1,4 @@
+& xp
 & +xp
   On WCNH, players earn eXperience Points (XP) to help improve their character.
 
@@ -7,7 +8,6 @@
 
   Your current available and total XP are listed on '+sheet'. You can also use
   '+xp' to view the 15 most recent XP awards you've received.
-
 & +xp earning
   Players earn XP one of three ways:
 
@@ -21,7 +21,6 @@
 
   3) Players can receive XP on a one-off basis by admin award for participating
   in special events, helping with OOC/community tasks, ands o on.
-
 & +xp spending
   XP can be spent on improving your character. While other ways of spending XP
   are soon to come, the primary use for XP right at the moment is to improve
@@ -36,7 +35,6 @@
   Any attribute raise: 160 XP. Skills cost 20 XP times the old value of the
   skill (with a minimum of 20 XP). So +0 to +1 costs 20, +1 to +2 20, +2 to +3
   40, and so on.
-
 & +nom
   +nom
   +nom <player>=<reason>
@@ -53,4 +51,3 @@
   carefully. You will receive between 1 and 5 +noms to give out every week,
   depending on your level of RP activity.
 See also: +xp, +xp earning
-

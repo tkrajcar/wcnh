@@ -18,6 +18,7 @@
 
   For more information on each of these, see 'help comms handles', 'help comms
   messages', and 'help comms channels'.
+& handles
 & comms handles
   You can register a limited number of handles. Once you register a handle,
   nobody else can register it, but if you unregister it, it becomes available
@@ -33,9 +34,11 @@
   handle/register <handle> - register a new handle.
   handle/unregister <handle> - unregister a handle.
   handle/use <handle> - set your default handle, used for ALL outbound tight-
-    beam messages. 
- 
+    beam messages.
+
   See also: 'help comms messages' and 'help comms channels'
+& message
+& messages
 & comms messages
   Tightbeam messages allow you to send private messages to an individual or a
   small list of individuals. When you send a tightbeam message, it's sent
