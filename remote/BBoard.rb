@@ -16,8 +16,8 @@ module BBoard
     self.index(dbref, cat)
   end
   
-  def self.pj_read(cat, num)
-    self.read(cat, num)
+  def self.pj_read(dbref, cat, num)
+    self.read(dbref, cat, num)
   end
   
   def self.pj_post(author, cat, sub, txt)
@@ -50,5 +50,13 @@ module BBoard
   
   def self.pj_category_config(cat, opt, val)
     self.category_config(cat, opt, val)
+  end
+  
+  def self.pj_join(dbref, cat)
+    self.join(dbref, cat)
+  end
+  
+  def self.pj_leave(dbref, cat)
+    self.leave(dbref, cat)
   end
 end

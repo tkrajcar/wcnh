@@ -4,8 +4,10 @@ module BBoard
   
   def self.post(author, cat, sub, txt)
     category = FindCategory(cat)
+    user = User.find_or_create_by(:id => author)
+    subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." if category.nil?
+    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." if subscription.nil?
     
     post = category.posts.create(:author => author, :title => sub, :body => txt)
     
@@ -18,8 +20,9 @@ module BBoard
   def self.draft_start(dbref, cat, sub)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => dbref)
+    subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." if category.nil?
+    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." if subscription.nil?
     return "> ".bold.red + "You are already in the middle of writing a bbpost." unless user.draft.nil?
     
     draft = user.create_draft(:category_id => category.id, :title => sub)

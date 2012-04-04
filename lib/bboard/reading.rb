@@ -4,12 +4,14 @@ module BBoard
   
   def self.list(dbref)
     categories = Category.all
+    user = User.find_or_create_by(:id => dbref)
     
     ret = titlebar("Available Bulletin Board Groups") + "\n"
     ret << "##   Group Name".ljust(37).yellow + "Member?".ljust(15).yellow + "Timeout (in days)".yellow + "\n"
     ret << footerbar + "\n"
     categories.each do |i|
-      ret << i.num.to_s.ljust(5) + i.name.ljust(33) + "No".ljust(20) + i.timeout.to_s + "\n"
+      ret << i.num.to_s.ljust(5) + i.name.ljust(33)
+      ret << (user.subscriptions.where(:category_id => i.id).first.nil? ? "No" : "Yes").ljust(20) + i.timeout.to_s + "\n"
     end
     
     ret << footerbar + "\n"
@@ -18,16 +20,18 @@ module BBoard
   end
   
   def self.toc(dbref)
-    categories = Category.all
+    user = User.find_or_create_by(:id => dbref)
     
     ret = titlebar("Categories") + "\n"
     ret << "       Group Name".ljust(37).yellow + "Last Post      # of messages".yellow + "\n"
     ret << footerbar + "\n"
     
-    categories.each do |i|
-      last_post = i.posts.desc(:created_at).first
+    user.subscriptions.each do |i|
+      last_post = i.category.posts.desc(:created_at).first
       last_post = last_post ? last_post.created_at.strftime("%a %b %d") : "Never"
-      ret << i.num.to_s.rjust(2).ljust(7) + i.name.ljust(30) + last_post.ljust(21) + i.posts.count.to_s + "\n"
+      ret << i.category.num.to_s.rjust(2).ljust(7) + i.category.name.ljust(30) + last_post.ljust(21) + i.category.posts.count.to_s
+      ret << " U" if i.read_posts.count < i.category.posts.count
+      ret << "\n"
     end
     
     ret << footerbar + "\n"
@@ -38,9 +42,11 @@ module BBoard
   end
   
   def self.index(dbref, cat)
+    user = User.find_or_create_by(:id => dbref)
     category = FindCategory(cat)
+    subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "You do not subscribe to that Group." if category.nil?
+    return "> ".bold.red + "You do not subscribe to that Group." if subscription.nil?
     
     ret = titlebar("Index: #{category.name}") + "\n"
     ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
@@ -48,7 +54,9 @@ module BBoard
     
     category.posts.each_index do |i|
       post = category.posts[i]
-      ret << "#{category.num}/#{i + 1}".ljust(8) + post.title.ljust(35) + post.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(post.author)
+      ret << "#{category.num}/#{i + 1}".ljust(6)
+      ret << (subscription.read_posts.find_index(post.id).nil? ? "U " : "  ")
+      ret << post.title.ljust(35) + post.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(post.author)
       ret << "\n"
     end
     ret << footerbar
@@ -56,10 +64,12 @@ module BBoard
     return ret
   end
   
-  def self.read(cat, num)
+  def self.read(dbref, cat, num)
     category = FindCategory(cat)
+    user = User.find_or_create_by(:id => dbref)
+    subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "You do not subscribe to that Group." if category.nil?
+    return "> ".bold.red + "You do not subscribe to that Group." if subscription.nil?
     
     post = category.posts[num.to_i - 1]
     
@@ -72,7 +82,33 @@ module BBoard
     ret << post.body + "\n"
     ret << footerbar
     
+    subscription.read_posts << post.id if subscription.read_posts.find_index(post.id).nil?
+    subscription.save
+    
     return ret
+  end
+  
+  def self.join(dbref, cat)
+    category = FindCategory(cat)
+    user = User.find_or_create_by(:id => dbref)
+    subscription = user.subscriptions.where(:category_id => category.id).first
+    
+    return "> ".bold.red + "Sorry, you don't have access to that board." if category.nil?
+    return "> ".bold.red + "You are already a member of #{category.name}." unless subscription.nil?
+    
+    category.subscriptions.create!(:user_id => user.id)
+    return "> ".bold.green + "You have joined the #{category.name} board."
+  end
+  
+  def self.leave(dbref, cat)
+    category = FindCategory(cat)
+    user = User.find_or_create_by(:id => dbref)
+    subscription = user.subscriptions.where(:category_id => category.id).first
+    
+    return "> ".bold.red + "You aren't currently subscribing to Board #{cat}." if category.nil? || subscription.nil?
+    
+    subscription.destroy
+    return "> ".bold.green + "You have removed yourself from the #{category.name} board." 
   end
   
   def self.FindCategory(cat)

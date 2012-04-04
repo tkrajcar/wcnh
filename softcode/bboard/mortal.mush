@@ -13,7 +13,7 @@
 &CMD.+BBREAD_ARG #1139=$@bbread *:@nspemit %#=
   [ifelse(
          strmatch(%0,*/*),
-         rpc(BBoard.read,before(%0,/),after(%0,/)),
+         rpc(BBoard.read,%#,before(%0,/),after(%0,/)),
          rpc(BBoard.index,%#,%0)
          )]
 -
@@ -38,4 +38,10 @@
 -
 &CMD.+BBTOSS #1139=$@bbtoss:@nspemit %#=
   [rpc(BBoard.draft_toss,%#)]
+-
+&CMD.+BBJOIN #1139=$@bbjoin *:@nspemit %#=
+  [rpc(BBoard.join,%#,%0)]
+-
+&CMD.+BBLEAVE #1139=$@bbleave *:@nspemit %#=
+  [rpc(BBoard.leave,%#,%0)]
 -
