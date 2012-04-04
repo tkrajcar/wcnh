@@ -133,10 +133,110 @@
     26 25 26,
     Race: [ansi(h,chargen(get.race,%0))]%r
     Available XP: [ansi(h,default(%0/char`xp`available,0))],
-    Age: [ansi(h,default(%0/char`age,Not Set))]%r
+    Age: [ansi(h,ifelse(hasattrval(%0/char`birthday),chargen(getage,get(%0/char`birthday)),Not Set))]%r
     Total XP: [ansi(h,default(%0/char`xp`total,0))],
     Birthday: [ansi(h,default(%0/char`birthday,Not Set))]
   )]%r
   [middlebar(ATTRIBUTES)]%r[align(26 25 26,u(#112/subfn.attrformat,rea,%0),u(#112/subfn.attrformat,per,%0),u(#112/subfn.attrformat,wil,%0))]%r[align(26 25 26,u(#112/subfn.attrformat,str,%0),u(#112/subfn.attrformat,agi,%0),u(#112/subfn.attrformat,hea,%0))]%r[middlebar(SKILLS)]%r[align(26 25 26,[u(#112/subfn.skillgroupformat,Athletic,%0)]%r%r[u(#112/subfn.skillgroupformat,Social,%0)],u(#112/subfn.skillgroupformat,Combat,%0)%r%r[u(#112/subfn.skillgroupformat,Knowledge,%0)],u(#112/subfn.skillgroupformat,Professional,%0)%r%r[u(#112/subfn.skillgroupformat,Outdoor,%0)])]%r[footerbar()]
 -
-
+### UTILITY
+&DOC.GETAGE #112=MMM DD YYYY|Return age indicated by Birthday.
+&FN.GETAGE #112=
+  switch(
+        [t(setr(month,
+               element(
+                      setr(list_months,
+                          Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec),
+                      extract(
+                             %0,
+                             1
+                             ),
+                      |
+                      )
+               ))]
+        [lte(setr(year,
+                 last(%0)
+                 ),
+             setr(icyear,
+                 last(
+                     setr(ictime,
+                         ictime()
+                         )
+                     )
+                 )
+            )]
+        [lte(setr(day,
+                  extract(
+                         %0,
+                         2
+                         )
+                  ),
+                  ifelse(
+                        t(
+                         match(
+                              2,
+                              %q<month>
+                              )
+                         ),
+                        ifelse(
+                              t(
+                               mod(
+                                  %q<year>,
+                                  4
+                                  )
+                               ),
+                               28,
+                               29
+                              ),
+                        ifelse(
+                              t(
+                               match(
+                                    1|3|5|7|8|10|12,
+                                    %q<month>,
+                                    |
+                                    )
+                               ),
+                              31,
+                              30
+                              )
+                        )
+                 )],
+        0??,#-1 BAD MONTH,
+        10?,#-1 BAD YEAR,
+        111,
+           [setq(age,
+                sub(%q<icyear>,%q<year>)
+                )]
+           [switch(
+                  [eq(
+                     %q<month>,
+                     setr(icmonth,
+                         element(
+                                %q<list_months>,
+                                extract(
+                                       %q<ictime>,
+                                       2 
+                                       ),
+                                |
+                                )
+                         )
+                     )]
+                  [gt(
+                    %q<month>,
+                    %q<icmonth>
+                     )]
+                  [lte(
+                     %q<day>,
+                     extract(
+                            %q<ictime>,
+                            3
+                            )
+                     )],
+                  1?0,sub(%q<age>,1),
+                  1?1,%q<age>,
+                  01?,sub(%q<age>,1),
+                  00?,%q<age>,
+                  #-1 SOMETHING IS BROKEN #$
+                  )],
+        #-1 BAD DAY
+        )

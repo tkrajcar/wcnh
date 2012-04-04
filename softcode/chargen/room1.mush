@@ -29,9 +29,14 @@
 &cmd.+setage #40=$+set age *:
   @assert and(gte(setr(0,val(%0)),18),lte(%q0,85))=
     @pemit %#=[ansi(hb,>)] You absolutely cannot be any younger than 18 or older than 85.;
-  @pemit %#=[ansi(hb,>)] Age set to [ansi(h,%q0)] human years.;
-  &char`age %#=%q0;
-  &char`birthday %#=[extract(ictime(),2,2)] [sub(last(ictime()),%q0)]
+  &char`birthday %#=[extract(ictime(),2,2)] [sub(last(ictime()),%q0)];
+  @pemit %#=[ansi(hb,>)] Age set to [ansi(h,%q0)] human years. Your birthday is [ansi(h,get(%#/char`birthday))]. If you'd like to change your birthday, type [ansi(h,+set birthday)] [ansi(c,MMM DD YYYY)], e.g. [ansi(c,+set birthday Mar 11 2671)].;
+-
+&cmd.+setbirthday #40=$+set birthday *:
+  @assert t(setr(a,chargen(getage,%0)))=@nspemit %#=[ansi(hb,>)] That's not a valid date. Be sure to use the format MMM DD YYYY, e.g. [ansi(c,+set birthday Mar 11 2671)].;
+  @assert and(gte(%qa,18),lte(%qa,85))=@nspemit %#=[ansi(hb,>)] you absolutely cannot be any younger than 18 or older than 85. Your chosen birthday makes you [ansi(c,%qa)].;
+  &char`birthday %#=%0;
+  @pemit %#=[ansi(hb,>)] Age set to [ansi(h,%qa)] years. Your birthday is [ansi(h,%0)].
 -
 
 &cmd.+setgender #40=$+set gender *:
