@@ -84,7 +84,7 @@
   @pemit %#=[ansi(hb,>)] Checking character [ansi(h,%n)].;
   @assert get(%#/char`race)=
     @pemit %#=[ansi(hb,>)] You need to set your race.;
-  @assert get(%#/char`age)=
+  @assert get(%#/char`birthday)=
     @pemit %#=[ansi(hb,>)] You need to set your age.;
   @assert match(Male Female,get(%#/sex))=
     @pemit %#=[ansi(hb,>)] You need to set your gender.;
