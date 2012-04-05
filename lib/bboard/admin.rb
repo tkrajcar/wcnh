@@ -16,7 +16,8 @@ module BBoard
     
     options = category.fields.keys[2,category.fields.keys.length]
     return "> ".bold.red + "Invalid config option.  Valid options: " + options.itemize if options.find_index(opt).nil?
-
+    
+    val = nil if (val == "" || val == "none")
     category.update_attributes(opt.to_sym => val)
     return "> ".bold.red + category.errors[opt].join(" ") unless category.valid?
 

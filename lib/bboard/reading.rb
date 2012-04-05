@@ -10,6 +10,8 @@ module BBoard
     ret << "##   Group Name".ljust(37).yellow + "Member?".ljust(15).yellow + "Timeout (in days)".yellow + "\n"
     ret << footerbar + "\n"
     categories.each do |i|
+      R.pemit("#5",i.canread?(dbref).to_s)
+      next unless i.canread?(dbref)
       ret << i.num.to_s.ljust(5) + i.name.ljust(33)
       ret << (user.subscriptions.where(:category_id => i.id).first.nil? ? "No" : "Yes").ljust(20) + i.timeout.to_s + "\n"
     end
@@ -29,7 +31,8 @@ module BBoard
     user.subscriptions.each do |i|
       last_post = i.category.posts.desc(:created_at).first
       last_post = last_post ? last_post.created_at.strftime("%a %b %d") : "Never"
-      ret << i.category.num.to_s.rjust(2).ljust(7) + i.category.name.ljust(30) + last_post.ljust(21) + i.category.posts.count.to_s
+      ret << i.category.num.to_s.rjust(2) + " " + GetSymPermissions(dbref, i.category).ljust(3) + " "
+      ret << i.category.name.ljust(30) + last_post.ljust(21) + i.category.posts.count.to_s
       ret << " U" if i.read_posts.count < i.category.posts.count
       ret << "\n"
     end
@@ -46,7 +49,7 @@ module BBoard
     category = FindCategory(cat)
     subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "You do not subscribe to that Group." if subscription.nil?
+    return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
     ret = titlebar("Index: #{category.name}") + "\n"
     ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
@@ -69,7 +72,7 @@ module BBoard
     user = User.find_or_create_by(:id => dbref)
     subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "You do not subscribe to that Group." if subscription.nil?
+    return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
     post = category.posts[num.to_i - 1]
     
@@ -93,7 +96,7 @@ module BBoard
     user = User.find_or_create_by(:id => dbref)
     subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "Sorry, you don't have access to that board." if category.nil?
+    return "> ".bold.red + "Sorry, you don't have access to that board." unless !category.nil? && category.canread?(dbref)
     return "> ".bold.red + "You are already a member of #{category.name}." unless subscription.nil?
     
     category.subscriptions.create!(:user_id => user.id)
@@ -119,6 +122,21 @@ module BBoard
     end
     
     return category
+  end
+  
+  def self.GetSymPermissions(dbref, category)
+    canwrite = category.canwrite?(dbref)
+    canread = category.canread?(dbref)
+    
+    if (category.permission_type == "announce" && canwrite) then
+      "(-)"
+    elsif (!category.permission_type.nil? && canwrite) then
+      " * "
+    elsif (category.permission_type == "announce") then
+      " - "
+    else
+      "   "
+    end
   end
   
 end

@@ -4,6 +4,10 @@ module BBoard
   PennJSON::register_object(self)
   R = PennJSON::Remote
   
+  def self.pj_test(dbref)
+    self.test(dbref)
+  end
+  
   def self.pj_list(dbref)
     self.list(dbref)
   end
