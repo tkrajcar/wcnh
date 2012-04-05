@@ -10,7 +10,6 @@ module BBoard
     ret << "##   Group Name".ljust(37).yellow + "Member?".ljust(15).yellow + "Timeout (in days)".yellow + "\n"
     ret << footerbar + "\n"
     categories.each do |i|
-      R.pemit("#5",i.canread?(dbref).to_s)
       next unless i.canread?(dbref)
       ret << i.num.to_s.ljust(5) + i.name.ljust(33)
       ret << (user.subscriptions.where(:category_id => i.id).first.nil? ? "No" : "Yes").ljust(20) + i.timeout.to_s + "\n"
