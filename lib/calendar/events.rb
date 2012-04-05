@@ -37,7 +37,13 @@ module Calendar
     ret << "What: ".yellow + event.title.to_s + "\n"
     ret << "When: ".yellow + event.date.new_offset(tz).strftime("%B %d, %Y at %I:%M %p (%Z)") + "\n"
     ret << "Where: ".yellow + event.location.to_s + "\n"
-    ret << "Who: ".yellow + "#{event.participants.count} Registrations" + "\n"
+    ret << "Who: ".yellow + "#{event.participants.count} Registrations "
+    if R.orflags(R["enactor"],"Wr").to_bool then
+      players = []
+      event.participants.each { |j| players << R.penn_name(j) }
+      ret << "(#{players.join(", ")})"
+    end
+    ret << "\n"
     ret << "Event Details: ".yellow + event.info.to_s + "\n"
     ret << footerbar
     ret
