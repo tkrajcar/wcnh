@@ -22,6 +22,13 @@ module BBoard
     return "> ".bold.red + category.errors[opt].join(" ") unless category.valid?
 
     category.save
+    
+    if (opt == 'permission_value' || opt == 'permission_type') then
+      category.subscriptions.each do |i|
+        i.destroy unless category.canread?(i.user.id)
+      end
+    end
+    
     return "> ".bold.green + "'#{opt.capitalize}' option on board '#{category.name}' updated."
   end
    
