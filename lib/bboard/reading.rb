@@ -84,9 +84,10 @@ module BBoard
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
     post = category.posts.where(:parent_id => nil)[num.to_i - 1]
-    replies = category.posts.where(:parent_id => post.id)
     
     return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
+    
+    replies = category.posts.where(:parent_id => post.id)
     
     ret = titlebar(category.name) + "\n"
     ret << "Message: ".yellow + "#{category.num}/#{num}".ljust(17) + "Posted                    Author".yellow + "\n"
