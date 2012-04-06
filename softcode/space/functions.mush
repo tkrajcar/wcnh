@@ -159,6 +159,8 @@
 -
 &DOC.UNLOAD.SHIP #208=ship:victim-ship:enactor-dbref|Checks permissions and unloads victim-ship from ship.
 -
+&DOC.FINDSHIP.ALL #208=ship:ship dbref or string|Locates %1 anywhere by partial string match or dbref verify.
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -852,6 +854,7 @@
 -
 &FN.HAIL #208=
   [spacesys(notify.consoles,%2,[ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] from [ansi(wh,name(%0))]: %3)]
+  [spacesys(notify.consoles,%0,[ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] [ansi(wh,Outgoing)]: %3)]
   [nscemit(Comms,[ansi(yh,HAIL)]-[ansi(wh,name(%0))]\([name(%1)]\)->[ansi(wh,name(%2))]: %3,1)]
 -
 &FN.MANIFEST #208=
@@ -1064,3 +1067,86 @@
                     ),
             0)
          ,#-1)
+-
+&FN.FINDSHIP.ALL #208=
+  firstof(
+          setinter(
+                   %1,
+                   setr(local_list,
+                        setdiff(
+                                lvthings(
+                                         room(%0)
+                                        ),
+                                %0,
+                               )
+                       )
+                  ),
+          ifelse(
+                 setr(list_pos,
+                      element(
+                              iter(
+                                   %q<local_list>,
+                                   name(##),
+                                   ,|
+                                  ),
+                              %1*,
+                              |
+                             )
+                     ),
+                 elements(
+                          %q<local_list>,
+                          %q<list_pos>
+                         ),
+                 0
+                ),
+          setinter(
+                   %1,
+                   setr(full_list,
+                        setdiff(
+                                iter(
+                                     lvthings(get(v(data)/bin.parents)),
+                                     children(itext(0))
+                                    ),
+                                %q<local_list>
+                               )
+                       )
+                  ),
+          ifelse(
+                 setr(list_pos,
+                      element(
+                              iter(
+                                   %q<full_list>,
+                                   name(##),
+                                   ,|
+                                  ),
+                              %1*,
+                              |
+                             )
+                     ),
+                 elements(
+                          %q<full_list>,
+                          %q<list_pos>
+                         ),
+                 0
+                ),
+          #-1
+         )
+-
+&FN.HAIL.WIPE #208=
+  if(
+     hasattrval(%0/data.hailtarget),
+     wipe(%0/data.hailtarget)
+    )
+-
+&FN.HAIL.SET #208=
+  if(
+     spacesys(isship,%0),
+     set(%0,data.hailtarget:%1)
+    )
+-
+&FN.HAIL.GETTARGET #208=
+  ifelse(
+     hasattrval(%0/data.hailtarget),
+     get(%0/data.hailtarget),
+     #-1
+    )

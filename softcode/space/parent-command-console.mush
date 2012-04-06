@@ -74,7 +74,7 @@
   spose <message>|Make a ship pose as if using the 'pose' command.
 -
 &HELP.HAIL #204=
-  hail <contact ID>=<message>|Send a message to a contact.
+  hail <message>|Send a message to your active communications target .
 -
 &HELP.+SCHECK/LIST #204=
   +scheck/list|See a list of valid ship skills.
@@ -84,6 +84,9 @@
 -
 &HELP.TAXI #204=
   taxi <exit>|Taxis a ship through a taxiway.
+-
+&HELP.HAIL/SET #204=
+  hail/set <ship name>|Sets your communications target.
 -
 &CMD.SCAN #204=$scan:
   @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
@@ -203,16 +206,18 @@
                think [spacesys(roster.remove,v(data.ship),%q0)]
               }
 -
-&CMD.HAIL #204=$hail *=*:
-  @switch [or(
-              t(lte(%0,words(setr(2,spacesys(update.report,v(data.ship)))))),
-              t(setr(targetPos,match(iter(%q2,name(itext(0)),,|),%0*,|)))
-              )]=
-
-          0,@nspemit %#=[ansi(rh,>)] Invalid contact.,
-          1,{@nspemit %#=[ansi(gh,>)] Message sent.;
-             think spacesys(hail,v(data.ship),%#,extract(%q2,ifelse(isnum(%0),%0,%q<targetPos>),1),%1)
-            }
+&CMD.HAIL/SET #204=$hail/set *:
+  @assert [gte(strlen(%0),5)]=@nspemit %#=[ansi(rh,>)] You must enter at least the first five characters of the target's name.;
+  @assert [setr(target,spacesys(findship.all,v(data.ship),%0))]={
+    @nspemit %#=[ansi(rh,>)] Target not found.;
+    th [spacesys(hail.wipe,v(data.ship))]
+    };
+  @nspemit %#=[ansi(gh,>)] Target located. Channel available.;
+  th [spacesys(hail.set,v(data.ship),%q<target>)]
+-
+&CMD.HAIL #204=$hail *:
+  @assert [setr(target,spacesys(hail.gettarget,v(data.ship)))]=@nspemit %#=[ansi(rh,>)] You have no communications target.;
+  th [spacesys(hail,v(data.ship),%#,%q<target>,%0)]
 -
 &CMD.SPOSE #204=$spose *:
   @switch [spacesys(isactive,v(data.ship))]=
