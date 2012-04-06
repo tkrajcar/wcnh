@@ -14,7 +14,6 @@ bay              board          hail          intercom      jump
 man              land           load/ship     launch        manifest      
 plot             roster         scan          +scheck       spose
 status           survey         taxi          unload/ship
-
 & BAY
 Syntax: bay/open
         bay/close
@@ -28,43 +27,37 @@ You must be manning one of the ship's consoles.
  
 bay/ships lists ships currently in the bay.
  
-The remote versions of the commands open the bay doors of a remote bay. You must be on the remote ship's roster, and you must be at zero distance.
-
+The remote versions of the commands open the bay doors of a remote bay. You must
+be on the remote ship's roster, and you must be at zero distance.
 & SURVEY
 Syntax: survey <contact ID>
  
 Survey a particular celestial such as a planet or asteroid for some credits, 
 the amount of which is dependent on your science skill.  A ship can only survey
 a particular celestial once every 6 hours.
-
 & STATUS
 Syntax: status
  
 Display useful information about your ship.
-
 & INTERCOM
 Syntax: intercom <message>
  
 In ships with more than one room, this command can be used in any part of the
 ship to send a message to every other room on the ship.
-
 & BOARD
 Syntax: board <ship>
         enter <ship>
   
 Enter a specified landed ship, provided you are on the ship's roster.
-
 & HAIL
 Syntax: hail <contact ID>=<message>
   
 Send a private message to another ship that is visible on sensors.
-
 & JUMP
 Syntax: jump <contact ID>
   
 If the ship is equipped with a jump drive, initiate the jump sequence which
 will propel the ship through a jump node to a new system.
-
 & MAN
 Syntax: man <console>
         use <console>
@@ -72,18 +65,15 @@ Syntax: man <console>
          
 Man or use a console, and subsequently unman it. You cannot man a console that
 someone else is already manning. 
-       
 & LAND
 Syntax: land <contact ID>
  
 Land the ship on a planet or station or in another ship's docking bay, provided
 the target is able to be landed on.
-
 & LAUNCH
 Syntax: launch
  
 Launch the landed ship.
-
 & PLOT
 Syntax: plot/calc <contact ID>
         plot/engage
@@ -100,7 +90,6 @@ The third syntax stops a ship that is in motion.  The ship must be stopped
 before a new course can be plotted.
  
 The fourth syntax will show you your ETA to your current destination.
-
 & ROSTER
 Syntax: roster/add <person>=<status>
         roster/list
@@ -114,7 +103,6 @@ The second syntax displays the current ship's roster.
  
 The third syntax removes a person from the ship's roster.  Only the captain of
 the ship can add or remove people from the roster.
-
 & SCAN
 Syntax: scan
         scan <contact ID>
@@ -123,7 +111,6 @@ The first syntax shows a list of contacts in your current system that are
 visible on sensors.
  
 The second syntax shows detailed information about a specific contact.
-
 & +SCHECK
 Syntax: +scheck/list
         +scheck <skill>
@@ -135,14 +122,12 @@ skills that can be checked.  Unless the private switch is specified, the
 results of the check will be visible to every other ship in the current system.
 For ships with multiple manned consoles, the operator with the highest skill is
 used for the check, regardless of who actually types the command.
-
 & SPOSE
 Syntax: spose <action>
  
 This command works just like the pose command, but allows a person manning a
 ship console to make a pose about the entire ship that will be prefixed by the
 ship's name.  All other ships in the current system will see the spose.
- 
 & MANIFEST
 Syntax: manifest
 
@@ -153,7 +138,6 @@ Syntax: taxi <exit>
 This command will taxi the ship through an exit. The exit must be a taxiway.
  
 Capital ships are too large to taxi.
-
 & LOAD/SHIP
 Syntax: load/ship <ship>
  
@@ -161,7 +145,6 @@ This command will load a ship aboard your ship, if your ship has a
 landing bay. Ships which can be loaded are visible with 'scan' while 
 landed. You must be on the roster of both ships, and bay doors must be 
 open. This command may only be used while landed.
-
 & UNLOAD/SHIP
 Syntax: unload/ship <ship>
  
