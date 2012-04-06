@@ -50,10 +50,15 @@ Syntax: board <ship>
   
 Enter a specified landed ship, provided you are on the ship's roster.
 & HAIL
-Syntax: hail <ship name or contact ID>=<message>
+Syntax: hail <message>
+        hail/set <ship name>
   
-Send a private message to another ship that is visible on sensors. Using the
-name is recommended since contact numbers might change.
+Send a private message to another ship, provided that you have set a
+target. You must enter at least the first five characters of the ship's
+name in order for it to be recognized. 
+ 
+Hails are seen by all players in the same location of the sending or 
+receiving console.
 & JUMP
 Syntax: jump <contact ID>
   
