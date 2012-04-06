@@ -84,6 +84,7 @@ module BBoard
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
     post = category.posts.where(:parent_id => nil)[num.to_i - 1]
+    replies = category.posts.where(:parent_id => post.id)
     
     return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
     
@@ -92,7 +93,11 @@ module BBoard
     ret << post.title.ljust(26) + post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26) + R.penn_name(post.author) + "\n"
     ret << footerbar + "\n"
     ret << post.body + "\n"
-    ret << footerbar
+    if (replies.count > 0) then
+      ret << titlebar("#{replies.count} #{(replies.count == 1 ? 'Reply' : 'Replies')} (#{subscription.unread_replies[post.id].count} Unread)")
+    else
+      ret << footerbar
+    end
     
     subscription.read_posts << post.id if subscription.read_posts.find_index(post.id).nil?
     subscription.save
