@@ -2,14 +2,23 @@ require 'wcnh'
 
 module BBoard
   
-  def self.post(author, cat, sub, txt)
+  def self.post(author, cat, sub, txt, parent=nil)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => author)
+
+    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !category.nil?
+    
     subscription = user.subscriptions.where(:category_id => category.id).first
     
-    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !subscription.nil? && category.canwrite?(dbref)
+    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !subscription.nil? && category.canwrite?(author)
     
     post = category.posts.create(:author => author, :title => sub, :body => txt)
+   
+    if (!parent.nil?) then
+      thread = category.posts.where(:parent_id.ne => nil)[parent.to_i - 1]
+      return "> ".bold.red + "You can't post a reply to that thread." unless !thread.nil?
+      post.parent = thread.id
+    end
     
     return "> ".bold.red + post.errors.values.join(" ") unless post.valid?
     

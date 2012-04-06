@@ -31,8 +31,9 @@ module BBoard
       last_post = i.category.posts.desc(:created_at).first
       last_post = last_post ? last_post.created_at.strftime("%a %b %d") : "Never"
       ret << i.category.num.to_s.rjust(2) + " " + GetSymPermissions(dbref, i.category).ljust(3) + " "
-      ret << i.category.name.ljust(30) + last_post.ljust(21) + i.category.posts.count.to_s
-      ret << " U" if i.read_posts.count < i.category.posts.count
+      ret << i.category.name.ljust(30) + last_post.ljust(21) + i.category.posts.count.to_s + " "
+      ret << "U" if (i.unread_posts.count > 0)
+      ret << "R" if (i.unread_replies.count > 0)
       ret << "\n"
     end
     
@@ -46,6 +47,9 @@ module BBoard
   def self.index(dbref, cat)
     user = User.find_or_create_by(:id => dbref)
     category = FindCategory(cat)
+
+    return "> ".bold.red + "You do not subscribe to that Group." unless !category.nil?
+
     subscription = user.subscriptions.where(:category_id => category.id).first
     
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
@@ -54,12 +58,15 @@ module BBoard
     ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
     ret << footerbar + "\n"
     
-    category.posts.each_index do |i|
-      post = category.posts[i]
-      ret << "#{category.num}/#{i + 1}".ljust(6)
-      ret << (subscription.read_posts.find_index(post.id).nil? ? "U " : "  ")
-      ret << post.title.ljust(35) + post.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(post.author)
+    unread_replies = subscription.unread_replies
+    count = 1
+    category.posts.where(:parent_id => nil).each do |post|
+      ret << "#{category.num}/#{count}".ljust(5)
+      ret << (!unread_replies[post.id].nil? ? "R" : " ")
+      ret << (subscription.read_posts.find_index(post.id).nil? ? "U" : " ")
+      ret << " " + post.title.ljust(35) + post.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(post.author)
       ret << "\n"
+      count += 1
     end
     ret << footerbar
     
@@ -69,11 +76,14 @@ module BBoard
   def self.read(dbref, cat, num)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => dbref)
+
+    return "> ".bold.red + "You do not subscribe to that Group." unless !category.nil?
+
     subscription = user.subscriptions.where(:category_id => category.id).first
     
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
-    post = category.posts[num.to_i - 1]
+    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
     
     return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
     
