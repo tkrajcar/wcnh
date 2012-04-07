@@ -3,7 +3,7 @@ require 'wcnh'
 module BBoard
   
   def self.list(dbref)
-    categories = Category.all
+    categories = Category.all.asc(:num)
     user = User.find_or_create_by(:id => dbref)
     
     ret = titlebar("Available Bulletin Board Groups") + "\n"
@@ -27,7 +27,7 @@ module BBoard
     ret << "       Group Name".ljust(37).yellow + "Last Post      # of messages".yellow + "\n"
     ret << footerbar + "\n"
     
-    user.subscriptions.each do |i|
+    user.subscriptions.sort{ |i, j| i.category.num <=> j.category.num }.each do |i|
       last_post = i.category.posts.desc(:created_at).first
       last_post = last_post ? last_post.created_at.strftime("%a %b %d") : "Never"
       ret << i.category.num.to_s.rjust(2) + " " + GetSymPermissions(dbref, i.category).ljust(3) + " "
