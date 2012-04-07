@@ -4,6 +4,8 @@
 -
 @set #1139=safe
 -
+@desc #1139=BBoard commands.
+-
 &CMD.+BBLIST #1139=$@bblist:
   @nspemit %#=[rpc(BBoard.list,%#)]
 -
@@ -44,4 +46,7 @@
 -
 &CMD.+BBLEAVE #1139=$@bbleave *:@nspemit %#=
   [rpc(BBoard.leave,%#,%0)]
+-
+&CMD.+BBREPLIES #1139=$@bbreplies */*:@nspemit %#=
+  [rpc(BBoard.replies,%#,%0,%1)]
 -

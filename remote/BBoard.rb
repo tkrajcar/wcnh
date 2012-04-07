@@ -63,4 +63,8 @@ module BBoard
   def self.pj_leave(dbref, cat)
     self.leave(dbref, cat)
   end
+  
+  def self.pj_replies(dbref, cat, num)
+    self.replies(dbref, cat, num)
+  end
 end
