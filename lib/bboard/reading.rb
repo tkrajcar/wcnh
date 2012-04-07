@@ -90,7 +90,7 @@ module BBoard
     replies = category.posts.where(:parent_id => post.id)
     
     ret = titlebar(category.name) + "\n"
-    ret << "Message: ".yellow + "#{category.num}/#{num}".ljust(17) + "Posted                    Author".yellow + "\n"
+    ret << "Message: ".yellow + "#{category.num}/#{num.to_i}".ljust(17) + "Posted                    Author".yellow + "\n"
     ret << post.title.ljust(26) + post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26) + R.penn_name(post.author) + "\n"
     ret << footerbar + "\n"
     ret << post.body + "\n"
@@ -171,6 +171,35 @@ module BBoard
     subscription.save
   
     return ret
+  end
+  
+  def self.catchup(dbref, cat)
+    user = User.find_or_create_by(:id => dbref)
+    
+    if (cat == "all") then
+      user.subscriptions.each do |i|
+        i.category.posts.each do |j|
+          i.read_posts << j.id if i.read_posts.find_index(j.id).nil?
+        end
+        i.save
+      end
+      
+      return "> ".bold.green + "All postings on all boards marked as read."
+    end
+   
+    category = FindCategory(cat)
+    return "> ".bold.red + "You do not subscribe to that Group." unless !category.nil?
+    
+    subscription = user.subscriptions.where(:category_id => category.id).first
+    
+    return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
+    
+    category.posts.each do |i|
+      subscription.read_posts << i.id if subscription.read_posts.find_index(i.id).nil?
+    end
+    
+    subscription.save
+    return "> ".bold.green + "All postings on Group ##{category.num} (#{category.name}) marked as read."
   end
   
   def self.FindCategory(cat)

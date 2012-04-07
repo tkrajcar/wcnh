@@ -67,4 +67,8 @@ module BBoard
   def self.pj_replies(dbref, cat, num)
     self.replies(dbref, cat, num)
   end
+  
+  def self.pj_catchup(dbref, cat)
+    self.catchup(dbref, cat)
+  end
 end

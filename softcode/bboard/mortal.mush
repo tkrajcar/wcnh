@@ -56,4 +56,7 @@
         rpc(BBoard.post,%#,first(before(%0,=),/),first(after(%0,=),/),last(after(%0,=),/),last(before(%0,=),/)),
         rpc(BBoard.draft_start,%#,first(before(%0,=),/),after(%0,=),last(before(%0,=),/))
         )]
+-
+&CMD.+BBCATCHUP #1139=$@bbcatchup *:@nspemit %#=
+  [rpc(BBoard.catchup,%#,%0)]
 -        
