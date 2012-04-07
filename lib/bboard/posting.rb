@@ -2,7 +2,7 @@ require 'wcnh'
 
 module BBoard
   
-  def self.post(author, cat, sub, txt, parent=nil)
+  def self.post(author, cat, sub, txt, parent)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => author)
 
@@ -12,18 +12,20 @@ module BBoard
     
     return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !subscription.nil? && category.canwrite?(author)
     
-    post = category.posts.create(:author => author, :title => sub, :body => txt)
-   
-    if (!parent.nil?) then
-      thread = category.posts.where(:parent_id.ne => nil)[parent.to_i - 1]
-      return "> ".bold.red + "You can't post a reply to that thread." unless !thread.nil?
-      post.parent = thread.id
-    end
+    thread = (parent.nil? ? nil : category.posts.where(:parent_id => nil)[parent.to_i - 1])
+    return "> ".bold.red + "You can't post a reply to that thread." if !parent.nil? && thread.nil?
+    
+    post = category.posts.create(:author => author, :title => sub, :body => txt, :parent_id => (thread.nil? ? nil : thread.id))
     
     return "> ".bold.red + post.errors.values.join(" ") unless post.valid?
     
     post.save
-    return "> ".bold.green + "You post your note about '#{sub}' in group #{category.num} (#{category.name}) as message ##{category.posts.count}."
+    if (parent.nil?) then
+      return "> ".bold.green + "You post your note about '#{sub}' in group #{category.num} (#{category.name}) as message ##{category.posts.where(:parent_id => nil).count}."
+    else
+      return "> ".bold.green + "You post your reply about '#{sub}' under message ##{parent} in group #{category.num} (#{category.name})."
+    end
+    
   end
   
   def self.draft_start(dbref, cat, sub)

@@ -17,7 +17,7 @@ module BBoard
 
     validates_presence_of :title, message: "Posts must have a title."
 
-    validates_presence_of :body, message: "Posts cannot be empty."
+    validates_presence_of :body, message: "Posts cannot be empty."    
   end
 
 end

@@ -24,8 +24,8 @@ module BBoard
     self.read(dbref, cat, num)
   end
   
-  def self.pj_post(author, cat, sub, txt)
-    self.post(author, cat, sub, txt)
+  def self.pj_post(author, cat, sub, txt, parent)
+    self.post(author, cat, sub, txt, parent.length > 0 ? parent : nil)
   end
   
   def self.pj_draft_start(dbref, cat, sub)

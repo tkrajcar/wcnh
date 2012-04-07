@@ -103,7 +103,7 @@ module BBoard
       
       count = 1
       replies.each do |reply|
-        ret << "#{num}/#{count}".ljust(6)
+        ret << count.to_s.ljust(6)
         ret << (subscription.read_posts.find_index(reply.id).nil? ? "U " : "  ")
         ret << reply.title.ljust(35) + reply.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(reply.author)
         ret << "\n"
