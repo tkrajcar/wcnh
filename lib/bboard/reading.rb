@@ -31,7 +31,7 @@ module BBoard
       last_post = i.category.posts.desc(:created_at).first
       last_post = last_post ? last_post.created_at.strftime("%a %b %d") : "Never"
       ret << i.category.num.to_s.rjust(2) + " " + GetSymPermissions(dbref, i.category).ljust(3) + " "
-      ret << R.ansi(i.category.ansi, i.category.name.ljust(30)) + last_post.ljust(21) + i.category.posts.count.to_s + " "
+      ret << R.ansi(i.category.ansi, i.category.name.ljust(30)) + last_post.ljust(21) + i.category.posts.where(:parent_id => nil).count.to_s + " "
       ret << "U" if (i.unread_posts.count > 0)
       ret << "R" if (i.unread_replies.count > 0)
       ret << "\n"
@@ -200,6 +200,34 @@ module BBoard
     
     subscription.save
     return "> ".bold.green + "All postings on Group ##{category.num} (#{category.name}) marked as read."
+  end
+  
+  def self.next(dbref)
+    user = User.find_or_create_by(:id => dbref)
+    
+    found = nil
+    
+    user.subscriptions.each do |sub|
+      next if sub.read_posts.count == sub.category.posts.count
+      sub.category.posts.each do |post|
+        if sub.read_posts.find_index(post.id).nil? then
+          found = post
+          break
+        end
+      end
+      break if !found.nil?
+    end
+    
+    return "> ".red + "There are no unread postings on the Global Bulletin Board." if found.nil?
+    
+    postnum = found.category.posts.where(:parent_id => nil).find_index { |i| i[:_id].to_s == (found.parent_id.nil? ? found.id : found.parent_id).to_s } + 1
+    
+    if found.parent_id.nil? then
+      return read(dbref, found.category.num, postnum)
+    else
+      return replies(dbref, found.category.num, postnum)
+    end 
+    
   end
   
   def self.FindCategory(cat)

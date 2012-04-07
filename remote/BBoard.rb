@@ -71,4 +71,8 @@ module BBoard
   def self.pj_catchup(dbref, cat)
     self.catchup(dbref, cat)
   end
+  
+  def self.pj_next(dbref)
+    self.next(dbref)
+  end
 end

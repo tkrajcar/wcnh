@@ -22,8 +22,6 @@ module BBoard
     post.save
     online = R.lwho()
     notified = category.subscriptions.where(:user_id.in => online.split(' '))
-    R.nspemit("#5", online.to_s)
-    R.nspemit("#5", notified.first.to_s)
     
     if (parent.nil?) then
       postnum = category.posts.where(:parent_id => nil).count
