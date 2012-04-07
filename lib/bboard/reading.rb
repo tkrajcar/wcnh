@@ -163,7 +163,7 @@ module BBoard
       ret << "Author: ".yellow + R.penn_name(reply.author) + "\n"
       ret << "Message: ".yellow + reply.title.ljust(26) + "\n"
       ret << "\n"
-      ret << post.body + "\n"
+      ret << reply.body + "\n"
       ret << footerbar + "\n"
       subscription.read_posts << reply.id if subscription.read_posts.find_index(reply.id).nil?
     end

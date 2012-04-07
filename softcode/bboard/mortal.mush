@@ -26,7 +26,7 @@
   [ifelse(
         strmatch(%0,*/*=*),
         rpc(BBoard.post,%#,before(%0,/),before(after(%0,/),=),after(%0,=),),
-        rpc(BBoard.draft_start,%#,before(%0,/),after(%0,/))
+        rpc(BBoard.draft_start,%#,before(%0,/),after(%0,/),)
         )]
 -
 &CMD.+BBWRITE2 #1139=$@bb *:@nspemit %#=
