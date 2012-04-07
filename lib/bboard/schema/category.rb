@@ -26,12 +26,12 @@ module BBoard
 
     validates_numericality_of :timeout, allow_nil: true, greater_than: 0, message: "Timeout must be an integer number of days."
     
-    def can_read?(dbref)
+    def canread?(dbref)
       return true if self.permission_type == "announce"
       return self.can_write?(dbref)
     end
     
-    def can_write?(dbref)
+    def canwrite?(dbref)
       return true if self.permission_type.nil?
       return true if R.orflags(dbref, "Wr").to_bool
       return false
