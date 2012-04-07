@@ -50,6 +50,10 @@
 &CMD.+BBREPLIES #1139=$@bbreplies */*:@nspemit %#=
   [rpc(BBoard.replies,%#,%0,%1)]
 -
-&CMD.+BBREPLY #1139=$@bbreply */*=*/*:@nspemit %#=
-  [rpc(BBoard.post,%#,%0,%2,%3,%1)]
--
+&CMD.+BBREPLY #1139=$@bbreply *:@nspemit %#=
+  [ifelse(
+        strmatch(%0,*/*=*/*),
+        rpc(BBoard.post,%#,first(before(%0,=),/),first(after(%0,=),/),last(after(%0,=),/),last(before(%0,=),/)),
+        rpc(BBoard.draft_start,%#,first(before(%0,=),/),after(%0,=),last(before(%0,=),/))
+        )]
+-        

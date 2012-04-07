@@ -28,8 +28,8 @@ module BBoard
     self.post(author, cat, sub, txt, parent.length > 0 ? parent : nil)
   end
   
-  def self.pj_draft_start(dbref, cat, sub)
-    self.draft_start(dbref, cat, sub)
+  def self.pj_draft_start(dbref, cat, sub, parent)
+    self.draft_start(dbref, cat, sub, parent.length > 0 ? parent : nil)
   end
   
   def self.pj_draft_write(dbref, txt)

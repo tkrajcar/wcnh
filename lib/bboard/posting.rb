@@ -28,7 +28,7 @@ module BBoard
     
   end
   
-  def self.draft_start(dbref, cat, sub)
+  def self.draft_start(dbref, cat, sub, parent)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => dbref)
     subscription = user.subscriptions.where(:category_id => category.id).first
@@ -36,12 +36,19 @@ module BBoard
     return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !subscription.nil? && category.canwrite?(dbref)
     return "> ".bold.red + "You are already in the middle of writing a bbpost." unless user.draft.nil?
     
-    draft = user.create_draft(:category_id => category.id, :title => sub)
+    thread = (parent.nil? ? nil : category.posts.where(:parent_id => nil)[parent.to_i - 1])
+    return "> ".bold.red + "You can't post a reply to that thread." if !parent.nil? && thread.nil?
+    
+    draft = user.create_draft(:category_id => category.id, :title => sub, :parent_id => (thread.nil? ? nil : thread.id))
     
     return "> ".bold.red + draft.errors.values.join(" ") unless draft.valid?
     
     draft.save
-    return "> ".bold.green + "You start your posting to Group ##{category.num} (#{category.name})."
+    if (parent.nil?) then
+      return "> ".bold.green + "You start your posting to Group ##{category.num} (#{category.name})."
+    else 
+      return "> ".bold.green + "You start your reply to message ##{parent} in group #{category.num} (#{category.name})."
+    end
   end
   
   def self.draft_write(dbref, txt)
@@ -61,7 +68,7 @@ module BBoard
     
     category = Category.where(:_id => user.draft.category_id).first
     
-    ret = titlebar("BB Post in Progress") + "\n"
+    ret = titlebar("BB Post#{user.draft.parent_id.nil? ? ' ' : 'Reply'} in Progress") + "\n"
     ret << "Group: #{category.name}" + "\n"
     ret << "Title: #{user.draft.title}" + "\n"
     ret << footerbar + "\n"
@@ -90,7 +97,9 @@ module BBoard
     
     category = Category.where(:_id => user.draft.category_id).first
     
-    ret = post(user.id, category.name, user.draft.title, user.draft.body)
+    thread = (user.draft.parent_id.nil? ? nil : category.posts.where(:_id => user.draft.parent_id).first)
+    
+    ret = post(user.id, category.name, user.draft.title, user.draft.body, thread.nil? ? nil : category.posts.find_index(thread) + 1)
     user.draft.destroy
     return ret  
   end

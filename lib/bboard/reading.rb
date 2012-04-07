@@ -11,7 +11,7 @@ module BBoard
     ret << footerbar + "\n"
     categories.each do |i|
       next unless i.canread?(dbref)
-      ret << i.num.to_s.ljust(5) + i.name.ljust(33)
+      ret << i.num.to_s.ljust(5) + R.ansi(i.ansi, i.name.ljust(33))
       ret << (user.subscriptions.where(:category_id => i.id).first.nil? ? "No" : "Yes").ljust(20) + i.timeout.to_s + "\n"
     end
     
@@ -31,7 +31,7 @@ module BBoard
       last_post = i.category.posts.desc(:created_at).first
       last_post = last_post ? last_post.created_at.strftime("%a %b %d") : "Never"
       ret << i.category.num.to_s.rjust(2) + " " + GetSymPermissions(dbref, i.category).ljust(3) + " "
-      ret << i.category.name.ljust(30) + last_post.ljust(21) + i.category.posts.count.to_s + " "
+      ret << R.ansi(i.category.ansi, i.category.name.ljust(30)) + last_post.ljust(21) + i.category.posts.count.to_s + " "
       ret << "U" if (i.unread_posts.count > 0)
       ret << "R" if (i.unread_replies.count > 0)
       ret << "\n"
