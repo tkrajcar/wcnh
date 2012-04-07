@@ -96,7 +96,7 @@ module BBoard
     ret << post.body + "\n"
     
     if (replies.count > 0) then
-      unread_replies = subscription.unread_replies[post.id]
+      unread_replies = subscription.unread_replies[post.id] ||= []
         
       ret << titlebar("#{replies.count} #{(replies.count == 1 ? 'Reply' : 'Replies')} (#{unread_replies.count} Unread)") + "\n"
       ret << "        Reply".ljust(43).yellow + "Posted        By".yellow + "\n"
@@ -104,7 +104,7 @@ module BBoard
       count = 1
       replies.each do |reply|
         ret << "#{num}/#{count}".ljust(6)
-        ret << (unread_replies.find_index(reply.id).nil? ? "U " : "  ")
+        ret << (subscription.read_posts.find_index(reply.id).nil? ? "U " : "  ")
         ret << reply.title.ljust(35) + reply.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(reply.author)
         ret << "\n"
         count += 1
