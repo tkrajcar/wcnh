@@ -20,9 +20,21 @@ module BBoard
     return "> ".bold.red + post.errors.values.join(" ") unless post.valid?
     
     post.save
+    online = R.lwho()
+    notified = category.subscriptions.where(:user_id.in => online.split(' '))
+    R.nspemit("#5", online.to_s)
+    R.nspemit("#5", notified.first.to_s)
+    
     if (parent.nil?) then
-      return "> ".bold.green + "You post your note about '#{sub}' in group #{category.num} (#{category.name}) as message ##{category.posts.where(:parent_id => nil).count}."
+      postnum = category.posts.where(:parent_id => nil).count
+      notified.each do |i|
+        R.nspemit(i.user.id, "(New BB message (#{category.num}/#{postnum}) posted to #{category.name} by #{R.penn_name(user.id)}: #{post.title})")
+      end
+      return "> ".bold.green + "You post your note about '#{sub}' in group #{category.num} (#{category.name}) as message ##{postnum}."
     else
+      notified.each do |i|
+        R.nspemit(i.user.id, "(New BB reply posted under message ##{parent} in group #{category.num} by #{R.penn_name(user.id)}: #{post.title})")
+      end
       return "> ".bold.green + "You post your reply about '#{sub}' under message ##{parent} in group #{category.num} (#{category.name})."
     end
     
