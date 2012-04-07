@@ -28,7 +28,7 @@ module BBoard
     
     def canread?(dbref)
       return true if self.permission_type == "announce"
-      return self.can_write?(dbref)
+      return self.canwrite?(dbref)
     end
     
     def canwrite?(dbref)
