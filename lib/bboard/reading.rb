@@ -12,7 +12,8 @@ module BBoard
     categories.each do |i|
       next unless i.canread?(dbref)
       ret << i.num.to_s.ljust(5) + R.ansi(i.ansi, i.name.ljust(33))
-      ret << (user.subscriptions.where(:category_id => i.id).first.nil? ? "No" : "Yes").ljust(20) + i.timeout.to_s + "\n"
+      ret << (user.subscriptions.where(:category_id => i.id).first.nil? ? "No" : "Yes").ljust(20) 
+      ret << (i.timeout.nil? ? "Never" : i.timeout.to_s) + "\n"
     end
     
     ret << footerbar + "\n"
