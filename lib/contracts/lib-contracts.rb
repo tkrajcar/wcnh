@@ -33,7 +33,7 @@ module Contract
     if c.close > DateTime.now
       ret << "Qualified individuals and organizations are encouraged to submit bids on this contract by its closing date of #{c.close.strftime('%m/%d/%y').bold}.\n"
     else
-      ret << "This contract has been closed; no new responses are accepted."
+      ret << "This contract has been closed; no new responses are accepted.\n"
     end
     ret << footerbar
   end
