@@ -53,6 +53,10 @@
   @fo %0=handle/register [name(%0)];
   @fo %0=handle/use [name(%0)];
   @fo %0=comm/on 100.00;
+  @swi [hasattr(%0,char`startingcashpaid)]=0,{
+    pay %0=3500;
+    &char`startingcashpaid %0=1;
+  }
   @chan/on public=%0;
   @chan/on roleplay=%0;
 -
