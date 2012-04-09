@@ -12,7 +12,6 @@
 @desc #203=
   A kiosk for purchasing shuttle tickets.%r%r
   COMMANDS:%r
-  [ansi(yh,shuttle/claim <ship name>)] - Claim a one-time-only free shuttle.%r
   [ansi(yh,shuttle/ride <number>)] - Take a free taxi to your destination.%r%r
   Travel Times:%r
   [iter(
@@ -24,23 +23,8 @@
 -
 &DATA #203=#351
 -
-&CMD.SHUTTLE/CLAIM #203=$shuttle/claim *:
-  @switch [not(spacesys(hasshuttle,%#))]=
-
-          0,@nspemit %#=[ansi(rh,>)] You have already claimed your one free shuttle.,
-          1,{@nspemit %#=[ansi(gh,>)] You have claimed your one-time-only free shuttle.  Name: [setr(0,[capstr(%0)])];
-              think [setr(1,spacesys(clone.ship,get(v(data)/parent.shuttle),%q0))];
-              @nsremit [loc(%#)]=Maintenance crews direct the %q0 as it's towed in from a nearby shipyard.;
-              @tel %q1=[loc(%#)];
-              @set %q1=data.roster:%#:captain;
-              @set [v(data)]=list.shuttles.players:[trim([get(v(data)/list.shuttles.players)] %#:%q1)];
-              @set %#=space`shuttle:%q1;
-              @set %q1=enter_ok;
-              @set %q1=space`report:;
-              @set %q1=space`destination:;
-              @set %q1=data.docked:[loc(%#)];
-              think [syslog(SPACE,[name(%#)]\(%#\) claimed a free shuttle %q1 at [name(loc(%#))]\([loc(%#)]\))]
-             }
+&CMD.SHUTTLE/CLAIM #203=
+/@@ removed @@/
 -
 &CMD.DEPART #580=$depart:
   @switch [lte(secs(),last(setr(0,extract(v(passengers),match(v(passengers),%#:*))),:))]=
