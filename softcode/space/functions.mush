@@ -862,25 +862,28 @@
 -
 &FN.SHIPSBYCAPTAIN #208=
   switch(
-        [pmatch(%0)]
-        [strlen(
-            setr(r,squish(
-                         iter(
-                             iter(
-                                 lvthings(get(v(data)/bin.parents)),
-                                 children(itext(0))
-                                 ),
-                             if(
-                               strmatch(get(itext(0)/data.roster),*%0:captain*),
-                               itext(0)
-                               )
-                             )
-                         ))
-                )],
-        #-1?,#-1 NOT A PLAYER,
-        *0,#-1 NO SHIPS FOUND,
-        %qr
-        )   
+         [t(setr(p,pmatch(%0)))]
+         [t(strlen(
+                   setr(r,
+                        squish(
+                               map(
+                                   #lambda/
+                                   \[if(
+                                        strmatch(get(%%0/data.roster),*%qp:captain*),
+                                        %%0
+                                       )\],
+                                   iter(
+                                        lvthings(get(v(data)/bin.parents)),
+                                        children(itext(0))
+                                       )
+                                  )
+                              )
+                       )
+                   ))],
+         0?,#-1 NOT A PLAYER,
+         10,#-1 NO SHIPS FOUND,
+         %qr
+        )
 -
 &FN.ISSTATION #208=
   ifelse(eq(default(%0/space`size,1),9),1,0)
