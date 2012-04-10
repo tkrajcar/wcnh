@@ -59,4 +59,8 @@ This command will send an emergency request for an administrator.  This is for
 situations when you need an administrator for a time-sensitive issue, such as
 an in-character combat situation.  For problems that don't require an immediate
 resolution, use +ticket.
-
+& +concept
+  +concept
+ 
+  +concept lets you view your chargen character concept once you've left
+  chargen.
