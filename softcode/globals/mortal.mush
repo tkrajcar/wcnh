@@ -267,7 +267,7 @@
   )
 -
 &CMD.+CONCEPT #15=$+concept:
-  @nspemit %#=[titlebar(Concept for %n)]%r[get(%#/char`concept)]%r[footerbar()]
+  @nspemit %#=[titlebar(Concept for %n)]%r[u(%#/char`concept)]%r[footerbar()]
 -
 &cmd.+xp #15=$+xp:
   @nspemit %#=[rpc(XP.view,%#)];
