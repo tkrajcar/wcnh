@@ -3,6 +3,8 @@
 
   cash <player> - view a player's on-hand cash
   account/list <player> - view a player's account/list
+  cargo/create - Create a new randomly generated cargo job
+  cargo/edit <num>/<field>=<value> - Edit an existing cargo job
 
   Also:
 
@@ -17,4 +19,11 @@
   hacking and other direct account manipulations, contact Rince for now and once
   he gets tired of you bothering him he might write up some manipulation
   commands.
+ 
+  For cargo jobs, the <num> is the number of the job.  The <field> is one of
+  the editable fields, which are: grade, expires, size, price, visibility,
+  source, destination, commodity.  Most are fairly self-explanatory, and the
+  failure messages will give you instructions for the proper format.  However,
+  for the 'expires' field, the format should <num> hours|days.  I.e., "10
+  days" or "5 hours".  
 
