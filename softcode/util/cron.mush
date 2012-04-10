@@ -88,7 +88,7 @@
 -
 &CRON_JOB_UNFINDABLE #539=@dol [lwho()]=@swi [and(hasflag(##,unfindable),not(orflags(##,Wr)))]=1,{@nspemit %#=[ansi(h,>)] [ansi(hr,REMINDER:)] You are currently set UNFINDABLE.}
 -
-&CRON_TIME_SPACEAUDIT #539=|||00|15
+&CRON_TIME_SPACEAUDIT #539=|||00|15|
 -
 &CRON_JOB_SPACEAUDIT #539=@mail pen=Audit Logs/
   [iter(
