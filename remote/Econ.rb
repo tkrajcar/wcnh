@@ -87,8 +87,8 @@ module Econ
     self.cargojob_unassign(job)
   end
 
-  def self.pj_cargojob_generate
-    self.cargojob_generate
+  def self.pj_cargojob_generate(user)
+    self.cargojob_generate(user.length > 0 ? user : nil)
   end
 
   def self.pj_cargojob_manifest(ship)
@@ -101,6 +101,10 @@ module Econ
 
   def self.pj_location_distance(a,b)
     Econ::Distance.find_distance(a,b).to_s
+  end
+  
+  def self.pj_cargojob_edit(user, num, opt, val)
+    self.cargojob_edit(user, num, opt, val)
   end
 end
 

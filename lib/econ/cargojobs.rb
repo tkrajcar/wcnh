@@ -243,10 +243,10 @@ module Econ
     return "> ".bold.green + "Transferring job #{job.number.to_s.bold} to the #{R.penn_name(ship).bold.yellow}."
   end
 
-  def self.cargojob_generate
+  def self.cargojob_generate(user=nil)
     available_job_count = CargoJob.where(claimed: false).where(:expires.gte => DateTime.now).count
     #Logs.log_syslog("CARGOJOBGENERATOR","Running cargo generator. #{available_job_count.to_s} jobs available.")
-    if available_job_count <= 25
+    if available_job_count <= 25 && user.nil?
       self.generate_one_job
       self.generate_one_job
     else
@@ -258,5 +258,37 @@ module Econ
   def self.generate_one_job
     j = CargoJob.generate
     Logs.log_syslog("CARGOJOBGENERATE","Cargo job #{j.number.to_s} generated.")
+  end
+  
+  def self.cargojob_edit(user, num, opt, val)
+    options = [:grade, :expires, :size, :price, :visibility, :source, :destination, :commodity]
+    
+    return "> ".bold.red + "No such cargo job." unless job = CargoJob.where(:number => num).first
+    return "> ".bold.red + "Invalid option.  Valid options are: " + options.itemize unless options.include?(opt.to_sym)
+    
+    case opt.to_sym
+    when :expires
+      time_num = val.split(' ')[0].to_i
+      time_type = val.split(' ')[1]
+      unless (time_num > 0 && (time_type == "hours" || "days")) then
+        return "> ".bold.red + "Time must be in the form of: <num> [hours|days].  I.e., '5 hours' or '10 days'."
+      else
+        val = (time_type == "hours" ? DateTime.now + time_num.hours : DateTime.now + time_num.days)
+      end
+    when :source, :destination
+      locations = []
+      Location.all.each { |i| locations << i.name }
+      return "> ".bold.red + "Invalid location.  Valid locations are: " + locations.itemize unless val = Location.where(:lowercase_name => val.downcase).first
+    when :commodity
+      commodities = []
+      Commodity.all.each { |i| commodities << i.name }
+      return "> ".bold.red + "Invalid commodity.  Valid commodities are: " + commodities.itemize unless val = Commodity.where(:lowercase_name => val.downcase).first
+    end
+    
+    job.update_attributes(opt.to_sym => val)
+    return "> ".bold.red + job.errors[opt].join(" ") unless job.valid?
+    
+    job.save
+    return "> ".bold.green + "'#{opt.capitalize}' option on job '#{job.number}' updated."
   end
 end

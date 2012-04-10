@@ -44,6 +44,10 @@ module Econ
     scope :loaded_and_claimed_by, ->(person) { where(claimed_by: person).where(completed:false).where(is_loaded:true).asc(:expires) }
     scope :loaded_and_assigned_to, ->(person) { where(assigned_to: person).where(completed:false).where(is_loaded:true).asc(:expires) }
     
+    validates_numericality_of :grade, greater_than: 0, less_than: 6, only_integer: true, message: "Grade must be an integer >0 and <6."
+    validates_numericality_of :size, greater_than: 0, only_integer: true, message: "Size must be a positive integer."
+    validates_numericality_of :price, greater_than_or_equal_to: 0, only_integer: true, message: "Price must be an integer >=0."
+    validates_numericality_of :visibility, greater_than_or_equal_to: 0, only_integer: true, message: "Visibility must be an integer >=0."
 
     def grade_text
       GRADE_WORDS[self.grade]

@@ -130,3 +130,10 @@
 -
 &cmd.contract/response/view #115=$contract/response/view *=*:
   @nspemit %#=[rpc(Contract.response_view,%0,%1)]
+-
+&CMD.CARGO/CREATE #115=$cargo/create:
+  @nspemit %#=[rpc(Econ.cargojob_generate,%#)]
+-
+&CMD.CARGO/EDIT #115=$cargo/edit */*=*:
+  @nspemit %#=[rpc(Econ.cargojob_edit,%#,%0,%1,%2)]
+-
