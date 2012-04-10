@@ -81,7 +81,29 @@ module Comms
     recipient.save
 
     R.nspemit(recipient.id, "> ".bold.yellow + "New tightbeam message received from #{sender.active_handle.bold}.")
+    R.u("#65/fn.npc_message_recvd",tb.from,tb.from_handle,proper_handle,message) if recipient._id == "#1"
     return "> ".bold.yellow + "Tightbeam message sent to #{proper_handle.bold}."
+  end
+
+  def self.message_npc_send(from, handle, message)
+    return "> ".bold.yellow + "That handle is not registered as a NPC handle." unless Comlink.find("#1").handles.include?(from)
+    return "> ".bold.yellow + "Recipient handle not found." unless recipient = Comlink.where(lowercase_handles: handle.downcase).first
+
+    proper_handle = recipient.handles[recipient.lowercase_handles.find_index(handle.downcase)] # properly-cased handle
+
+    tb = Tightbeam.new
+    tb.from = "#1"
+    tb.from_handle = from
+    tb.to_handles = [proper_handle]
+    tb.body = message
+    tb.save
+
+    recipient.unread_tightbeams << tb.id
+    recipient.save
+
+    R.nspemit(recipient.id, "> ".bold.yellow + "New tightbeam message received from #{from.bold}.")
+    R.u("#65/fn.npc_message_sent",R["enactor"],from,proper_handle,message)
+    return "> ".bold.yellow + "Tightbeam message sent from #{from.bold.cyan} to #{proper_handle.bold}."
   end
 
 #  def self.message_dnd(status="toggle")

@@ -30,6 +30,18 @@ module Comms
     return "> ".bold.yellow + "Registered handle: #{handle.bold}."
   end
 
+  def self.handle_npc(handle)
+    return "> ".bold.yellow + "That handle is already in use." unless Comlink.where(lowercase_handles: handle.downcase).length == 0
+    return "> ".bold.yellow + "That's too long for a handle." unless handle.length <= 20
+
+    c = Comlink.find_or_create_by(id: "#1")
+    c.handles.push handle
+    c.lowercase_handles.push handle.downcase
+    c.save
+    Logs.log_syslog("NPCHANDLE","#{R.penn_name(R["enactor"])} registered NPC handle #{handle.bold}.")
+    return "> ".bold.yellow + "Registered NPC handle: #{handle.bold}."
+  end
+
   def self.handle_unregister(handle)
     c = Comlink.find_or_create_by(id: R["enactor"])
     return "> ".bold.yellow + "That handle isn't registered, or isn't registered to you." unless c.lowercase_handles.include?(handle.downcase)

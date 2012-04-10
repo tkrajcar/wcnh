@@ -142,3 +142,11 @@
 &CMD.CARGO/EDIT #115=$cargo/edit */*=*:
   @nspemit %#=[rpc(Econ.cargojob_edit,%#,%0,%1,%2)]
 -
+&cmd.handle/npc #115=$handle/npc *:
+  @nspemit %#=[rpc(Comms.handle_npc,%0)]
+-
+&cmd.message/npc #115=$message/npc */*=*:
+  @nspemit %#=[rpc(Comms.message_npc_send,%0,%1,%2)]
+-
+&cmd.comm/transmit #115=$comm */*=*:
+  @nspemit %#=[rpc(Comms.channel_emit,%0,%1,%2)]

@@ -19,6 +19,20 @@
     +bbpost|19|Intent To Award Contract %0 (%1)|Enigma Sector Procurement hereby makes public its intention to award contract %0, titled '%1', to [ansi(hy,%2)].%r%rEnigma Sector Procurement thanks all individuals and organizations that submitted a response for their time and interest in doing business in the Enigma Sector.
   )
 -
+&FN.NPC_MESSAGE_RECVD #65=
+  /@@ %0 = from dbref, %1 = from handle, %2 = to handle, %3 = message @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|5|From %1 to %2|[ansi(c,Received at [ansi(h,time())] from)] [ansi(hy,%1)] ([ansi(h,name(%0))]) [ansi(c,to)] [ansi(hc,%2)]:%r%3
+  )
+-
+&FN.NPC_MESSAGE_SENT #65=
+  /@@ %0 = admin dbref, %1 = from handle, %2 = to handle, %3 = message @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|5|To %2 from %1|[ansi(c,Sent at [ansi(h,time())] by)] [ansi(h,name(%0))] to [ansi(hy,%2)] [ansi(c,from)] [ansi(hc,%1)]:%r%3
+  )
+-
 &TRI.RUN #65=
   @pemit %#=Running: [time()];
   @dol [lattr(me/job_*)]=

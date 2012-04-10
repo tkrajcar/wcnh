@@ -19,6 +19,10 @@ module Comms
     self.handle_use(handle)
   end
 
+  def self.pj_handle_npc(handle)
+    self.handle_npc(handle)
+  end
+
   def self.pj_message_list_summary
     self.message_list_summary
   end
@@ -33,6 +37,10 @@ module Comms
 
   def self.pj_message_send(handle,message)
     self.message_send(handle,message)
+  end
+
+  def self.pj_message_npc_send(from,to,message)
+    self.message_npc_send(from,to,message)
   end
 
 #  def self.pj_message_dnd(status = "toggle")
@@ -78,4 +86,5 @@ module Comms
   def self.pj_channel_tightbeam(channel,message)
     self.channel_tightbeam(channel,message)
   end
+
 end
