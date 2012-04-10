@@ -3,9 +3,9 @@ This is the admin-only help for WC:NH.
  
   PAGES:
 
-  +acheck        COMBAT         CONTRACT       +DOSSIER       ECON           
-  +FACTION       +PFILE         +RP            +SPACE         +TICKET        
-  WANTED         +ZONE  
+  +acheck        COMBAT         COMMS          CONTRACT       +DOSSIER       
+  ECON           +FACTION       +PFILE         +RP            +SPACE         
+  +TICKET        WANTED         +ZONE   
 & +DOSSIER
   This command allows you to make notes about IC matters relating to characters.
   Plot hooks that should be used, IC loans, or anything else related to a chara-
@@ -104,3 +104,11 @@ contract/publish - publish a contract and enable it for bids (posts for you)
 contract/award <contract>=<org/individual name> - award contract (posts for you)
 contract/responses <contract> - View responses of a contract
 contract/response/view <contract>=<response> - View an individual's response
+& COMMS
+Admins can:
+
+handle/list <person> - view somebody's handles
+comm/list <person> - view somebody's comm/list (note all channels are shown)
+handle/npc <handle> - Register a handle as an NPC handle
+message/npc <from handle>/<to handle>=<message> - Send a message from a NPC
+comm <channel>/<handle>=<message> - Talk on a channel. Handles are not checked!
