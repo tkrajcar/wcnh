@@ -9,7 +9,7 @@ module Comms
     return ">".bold.green + " Invalid target!" unless victim != "#-1"
     c = Comlink.find_or_create_by(id: victim)
     ret = titlebar("Comm Handles For #{R.penn_name(victim)}") + "\n"
-    c.handles.each do |handle|
+    c.handles.sort.each do |handle|
       ret << "  #{handle.bold.cyan}\n"
     end
     ret << "  You are using #{c.handles.length.to_s.bold.yellow} of your #{MAX_HANDLES.to_s.bold} allowed handles.\n"
