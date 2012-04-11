@@ -9,7 +9,7 @@ module RP
     return "> ".bold.red + "Error while creating post." unless item = cat.items.create!(:title => title, :info => info, :creator => creator)
     
     Logs.log_syslog("RP", "New post ##{item.num} '#{title}' in '#{cat.name}' by #{charname = R.penn_name(creator)}(#{creator}).")
-    R.nscemit("Help", "New +RP posting (##{item.num}) in '#{cat.name}' by #{charname} entitled '#{title}'.", 1.to_s)
+    R.nscemit("Roleplay", "New +RP posting (##{item.num}) in '#{cat.name}' by #{charname} entitled '#{title}'.", 1.to_s)
     return "> ".bold.green + "Item ##{item.num} posted under '#{cat.name}'."
   end
   
