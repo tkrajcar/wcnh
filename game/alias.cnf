@@ -1,3 +1,6 @@
+# +help
+command_alias help +help
+
 # space aliases
 command_alias enter board
 command_alias leave disembark
