@@ -7,12 +7,12 @@
   think [if(hasattr(%0/pfile),rpc(PlayerFile.connect,get(%0/pfile),get(%0/lastip),get(%0/lastsite),%2,num(%0)))];
   @swi [haspower(%0,guest)]=1,@tri #459/tri.guest.connect=%0;
   @swi [or(haspower(%0,guest),not(hasattr(%0,char`announced)))]=1,{
-    @wait 7=@nspemit %#=[ansi(h,New to MUSHes?)] You can talk to others by typing: [ansi(h,+help Hi there!)]%rWe're friendly - feel free to ask questions, or ask for help! Your name is [ansi(h,name(%#))].
+    @wait 7=@nspemit %#=[ansi(h,New to MUSHes?)] You can talk to others by typing: [ansi(h,+new Hi there!)]%rWe're friendly - feel free to ask questions, or ask for help! Your name is [ansi(h,name(%#))].
   };
   @swi [nor(hidden(%0),hasflag(%0,dark),hasattr(%0,char`announced))]=
     1,{
       &char`announced %0=1;
-      @cemit/noisy help=[ansi(c,Say hello to our newest player\,)] [ansi(h,name(%0))][ansi(c,!)]
+      @cemit/noisy Newbie=[ansi(c,Say hello to our newest player\,)] [ansi(h,name(%0))][ansi(c,!)]
     }
 
 -
@@ -43,5 +43,8 @@
     @assert [hasattr(%0,registered_email)];
     +pfile/register [get(%0/registered_email)]=[num(%0)];
   };
-  ;@chan/on help=%0
+  ;
+  @chan/on q&a=%0;
+  @chan/on newbie=%0;
+
 
