@@ -88,3 +88,20 @@
 -
 &CRON_JOB_UNFINDABLE #539=@dol [lwho()]=@swi [and(hasflag(##,unfindable),not(orflags(##,Wr)))]=1,{@nspemit %#=[ansi(h,>)] [ansi(hr,REMINDER:)] You are currently set UNFINDABLE.}
 -
+&CRON_TIME_SPACEAUDIT #539=|||00|15|
+-
+&CRON_JOB_SPACEAUDIT #539=@mail pen=Audit Logs/
+  [iter(
+        spacesys(list.ship.all),
+        squish(
+               if(
+                  t(add(
+                        setr(land,default(itext(0)/space`audit`land,0)),
+                        setr(launch,default(itext(0)/space`audit`launch,0)),
+                        setr(jump,default(itext(0)/space`audit`jump,0)),
+                        setr(activeticks,default(itext(0)/space`audit`activeticks,0))
+                       )),
+                  %r[itext(0)]%b%q<land>%b%q<launch>%b%q<jump>%b%q<activeticks>
+                 )
+              )
+       )]

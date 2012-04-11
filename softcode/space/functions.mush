@@ -178,7 +178,7 @@
 -
 &TICK #208=
   @wait [default(v(data)/interval,60)]={@trig me/tick};
-  @dol get(v(data)/list.active)={@notify/any ##;think [spacesys(update.report,##)]}
+  @dol get(v(data)/list.active)={@notify/any ##;think [spacesys(update.report,##)];think [set(##,space`audit`activeticks:[inc(default(##/space`audit`activeticks,0))])]}
 -
 &FN.MOVE #208=
   [set(%0,space`x:%1)][set(%0,space`y:%2)]
@@ -387,6 +387,7 @@
             [spacesys(update.report,%0)]
             [iter(remove(spacesys(list.system.active,loc(%q1)),%0),spacesys(update.report,itext(0)))]
             )]
+            [spacesys(audit,%0,land)]
 -
 &FN.DEACTIVATE #208=
   switch(
@@ -429,6 +430,7 @@
                                 rises out of the atmosphere of [name(%q0)].
                                 ))]
           )]
+          [spacesys(audit,%0,launch)]
 -
 &FN.ISSHIP #208=
   [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
@@ -651,6 +653,7 @@
                                          )]
             [set(%0,space`x:[first(%q2)])]
             [set(%0,space`y:[last(%q2)])]
+            [spacesys(audit,%0,jump)]
       )
 -
 &FN.HASSHUTTLE #208=
@@ -961,6 +964,7 @@
              [set(%0,data.docked:[loc(%qe)])]
              [spacesys(notify.consoles,%0,Taxi procedure complete.)]
              [spacesys(notify.ship,%0,The ship shudders as it comes to a halt.)]
+             [spacesys(deactivate,%0)]
         )
 -
 &FN.GETDESTOBJ #208= 
@@ -998,6 +1002,8 @@
                [spacesys(notify.consoles,%0,The [name(%1)] has been unloaded successfully from the [name(%0)].)]
                [spacesys(notify.consoles,%1,The [name(%1)] has been unloaded successfully from the [name(%0)].)]
                [spacesys(notify.ship,%1,The ship shudders and rocks as it is deposited on the ground by the [name(%0)]'s loader arms.)]
+               [spacesys(deactivate,%0)]
+               [spacesys(deactivate,%1)]
         ,#-1 SHIP NOT IN BAY)
 -
 &FN.LOAD.SHIP #208=
@@ -1031,6 +1037,8 @@
                 [spacesys(notify.consoles,%0,The [name(%1)] has been loaded successfully aboard the [name(%0)].)]
                 [spacesys(notify.consoles,%1,The [name(%1)] has been loaded successfully aboard the [name(%0)].)]
                 [spacesys(notify.ship,%1,The ship shudders and rocks as it is deposited in the bay of the [name(%0)].)]
+                [spacesys(deactivate,%0)]
+                [spacesys(deactivate,%1)]
         ,#-1 SHIPS NOT ADJACENT)
 -
 &FN.FINDSHIP.ROOM #208=
@@ -1153,3 +1161,26 @@
      get(%0/data.hailtarget),
      #-1
     )
+-
+&FN.AUDIT #208=
+  ifelse(
+         spacesys(isship,%0),
+         switch(%1,
+                land,
+                  set(%0,space`audit`land:[inc(default(%0/space`audit`land,0))]),
+                launch,
+                  set(%0,space`audit`launch:[inc(default(%0/space`audit`launch,0))]),
+                jump,
+                  set(%0,space`audit`jump:[inc(default(%0/space`audit`jump,0))]),
+                #-1 AUDIT UNKNOWN
+               ),
+         #-1 NOT A SHIP
+        )
+-
+&FN.LIST.SHIP.ALL #208=
+  squish(
+         iter(
+              lvthings(get(v(data)/bin.parents)),
+              children(itext(0))
+             )
+        )
