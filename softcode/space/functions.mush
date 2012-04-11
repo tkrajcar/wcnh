@@ -1192,3 +1192,6 @@
               children(itext(0))
              )
         )
+-
+&FN.LIST.SHIP.ACTIVE #208=
+  get(v(data)/list.active)

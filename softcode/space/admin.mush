@@ -243,3 +243,64 @@
   think [spacesys(activate,%0)];
   @wait %0/space`queue`move=think [spacesys(load.ship,%0,%1,[u(fn.caller)])];
   @wait %1/space`queue`move=think %b
+-
+&CMD.+SPACE/ACTIVE #367=$+space/active:@nspemit %#=
+  [titlebar(Active Ships)]%r
+  [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
+  [iter(
+        setr(s,spacesys(list.ship.active)),
+        align(30 15 30,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              [get(itext(0)/space`class)],
+              [ifelse(
+                      setr(c,zone(setr(r,room(itext(0))))),
+                      [name(%qc)]\([ansi(c,%qc)]\),
+                      [name(%qr)]\([ansi(c,%qr)]\)
+                     )]
+             ),
+       ,%r)]%r
+  [footerbar(words(%qs Active Ships)]
+-
+&CMD.+SPACE/AUDIT #367=$+space/audit:@nspemit %#=
+  [titlebar(Ship Activity Audit)]%r
+  [ansi(y,align(30 >8 >6 >6 >8 >8,Name,Launch,Land,Jump,Active,Moving))]%r
+  [null(
+        [setq(list_all,spacesys(list.ship.all))]
+        [setq(sums_all,
+              iter(
+                   %q<list_all>,
+                   add(
+                       default(itext(0)/space`audit`land,0),
+                       default(itext(0)/space`audit`launch,0),
+                       default(itext(0)/space`audit`jump,0),
+                       default(itext(0)/space`audit`activeticks,0),
+                       default(itext(0)/space`audit`movingticks,0)
+                      ),
+                  ,|)
+             )]
+        [setq(list_summed,
+              elements(
+                       %q<list_all>,
+                       squish(
+                              iter(
+                                   %q<sums_all>,
+                                   if(
+                                      itext(0),
+                                      inum(0)
+                                     ),
+                                   |)
+                             )
+                      )
+             )]
+       )]
+  [iter(%q<list_summed>,
+        align(30 >8 >6 >6 >8 >8,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              default(itext(0)/space`audit`launch,0),
+              default(itext(0)/space`audit`land,0),
+              default(itext(0)/space`audit`jump,0),
+              default(itext(0)/space`audit`activeticks,0),
+              default(itext(0)/space`audit`movingticks,0)
+             ),
+       ,%r)]%r
+  [footerbar(words(%q<list_summed>) ships)]
