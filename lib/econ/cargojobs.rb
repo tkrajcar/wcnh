@@ -246,7 +246,11 @@ module Econ
   def self.cargojob_generate(user=nil)
     available_job_count = CargoJob.where(claimed: false).where(:expires.gte => DateTime.now).count
     #Logs.log_syslog("CARGOJOBGENERATOR","Running cargo generator. #{available_job_count.to_s} jobs available.")
-    if available_job_count <= 25 && user.nil?
+    if available_job_count <= 10 && user.nil?
+      self.generate_one_job
+      self.generate_one_job
+      self.generate_one_job
+    elsif available_job_count <= 25 && user.nil?
       self.generate_one_job
       self.generate_one_job
     else
@@ -270,7 +274,7 @@ module Econ
     when :expires
       time_num = val.split(' ')[0].to_i
       time_type = val.split(' ')[1]
-      unless (time_num > 0 && (time_type == "hours" || "days")) then
+      unless (time_num > 0 && (time_type == "hours" || time_type == "days")) then
         return "> ".bold.red + "Time must be in the form of: <num> [hours|days].  I.e., '5 hours' or '10 days'."
       else
         val = (time_type == "hours" ? DateTime.now + time_num.hours : DateTime.now + time_num.days)

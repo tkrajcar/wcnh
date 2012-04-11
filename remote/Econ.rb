@@ -87,8 +87,8 @@ module Econ
     self.cargojob_unassign(job)
   end
 
-  def self.pj_cargojob_generate(user)
-    self.cargojob_generate(user.length > 0 ? user : nil)
+  def self.pj_cargojob_generate(user=nil)
+    self.cargojob_generate(user)
   end
 
   def self.pj_cargojob_manifest(ship)

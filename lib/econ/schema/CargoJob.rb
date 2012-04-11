@@ -112,7 +112,7 @@ module Econ
       time_factor = [1,1,1,2,2,3,3,4,5].shuffle[0]
       p "Time factor: #{time_factor}"
 
-      size = [rand(3..15),rand(15..50),rand(50..100),rand(100..200)].shuffle[0]
+      size = [rand(3..15),rand(10..30),rand(15..50),rand(50..100),rand(100..200)].shuffle[0]
       p "Size: #{size}"
 
       distance_1 = Econ::Distance.where(system_a_id: from[:location].system._id).where(system_b_id: to[:location].system._id)
@@ -132,6 +132,7 @@ module Econ
       p "Visibility: #{visibility}"
 
       price = rand(BASE_CARGO_RATE_MIN..BASE_CARGO_RATE_MAX) * (size ** 0.75) * TIME_FACTOR_MULTIPLIER[time_factor] * GRADE_MULTIPLIER[grade] * (distance ** 0.7)
+      price = price * R.default("#19/CARGO_PRICE_MULTIPLIER","1.0").to_f
       p "Price: #{price}. Price per unit: #{price / size}"
 
       expires = DateTime.now + rand(TIME_FACTOR_INTERVALS[time_factor]).hours
