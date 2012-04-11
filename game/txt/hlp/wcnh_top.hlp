@@ -26,10 +26,11 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   +911           ACCOUNT        +BBOARD        +bg            CALENDAR       
   CARGO          cash           CHARGEN        COMBAT         COMMS          
   +concept       CONTRACT       FACTIONS       +finger        +guides
-  +LOG           +map           +ooc           pay            PLACES
-  put down       race           RP             +set           SPACE
-  +staff         +TICKET        time           WANTED         +where
-  +who           +XP    
+  +LOG           lock           +map           +ooc           pay
+  PLACES         put down       race           RP             +set
+  SPACE         +staff         +TICKET        time           WANTED
+  +where        +who           +XP
+
 & wanted
   wanted
   wanted <entry number>
@@ -84,3 +85,19 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   contract/response <job #> - View your response to a contract.
   contract/submit <job #> - Submit your completed response. Once submitted, you
                             cannot change your answers.
+
+& LOCK
+Syntax: lock <exit>
+        unlock <exit>
+        lock/add <exit>=<player>
+        lock/remove <exit>=<player>
+ 
+These commands allow characters to manipulate the locks on any doors they
+control. By default, a character controls a door if they are the captain of the
+ship the door is on, or if they have been added to the permissions list for a
+lock (via the lock/add command).  
+ 
+If you believe you should have control of locks in an area, request access in a
++ticket.  Alternatively, if you'd like to try to hack the locks for a
+particular door, you can request a GM with the +911 command.
+
