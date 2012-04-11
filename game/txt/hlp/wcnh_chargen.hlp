@@ -59,8 +59,8 @@
   outside of chargen.
 
   To start chargen, look for the 'chargen' exit in the new player area.
-  Don't be afraid to ask for help at any point via the <Help> channel - just
-  type '+help <message>'.
+  Don't be afraid to ask for help at any point via the <Newbie> channel - just
+  type '+new <message>'.
 
   Type 'help chargen commands' to see the list of global chargen commands.
 & chargen commands
