@@ -178,7 +178,15 @@
 -
 &TICK #208=
   @wait [default(v(data)/interval,60)]={@trig me/tick};
-  @dol get(v(data)/list.active)={@notify/any ##;think [spacesys(update.report,##)];think [set(##,space`audit`activeticks:[inc(default(##/space`audit`activeticks,0))])]}
+  @dol get(v(data)/list.active)={
+    think [set(##,space`audit`activeticks:[inc(default(##/space`audit`activeticks,0))])];
+    think [if( 
+              spacesys(ismoving,##),
+              set(##,space`audit`movingticks:[inc(default(##/space`audit`movingticks,0))])
+             )];
+    @notify/any ##;
+    think [spacesys(update.report,##)]
+    }
 -
 &FN.MOVE #208=
   [set(%0,space`x:%1)][set(%0,space`y:%2)]

@@ -99,9 +99,10 @@
                         setr(land,default(itext(0)/space`audit`land,0)),
                         setr(launch,default(itext(0)/space`audit`launch,0)),
                         setr(jump,default(itext(0)/space`audit`jump,0)),
-                        setr(activeticks,default(itext(0)/space`audit`activeticks,0))
+                        setr(activeticks,default(itext(0)/space`audit`activeticks,0)),
+                        setr(movingticks,default(itext(0)/space`audit`movingticks,0))
                        )),
-                  %r[itext(0)]%b%q<land>%b%q<launch>%b%q<jump>%b%q<activeticks>
+                  %r[itext(0)]%b%q<land>%b%q<launch>%b%q<jump>%b%q<activeticks>%b%q<movingticks>
                  )
               )
        )]
