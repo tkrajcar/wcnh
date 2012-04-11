@@ -88,4 +88,37 @@
 &FN.ISZONE #227=
   t(member(locks(%0),Zone))
 -
+&FN.EXITRETURN #227=
+  squish(
+      [ifelse(
+        not(hastype(%0,exit)),
+        #-1 INVALID EXIT,
+        [setq(return,#-1)]
+        [iter(
+            lexits(loc(%0)),
+            if(
+              strmatch(loc(itext(0)),home(%0)),
+              [setq(return,itext(0))][ibreak()]
+              )
+            )]
+        )]
+      %q<return>
+      )
+-
+&FN.CANLOCK #227=
+  [squish(
+        [setq(zonekeys,)]
+        [iter(lzone(zone(%0)),setq(zonekeys,[trim(%q<zonekeys>)] [get(itext(0)/keys)]))]
+        [iter(lzone(setr(return,zones(exitreturn,%0))),setq(zonekeys,[trim(%q<zonekeys>)] [get(itext(0)/keys)]))]
+        [setq(zonekeys,setunion(%q<zonekeys>,))]
+        [firstof(
+              orflags(%1,Wr),
+              t(member(get(%0/keys),%1)),
+              t(member(get(%q<return>/keys),%1)),
+              t(member(%q<zonekeys>,%0)),
+              spacesys(iscaptain,zone(%0),%1),
+              0
+              )]
+  )]              
+-
 

@@ -391,3 +391,41 @@
 -
 &cmd.contract/submit #15=$contract/submit *:
   @nspemit %#=[rpc(Contract.submit,%0)]
+-
+&CMD.LOCK #15=$lock *:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+
+  @nsoemit %#=[name(%#)] locks [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @nspemit %#=[ansi(gh,>)] You lock [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @lock %q<exit>=haskey/1;
+  @lock [zones(exitreturn,%q<exit>)]=haskey/1;
+-
+&CMD.UNLOCK #15=$unlock *:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+
+  @nsoemit %#=[name(%#)] unlocks [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @nspemit %#=[ansi(gh,>)] You unlock [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @unlock %q<exit>;
+  @unlock [zones(exitreturn,%q<exit>)]
+-
+&CMD.LOCK/ADD #15=$lock/add *=*:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+  @assert [setr(target,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] No such character.;
+  @assert [not(zones(canlock,%q<exit>,%q<target>))]=@nspemit %#=[ansi(rh,>)] [name(%q<target>)] already has access to that lock.;
+
+  @nspemit %#=[ansi(gh,>)] You add [name(%q<target>)] to the permissions list for [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @set %q<exit>=keys:[trim([get(%q<exit>/keys)] %q<target>)];
+-
+&CMD.LOCK/REMOVE #15=$lock/remove *=*:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+  @assert [setr(target,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] No such character.;
+  @assert [zones(canlock,%q<exit>,%q<target>)]=@nspemit %#=[ansi(rh,>)] [name(%q<target>)] doesn't have access to that lock.;
+
+  @nspemit %#=[ansi(gh,>)] You remove [name(%q<target>)] from the permissions list for [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @set %q<exit>=keys:[remove(get(%q<exit>/keys),%q<target>)]
+-
+
