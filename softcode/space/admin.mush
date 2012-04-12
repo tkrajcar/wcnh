@@ -304,3 +304,35 @@
              ),
        ,%r)]%r
   [footerbar(words(%q<list_summed>) ships)]
+-
+&CMD.+SPACE/ADDTRACKER #367=$+space/addtracker *=*:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [setr(player,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+  @assert [not(and(
+                   t(setinter(
+                              spacesys(list.trackers,%0),
+                              %q<player>
+                             )),
+                   t(setinter(
+                              spacesys(list.trackers.player,%q<player>),
+                              %0
+                             ))
+                 ))]=@nspemit %#=[ansi(rh,>)] The [ansi(h,name(%0))] is already tracked by [ansi(h,name(%q<player>))]!;
+  @nspemit %#=[ansi(gh,>)] The [ansi(h,name(%0))] is now tracked by [ansi(h,name(%q<player>))].;
+  think [spacesys(addtracker,%0,%q<player>)]
+-
+&CMD.+SPACE/DELTRACKER #367=$+space/deltracker *=*:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [setr(player,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+  @assert [and(
+               t(setinter(
+                          spacesys(list.trackers,%0),
+                          %q<player>
+                         )),
+               t(setinter(
+                          spacesys(list.trackers.player,%q<player>),
+                          %0
+                         ))
+              )]=@nspemit %#=[ansi(rh,>)] The [ansi(h,name(%0))] is not tracked by [ansi(h,name(%q<player>))]!;
+  @nspemit %#=[ansi(gh,>)] The [ansi(h,name(%0))] is no longer tracked by [ansi(h,name(%q<player>))].;
+  think [spacesys(deltracker,%0,%q<player>)]

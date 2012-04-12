@@ -29,6 +29,8 @@
 -
 &DOC.ADVANCE.CALC #208=ship|Returns next anticipated position if destination is set.
 -
+&DOC.AUDIT #208=ship:audit-type|Increments ship's audit counter for type: jump,launch,land
+-
 &DOC.CANBOARD #208=ship:player|Returns 1 if player can board ship.
 -
 &DOC.CANFLY #208=ship|Returns 1 if ship can be flown. Capships need >1 con manned.
@@ -39,6 +41,12 @@
 -
 &DOC.CLONE.SHIP #208=ship|Makes an exact copy of ship.
 -
+&DOC.CLONE.CONSINROOM #208=console|If it's a console, clone it.
+-
+&DOC.CLOSEBAY #208=ship|Close a ship's bay.
+-
+&DOC.CPU #208=ship|Get ship's CPU value.
+-
 &DOC.CYCLE #208=|Returns time in seconds until next space tick.
 -
 &DOC.DEACTIVATE #208=ship|Deactivates the ship for landing etc.
@@ -46,6 +54,42 @@
 &DOC.DISTANCE #208=object1:object2|Returns distance between two objects.
 -
 &DOC.ETA #208=ship|Returns ETA in timestring format if destination is set.
+-
+&DOC.FINDSHIP.BAY #208=ship1:ship2|Find ship2 by dbref or name in ship1's bay.
+-
+&DOC.FINDSHIP.ROOM #208=ship1:ship2|Find ship2 by dbref or name in location of ship1.
+-
+&DOC.GUNS #208=ship|Return number of ship's guns.
+-
+&DOC.HAIL #208=ship1:enactor:ship2:message|Message ship2 from ship1 with message.
+-
+&DOC.HAIL.GETTARGET #208=ship|Return hail target of ship.
+-
+&DOC.HAIL.SET #208=ship1:ship2|Set ship2 as ship1's hail target.
+-
+&DOC.HAIL.WIPE #208=ship|Wipe ship's hail target.
+-
+&DOC.HICMD #208=input|Highlight, underline input.
+-
+&DOC.INTERVAL #208=|Return tick interval.
+-
+&DOC.ISBAYOPEN #208=ship|Return 1 if the ship's bay is open.
+-
+&DOC.ISUNMANNED #208=console|Return 1 if console is unmanned.
+-
+&DOC.LIST.SHIP.ACTIVE #208=|List active ships.
+-
+&DOC.LIST.SHIP.ALL #208=|List all ships.
+-
+&DOC.OPENBAY #208=ship|Open ship's bay.
+-
+&DOC.REACTOR #208=ship|Return ship's reactor value.
+-
+&DOC.SCAN.LAND #208=ship|Return view from outside the ship.
+-
+&DOC.SURVEY #208=ship:target:enactor|Survey target from ship, pay enactor.
+-
+&DOC.SURVEY.LAST #208=ship:target|Return the last time ship surveyed target.
 -
 &DOC.HASSHUTTLE #208=player|Returns 1 if player was given a free shuttle.
 -
@@ -1195,3 +1239,100 @@
 -
 &FN.LIST.SHIP.ACTIVE #208=
   get(v(data)/list.active)
+-
+&FN.LIST.TRACKERS #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(trackers,
+                 default(%0/space`tracking`trackers,0)
+                ))],
+         0?,#-1 NOT A SHIP,
+         10,#-1 UNTRACKED,
+         11,%q<trackers>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.LIST.TRACKERS.PLAYER #208=
+  switch(
+         [t(setr(player,
+                 pmatch(%0)
+                ))]
+         [t(setr(trackers,
+                 default(%q<player>/space`tracking`allowed,0)
+                ))],
+         0?,#-1 NOT A PLAYER,
+         10,#-1 NOT TRACKING,
+         11,%q<trackers>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.GETSHIPLOC #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(loc,
+                 ifelse(
+                        setr(zone,
+                             zone(setr(room,
+                                       room(%0)
+                                      )
+                                 )
+                            ),
+                        %q<zone>,
+                        %q<room>
+                       )
+                ))],
+         0?,#-1 NOT A SHIP,
+         10,#-1 SHIP HAS NO LOCATION!?,
+         11,%q<loc>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.ADDTRACKER #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(player,
+                 pmatch(%1)
+                ))]
+         [not(and(
+                  t(setinter(
+                             spacesys(list.trackers,%0),
+                             %q<player>
+                            )), 
+                  t(setinter(
+                             spacesys(list.trackers.player,%q<player>),
+                             %0
+                            ))  
+                 ))],
+         0??,#-1 NOT A SHIP,
+         10?,#-1 NOT A PLAYER,
+         110,#-1 TRACKER ALREADY INSTALLED OR DUPLEX ISSUE,
+         111,
+             [set(%0,space`tracking`trackers:[insert(get(%0/space`tracking`trackers),-1,%q<player>)])]
+             [set(%q<player>,space`tracking`allowed:[insert(get(%q<player>/space`tracking`allowed),-1,%0)])],
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.DELTRACKER #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(player,
+                 pmatch(%1)
+                ))]
+         [and(
+              t(setinter(
+                         spacesys(list.trackers,%0),
+                         %q<player>
+                        )),
+              t(setinter(
+                         spacesys(list.trackers.player,%q<player>),
+                         %0
+                        ))
+             )],
+         0??,#-1 NOT A SHIP,
+         10?,#-1 NOT A PLAYER,
+         110,#-1 TRACKER NOT INSTALLED OR DUPLEX ISSUE,
+         111,
+             [set(%0,space`tracking`trackers:[remove(get(%0/space`tracking`trackers),%q<player>)])]
+             [set(%q<player>,space`tracking`allowed:[remove(get(%q<player>/space`tracking`allowed),%0)])],
+         #-1 SOMETHING IS BROKEN ##
+        )
