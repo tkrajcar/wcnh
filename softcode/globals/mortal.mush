@@ -428,4 +428,37 @@
   @nspemit %#=[ansi(gh,>)] You remove [name(%q<target>)] from the permissions list for [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
   @set %q<exit>=keys:[remove(get(%q<exit>/keys),%q<target>)]
 -
-
+&CMD.SHIP/TRACK #15=$ship/track:
+  @assert [and(
+               t(setr(trackers,
+                      spacesys(list.trackers.player,%#)
+                )),
+               t(setr(trackers_checked,
+                      squish(
+                             iter(
+                                  %q<trackers>,
+                                  if(setinter(
+                                              spacesys(list.trackers,itext(0)),
+                                              %#
+                                             ),
+                                     itext(0)
+                                    )
+                                 )
+                            )
+                     ))
+              )]=@nspemit %#=[ansi(hr,>)] You aren't tracking anything.;
+  @nspemit %#=
+     [titlebar(Tracked Ships)]%r
+     [ansi(y,align(30 15 30,Name,Active,Location))]%r
+     [iter(%q<trackers_checked>,
+           align(30 15 30,
+                 [name(itext(0))],
+                 [ifelse(
+                         spacesys(isactive,itext(0)),
+                         [ansi(hg,Active)],
+                         Inactive
+                        )],
+                 [name(spacesys(getshiploc,itext(0)))]
+                ),
+          ,%r)]%r
+     [footerbar(words(%q<trackers_checked>) ships)]
