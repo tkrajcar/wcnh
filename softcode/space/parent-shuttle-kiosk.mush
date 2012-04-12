@@ -49,7 +49,7 @@
             }
 -
 &FN.TRAVEL.CALC #203=
-  val(mul(add(1,power(val(rpc(Econ.location_distance,xget(%0,space`loc),xget(%1,space`loc))),0.8)),150))
+  val(mul(add(1,power(val(rpc(Econ.location_distance,xget(%0,space`loc),xget(%1,space`loc))),0.8)),50))
 -
 &LIST.DESTINATIONS #203=#223 #1054 #428 #387 #349 
 -
