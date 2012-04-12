@@ -347,7 +347,7 @@
              \[get(%%qs/space`class)\],
              \[name(setr(p,extract(%%0,2)))\]\(\[ansi(c,%%qp)\]\)
             ),
-       setr(trackers,
+       squish(setr(trackers,
             iter(    
                  filter(
                         #lambda/
@@ -358,7 +358,7 @@
                       squish(get(itext(0)/space`tracking`trackers)),
                       [itext(1)]%b[itext(0)],
                      ,|),
-                )
-           ),
+                ,|)
+           ),|),
       |,%r)]%r
   [footerbar(words(%q<trackers>,|) trackers)]
