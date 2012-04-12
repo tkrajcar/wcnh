@@ -336,3 +336,29 @@
               )]=@nspemit %#=[ansi(rh,>)] The [ansi(h,name(%0))] is not tracked by [ansi(h,name(%q<player>))]!;
   @nspemit %#=[ansi(gh,>)] The [ansi(h,name(%0))] is no longer tracked by [ansi(h,name(%q<player>))].;
   think [spacesys(deltracker,%0,%q<player>)]
+-
+&CMD.+SPACE/TRACKERS #367=$+space/trackers:@nspemit %#=
+  [titlebar(Installed Trackers)]%r
+  [ansi(y,align(30 15 30,Name,Class,Tracked By))]%r
+  [map(
+       #lambda/
+       align(30 15 30,
+             \[name(setr(s,extract(%%0,1)))\]\(\[ansi(c,%%qs)\]\),
+             \[get(%%qs/space`class)\],
+             \[name(setr(p,extract(%%0,2)))\]\(\[ansi(c,%%qp)\]\)
+            ),
+       setr(trackers,
+            iter(    
+                 filter(
+                        #lambda/
+                        \[hasattrval(%%0,space`tracking`trackers)\],
+                        spacesys(list.ship.all)
+                       ),
+                 iter(
+                      squish(get(itext(0)/space`tracking`trackers)),
+                      [itext(1)]%b[itext(0)],
+                     ,|),
+                )
+           ),
+      |,%r)]%r
+  [footerbar(words(%q<trackers>,|) trackers)]

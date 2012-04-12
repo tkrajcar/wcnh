@@ -1307,8 +1307,8 @@
          10?,#-1 NOT A PLAYER,
          110,#-1 TRACKER ALREADY INSTALLED OR DUPLEX ISSUE,
          111,
-             [set(%0,space`tracking`trackers:[insert(get(%0/space`tracking`trackers),-1,%q<player>)])]
-             [set(%q<player>,space`tracking`allowed:[insert(get(%q<player>/space`tracking`allowed),-1,%0)])],
+             [set(%0,space`tracking`trackers:[squish(insert(get(%0/space`tracking`trackers),-1,%q<player>))])]
+             [set(%q<player>,space`tracking`allowed:[squish(insert(get(%q<player>/space`tracking`allowed),-1,%0))])],
          #-1 SOMETHING IS BROKEN ##
         )
 -
@@ -1332,7 +1332,7 @@
          10?,#-1 NOT A PLAYER,
          110,#-1 TRACKER NOT INSTALLED OR DUPLEX ISSUE,
          111,
-             [set(%0,space`tracking`trackers:[remove(get(%0/space`tracking`trackers),%q<player>)])]
-             [set(%q<player>,space`tracking`allowed:[remove(get(%q<player>/space`tracking`allowed),%0)])],
+             [set(%0,space`tracking`trackers:[squish(remove(get(%0/space`tracking`trackers),%q<player>))])]
+             [set(%q<player>,space`tracking`allowed:[squish(remove(get(%q<player>/space`tracking`allowed),%0))])],
          #-1 SOMETHING IS BROKEN ##
         )
