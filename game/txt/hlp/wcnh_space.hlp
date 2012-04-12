@@ -1,4 +1,31 @@
+& SPACE INDEX
+The following commands are for use within the space system.  Most of them
+require that you "man" a console prior to using the command.
+ 
+bay              board          hail          intercom      jump
+man              land           load/ship     launch        manifest      
+plot             roster         scan          +scheck       ship/track
+spose            status         survey        taxi          unload/ship
+
 & SPACE
+At one point or another, chances are that you're going to want to get off the 
+planet you're stuck on.  We're a science fiction game, so space is naturally 
+the gateway to many activities, from simple transportation to taking advantage 
+of commodity trading.  The following topics will help you learn how to get
+around in space.
+ 
+Type 'help space <topic>' to read more on each of the following:
+
+Topic     Summary
+BASICS    How do I get and fly my first ship?
+CONTACT   How do I interact with other ships that are flying around?
+CREW      What if I want to have other players crew my ship?
+COMBAT    How do I blast another ship out of space?
+CAPITALS  How are capships different from regular ships?
+ 
+If you want a complete index of every space command, use 'help space index'.
+
+& SPACE BASICS
 The space system currently in use on WCNH is a work in progress with a focus on
 two primary goals: Minimize the elements of a simulator that require real-life
 understanding of complicated topics, and foster the roleplaying experience. We
@@ -7,13 +34,108 @@ story. We don't want it to be a headache, and we don't want players to have to
 practice in a simulator for hours just to accurately roleplay a good pilot 
 character.
  
-The following commands are for use within the space system.  Most of them
-require that you "man" a console prior to using the command.
+The space system works in 2-dimensions (X and Y) without a Z-axis.  We did this
+on purpose because, as mentioned, we want to focus on storytelling over
+technical accuracy.  
  
-bay              board          hail          intercom      jump
-man              land           load/ship     launch        manifest      
-plot             roster         scan          +scheck       ship/track
-spose            status         survey        taxi          unload/ship
+There are two options for getting around the sector.  The first is the shuttle
+taxi system.  Every major space port on each planet has a Shuttle Kiosk that
+you can use to hop a ride to any other planet in the sector.  The travel times
+are relatively quick, and the taxi is free.  There's even a chance that you
+might meet someone new while you're riding the taxi.
+ 
+To use the shuttle taxi, find a Shuttle Kiosk on any planet and type 'look
+kiosk' for instructions.
+ 
+Continued in 'help space basics2'
+
+& SPACE BASICS2
+The second option for flying around the galaxy is to purchase your own ship.
+Every player starts with enough credits to purchase an Ares-class shuttle.
+This is a basic ship with a small cargo hold and no weapons.  It's fairly
+quick and will easily get you where you need to go.
+ 
+To purchase your first ship, find a Shipyard.  There's one in the major space
+port of most planets.  Type 'look shipyard' for instructions on how to buy your
+ship.
+ 
+Once you've purchased your ship, you can use the following commands to get it
+off the ground and flying around:
+ 
+Command   Summary
+BOARD     How do I enter and exit my ship?
+MAN       How do I prepare to fly my ship?
+LAUNCH    How do I take off?
+LAND      How do I land?
+SCAN      How do I see what's around me in space?
+PLOT      How do I fly from Point A to Point B?
+JUMP      How do I move between systems?
+ 
+Type 'help <command>' for more help on each command.
+
+& SPACE CONTACT
+It's inevitable that you will encounter other ships while flying through space.
+The space system provides a number of avenues for communicating and interacting
+with the other ships you encounter.
+ 
+Type 'help <command>' for more help on each command.
+ 
+Command   Summary
+HAIL      How do I send a direct message to another ship?
+SPOSE     How do I roleplay with other ships in space?
+
+Additionally, see 'help comms' for information on using IC communications that
+are not ship-to-ship.
+
+& SPACE CREW
+Once you've mastered the basics of flying around and communicating with other
+ships, you'll probably want to either join someone else's crew or recruit for
+your own.  These commands will allow other players to board and use your ship,
+and vice versa:
+
+Type 'help <command>' for more help on each command.
+ 
+Command   Summary
+INTERCOM  How do I make announcements to other people aboard the ship?
+ROSTER    How do I set the crew roster on my ship?
+
+& SPACE COMBAT
+Eventually in your piloting career, you'll probably come into conflict with
+other ships.  Pirates might attack you while you're hauling cargo.  Perhaps
+you're the pirate!  In space combat, just like in person-to-person combat, a
+Game Master (GM) is required to set the rules and judge the scene (See 'help
+combat').  The following commands will be useful in space combat situations:
+ 
+Command   Summary
+STATUS    How do I see the current specs and capabilities of my ship?
+SCAN      How do I see the relative capabilities of other ships?
++911      How do I call for a GM to initiate combat?
++SCHECK   How do I check skills that are used in space combat?
+SPOSE     How do I roleplay about what my ship is doing in combat?
+
+& SPACE CAPITALS
+There are numerous ship "classes", but there are only two distinctions of ship
+types in terms of size.  Fighters are the vast majority of ships, and range
+from tiny one-room shuttles to medium-sized frigates that are designed for the
+transportation of large amounts of cargo.
+ 
+In comparison, capital ships are gigantic vessels that are designed to be
+crewed by multiple people.  Some capital ships are so large that they can't
+land on planets.  Some of them have landing bays that can accommodate other
+ships.  In game terms, the term "capital ship" also includes space stations.
+ 
+There are a few space system commands that you will find especially useful when
+dealing with capital ships:
+ 
+Command     Summary
+BAY         How do I open and close the landing bay on a ship?
+INTERCOM    How do I make announcements to other people aboard the ship?
+LOAD/SHIP   How do I load other ships into the bay of my landed capital ship?
+UNLOAD/SHIP How do I remove ships from the bay of my landed capital ship?
+ROSTER      How do I set the crew roster on my ship?
+ 
+Type 'help <command>' for more information.
+
 & BAY
 Syntax: bay/open
         bay/close
@@ -35,20 +157,29 @@ Syntax: survey <contact ID>
 Survey a particular celestial such as a planet or asteroid for some credits, 
 the amount of which is dependent on your science skill.  A ship can only survey
 a particular celestial once every 6 hours.
+
 & STATUS
 Syntax: status
  
 Display useful information about your ship.
+
 & INTERCOM
 Syntax: intercom <message>
  
 In ships with more than one room, this command can be used in any part of the
 ship to send a message to every other room on the ship.
+
 & BOARD
 Syntax: board <ship>
         enter <ship>
+        disembark
   
 Enter a specified landed ship, provided you are on the ship's roster.
+ 
+The 'disembark' command allows you to exit the ship.  For ships with multiple
+rooms, you must disembark from the same room that you arrived in when you first
+boarded.
+
 & HAIL
 Syntax: hail <message>
         hail/set <ship name>
@@ -59,27 +190,40 @@ name in order for it to be recognized.
  
 Hails are seen by all players in the same location of the sending or 
 receiving console.
+
 & JUMP
 Syntax: jump <contact ID>
+
+Space is divided into a number of star systems.  Whenever you're flying around,
+you're flying through a star system.  In order to travel between sytems, ships
+use jump points.  Jump points are spacial anomalies that, when activated, can
+literally throw ships hundreds or thousands of light years in a single instant.
+Each jump point is marked by a beacon which is named "JP: <system>".  
   
-If the ship is equipped with a jump drive, initiate the jump sequence which
-will propel the ship through a jump node to a new system.
+If the ship is equipped with a jump drive, the 'jump' command will initiate the
+jump sequence, susequently propeling the ship through a jump point and into a
+new system.
+
 & MAN
 Syntax: man <console>
         use <console>
         unman
          
 Man or use a console, and subsequently unman it. You cannot man a console that
-someone else is already manning. 
+someone else is already manning.  You must be manning a console on a ship
+before you can fly that ship.
+
 & LAND
 Syntax: land <contact ID>
  
 Land the ship on a planet or station or in another ship's docking bay, provided
 the target is able to be landed on.
+
 & LAUNCH
 Syntax: launch
  
-Launch the landed ship.
+Launch a ship that is landed.  You must be manning a console on the ship.
+
 & PLOT
 Syntax: plot/calc <contact ID>
         plot/engage
@@ -96,6 +240,7 @@ The third syntax stops a ship that is in motion.  The ship must be stopped
 before a new course can be plotted.
  
 The fourth syntax will show you your ETA to your current destination.
+
 & ROSTER
 Syntax: roster/add <person>=<status>
         roster/list
@@ -109,6 +254,7 @@ The second syntax displays the current ship's roster.
  
 The third syntax removes a person from the ship's roster.  Only the captain of
 the ship can add or remove people from the roster.
+
 & SCAN
 Syntax: scan
         scan <contact ID>
@@ -117,6 +263,9 @@ The first syntax shows a list of contacts in your current system that are
 visible on sensors.
  
 The second syntax shows detailed information about a specific contact.
+
+Also see help on: +map
+
 & +SCHECK
 Syntax: +scheck/list
         +scheck <skill>

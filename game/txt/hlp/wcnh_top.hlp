@@ -2,18 +2,20 @@
 Welcome to Wing Commander: New Horizon MUSH. Please don't be afraid to ask for
 help if you need it! Just type '+new I need some help!'. Our admin and
 player guides will be glad to help if able.
-  
-  >>> New to MUSHing and totally confused? Type:  help getting started
  
-  For the list of standard MUSH commands, type:   help commands
-  For the list of standard MUSH topics, type:     help topics
-  For an alphabetical list of all help entries:   help entries   
+If you're completely new to MUSHing, you may want to check out the Newbie Guide
+on our website: http://www.wcmush.com/pages/wcnh-newbie-guide
  
-  For a list of commands specific to WCNH, type:  help local
-  To view the Terms of Service, type:             help terms of service
+Otherwise, choose one of the following topics to get started with:
  
-If you find an error in the help files or have an idea of how to make one 
-better, please open a +ticket (see: 'help +ticket') and we'll check it out.
+ROLEPLAY          SPACE             ECONOMY           SOCIAL
+ 
+Type 'help <topic>' to delve into the topic of your choice.
+ 
+If you're looking for the stock PennMUSH help entries, try 'help original'.
+ 
+If you want a complete index of game-specific code, try 'help local'.
+
 & loc
 & local
   This page lists our local commands and topics. To view a page, type
@@ -27,9 +29,92 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   CARGO          cash           CHARGEN        COMBAT         COMMS          
   +concept       CONTRACT       FACTIONS       +finger        +guides
   +LOG           lock           +map           +ooc           pay
-  PLACES         put down       race           RP             +set
+  PLACES         put down       race           +RP            +set
   SPACE          +staff         +TICKET        time           WANTED
   +where         +who           +XP
+
+
+& ROLEPLAY
+Roleplaying is the meat and potatoes of our game.  It's the primary reason why
+we're all here.  All of the fancy code exists primarily to support and
+facilitate roleplaying.  The topics in this section are for handling the most
+common situations that may occur while you're roleplaying with other players.
+ 
+Topic     Summary
++XP       How do I earn experience and advance my character?
+COMBAT    How do I resolve conflicts with other players?
+PRIVACY   How do I roleplay privately with one or more people?
++LOG      How can I conveniently log my roleplaying scenes?
+ 
+Type 'help <topic>' for more information on each topic.
+
+& PRIVACY
+There are some situations where you may want to roleplay privately with other
+characters without being interrupted.  Perhaps you're a criminal planning a
+heist, or maybe you just want to talk about someone behind their back.  These
+topics will help you accomplish just that.
+ 
+Topc      Summary
+PLACES    What are virtual places and how can I use them for privacy?
+LOCK      How can I lock or unlock entire rooms?
+ 
+Type 'help <topic>' for more information on each topic.
+
+& SOCIAL
+Playing on any MUSH is a social experience, and WCNH is no different.  We
+provide a number of methods for communicating and interacting with your fellow
+players.  The important point to remember is that some routes of communication
+are In-Character (IC) and others are Out-of-Character (OOC).  The help files on
+most commands will specify whether a command is IC or OOC, but a good rule of
+thumb to remember is that if a command is prefixed with a '+', like '+bbread',
+it's OOC.  If a command is not prefixed with a '+', like 'message', then it's
+IC.
+ 
+Type 'help <topic>' for more information on each topic.
+
+  Topic     Summary
+  COMMS     How do I talk to other characters using communicators?
+  +BBOARD   How do I use the in-game forums and bulletin boards?
+  CALENDAR  How can I plan and attend game-related events?
+  FACTIONS  How can I join or create a group of like-minded characters?
+  +OOC      How can I talk OOCly to people in the same room?
+  +TICKET   How can I make requests to the administrators?
+  CHANNELS  How can I chat OOCly as I would in a chat room?
+ 
+Continued in 'help social2'
+
+& SOCIAL2
+In addition to the previously mentioned topics, there are some commands that
+you may find useful for obtaining basic OOC information about specific people
+or the game at large.
+ 
+  Topic     Summary
+  +WHO      How can I see everyone that's online?
+  +FINGER   How can I get summary information on someone?
+  +STAFF    How can I see a list of administrators?
+  +GUIDES   How can I see a list of player guides?
+  +911      How can I get an administrator's attention for an emergency?
+  TIME      How can I check the In-Character date and time?
+  +WHERE    How can I find out where other players are?
+ 
+Type 'help <topic>' for more information on each topic.
+
+& original
+Welcome to Wing Commander: New Horizon MUSH. Please don't be afraid to ask for
+help if you need it! Just type '+new I need some help!'. Our admin and
+player guides will be glad to help if able.
+  
+  >>> New to MUSHing and totally confused? Type:  help getting started
+ 
+  For the list of standard MUSH commands, type:   help commands
+  For the list of standard MUSH topics, type:     help topics
+  For an alphabetical list of all help entries:   help entries   
+ 
+  For a list of commands specific to WCNH, type:  help local
+  To view the Terms of Service, type:             help terms of service
+ 
+If you find an error in the help files or have an idea of how to make one 
+better, please open a +ticket (see: 'help +ticket') and we'll check it out.
 
 & wanted
   wanted
@@ -41,6 +126,13 @@ better, please open a +ticket (see: 'help +ticket') and we'll check it out.
   This information is fully IC and may be acted upon, however, please remember
   that just because you see another player in a room with you, you may not know
   who they are, or be able to recognize them.
+   
+  In order to turn in a bounty for credits once you have tracked it down and
+  captured it, simply open a +ticket with the details, or alternatively use
+  +911 if it's a time-sensitive scene.
+   
+  See additional help on: +911, +ticket
+
 & +log
   On WCNH, by default, all roleplay poses, emits, etc are logged. This is for
   several reasons: #1, to reward players with XP, +noms, and other perks based

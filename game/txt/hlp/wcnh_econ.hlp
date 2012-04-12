@@ -1,3 +1,103 @@
+& ECONOMY
+Money makes the world go 'round, and that's especially true in the IC world of
+WCNH.  You need money to do anything and everything, and people are always
+coming up with new and creative ways to make a quick buck.
+ 
+The IC standard unit of money is the "credit".  The credit is universally
+accepted.  It's been the galactic standard monetary unit since the
+Terran-Kilrathi war, and while its value has fluctuated over the years, no
+other form of currency has been able to replace it.
+ 
+The following topics provide help for dealing with various aspects of the
+economy:
+ 
+Topic     Summary
+BASIC     How do I carry, put down, pay out, and interact with credits?
+EARNING   How can I earn credits in the Enigma Sector?
+SPENDING  What types of things can I spend credits on?
+ 
+Type 'help econ <topic>' for more information.
+
+& ECON BASIC
+At the most basic level, the economy system allows you interact with credits.
+At any one time, you may have a certain amount of credits on your person (in
+your wallet), and you may have credits in a number of bank accounts.
+ 
+Physically, a "credit" that you're carrying on your person is in the form of a
+small, secure, electronic data chip that has been programmed to register a
+certain number of credits as its on-hand balance.  When you pay for something,
+you're handing over one or several of these credit chips.  When someone is in
+possession of one or several credit chips, they can either hold them on their
+person, or upload the credits electronically into a bank account of their
+choice.
+ 
+The following commands are used for dealing with credits:
+ 
+Topic     Summary
+CASH      How do I check how many credits I have on-hand?
+PAY       How can I give credits to other players?
+PUT DOWN  How can I put down credits on the floor?
+ACCOUNT   How do I put my credits in the bank?
+ 
+Type 'help <topic>' to read about each topic.
+
+& ECON EARNING
+Earning credits is what it's all about.  There are several game systems that
+are designed specifically to facilitate the earning of credits, but players are
+encouraged to be creative in coming up with new ways to generate profits.
+ 
+Most methods of making credits involve using your ship to provide a service.
+That service might be hauling cargo or providing transport to passengers, to
+name a couple. However, we love entrepreneurs, and we love it when players come
+up with something that other players are willing to pay for.  More often than
+not, we will be willing to give you administrative support (within reason) to
+make your idea a reality.
+ 
+The follow topics will help you earn some credits:
+ 
+Topic     Summary
+CARGO     How can I earn credits by hauling cargo in my ship?
+CONTRACT  How can I earn credits by bidding on contracts?
+SURVEY    How can I earn credits by surveying celestial objects in space?
+WANTED    How can I earn credits by being a bounty hunter?
+RACE      How can I earn credits by gambling on ship races?
+ 
+Type 'help <topic>' to read about each topic.
+
+& ECON SPENDING
+When it comes to spending your credits, the first thing most people want is a
+bigger, better, or faster ship.  Purchasing a new ship is as simple as finding
+a Shipyard (usually located in major space ports), and looking at it for
+further direction.
+ 
+However, ships aren't the only thing you can spend credits on.  You may want to
+hire other players to do a particular job in the interest of expanding your
+business.  Maybe you just want to pay someone else to do something you're too
+lazy to do yourself.  Everyone wants credits, and you'd be surprised what
+people are willing to do for them.
+ 
+Another common avenue for spending credits is research or activity tickets.
+This is when a player uses the +ticket system in an attempt to accomplish a
+task that we don't expect you to fully roleplay out.  This might be doing
+research in a library on a particular topic, or it could be an attempt to
+extract information from other, less-legitimate means.  A ticket could be used
+to improve a specific area (thereby changing the room description), or possibly
+to create an entirely new area (provided you have IC permission to build
+there).  
+ 
+The things you can spend credits on via tickets is limited only by your
+imagination.  However, you should remember two important points: First, we
+always prefer that you use PC resources as opposed to NPCs.  If you want to do
+something via a +ticket that could also be accomplished by roleplaying with
+other players, you may be charged much more than what another player might
+charge for the same thing.  Second, spending credits in a +ticket never
+guarantees success.  It may depend on other outside factors, including your
+skills.  If you want information, there simply may not be any info out there on
+your subject of interest, or you might just be really terrible at researching.
+You will not be told if you succeeded or failed in this case.
+ 
+See additional help on: +ticket
+ 
 & cash
   cash
   
