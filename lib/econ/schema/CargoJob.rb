@@ -26,6 +26,7 @@ module Econ
     field :size, :type => Integer
     field :price, :type => Integer
     field :visibility, :type => Integer
+    field :publicity, :type => String
     belongs_to :source, :class_name => "Econ::Location"
     belongs_to :destination, :class_name => "Econ::Location"
 
@@ -54,7 +55,8 @@ module Econ
     end
 
     def to_mush
-      ret = self.number.to_s.rjust(5).bold
+      number_string = self.number.to_s.rjust(5)
+      self.publicity.nil? ? ret = number_string.bold : ret = number_string.bold.red
       ret << " "
       ret << "#{self.source.name}-#{self.destination.name}".ljust(22)
       ret << self.size.to_s.rjust(4)
