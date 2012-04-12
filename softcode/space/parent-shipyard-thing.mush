@@ -128,3 +128,9 @@
           ),
         ,%r)]%r
     [footerbar([words(%ql)] Classes)]
+-
+&FN.CLEANSHIP #595=
+  if(
+     spacesys(isship,%0),
+     wipe(%0/data.roster)
+    )
