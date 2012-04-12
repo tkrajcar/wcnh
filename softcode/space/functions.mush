@@ -1239,3 +1239,100 @@
 -
 &FN.LIST.SHIP.ACTIVE #208=
   get(v(data)/list.active)
+-
+&FN.LIST.TRACKERS #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(trackers,
+                 default(%0/space`tracking`trackers,0)
+                ))],
+         0?,#-1 NOT A SHIP,
+         10,#-1 UNTRACKED,
+         11,%q<trackers>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.LIST.TRACKERS.PLAYER #208=
+  switch(
+         [t(setr(player,
+                 pmatch(%0)
+                ))]
+         [t(setr(trackers,
+                 default(%q<player>/space`tracking`allowed,0)
+                ))],
+         0?,#-1 NOT A PLAYER,
+         10,#-1 NOT TRACKING,
+         11,%q<trackers>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.GETSHIPLOC #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(loc,
+                 ifelse(
+                        setr(zone,
+                             zone(setr(room,
+                                       room(%0)
+                                      )
+                                 )
+                            ),
+                        %q<zone>,
+                        %q<room>
+                       )
+                ))],
+         0?,#-1 NOT A SHIP,
+         10,#-1 SHIP HAS NO LOCATION!?,
+         11,%q<loc>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.ADDTRACKER #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(player,
+                 pmatch(%1)
+                ))]
+         [not(and(
+                  t(setinter(
+                             spacesys(list.trackers,%0),
+                             %q<player>
+                            )), 
+                  t(setinter(
+                             spacesys(list.trackers.player,%q<player>),
+                             %0
+                            ))  
+                 ))],
+         0??,#-1 NOT A SHIP,
+         10?,#-1 NOT A PLAYER,
+         110,#-1 TRACKER ALREADY INSTALLED OR DUPLEX ISSUE,
+         111,
+             [set(%0,space`tracking`trackers:[insert(get(%0/space`tracking`trackers),-1,%q<player>)])]
+             [set(%q<player>,space`tracking`allowed:[insert(get(%q<player>/space`tracking`allowed),-1,%0)])],
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.DELTRACKER #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(player,
+                 pmatch(%1)
+                ))]
+         [and(
+              t(setinter(
+                         spacesys(list.trackers,%0),
+                         %q<player>
+                        )),
+              t(setinter(
+                         spacesys(list.trackers.player,%q<player>),
+                         %0
+                        ))
+             )],
+         0??,#-1 NOT A SHIP,
+         10?,#-1 NOT A PLAYER,
+         110,#-1 TRACKER NOT INSTALLED OR DUPLEX ISSUE,
+         111,
+             [set(%0,space`tracking`trackers:[remove(get(%0/space`tracking`trackers),%q<player>)])]
+             [set(%q<player>,space`tracking`allowed:[remove(get(%q<player>/space`tracking`allowed),%0)])],
+         #-1 SOMETHING IS BROKEN ##
+        )
