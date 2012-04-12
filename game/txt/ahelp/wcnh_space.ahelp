@@ -16,11 +16,12 @@ following space cycle.  To force an action immediately, either @notify
 <ship>/any after using one of the commands, or use one of the functions from
 #208.
  
-+space/active        +space/addcon          +space/advance         
-+space/audit         +space/classes         +space/class
-+space/jump          +space/land            +space/launch
-+space/load/ship     +space/ships           +space/stop
-+space/taxi          +space/unload/ship
++space/active        +space/addcon          +space/addtracker
++space/advance       +space/audit           +space/classes   
++space/class         +space/deltracker      +space/jump
++space/land          +space/launch          +space/load/ship
++space/ships         +space/stop            +space/taxi
++space/unload/ship
 
 & +SPACE/ADDCON
 Syntax: +space/addcon <ship>=<object>
@@ -96,4 +97,14 @@ Lists ships marked as active.
 Syntax: +space/audit
  
 Lists all ships with audit data.
+ 
+& +SPACE/ADDTRACKER
+Syntax: +space/addtracker <ship dbref>=<player>
+ 
+Adds a player-accessible tracking device to a ship.
+ 
+& +SPACE/DELTRACKER
+Syntax: +space/deltracker <ship dbref>=<player>
+ 
+Removes a player-accessible tracking device from a ship.
  

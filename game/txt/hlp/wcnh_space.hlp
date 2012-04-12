@@ -12,8 +12,8 @@ require that you "man" a console prior to using the command.
  
 bay              board          hail          intercom      jump
 man              land           load/ship     launch        manifest      
-plot             roster         scan          +scheck       spose
-status           survey         taxi          unload/ship
+plot             roster         scan          +scheck       ship/track
+spose            status         survey        taxi          unload/ship
 & BAY
 Syntax: bay/open
         bay/close
@@ -158,3 +158,9 @@ This command will unload a ship from your ship, if the ship is in your
 bay. Ships which can be unloaded are visible with 'bay/ships'. You must 
 be on the roster of both ships, and bay doors must be open. This command 
 may only be used while landed.
+& SHIP/TRACK
+Syntax: ship/track
+ 
+This command will list the locations and activity states of ships equipped
+with tracking devices under your control.
+ 
