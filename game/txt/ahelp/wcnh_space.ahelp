@@ -21,7 +21,7 @@ following space cycle.  To force an action immediately, either @notify
 +space/class         +space/deltracker      +space/jump
 +space/land          +space/launch          +space/load/ship
 +space/ships         +space/stop            +space/taxi
-+space/unload/ship
++space/trackers      +space/unload/ship
 
 & +SPACE/ADDCON
 Syntax: +space/addcon <ship>=<object>
@@ -107,4 +107,7 @@ Adds a player-accessible tracking device to a ship.
 Syntax: +space/deltracker <ship dbref>=<player>
  
 Removes a player-accessible tracking device from a ship.
+& +SPACE/TRACKERS
+Syntax: +space/trackers
  
+Lists trackers currently installed.
