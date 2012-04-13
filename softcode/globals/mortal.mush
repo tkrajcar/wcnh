@@ -85,7 +85,13 @@
                     not(xget(zone(itext(0)),IS.HIDDEN)),
                     [if(and(t(zone(itext(0))),not(spacesys(isship,itext(0)))),[ansi(y,name(zone(itext(0))))]\,%b)]
                     [ansi(yh,name(itext(0)))] - 
-                    [itemize(iter(lvplayers(itext(0)),if(not(hasflag(itext(0),unfindable)),ansi(switch(t(get(itext(0)/char`rp))[gt(idle(itext(0)),3600)],?1,hx,1?,hg,n),name(itext(0)))),,|),|)]
+                    [itemize(squish(iter(
+                                  lvplayers(itext(0)),
+                                  if(
+                                    not(orflags(itext(0),UD)),
+                                    ansi(switch([t(get(itext(0)/char`rp))][gt(idle(itext(0)),3600)],?1,hx,1?,hg,n),name(itext(0)))
+                                    )
+                                  ,,|),|),|)]
                     )]
                 ,,%r)]%r%r
             [ansi(hg,*)] - [ansi(hg,Highlighted)] players are looking for RP. [ansi(hx,Darkened)] players are idle >1hr.%r
