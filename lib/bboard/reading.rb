@@ -74,7 +74,7 @@ module BBoard
     return ret
   end
   
-  def self.read(dbref, cat, num)
+  def self.read(dbref, cat, num, showreplies=false)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => dbref)
 
@@ -93,31 +93,41 @@ module BBoard
     ret = titlebar(category.name) + "\n"
     ret << "Message: ".yellow + "#{category.num}/#{num.to_i}".ljust(17) + "Posted                    Author".yellow + "\n"
     ret << post.title.ljust(26) + post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26) + R.penn_name(post.author) + "\n"
-    ret << footerbar + "\n"
+    ret << middlebar('BODY') + "\n"
     ret << post.body + "\n"
     
     if (replies.count > 0) then
       unread_replies = subscription.unread_replies[post.id] ||= []
         
-      ret << titlebar("#{replies.count} #{(replies.count == 1 ? 'Reply' : 'Replies')} (#{unread_replies.count} Unread)") + "\n"
-      ret << "        Reply".ljust(43).yellow + "Posted        By".yellow + "\n"
-      
-      count = 1
-      replies.each do |reply|
-        ret << count.to_s.ljust(6)
-        ret << (subscription.read_posts.find_index(reply.id).nil? ? "U " : "  ")
-        ret << reply.title.ljust(35) + reply.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(reply.author)
-        ret << "\n"
-        count += 1
-      end
+      ret << "\n" + "#{replies.count} #{(replies.count == 1 ? 'Reply' : 'Replies')} (#{unread_replies.count} Unread)".yellow + "\n"
+#      ret << "        Reply".ljust(43).yellow + "Posted        By".yellow + "\n"
+#      
+#      count = 1
+#      replies.each do |reply|
+#        ret << count.to_s.ljust(6)
+#        ret << (subscription.read_posts.find_index(reply.id).nil? ? "U " : "  ")
+#        ret << reply.title.ljust(35) + reply.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(reply.author)
+#        ret << "\n"
+#        count += 1
+#      end
     end
-    
-    ret << footerbar
     
     subscription.read_posts << post.id if subscription.read_posts.find_index(post.id).nil?
     subscription.save
+
+    return ret << footerbar unless showreplies
     
-    return ret
+    ret << middlebar("REPLIES") + "\n"
+    
+    replies.each do |reply| 
+      ret << R.penn_name(reply.author).bold.white + " at ".cyan + reply.created_at.strftime("%m/%d/%y %H:%M").to_s.bold.cyan + ": ".cyan
+      ret << reply.body + "\n"
+      subscription.read_posts << reply.id if subscription.read_posts.find_index(reply.id).nil?
+    end
+    
+    subscription.save
+  
+    return ret << footerbar
   end
   
   def self.join(dbref, cat)
@@ -141,37 +151,6 @@ module BBoard
     
     subscription.destroy
     return "> ".bold.green + "You have removed yourself from the #{category.name} board." 
-  end
-  
-  def self.replies(dbref, cat, num)
-    category = FindCategory(cat)
-    user = User.find_or_create_by(:id => dbref)
-
-    return "> ".bold.red + "You do not subscribe to that Group." unless !category.nil?
-
-    subscription = user.subscriptions.where(:category_id => category.id).first
-    
-    return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
-    
-    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
-    
-    return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
-    
-    ret = titlebar("Replies to #{category.name}/#{num}") + "\n"
-    
-    category.posts.where(:parent_id => post.id).each do |reply| 
-      ret << "Posted: ".yellow + reply.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26)
-      ret << "Author: ".yellow + R.penn_name(reply.author) + "\n"
-      ret << "Message: ".yellow + reply.title.ljust(26) + "\n"
-      ret << "\n"
-      ret << reply.body + "\n"
-      ret << footerbar + "\n"
-      subscription.read_posts << reply.id if subscription.read_posts.find_index(reply.id).nil?
-    end
-    
-    subscription.save
-  
-    return ret
   end
   
   def self.catchup(dbref, cat)

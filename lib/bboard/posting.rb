@@ -2,20 +2,27 @@ require 'wcnh'
 
 module BBoard
   
-  def self.post(author, cat, sub, txt, parent)
+  def self.post(author, cat, sub, txt)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => author)
 
     return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !category.nil?
     
     subscription = user.subscriptions.where(:category_id => category.id).first
+    post_list = category.posts.where(:parent_id => nil)
     
     return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !subscription.nil? && category.canwrite?(author)
     
-    thread = (parent.nil? ? nil : category.posts.where(:parent_id => nil)[parent.to_i - 1])
-    return "> ".bold.red + "You can't post a reply to that thread." if !parent.nil? && thread.nil?
+    if (sub.to_i > 0 && sub.to_i <= post_list.count) then
+      thread = post_list[sub.to_i - 1]
+    end
     
-    post = category.posts.create(:author => author, :title => sub, :body => txt, :parent_id => (thread.nil? ? nil : thread.id))
+    post = category.posts.create(
+                                  :author => author, 
+                                  :title => (thread.nil? ? sub : "Re: #{thread.title}"), 
+                                  :body => txt, 
+                                  :parent_id => (thread.nil? ? nil : thread.id)
+                                  )
     
     return "> ".bold.red + post.errors.values.join(" ") unless post.valid?
     
@@ -23,41 +30,51 @@ module BBoard
     online = R.lwho()
     notified = category.subscriptions.where(:user_id.in => online.split(' '))
     
-    if (parent.nil?) then
+    if (thread.nil?) then
       postnum = category.posts.where(:parent_id => nil).count
       notified.each do |i|
         R.nspemit(i.user.id, "(New BB message (#{category.num}/#{postnum}) posted to #{category.name} by #{R.penn_name(user.id)}: #{post.title})")
       end
       return "> ".bold.green + "You post your note about '#{sub}' in group #{category.num} (#{category.name}) as message ##{postnum}."
     else
+      postnum = category.posts.find_index(thread)
       notified.each do |i|
-        R.nspemit(i.user.id, "(New BB reply posted under message ##{parent} in group #{category.num} by #{R.penn_name(user.id)}: #{post.title})")
+        R.nspemit(i.user.id, "(New BB reply posted under message ##{postnum} in group #{category.num} by #{R.penn_name(user.id)}: #{post.title})")
       end
-      return "> ".bold.green + "You post your reply about '#{sub}' under message ##{parent} in group #{category.num} (#{category.name})."
+      return "> ".bold.green + "You post your reply, '#{post.title}', under message ##{postnum} in group #{category.num} (#{category.name})."
     end
     
   end
   
-  def self.draft_start(dbref, cat, sub, parent)
+  def self.draft_start(dbref, cat, sub)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => dbref)
+    
+    return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !category.nil?
+    
     subscription = user.subscriptions.where(:category_id => category.id).first
+    post_list = category.posts.where(:parent_id => nil)
     
     return "> ".bold.red + "Either you do not subscribe to Group '#{cat}', or you are unable to post to it." unless !subscription.nil? && category.canwrite?(dbref)
     return "> ".bold.red + "You are already in the middle of writing a bbpost." unless user.draft.nil?
     
-    thread = (parent.nil? ? nil : category.posts.where(:parent_id => nil)[parent.to_i - 1])
-    return "> ".bold.red + "You can't post a reply to that thread." if !parent.nil? && thread.nil?
+    if (sub.to_i > 0 && sub.to_i <= post_list.count) then
+      thread = post_list[sub.to_i - 1]
+    end
     
-    draft = user.create_draft(:category_id => category.id, :title => sub, :parent_id => (thread.nil? ? nil : thread.id))
+    draft = user.create_draft(
+                              :category_id => category.id, 
+                              :title => (thread.nil? ? sub : "Re: #{thread.title}"), 
+                              :parent_id => (thread.nil? ? nil : thread.id)
+                              )
     
     return "> ".bold.red + draft.errors.values.join(" ") unless draft.valid?
     
     draft.save
-    if (parent.nil?) then
+    if (thread.nil?) then
       return "> ".bold.green + "You start your posting to Group ##{category.num} (#{category.name})."
     else 
-      return "> ".bold.green + "You start your reply to message ##{parent} in group #{category.num} (#{category.name})."
+      return "> ".bold.green + "You start your reply to message ##{sub.to_i} in group #{category.num} (#{category.name})."
     end
   end
   
@@ -109,7 +126,13 @@ module BBoard
     
     thread = (user.draft.parent_id.nil? ? nil : category.posts.where(:_id => user.draft.parent_id).first)
     
-    ret = post(user.id, category.name, user.draft.title, user.draft.body, thread.nil? ? nil : category.posts.find_index(thread) + 1)
+    ret = post(
+              user.id, # User
+              category.name, # Board name
+              (thread.nil? ? user.draft.title : category.posts.find_index(thread)), # Draft title or Postnum of thread 
+              user.draft.body, # Post body
+              )
+              
     user.draft.destroy
     return ret  
   end

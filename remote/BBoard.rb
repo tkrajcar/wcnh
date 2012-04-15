@@ -24,12 +24,12 @@ module BBoard
     self.read(dbref, cat, num)
   end
   
-  def self.pj_post(author, cat, sub, txt, parent)
-    self.post(author, cat, sub, txt, parent.length > 0 ? parent : nil)
+  def self.pj_post(author, cat, sub, txt)
+    self.post(author, cat, sub, txt)
   end
   
-  def self.pj_draft_start(dbref, cat, sub, parent)
-    self.draft_start(dbref, cat, sub, parent.length > 0 ? parent : nil)
+  def self.pj_draft_start(dbref, cat, sub)
+    self.draft_start(dbref, cat, sub)
   end
   
   def self.pj_draft_write(dbref, txt)
@@ -65,7 +65,7 @@ module BBoard
   end
   
   def self.pj_replies(dbref, cat, num)
-    self.replies(dbref, cat, num)
+    self.read(dbref, cat, num, true)
   end
   
   def self.pj_catchup(dbref, cat)
