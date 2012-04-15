@@ -133,9 +133,11 @@ module BBoard
   def self.join(dbref, cat)
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => dbref)
-    subscription = user.subscriptions.where(:category_id => category.id).first
     
     return "> ".bold.red + "Sorry, you don't have access to that board." unless !category.nil? && category.canread?(dbref)
+    
+    subscription = user.subscriptions.where(:category_id => category.id).first
+    
     return "> ".bold.red + "You are already a member of #{category.name}." unless subscription.nil?
     
     category.subscriptions.create!(:user_id => user.id)
