@@ -31,6 +31,27 @@ module BBoard
     
     return "> ".bold.green + "'#{opt.capitalize}' option on board '#{category.name}' updated."
   end
+  
+  def self.sticky(dbref, cat, num, status)
+    category = FindCategory(cat)
+    user = User.find_or_create_by(:id => dbref)
+
+    return "> ".bold.red + "You do not subscribe to that Group." unless !category.nil?
+    
+    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
+    
+    return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
+    
+    if (post.sticky == false && status == false) then
+      return "> ".bold.red + "That post is not sticky."
+    elsif (post.sticky == true && status == true) then
+      return "> ".bold.red + "That post is already sticky."
+    end
+    
+    post.sticky = status
+    post.save
+    return "> ".bold.green + "Post #{num} on board #{category.num} (#{category.name}) is #{status == true ? 'now' : 'no longer'} sticky."
+  end
    
 end
 

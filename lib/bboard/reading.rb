@@ -64,8 +64,10 @@ module BBoard
     category.posts.where(:parent_id => nil).each do |post|
       ret << "#{category.num}/#{count}".ljust(5)
       ret << (!unread_replies[post.id].nil? ? "R" : " ")
-      ret << (subscription.read_posts.find_index(post.id).nil? ? "U" : " ")
-      ret << " " + post.title.ljust(35) + post.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(post.author)
+      ret << (subscription.read_posts.find_index(post.id).nil? ? "U" : " ") + " "
+      ret << '[STICKY] '.green if post.sticky
+      ret << post.title.ljust(post.sticky ? 26 : 35)
+      ret << post.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(post.author)
       ret << "\n"
       count += 1
     end
@@ -91,8 +93,11 @@ module BBoard
     replies = category.posts.where(:parent_id => post.id)
     
     ret = titlebar(category.name) + "\n"
-    ret << "Message: ".yellow + "#{category.num}/#{num.to_i}".ljust(17) + "Posted                    Author".yellow + "\n"
-    ret << post.title.ljust(26) + post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26) + R.penn_name(post.author) + "\n"
+    ret << "Message: ".yellow + "#{category.num}/#{num.to_i}"
+    ret << ' [STICKY]'.green if post.sticky
+    ret << "Posted                    Author".rjust(post.sticky ? 37 : 46).yellow + "\n"
+    ret << post.title.ljust(26) 
+    ret << post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26) + R.penn_name(post.author) + "\n"
     ret << middlebar('BODY') + "\n"
     ret << post.body + "\n"
     

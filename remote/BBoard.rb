@@ -75,4 +75,12 @@ module BBoard
   def self.pj_next(dbref)
     self.next(dbref)
   end
+  
+  def self.pj_remove(dbref, cat, num)
+    self.remove(dbref, cat, num)
+  end
+  
+  def self.pj_sticky(dbref, cat, num, status)
+    self.sticky(dbref, cat, num, (status.to_i > 0 ? true : false))
+  end
 end

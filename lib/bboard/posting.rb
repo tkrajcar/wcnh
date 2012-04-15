@@ -137,4 +137,27 @@ module BBoard
     return ret  
   end
   
+  def self.remove(dbref, cat, num)
+    category = FindCategory(cat)
+    user = User.find_or_create_by(:id => dbref)
+
+    return "> ".bold.red + "You do not subscribe to that Group." unless !category.nil?
+
+    subscription = user.subscriptions.where(:category_id => category.id).first
+    
+    return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
+    
+    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
+    
+    return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
+    return "> ".bold.red + "You were not the original poster of message #{num}." unless (R.orflags(dbref, "Wr").to_bool || post.author == dbref)
+    return "> ".bold.red + "That post is sticky.  The sticky flag must be removed before the post can be deleted." unless (post.sticky == false)
+    
+    replies = category.posts.where(:parent_id => post.id)
+    replies.each { |i| i.delete }
+    post.delete
+    
+    return "> ".bold.green + "Message #{num} and #{replies.count} replies were removed from group #{category.num} (#{category.name})."
+  end
+  
 end
