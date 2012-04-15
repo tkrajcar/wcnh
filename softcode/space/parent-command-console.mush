@@ -207,7 +207,7 @@
               }
 -
 &CMD.HAIL/SET #204=$hail/set *:
-  @assert [gte(strlen(%0),5)]=@nspemit %#=[ansi(rh,>)] You must enter at least the first five characters of the target's name.;
+  @assert [gte(strlen(%0),4)]=@nspemit %#=[ansi(rh,>)] You must enter at least the first four characters of the target's name.;
   @assert [setr(target,spacesys(findship.all,v(data.ship),%0))]={
     @nspemit %#=[ansi(rh,>)] Target not found.;
     th [spacesys(hail.wipe,v(data.ship))]
