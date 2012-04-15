@@ -101,9 +101,9 @@ module BBoard
     ret << middlebar('BODY') + "\n"
     ret << post.body + "\n"
     
-    if (replies.count > 0) then
-      unread_replies = subscription.unread_replies[post.id] ||= []
-        
+    unread_replies = subscription.unread_replies[post.id] ||= []
+    
+    if (replies.count > 0 && showreplies == false) then
       ret << "\n" + "#{replies.count} #{(replies.count == 1 ? 'Reply' : 'Replies')} (#{unread_replies.count} Unread)".yellow + "\n"
 #      ret << "        Reply".ljust(43).yellow + "Posted        By".yellow + "\n"
 #      
@@ -122,7 +122,7 @@ module BBoard
 
     return ret << footerbar unless showreplies
     
-    ret << middlebar("REPLIES") + "\n"
+    ret << middlebar("REPLIES (#{replies.count} total, #{unread_replies.count} unread)") + "\n"
     
     replies.each do |reply| 
       ret << R.penn_name(reply.author).bold.white + " at ".cyan + reply.created_at.strftime("%m/%d/%y %H:%M").to_s.bold.cyan + ": ".cyan
