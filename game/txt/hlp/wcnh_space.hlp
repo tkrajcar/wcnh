@@ -209,9 +209,8 @@ Syntax: man <console>
         use <console>
         unman
          
-Man or use a console, and subsequently unman it. You cannot man a console that
-someone else is already manning.  You must be manning a console on a ship
-before you can fly that ship.
+Man or use a console, and subsequently unman it.  You must be manning a 
+console on a ship before you can fly that ship.
 
 & LAND
 Syntax: land <contact ID>
