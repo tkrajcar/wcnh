@@ -205,6 +205,18 @@
 -
 &DOC.FINDSHIP.ALL #208=ship:ship dbref or string|Locates %1 anywhere by partial string match or dbref verify.
 -
+&DOC.ADDTRACKER #208=ship:player|Adds a tracker to ship for player.
+-
+&DOC.DELTRACKER #208=ship:player|Delete a tracker on ship for player.
+-
+&DOC.GETSHIPLOC #208=ship|Gets the location of a ship.
+-
+&DOC.LIST.TRACKERS #208=ship|List who's tracking a ship.
+-
+&DOC.LIST.TRACKERS.PLAYER #208=player|List which ships a player is tracking.
+-
+&DOC.RENAME.CONSOLE #208=console:name|Renames a console.
+-
 &DATA #208=#351
 -
 @startup #208=
@@ -1336,3 +1348,11 @@
              [set(%q<player>,space`tracking`allowed:[squish(remove(get(%q<player>/space`tracking`allowed),%0))])],
          #-1 SOMETHING IS BROKEN ##
         )
+-
+&FN.RENAME.CONSOLE #208=
+  ifelse(
+         spacesys(isconsole,%0),
+         name(%0,%1),
+         #-1 NOT A CONSOLE
+        )
+         

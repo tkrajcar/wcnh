@@ -103,13 +103,7 @@
           11,@nspemit %#=[spacesys(scan.target,extract(%q1,%0,1))]
 -
 @ufail #204=[pemit(%#,
-  [if([spacesys(ismanned,%!)],
-    /@@ Console is manned by someone else @@/
-    The [name(%!)] is already being manned by [spacesys(mannedby,%!)].,
-    
-    /@@ Access denied @@/
     Console access denied.
-  )]
 )]
 -
 @desc #204=
@@ -125,26 +119,30 @@
 &LOCK.ISMANNING #204=[and(spacesys(ismanning,%!,%#),hasattrval(%!,data.ship))]
 -
 &AUSE #204=
-  @name %!=[trim(before(name(%!),<))] <[name(%#)]>;
+  th [spacesys(rename.console,%!,[trim(before(name(%!),<))] <[name(%#)]>)];
   &data.manned %!=%#
 -
 &CMD.UNMAN #204=$unman:
-  @name %!=[trim(before(name(%!),<))] <Unmanned>;
-  @nspemit %#=You unman the [trim(before(name(%!),<))];
+  th [spacesys(rename.console,%!,[trim(before(name(%!),<))] <Unmanned>)];
+  @nspemit %#=You unman the [trim(before(name(%!),<))].;
   @nsoemit %#=[name(%#)] unmans the [trim(before(name(%!),<))].;
   &data.manned %!;
 -
 &OUSE #204=
-  [if(
-      spacesys(isunmanned,%!),
-      mans the [trim(before(name(%!),<))].
+  [switch(
+          [spacesys(isunmanned,%!)]
+          [match(%#,v(data.manned))],
+          1?,mans the [trim(before(name(%!),<))].,
+          00,relieves the current operator of the [trim(before(name(%!),<))].
       )]
 -
 &USE #204=
-  [ifelse(
-      spacesys(ismanned,%!),
-      You are already manning the [trim(before(name(%!),<))].,
-      You man the [trim(before(name(%!),<))].
+  [switch(
+          [spacesys(isunmanned,%!)]
+          [match(%#,v(data.manned))],
+          1?,You man the [trim(before(name(%!),<))].,
+          00,You relieve the current operator of the [trim(before(name(%!),<))].,
+          01,You are already manning the [trim(before(name(%!),<))]!
       )] 
 -
 &CMD.LAND #204=$land *:
