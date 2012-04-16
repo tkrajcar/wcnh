@@ -337,7 +337,7 @@
   think [spacesys(spose,%qt,closes its bay doors.)];
   @nspemit %#=[ansi(gh,>)] Closing the bay doors on the [name(%qt)].
 -
-&LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!
+&LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!;th [spacesys(rename.console,%!,[trim(before(name(%!),<))] <Unmanned>)]
 -
 @set #204/listen.leave=regexp
 -
