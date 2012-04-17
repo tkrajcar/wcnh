@@ -34,6 +34,9 @@ module BBoard
     def canwrite?(dbref)
       return true if self.permission_type.nil?
       return true if R.orflags(dbref, "Wr").to_bool
+      if self.permission_type == 'faction'
+        return R.u("#114/fn.ismember", self.permission_value, dbref).to_bool
+      end
       return false
     end
     
