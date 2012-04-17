@@ -10,7 +10,7 @@ module BBoard
     field :ansi, type: String, :default => "n" # Ansi string for colorized boards in-game
     field :permission_type, type: String 
     field :permission_value, type: String
-    field :anonymous, type: Boolean, :default => false
+    field :anonymous, type: String, :default => nil
     field :timeout, type: Integer, :default => nil # Default timeout in days for posts
     
     has_many :posts, :class_name => "BBoard::Post"
@@ -26,6 +26,8 @@ module BBoard
 
     validates_numericality_of :timeout, allow_nil: true, greater_than: 0, message: "Timeout must be an integer number of days."
     
+    validates_presence_of :anonymous, allow_nil: true, message: "Anonymous name cannot be blank."
+    
     def canread?(dbref)
       return true if self.permission_type == "announce"
       return self.canwrite?(dbref)
@@ -36,6 +38,9 @@ module BBoard
       return true if R.orflags(dbref, "Wr").to_bool
       if self.permission_type == 'faction'
         return R.u("#114/fn.ismember", self.permission_value, dbref).to_bool
+      end
+      if self.permission_type == 'guide'
+        R.hasflag(dbref, "guide").to_bool
       end
       return false
     end

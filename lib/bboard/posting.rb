@@ -29,17 +29,18 @@ module BBoard
     post.save
     online = R.lwho()
     notified = category.subscriptions.where(:user_id.in => online.split(' '))
+    author_name = (category.anonymous.nil? ? R.penn_name(user.id) : category.anonymous)
     
     if (thread.nil?) then
       postnum = category.posts.where(:parent_id => nil).count
       notified.each do |i|
-        R.nspemit(i.user.id, "(New BB message (#{category.num}/#{postnum}) posted to #{category.name} by #{R.penn_name(user.id)}: #{post.title})")
+        R.nspemit(i.user.id, "(New BB message (#{category.num}/#{postnum}) posted to #{category.name} by #{author_name}: #{post.title})")
       end
       return "> ".bold.green + "You post your note about '#{sub}' in group #{category.num} (#{category.name}) as message ##{postnum}."
     else
       postnum = category.posts.find_index(thread)
       notified.each do |i|
-        R.nspemit(i.user.id, "(New BB reply posted under message ##{postnum} in group #{category.num} by #{R.penn_name(user.id)}: #{post.title})")
+        R.nspemit(i.user.id, "(New BB reply posted under message ##{postnum} in group #{category.num} by #{author_name}: #{post.title})")
       end
       return "> ".bold.green + "You post your reply, '#{post.title}', under message ##{postnum} in group #{category.num} (#{category.name})."
     end
