@@ -96,7 +96,7 @@ module BBoard
     ret << "Message: ".yellow + "#{category.num}/#{num.to_i}"
     ret << ' [STICKY]'.green if post.sticky
     ret << "Posted                    Author".rjust(post.sticky ? 37 : 46).yellow + "\n"
-    ret << post.title.ljust(26) 
+    ret << post.title.ljust(28) 
     ret << post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26) + R.penn_name(post.author) + "\n"
     ret << middlebar('BODY') + "\n"
     ret << post.body + "\n"
