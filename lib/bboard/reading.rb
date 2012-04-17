@@ -139,6 +139,16 @@ module BBoard
     category = FindCategory(cat)
     user = User.find_or_create_by(:id => dbref)
     
+    if (cat == "all") then
+      Category.all.each do |i|
+        if (i.canread?(dbref) && user.subscriptions.where(:category_id => i.id).first.nil?) then
+          i.subscriptions.create!(:user_id => user.id)
+          R.nspemit(dbref, "> ".bold.green + "You have join the #{i.name} board.")
+        end
+      end
+      return "> ".bold.green + "You have joined all available bboard groups."
+    end
+    
     return "> ".bold.red + "Sorry, you don't have access to that board." unless !category.nil? && category.canread?(dbref)
     
     subscription = user.subscriptions.where(:category_id => category.id).first
