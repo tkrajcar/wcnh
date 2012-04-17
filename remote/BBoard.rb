@@ -87,4 +87,8 @@ module BBoard
   def self.pj_edit(dbref, cat, num, txt, rep)
     self.edit(dbref, cat, num, txt, rep)
   end
+  
+  def self.pj_scan(dbref)
+    self.scan(dbref)
+  end
 end

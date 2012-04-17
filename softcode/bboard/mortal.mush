@@ -62,3 +62,6 @@
 &CMD.+BBEDIT #1139=$@bbedit */*=*/*:@nspemit %#=
   [rpc(BBoard.edit,%#,%0,%1,%2,%3)]
 -
+&CMD.+BBSCAN #1139=$@bbscan:@nspemit %#=
+  [rpc(BBoard.scan,%#)]
+-

@@ -205,16 +205,42 @@ module BBoard
       break if !found.nil?
     end
     
-    return "> ".red + "There are no unread postings on the Global Bulletin Board." if found.nil?
+    return "> ".bold.red + "There are no unread postings on the Global Bulletin Board." if found.nil?
     
     postnum = found.category.posts.where(:parent_id => nil).find_index { |i| i[:_id].to_s == (found.parent_id.nil? ? found.id : found.parent_id).to_s } + 1
+
+    return read(dbref, found.category.num, postnum, (found.parent_id.nil? ? false : true))
+  end
+  
+  def self.scan(dbref)
+    user = User.find_or_create_by(:id => dbref)
+    found = false
     
-    if found.parent_id.nil? then
-      return read(dbref, found.category.num, postnum)
-    else
-      return replies(dbref, found.category.num, postnum)
-    end 
+    ret = titlebar('Unread Postings on the Global Bulletin Board') + "\n"
     
+    user.subscriptions.each do |sub|
+      uposts = sub.unread_posts
+      ureplies = sub.unread_replies
+      unread_indexes = []
+      
+      next if (uposts.length == 0 && ureplies.length == 0)
+      found = true
+      
+      ret << sub.category.name + " (#{sub.category.num}): "
+      ureplies_count = 0
+      ureplies.values.each { |i| ureplies_count += i.length }
+      ret << "#{uposts.count} posts & #{ureplies_count} replies unread: "
+      
+      uposts.each { |i| unread_indexes << sub.category.posts.find_index { |j| j.id == i.id } + 1 }
+      ureplies.keys.each { |i| unread_indexes << sub.category.posts.find_index { |j| j.id == i } + 1 }
+      ret << "(#{unread_indexes.uniq.join(', ')})" + "\n"
+    end
+    
+    return "> ".bold.red + "There are no unread postings on the Global Bulletin Board." unless found
+    
+    ret << footerbar
+    
+    return ret
   end
   
   def self.FindCategory(cat)
