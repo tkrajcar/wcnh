@@ -83,4 +83,8 @@ module BBoard
   def self.pj_sticky(dbref, cat, num, status)
     self.sticky(dbref, cat, num, (status.to_i > 0 ? true : false))
   end
+  
+  def self.pj_edit(dbref, cat, num, txt, rep)
+    self.edit(dbref, cat, num, txt, rep)
+  end
 end

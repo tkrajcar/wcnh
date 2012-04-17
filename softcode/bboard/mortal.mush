@@ -59,3 +59,6 @@
 &CMD.+BBREMOVE #1139=$@bbremove */*:@nspemit %#=
   [rpc(BBoard.remove,%#,%0,%1)]
 -
+&CMD.+BBEDIT #1139=$@bbedit */*=*/*:@nspemit %#=
+  [rpc(BBoard.edit,%#,%0,%1,%2,%3)]
+-
