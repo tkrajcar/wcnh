@@ -26,8 +26,6 @@ module BBoard
 
     validates_numericality_of :timeout, allow_nil: true, greater_than: 0, message: "Timeout must be an integer number of days."
     
-    validates_presence_of :anonymous, allow_nil: true, message: "Anonymous name cannot be blank."
-    
     def canread?(dbref)
       return true if self.permission_type == "announce"
       return self.canwrite?(dbref)
