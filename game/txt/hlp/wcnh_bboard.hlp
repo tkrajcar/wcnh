@@ -1,0 +1,171 @@
+& BBOARD
+& +BBOARD
+Wing Commander: New Horizon's Bulletin Board is a custom in-game system written
+in Ruby which aims to provide the experience of using a web-based forum while
+logged in to the game.  For the sake of simplicity, wherever it's possible the
+command structure mimics the popular Myrddin BBS that has become a staple on
+the majority of MU*s.  
+ 
+For information on subscribing to boards and reading posts, see 'help bboard
+reading'.
+ 
+For information on writing posts, see 'help bboard writing'.
+
+& BBOARD READING
+& BBREAD
+Reading a bulletin board requires that you subscribe to that board.  By default
+every new player is automatically subscribed to every bulletin board they can
+access.  If you want to unsubscribe or join additional boards, you can
+use the "+bbleave" or "+bbjoin" commands, respectively.  You can use the
+"+bblist" command to see all available boards, including the ones that you
+aren't subscribed to.
+ 
+Each post on the bulletin boards can have multiple replies, just like a
+web-based forum.  The "+bbpost" and "+bbreplies" commands are used to post and
+read replies.  When using the "bbnext" command to read your unread posts,
+replies will automatically be included.
+ 
+Bulletin board posts are considered Out-of-Character (OOC) information unless
+specifically noted otherwise.  You can tell when a board contains In-Character
+(IC) information because the name of the board will be prefixed with "IC".  For
+example, "IC - Enigma Sector News Net".
+ 
+See individual help files on each of the following commands that are related to
+reading the bulletin boards.  Type 'help <command>' for information.
+ 
++bbcatchup          +bbjoin             +bbleave            +bblist
++bbnext             +bbread             +bbreplies          +bbscan
+
+& +BBCATCHUP
+Syntax: +bbcatchup <board>
+        +bbcatchup all
+ 
+The +bbcatchup command is used to mark all posts and replies on any bulletin
+board as read.  The second syntax allows you to catch up on all posts on every
+board that you're subscribed to.
+
+& +BBJOIN
+Syntax: +bbjoin <board>
+        +bbjoin all
+ 
+This command allows you to subscribe to a bulletin board.  Using the "all"
+argument will subscribe you to every available bulletin board that you are not
+already subscribed to.
+
+& +BBLEAVE
+Syntax: +bbleave <board>
+ 
+This command allows you to unsubscribe from a bulletin board.  If you
+unsubscribe and resubscribe, all posts will be marked as unread.
+
+& +BBLIST
+Syntax: +bblist
+ 
+This command will show you a list of every bulletin board that you can access,
+whether or not you are currently subscribed to said boards.
+
+& +BBNEXT
+Syntax: +bbnext
+ 
+This command will show you the next unread post (or unread replies to a post)
+on any bulletin board that you are currently subscribed to.
+
+& +BBREAD
+Syntax: +bbread
+        +bbread <board>
+        +bbread <board>/<post number>
+ 
+The first syntax of this command will show you a list of all of the bulletin
+boards that you are currently subscribed to.
+ 
+The second syntax will show you an index of all the posts on a bulletin board.
+Unread posts are marked with a "U".  Posts with unread replies are marked with
+a "R".
+ 
+The third syntax will show you a specific post on the indicated board.
+ 
+See also: 'help bboard reading'
+
+& +BBREPLIES
+Syntax: +bbreplies <board>/<post number>
+ 
+This command will show you the replies to an indicated post.  The original post
+will be included at the top.
+
+& +BBSCAN
+Syntax: +bbscan
+ 
+This command will show you a summary of bulletin boards that you are subscribed
+to that contain posts or replies that you haven't yet read.
+
+& BBOARD WRITING
+& BBOARD POSTING
+& BBPOST
+Writing a bulletin board post is as easy as sending email or writing a post on
+a web-based forum.  When writing a bboard post, keep in mind that some bulletin
+boards are Out-of-Character (OOC) and some are In-Character (IC).  The boards
+that are IC will have "IC" in their name.  For example, "IC - Enigma Sector
+News Net".  Please refrain from posting IC information on boards that are not
+IC.
+ 
+If you prefer to write a post using a single command, you can use the "+bbpost"
+command.  The same command also allows you to start a draft which you can edit
+in sections at your convenience.  The same command also command allows you to
+reply to your own or someone else's post.
+ 
+See individual help files on each of the following commands that are related to
+posting to the bulletin boards.  Type 'help <command>' for information.
+
++bbedit             +bbpost             +bbproof            +bbremove
++bbtoss             +bbwrite
+
+& +BBEDIT
+Syntax: +bbedit <board>/<post>=<find>/<replace>
+ 
+This command allows you to edit a post that you've written.  The text specified
+as <find> will be replaced with the text specified as <replace>.  The edited
+post will be shown to you.
+
+& +BBPOST
+Syntax: +bbpost <board>/<topic>=<text>
+        +bbpost <board>/<topic>
+        +bbpost <board>/<post number>=<text>
+        +bbpost
+ 
+The first syntax of this command allows you to publish a new post to a bulletin
+board that you are subscribed to.
+ 
+The second syntax will start a draft.  The draft can only be seen by you with
+the ""bbproof" command.  You can subsequently edit the draft with the
+"+bbwrite" command.
+ 
+The third syntax allows you to post a reply to an existing post on a board that
+you are subscribed to.  If you use this syntax without the <text> argument, as
+in the second syntax, you will start a reply draft.
+ 
+The fourth syntax will finalize and post a draft that you started previously.
+
+& +BBPROOF
+Syntax: +bbproof
+ 
+This command will show you a draft that you are in the process of editing.  The
+draft is started with the "+bbpost" command.
+
+& +BBREMOVE
+Syntax: +bbremove <board>/<post number>
+ 
+This command allows you to remove a post that you've written.
+
+& +BBTOSS
+Syntax: +bbtoss
+ 
+If you are in the midst of writing a draft, this command will discard it.
+
+& +BBWRITE
+Syntax: +bbwrite <text>
+        +bb <text>
+ 
+This command will add text to a draft you're working on.  Either syntax can be
+used interchangeably.
+ 
+

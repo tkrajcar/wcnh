@@ -3,9 +3,9 @@ This is the admin-only help for WC:NH.
  
   PAGES:
 
-  +acheck        COMBAT         COMMS          CONTRACT       +DOSSIER       
-  ECON           +FACTION       +PFILE         +RP            +SPACE         
-  +TICKET        WANTED         +ZONE   
+  +acheck        BBOARD         COMBAT         COMMS          CONTRACT
+  +DOSSIER       ECON           +FACTION       +PFILE         +RP
+  +SPACE         +TICKET        WANTED         +ZONE   
 & +DOSSIER
   This command allows you to make notes about IC matters relating to characters.
   Plot hooks that should be used, IC loans, or anything else related to a chara-
@@ -112,3 +112,25 @@ comm/list <person> - view somebody's comm/list (note all channels are shown)
 handle/npc <handle> - Register a handle as an NPC handle
 message/npc <from handle>/<to handle>=<message> - Send a message from a NPC
 comm <channel>/<handle>=<message> - Talk on a channel. Handles are not checked!
+
+& BBOARD
+Admins can:
+ 
+Remove any post.
+Edit any post.
+See the real author of a post even on anonymous boards.
+ 
+Use the following commands:
++bbnewgroup <board name>
++bbconfig <board>/<setting>=<value>
+ 
+The settings are any valid class setting.  As of this writing, they include:
+num, name, ansi, permission_type, permission_value, anonymous, timeout.
+ 
+Most are self-explanatory.  "Anonymous" should be a string that is the name of
+the anonymous poster.  "Permission_type" currently includes: admin, guide, or
+faction.  If it's faction, then "permission_value" should be the abbreviation
+of a faction (SR, HV, etc.).  "Ansi" should be a valid ansi code.
+ 
+For settings that need to be cleared, specify "none" to reset the option to a
+nil value.
