@@ -53,6 +53,9 @@
 &CMD.+BBCATCHUP #1139=$+bbcatchup *:@nspemit %#=
   [rpc(BBoard.catchup,%#,%0)]
 -
+&CMD.+BBCATCHUP2 #1139=$+bbcatchup:@nspemit %#=
+  [rpc(BBoard.catchup,%#,all)]
+-
 &CMD.+BBNEXT #1139=$+bbnext:@nspemit %#=
   [rpc(BBoard.next,%#)]
 -
