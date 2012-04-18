@@ -14,7 +14,7 @@ module BBoard
     field :parent_id, type: String, :default => nil # Posts that are threads belong to a parent post.
     index :parent_id
     
-    belongs_to :category, :class_name => "BBoard::Category"
+    belongs_to :category, :class_name => "BBoard::Category", :index => true
 
     validates_presence_of :title, message: "Posts must have a title."
 
