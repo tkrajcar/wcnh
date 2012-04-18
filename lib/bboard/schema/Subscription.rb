@@ -13,7 +13,7 @@ module BBoard
     def unread_posts
       posts = []
       self.category.posts.where(:parent_id => nil).each do |post|
-        posts << post if self.read_posts.find_index(post.id).nil?
+        posts << post if !self.read_posts.include?(post.id)
       end
       return posts
     end
@@ -25,10 +25,10 @@ module BBoard
         post_replies = []
 
         self.category.posts.where(:parent_id => post.id).each do |reply|
-          post_replies << reply if self.read_posts.find_index(reply.id).nil?
+          post_replies << reply if !self.read_posts.include?(reply.id)
         end
       
-        replies[post.id] = post_replies if post_replies.length > 0
+        replies[post] = post_replies if post_replies.length > 0
       end
 
       return replies

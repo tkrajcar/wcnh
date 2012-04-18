@@ -63,8 +63,8 @@ module BBoard
     count = 1
     category.posts.where(:parent_id => nil).each do |post|
       ret << "#{category.num}/#{count}".ljust(5)
-      ret << (!unread_replies[post.id].nil? ? "R" : " ")
-      ret << (subscription.read_posts.find_index(post.id).nil? ? "U" : " ") + " "
+      ret << (!unread_replies[post].nil? ? "R" : " ")
+      ret << (!subscription.read_posts.include?(post.id) ? "U" : " ") + " "
       ret << '[STICKY] '.green if post.sticky
       ret << post.title.ljust(post.sticky ? 26 : 35)
       ret << post.created_at.strftime("%a %b %d").ljust(14) + ((category.anonymous.nil? || R.orflags(dbref, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous)
@@ -86,54 +86,17 @@ module BBoard
     
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
-    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
+    if (num == 'u') then
+      posts = (subscription.unread_posts + subscription.unread_replies.keys).uniq
+      return "> ".bold.green + "No unread posts." unless posts.length > 0
+      posts.each { |i| R.nspemit(dbref, DoRead(subscription, i, true)) }
+      return "> ".bold.green + "All postings on Group ##{category.num} (#{category.name}) marked as read."
+    end
     
+    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
     return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
     
-    replies = category.posts.where(:parent_id => post.id)
-    
-    ret = titlebar(category.name) + "\n"
-    ret << "Message: ".yellow + "#{category.num}/#{num.to_i}"
-    ret << ' [STICKY]'.green if post.sticky
-    ret << "Posted                    Author".rjust(post.sticky ? 37 : 46).yellow + "\n"
-    ret << post.title.ljust(28) 
-    ret << post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26)
-    ret << ((category.anonymous.nil? || R.orflags(dbref, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous) + "\n"
-    ret << middlebar('BODY') + "\n"
-    ret << post.body + "\n"
-    
-    unread_replies = subscription.unread_replies[post.id] ||= []
-    
-    if (replies.count > 0 && showreplies == false) then
-      ret << "\n" + "#{replies.count} #{(replies.count == 1 ? 'Reply' : 'Replies')} (#{unread_replies.count} Unread)".yellow + "\n"
-#      ret << "        Reply".ljust(43).yellow + "Posted        By".yellow + "\n"
-#      
-#      count = 1
-#      replies.each do |reply|
-#        ret << count.to_s.ljust(6)
-#        ret << (subscription.read_posts.find_index(reply.id).nil? ? "U " : "  ")
-#        ret << reply.title.ljust(35) + reply.created_at.strftime("%a %b %d").ljust(14) + R.penn_name(reply.author)
-#        ret << "\n"
-#        count += 1
-#      end
-    end
-    
-    subscription.read_posts << post.id if subscription.read_posts.find_index(post.id).nil?
-    subscription.save
-
-    return ret << footerbar unless showreplies
-    
-    ret << middlebar("REPLIES (#{replies.count} total, #{unread_replies.count} unread)") + "\n"
-    
-    replies.each do |reply| 
-      ret << R.penn_name(reply.author).bold.white + " at ".cyan + reply.created_at.strftime("%m/%d/%y %H:%M").to_s.bold.cyan + ": ".cyan
-      ret << reply.body + "\n"
-      subscription.read_posts << reply.id if subscription.read_posts.find_index(reply.id).nil?
-    end
-    
-    subscription.save
-  
-    return ret << footerbar
+    return DoRead(subscription, post, showreplies)
   end
   
   def self.join(dbref, cat)
@@ -277,6 +240,46 @@ module BBoard
     else
       "   "
     end
+  end
+  
+  def self.DoRead(subscription, post, showreplies=false)
+    return nil unless post
+    
+    index = post.category.posts.find_index { |i| i.id == post.id }
+    replies = post.category.posts.where(:parent_id => post.id)
+    
+    ret = titlebar(post.category.name) + "\n"
+    ret << "Message: ".yellow + "#{post.category.num}/#{index + 1}"
+    ret << ' [STICKY]'.green if post.sticky
+    ret << "Posted                    Author".rjust(post.sticky ? 37 : 46).yellow + "\n"
+    ret << post.title.ljust(28) 
+    ret << post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26)
+    ret << ((post.category.anonymous.nil? || R.orflags(subscription.user.id, "Wr").to_bool) ? R.penn_name(post.author) : post.category.anonymous) + "\n"
+    ret << middlebar('BODY') + "\n"
+    ret << post.body + "\n"
+    
+    unread_replies = subscription.unread_replies[post] ||= []
+    
+    if (replies.count > 0 && showreplies == false) then
+      ret << "\n" + "#{replies.count} #{(replies.count == 1 ? 'Reply' : 'Replies')} (#{unread_replies.count} Unread)".yellow + "\n"
+    end
+    
+    subscription.read_posts << post.id if !subscription.read_posts.include?(post.id)
+    subscription.save
+
+    return ret << footerbar unless showreplies
+    
+    ret << middlebar("REPLIES (#{replies.count} total, #{unread_replies.count} unread)") + "\n"
+    
+    replies.each do |reply| 
+      ret << R.penn_name(reply.author).bold.white + " at ".cyan + reply.created_at.strftime("%m/%d/%y %H:%M").to_s.bold.cyan + ": ".cyan
+      ret << reply.body + "\n"
+      subscription.read_posts << reply.id if !subscription.read_posts.include?(reply.id)
+    end
+    
+    subscription.save
+  
+    return ret << footerbar
   end
   
 end
