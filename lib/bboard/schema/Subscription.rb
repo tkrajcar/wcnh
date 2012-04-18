@@ -12,7 +12,7 @@ module BBoard
 
     def unread_posts
       posts = []
-      self.category.posts.where(:parent_id => nil).each do |post|
+      self.category.posts.where(:parent_id => nil).asc(:created_at).each do |post|
         posts << post if !self.read_posts.include?(post.id)
       end
       return posts
@@ -24,7 +24,7 @@ module BBoard
       self.category.posts.each do |post|
         post_replies = []
 
-        self.category.posts.where(:parent_id => post.id).each do |reply|
+        self.category.posts.where(:parent_id => post.id).asc(:created_at).each do |reply|
           post_replies << reply if !self.read_posts.include?(reply.id)
         end
       

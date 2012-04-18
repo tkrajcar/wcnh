@@ -61,7 +61,7 @@ module BBoard
     
     unread_replies = subscription.unread_replies
     count = 1
-    category.posts.where(:parent_id => nil).each do |post|
+    category.posts.where(:parent_id => nil).asc(:created_at).each do |post|
       ret << "#{category.num}/#{count}".ljust(5)
       ret << (!unread_replies[post].nil? ? "R" : " ")
       ret << (!subscription.read_posts.include?(post.id) ? "U" : " ") + " "
@@ -93,7 +93,7 @@ module BBoard
       return "> ".bold.green + "All postings on Group ##{category.num} (#{category.name}) marked as read."
     end
     
-    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
+    post = category.posts.where(:parent_id => nil).asc(:created_at)[num.to_i - 1]
     return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
     
     return DoRead(subscription, post, showreplies)
@@ -181,7 +181,7 @@ module BBoard
     
     return "> ".bold.red + "There are no unread postings on the Global Bulletin Board." if found.nil?
     
-    postnum = found.category.posts.where(:parent_id => nil).find_index { |i| i[:_id].to_s == (found.parent_id.nil? ? found.id : found.parent_id).to_s } + 1
+    postnum = found.category.posts.where(:parent_id => nil).asc(:created_at).find_index { |i| i[:_id].to_s == (found.parent_id.nil? ? found.id : found.parent_id).to_s } + 1
 
     return read(dbref, found.category.num, postnum, (found.parent_id.nil? ? false : true))
   end
@@ -245,7 +245,7 @@ module BBoard
   def self.DoRead(subscription, post, showreplies=false)
     return nil unless post
     
-    index = post.category.posts.find_index { |i| i.id == post.id }
+    index = post.category.posts.asc(:created_at).find_index { |i| i.id == post.id }
     replies = post.category.posts.where(:parent_id => post.id)
     
     ret = titlebar(post.category.name) + "\n"
