@@ -12,6 +12,7 @@ module BBoard
     field :title, type: String
     field :body, type: String
     field :parent_id, type: String, :default => nil # Posts that are threads belong to a parent post.
+    index :parent_id
     
     belongs_to :category, :class_name => "BBoard::Category"
 
