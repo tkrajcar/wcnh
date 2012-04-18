@@ -5,3 +5,4 @@
 -
 
 &TRI.GUEST.DISCONNECT #459=@cemit/noisy newbie=[ansi(h,name(%0))] [ansi(c,has disconnected.)];@tel %0=#14;@chan/off public=%0;@fo %0=@mail/clear all;@fo %0=@mail/purge;&bb_read %0;
+                           think [rpc(BBoard.join,%0,all)]
