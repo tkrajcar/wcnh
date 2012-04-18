@@ -148,7 +148,7 @@ module BBoard
     
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
-    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
+    post = category.posts.where(:parent_id => nil).asc(:created_at)[num.to_i - 1]
     
     return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
     return "> ".bold.red + "You were not the original poster of message #{num}." unless (R.orflags(dbref, "Wr").to_bool || post.author == dbref)
@@ -171,7 +171,7 @@ module BBoard
     
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
     
-    post = category.posts.where(:parent_id => nil)[num.to_i - 1]
+    post = category.posts.where(:parent_id => nil).asc(:created_at)[num.to_i - 1]
     
     return "> ".bold.red + "Message #{category.num}/#{num} (#{category.name}/#{num}) does not exist." if post.nil?
     return "> ".bold.red + "You were not the original poster of message #{num}." unless (R.orflags(dbref, "Wr").to_bool || post.author == dbref)
