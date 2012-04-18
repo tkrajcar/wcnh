@@ -144,7 +144,7 @@ module BBoard
       Category.all.each do |i|
         if (i.canread?(dbref) && user.subscriptions.where(:category_id => i.id).first.nil?) then
           i.subscriptions.create!(:user_id => user.id)
-          R.nspemit(dbref, "> ".bold.green + "You have join the #{i.name} board.")
+          R.nspemit(dbref, "> ".bold.green + "You have joined the #{i.name} board.")
         end
       end
       return "> ".bold.green + "You have joined all available bboard groups."
