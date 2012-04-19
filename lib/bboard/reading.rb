@@ -66,7 +66,7 @@ module BBoard
       ret << (!unread_replies[post].nil? ? "R" : " ")
       ret << (!subscription.read_posts.include?(post.id) ? "U" : " ") + " "
       ret << '[STICKY] '.green if post.sticky
-      ret << post.title.ljust(post.sticky ? 26 : 35)
+      ret << post.title[0,(post.sticky ? 25 : 34)].ljust(post.sticky ? 26 : 35)
       ret << post.created_at.strftime("%a %b %d").ljust(14) + ((category.anonymous.nil? || R.orflags(dbref, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous)
       ret << "\n"
       count += 1
@@ -252,7 +252,7 @@ module BBoard
     ret << "Message: ".yellow + "#{post.category.num}/#{index + 1}"
     ret << ' [STICKY]'.green if post.sticky
     ret << "Posted                    Author".rjust(post.sticky ? 37 : 46).yellow + "\n"
-    ret << post.title.ljust(28) 
+    ret << post.title[0,25].ljust(27)
     ret << post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26)
     ret << ((post.category.anonymous.nil? || R.orflags(subscription.user.id, "Wr").to_bool) ? R.penn_name(post.author) : post.category.anonymous) + "\n"
     ret << middlebar('BODY') + "\n"
