@@ -913,7 +913,7 @@
 -
 &FN.SURVEY #208=
   [set(%0,space`survey`%1:[secs()])]
-  [rpc(Econ.grant,%2,setr(Payout,mul(chargen(get.skill,%2,science),rand(15,60))))]
+  [rpc(Econ.grant,%2,setr(Payout,mul(default(%1/space`survey.mult,1),chargen(get.skill,%2,science),rand(15,60))))]
   %q<Payout>
 -
 &FN.SURVEY.LAST #208=
