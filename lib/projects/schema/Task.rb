@@ -12,7 +12,7 @@ module Projects
     field :current, type: Integer, :default => 0
     field :goal, type: Integer, :default => 0
     
-    belongs_to :project, :class_name => "Projects::Project"
+    embedded_in :project, :class_name => "Projects::Project"
     
     validates_presence_of :name, message: "The task must have a name."
     validates_presence_of :skill, message: "The task must have a skill requirement."
