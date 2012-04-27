@@ -4,6 +4,8 @@
 -
 @set #1139=safe
 -
+@acon #1139=@nspemit %#=[rpc(BBoard.scan,%#)]
+-
 @desc #1139=BBoard commands.
 -
 &CMD.+BBLIST #1139=$+bblist:
