@@ -1,3 +1,6 @@
+&TRIG.ACONNECT #15=
+  @nspemit %0=[rpc(Contract.list)]
+-
 &cmd.+set #15=$+set *:
   @assert match(IC OOC,%0)=
     @pemit %#=[ansi(hb,>)] Huh? Try IC or OOC.;

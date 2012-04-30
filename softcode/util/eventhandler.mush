@@ -5,6 +5,7 @@
   @trigger #227/trig.aconnect=%0;
   @trigger #812/trig.aconnect=%0;
   @trigger #1139/trig.aconnect=%0;
+  @trigger #15/trig.aconnect=%0;
   think [if(hasattr(%0/pfile),rpc(PlayerFile.connect,get(%0/pfile),get(%0/lastip),get(%0/lastsite),%2,num(%0)))];
   @swi [haspower(%0,guest)]=1,@tri #459/tri.guest.connect=%0;
   @swi [or(haspower(%0,guest),not(hasattr(%0,char`announced)))]=1,{
