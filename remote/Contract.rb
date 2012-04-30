@@ -58,4 +58,8 @@ module Contract
   def self.pj_response_view(contract,response)
     self.response_view(contract,response)
   end
+
+  def self.pj_reminder
+    self.reminder
+  end
 end

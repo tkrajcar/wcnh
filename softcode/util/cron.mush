@@ -106,3 +106,12 @@
 #                  )
 #               )
 #        )]
+
+&CRON_TIME_REMIND.CONTRACT #539=|||17|30|
+-
+&CRON_JOB_REMIND.CONTRACT #539=
+  @assert [gt(words(setr(Contracts,rpc(Contract.reminder))),0)];
+  +gmemit Enigma Sector Procurement would like to remind citizens that only 24 hours remain for interested parties 
+          to submit bids on the following contracts: [itemize(%q<Contracts>)].;
+-
+

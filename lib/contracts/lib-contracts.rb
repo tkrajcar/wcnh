@@ -177,4 +177,12 @@ module Contract
     end
     ret << footerbar
   end
+
+  def self.reminder
+    list = Contract.where(:published => true, :close.lt => DateTime.now + 24.hours, :close.gt => DateTime.now)
+    return if list.count < 1
+    list_array = []
+    list.each { |i| list_array << i.number }
+    return list_array.to_mush
+  end
 end
