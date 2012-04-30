@@ -4,9 +4,9 @@
 -
 @set #1139=safe
 -
-@acon #1139=@nspemit %#=[rpc(BBoard.scan,%#)]
--
 @desc #1139=BBoard commands.
+-
+&TRIG.ACONNECT #1139=@nspemit %0=[rpc(BBoard.scan,%0)]
 -
 &CMD.+BBLIST #1139=$+bblist:
   @nspemit %#=[rpc(BBoard.list,%#)]
