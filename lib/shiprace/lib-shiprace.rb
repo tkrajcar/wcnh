@@ -56,7 +56,7 @@ module Shiprace
     tickets = Ticket.all
     return "> ".red + "No tickets purchased in the current race." unless tickets.count > 0
     ret = titlebar("Race Tickets Purchased") + "\n"
-    ret << " Buyer(Gambling)".ljust(25).yellow + "Ship".ljust(25).yellow + "Pilot(Skill)".ljust(21).yellow + "Wager".yellow + "\n"
+    ret << " Buyer(Gambling)".ljust(23).yellow + "Ship".ljust(25).yellow + "Pilot(Skill)".ljust(21).yellow + "Wager".yellow + "\n"
     tickets.each do |ticket|
       player_skill = R.u("#112/fn.get.skill", ticket.dbref, "gambling").to_i
       ret << " #{R.penn_name(ticket.dbref)}(#{player_skill})".ljust(23)
@@ -103,7 +103,7 @@ module Shiprace
       ret << " #{num.next.to_s.ljust(2)} #{racer.ship.ljust(30)} #{racer.name}\n"
     end
     ret << "\n"
-    ret << "Estimated Jackpot: ".yellow + (bank.balance * 0.75).to_i
+    ret << "Estimated Jackpot: ".yellow + (bank.balance * 0.75).to_i.to_s
     ret << footerbar
     ret
   end
