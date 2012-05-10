@@ -9,16 +9,16 @@ module Shiprace
   FILE_SHIPS = File.expand_path('./ships.txt', File.dirname(__FILE__))
   FILE_NAMES = File.expand_path('./names.txt', File.dirname(__FILE__))
 
-  def self.purchase(dbref, skill=0)
+  def self.purchase(dbref, skill=0, wager=10)
     wallet = Econ::Wallet.find_or_create_by(id: dbref)
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
-    wager = 10
     weights = []
     weight_table = self.build_weights(skill)
 
     return "> ".red + "Betting is currently closed." unless Racer.all.length > 0
     return "> ".red + "You need at least 10c to place a bet." unless wallet.balance > wager
     return "> ".red + "You cannot have more than 3 tickets for one race." unless Ticket.where(dbref: dbref).length < 3
+    return "> ".red + "Wager must be between 10c and 1000c." unless wager >= 10 && wager <= 1000
 
     Racer.all.each { |racer| weights.<< racer.weight(weight_table) }
     racer = Racer.all.to_a.random(weights)
@@ -56,9 +56,13 @@ module Shiprace
     tickets = Ticket.all
     return "> ".red + "No tickets purchased in the current race." unless tickets.count > 0
     ret = titlebar("Race Tickets Purchased") + "\n"
-    ret << " Buyer".ljust(25).yellow + "Ship".ljust(25).yellow + "Pilot".ljust(21).yellow + "Wager".yellow + "\n"
+    ret << " Buyer(Gambling)".ljust(25).yellow + "Ship".ljust(25).yellow + "Pilot(Skill)".ljust(21).yellow + "Wager".yellow + "\n"
     tickets.each do |ticket|
-      ret << " #{R.penn_name(ticket.dbref).ljust(23)} #{ticket.racer.ship.ljust(24)} #{ticket.racer.name.ljust(20)} #{ticket.wager}\n"
+      player_skill = R.u("#112/fn.get.skill", ticket.dbref, "gambling").to_i
+      ret << " #{R.penn_name(ticket.dbref)}(#{player_skill})".ljust(23)
+      ret << ticket.racer.ship.ljust(24)
+      ret << "#{ticket.racer.name}(#{ticket.racer.skill})".ljust(20) 
+      ret << ticket.wager.to_s + "\n"
     end
     ret << footerbar
     ret
@@ -91,12 +95,15 @@ module Shiprace
 
   def self.roster
     roster = Racer.all
+    bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
     return "> ".red + "The race roster is currently empty." unless roster.length > 0
     ret = titlebar("Racing League Roster") + "\n"
     ret << " ## Ship".ljust(35).yellow + "Pilot".yellow + "\n"
     roster.each_with_index do |racer, num|
       ret << " #{num.next.to_s.ljust(2)} #{racer.ship.ljust(30)} #{racer.name}\n"
     end
+    ret << "\n"
+    ret << "Estimated Jackpot: ".yellow + (bank.balance * 0.75).to_i
     ret << footerbar
     ret
   end

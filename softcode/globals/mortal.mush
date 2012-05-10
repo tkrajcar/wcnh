@@ -355,9 +355,11 @@
   @nspemit %#=[rpc(Shiprace.roster)]
 -
 &CMD.RACE/PURCHASE #15=$race/purchase:
-  @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling))]
+  @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling), 10)]
 -
-
+&CMD.RACE/PURCHASE2 #15=$race/purchase *:
+  @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling), %0)]
+-
 &cmd.+web/register #15=$+web/register *:
   @nspemit %#=[rpc(Web.register,%0)]
 -
