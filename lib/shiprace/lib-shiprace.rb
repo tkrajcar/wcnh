@@ -10,16 +10,17 @@ module Shiprace
   FILE_NAMES = File.expand_path('./names.txt', File.dirname(__FILE__))
 
   def self.purchase(dbref, skill=0, wager=10)
+    race = Race.all.last
     wallet = Econ::Wallet.find_or_create_by(id: dbref)
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
-    weights = Racer.all.map { |racer| racer.weight(self.build_weights(skill)) }
+    weights = race.racers.map { |racer| racer.weight(self.build_weights(skill)) }
 
     return "> ".red + "Betting is currently closed." unless Racer.all.length > 0
     return "> ".red + "You need at least 10c to place a bet." unless wallet.balance > wager
     return "> ".red + "You cannot have more than 3 tickets for one race." unless Ticket.where(dbref: dbref).length < 3 || R.orflags(R["enactor"], 'Wr')
     return "> ".red + "Wager must be between 10c and 1000c." unless wager >= 10 && wager <= 1000
 
-    racer = Racer.all.to_a.random(weights)
+    racer = race.racers.all.to_a.random(weights)
     ticket = racer.tickets.create!(dbref: dbref, wager: wager)
     
     wallet.balance -= wager
@@ -28,7 +29,7 @@ module Shiprace
     bank.save
 
     Logs.log_syslog("SHIPRACE","#{R.penn_name(R["enactor"])} purchased a race ticket for #{wager}c.")
-    return "> ".green + "You placed a bet of #{wager}c on the #{racer.ship} piloted by #{racer.name}."
+    return "> ".green + "You placed a bet of #{wager}c on the #{racer.ship.name} piloted by #{racer.name}."
   end
 
   def self.build_weights(skill)
@@ -61,7 +62,7 @@ module Shiprace
     tickets.each do |ticket|
       player_skill = R.u("#112/fn.get.skill", ticket.dbref, "gambling").to_i
       ret << " #{R.penn_name(ticket.dbref)}(#{player_skill})".ljust(23)
-      ret << ticket.racer.ship.ljust(24)
+      ret << ticket.racer.ship.name.ljust(24)
       ret << "#{ticket.racer.name}(#{ticket.racer.skill})".ljust(20) 
       ret << ticket.wager.to_s + "\n"
     end
@@ -70,7 +71,9 @@ module Shiprace
     ret
   end
 
-  def self.buildroster
+  def self.build_race
+    race = Race.create!
+    
     names = File.open(FILE_NAMES, 'r') { |file| file.readlines }
     names.each { |name| name.chomp! }
     names.shuffle!
@@ -79,13 +82,29 @@ module Shiprace
     ships.each { |ship| ship.chomp! }
     ships.shuffle!
     
-    MAX_RACERS.times { Racer.create!(name: names.pop(2).join(' '), ship: ships.pop) }
-
-    return Racer.all.length
+    MAX_RACERS.times do
+      racer = Racer.where(name: racer_name = names.pop(2).join(' ')).first
+      ship = Ship.where(name: ship_name = ships.pop).first
+      
+      if racer.nil? && ship.nil?
+        racer = race.racers.create!(name: racer_name)
+        ship = racer.create_ship(name: ship_name)
+      elsif !racer.nil?
+        race.racers << racer
+        ship = racer.ship
+      else 
+        race.racers << ship.racer
+        racer = ship.racer
+      end
+      
+      p "#{racer.name} flying the #{ship.name}."
+    end
+    
+    return race
   end
 
   def self.roster
-    roster = Racer.all
+    roster = Race.all.last.racers
     bank = Econ::Wallet.find_or_create_by(id: RACE_OBJ)
     
     return "> ".red + "The race roster is currently empty." unless roster.length > 0
@@ -94,7 +113,7 @@ module Shiprace
     ret << " ## Ship".ljust(35).yellow + "Pilot".yellow + "\n"
     
     roster.each_with_index do |racer, num|
-      ret << " #{num.next.to_s.ljust(2)} #{racer.ship.ljust(30)} #{racer.name}\n"
+      ret << " #{num.next.to_s.ljust(2)} #{racer.ship.name.ljust(30)} #{racer.name}\n"
     end
     
     ret << "\n"
@@ -104,7 +123,8 @@ module Shiprace
   end
 
   def self.runrace
-    racers = Racer.all.sort { |a, b| a.skillcheck <=> b.skillcheck }.reverse
+    race = Race.all.last
+    racers = race.racers.sort { |a, b| a.skillcheck <=> b.skillcheck }.reverse
     turn1, turn2 = racers.shuffle.first, racers.shuffle.first
     victor = racers.first
     winners = victor.tickets
@@ -114,9 +134,9 @@ module Shiprace
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"Welcome to the Enigma Sector Racing League!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"We have #{racers.length} competitors in tonight's race through the Damioyn System!  Use race/roster to check the roster!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"3.. 2.. 1.. And they're off!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"As they pass Damioyn III, #{turn1.name} in the #{turn1.ship} is in the lead!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"#{turn2.name} in the #{turn2.ship} is leading the pack as they pass Damioyn VI!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"At the Damioyn VIII finish line, it's the #{victor.ship} piloted by #{victor.name}!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"As they pass Damioyn III, #{turn1.name} in the #{turn1.ship.name} is in the lead!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"#{turn2.name} in the #{turn2.ship.name} is leading the pack as they pass Damioyn VI!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"At the Damioyn VIII finish line, it's the #{victor.ship.name} piloted by #{victor.name}!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"There were #{winners.length} winning tickets with a jackpot of #{pot} credits.")
 
     if winners.length > 0
@@ -135,12 +155,14 @@ module Shiprace
       
       wallet.balance += winnings
       wallet.save
-      R.mailsend(winner.dbref,"Ship Race Winner!/You won #{winnings} credits in a ship race by betting on the #{victor.ship} piloted by #{victor.name}!")
+      R.mailsend(winner.dbref,"Ship Race Winner!/You won #{winnings} credits in a ship race by betting on the #{victor.ship.name} piloted by #{victor.name}!")
     end
 
     Ticket.destroy_all
-    Racer.destroy_all
-    self.buildroster
+    race.completed = true
+    race.order = racers.map { |racer| racer.id }
+    race.save
+    self.build_race
 
     return
   end
