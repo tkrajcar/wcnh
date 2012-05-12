@@ -9,12 +9,12 @@
 &TRIG.ACONNECT #812=@wait 1={@nspemit %0=[rpc(Calendar.list,,)]}
 -
 &CMD.+CAL #812=$+cal:
-  @nspemit %#=[rpc(Calendar.list,,)]
+  @nspemit %#=[rpc(Calendar.list,%#,,)]
 -
 &CMD.+CAL_ARGS #812=$+cal *:
   @assert [or(isnum(%0),eq(words(%0),2))]=@nspemit %#=[ansi(rh,>)] Try [ansi(yh,+cal <id>)] to see a specific event or 
                                           [ansi(yh,+cal <month> <year>)] to see a list. I.e.\, +cal Jan 2012.;
-  @nspemit %#=[ifelse(isnum(%0),rpc(Calendar.event_view,%0),rpc(Calendar.list,first(%0),last(%0)))]
+  @nspemit %#=[ifelse(isnum(%0),rpc(Calendar.event_view,%0),rpc(Calendar.list,%#,first(%0),last(%0)))]
 -
 &CMD.+CAL/VIEW #812=$+cal/view *:
   @nspemit %#=[rpc(Calendar.event_view,%0)]

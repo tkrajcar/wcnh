@@ -24,8 +24,8 @@ module Calendar
     self.event_change(id, field, value)
   end
 
-  def self.pj_list(month, year)
-    self.list(month, year)
+  def self.pj_list(user, month, year)
+    self.list(user, month, year)
   end
 
   def self.pj_event_delete(id)

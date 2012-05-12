@@ -2,8 +2,8 @@ require 'wcnh'
 
 module Calendar
 
-  def self.list(month, year)
-    tz = R.penn_default(R["enactor"] + "/tz", "+0") 
+  def self.list(user, month, year)
+    tz = R.penn_default(user + "/tz", "+0") 
     start = (month.length > 0 && year.length > 0) ? self.date_to_datetime(DateTime.now.midnight, "01 #{month} #{year}", "+0") : DateTime.now
     range = start..start + 30.days
     events = Event.where(date: range).desc(:date)
