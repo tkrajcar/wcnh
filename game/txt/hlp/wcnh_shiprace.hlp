@@ -1,20 +1,38 @@
-& RACE
-Syntax: race/roster
-        race/purchase
-        race/purchase <amount>
+& RACES
+Ship races are a prime gambling opportunity. Once per day at 6pm PST, the 
+Enigma Sector Racing League holds an epic contest of piloting skill in a 
+race that traverses the Damioyn system.  The race is broadcast via IC comms on
+channel 100.00. Players can wager on individual racers in a manner similar to
+RL horse races.  The odds on the racers are updated in real time, and each
+racer has a set of actual skills which are checked in comparison to determine a
+winner.
  
-Ship races are the WCNH version of an IC lottery. Once per day, the Enigma
-Sector Racing League holds an epic contest of piloting skill in a race that
-traverses the Damioyn system.  The race is broadcast via IC comms on channel
-100.00.  In the future, players will be able to choose how much they want to 
-wager on specific pilots, and perhaps even participate in the races as a
-competitor themselves.
+The following commands are available:
  
-Players can check the roster for the upcoming race using the race/roster
-command.
- 
-Players can place a 10 credit bet on the race by buying a ticket with the
-race/purchase command, up to a maximum of 3 tickets per race.  By specifying
-an optional amount, players can place a wager of their choice between 10 and
-1,000 credits.
+race/history        race/purchase       race/record
 
+& RACE/HISTORY
+Syntax: race/history
+ 
+This command will show the top three finishers for the last 10 ship races.
+
+& RACE/PURCHASE
+Syntax: race/purchase
+        race/purchase <amount>
+        race/purchase <position>=<amount>
+ 
+The first syntax allows you to place a 10 credit wager on a random racer.
+ 
+The second syntax allows you place a wager of your choice on a random racer.
+ 
+The third syntax allows you to place a wager of your choice on the racer of
+your choice.
+ 
+The maximum number of wagers you can place depends on your gambling skill.
+ 
+& RACE/RECORD
+Syntax: race/record <racer>
+ 
+This command will show the race history for the specified racer, up to a
+maximum of the 10 most recent races.
+ 

@@ -29,7 +29,7 @@ If you want a complete index of game-specific code, try 'help local'.
   CARGO          cash           CHARGEN        COMBAT         COMMS          
   +concept       CONTRACT       FACTIONS       +finger        +guides
   +LOG           lock           +map           +ooc           pay
-  PLACES         put down       race           +RP            +set
+  PLACES         put down       RACES          +RP            +set
   SPACE          +staff         +TICKET        time           WANTED
   +where         +who           +XP
 
