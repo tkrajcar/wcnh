@@ -18,7 +18,7 @@ module Shiprace
 
     return "> ".red + "Betting is currently closed." unless race.racers.count > 0
     return "> ".red + "You need at least #{wager}c to place that bet." unless wallet.balance > wager
-    return "> ".red + "You cannot purchase any more tickets." unless Ticket.where(dbref: dbref).length < max_tickets || R.orflags(R["enactor"], 'Wr')
+    return "> ".red + "You cannot purchase any more tickets." unless Ticket.where(dbref: dbref).length < max_tickets
     return "> ".red + "Wager must be at least 10c." unless wager >= 10
 
     unless position > 0
