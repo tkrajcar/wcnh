@@ -23,14 +23,12 @@ module Shiprace
       return nil unless self.racers.include?(racer)
       
       spent_total = self.balance * (1.0 - RACE_TAKE)
-      spent_racer = self.balance_by_racer(racer)
+      spent_racer = [self.balance_by_racer(racer), 1.0].max
       
       unless spent_total > 0
         return 1.0 if racer.skill < 4
         return 1 + rand.round(1)
       end
-      
-      return 1.0 unless spent_racer > 0
       
       prob = ((spent_total - spent_racer).to_f / spent_racer.to_f).round(1)
       
