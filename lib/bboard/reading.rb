@@ -206,7 +206,7 @@ module BBoard
       ret << "#{uposts.count} posts & #{ureplies_count} replies unread: "
       
       uposts.each { |i| unread_indexes << sub.category.posts.find_index { |j| j.id == i.id } + 1 }
-      ureplies.keys.each { |i| unread_indexes << sub.category.posts.find_index { |j| j.id == i } + 1 }
+      ureplies.keys.each { |i| unread_indexes << sub.category.posts.find_index { |j| j.id == i.id } + 1 }
       ret << "(#{unread_indexes.uniq.join(', ')})" + "\n"
     end
     
