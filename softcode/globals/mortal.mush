@@ -355,10 +355,17 @@
   @nspemit %#=[rpc(Shiprace.roster)]
 -
 &CMD.RACE/PURCHASE #15=$race/purchase:
-  @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling), 10)]
+  @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling),10,0)]
 -
 &CMD.RACE/PURCHASE2 #15=$race/purchase *:
-  @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling), %0)]
+  @switch [strmatch(%0,*=*)]=1,{@nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling),after(%0,=),before(%0,=))]},
+                                @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling),%0,0)]
+-
+&CMD.RACE/HISTORY #15=$race/history:
+  @nspemit %#=[rpc(Shiprace.history)]
+-
+&CMD.RACE/RECORD #15=$race/record *:
+  @nspemit %#=[rpc(Shiprace.record,%0)]
 -
 &cmd.+web/register #15=$+web/register *:
   @nspemit %#=[rpc(Web.register,%0)]
