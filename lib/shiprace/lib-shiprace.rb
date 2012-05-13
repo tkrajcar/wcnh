@@ -156,7 +156,7 @@ module Shiprace
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"As they pass Damioyn III, #{turn1.name} in the #{turn1.ship.name} is in the lead!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"#{turn2.name} in the #{turn2.ship.name} is leading the pack as they pass Damioyn VI!")
     Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"At the Damioyn VIII finish line, it's the #{victor.ship.name} piloted by #{victor.name}!")
-    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"There were #{winners.length} winning tickets!")
+    Comms.channel_emit(RACE_CHAN,RACE_HANDLE,"#{winners.length} winning tickets paid out at #{victor_odds} odds!")
 
     if winners.length > 0
       winning_players = winners.map { |winner| R.penn_name(winner.dbref) }.uniq
@@ -172,7 +172,7 @@ module Shiprace
       wallet.balance += winnings
       wallet.save
       total_winnings += winnings
-      R.mailsend(winner.dbref,"Ship Race Winner!/You won #{winnings} credits in a ship race by betting on the #{victor.ship.name} piloted by #{victor.name}!")
+      R.mailsend(winner.dbref,"Ship Race Winner!/You won #{winnings} credits at #{victor_odds} odds in a ship race by betting on the #{victor.ship.name} piloted by #{victor.name}!")
     end
     
     bank.balance += race.balance - total_winnings
