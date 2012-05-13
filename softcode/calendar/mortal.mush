@@ -6,7 +6,7 @@
 -
 @desc #812=Calendar System.
 -
-&TRIG.ACONNECT #812=@wait 1={@nspemit %0=[rpc(Calendar.list,,)]}
+&TRIG.ACONNECT #812=@wait 1={@nspemit %0=[rpc(Calendar.list,%0,,)]}
 -
 &CMD.+CAL #812=$+cal:
   @nspemit %#=[rpc(Calendar.list,%#,,)]
