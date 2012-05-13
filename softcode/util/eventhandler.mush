@@ -1,20 +1,20 @@
 # on player connect, trigger everything that's waiting...
 &player`connect #13 =
-  /@@ %0 = objid, %1 = number of connections, %2 = descriptor @@/
-  @trigger #114/trig.aconnect=%0;
-  @trigger #227/trig.aconnect=%0;
-  @trigger #812/trig.aconnect=%0;
-  @trigger #1139/trig.aconnect=%0;
-  @trigger #15/trig.aconnect=%0;
-  think [if(hasattr(%0/pfile),rpc(PlayerFile.connect,get(%0/pfile),get(%0/lastip),get(%0/lastsite),%2,num(%0)))];
-  @swi [haspower(%0,guest)]=1,@tri #459/tri.guest.connect=%0;
-  @swi [or(haspower(%0,guest),not(hasattr(%0,char`announced)))]=1,{
+  /@@ %0 = objid:timestring, %1 = number of connections, %2 = descriptor @@/
+  @trigger #114/trig.aconnect=[before(%0,:)];
+  @trigger #227/trig.aconnect=[before(%0,:)];
+  @trigger #812/trig.aconnect=[before(%0,:)];
+  @trigger #1139/trig.aconnect=[before(%0,:)];
+  @trigger #15/trig.aconnect=[before(%0,:)];
+  think [if(hasattr(before(%0,:),pfile),rpc(PlayerFile.connect,get(before(%0,:)/pfile),get(before(%0,:)/lastip),get(before(%0,:)/lastsite),%2,num(before(%0,:))))];
+  @swi [haspower(before(%0,:),guest)]=1,@tri #459/tri.guest.connect=[before(%0,:)];
+  @swi [or(haspower(before(%0,:),guest),not(hasattr(before(%0,:),char`announced)))]=1,{
     @wait 7=@nspemit %#=[ansi(h,New to MUSHes?)] You can talk to others by typing: [ansi(h,+new Hi there!)]%rWe're friendly - feel free to ask questions, or ask for help! Your name is [ansi(h,name(%#))].
   };
-  @swi [nor(hidden(%0),hasflag(%0,dark),hasattr(%0,char`announced))]=
+  @swi [nor(hidden(before(%0,:)),hasflag(before(%0,:),dark),hasattr(before(%0,:),char`announced))]=
     1,{
-      &char`announced %0=1;
-      @cemit/noisy Newbie=[ansi(c,Say hello to our newest player\,)] [ansi(h,name(%0))][ansi(c,!)]
+      &char`announced [before(%0,:)]=1;
+      @cemit/noisy Newbie=[ansi(c,Say hello to our newest player\,)] [ansi(h,name(before(%0,:)))][ansi(c,!)]
     }
 
 -
