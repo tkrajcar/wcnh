@@ -9,7 +9,7 @@ winner.
  
 The following commands are available:
  
-race/history        race/purchase       race/record
+race/history        race/purchase       race/record         race/roster
 
 & RACE/HISTORY
 Syntax: race/history
@@ -35,4 +35,10 @@ Syntax: race/record <racer>
  
 This command will show the race history for the specified racer, up to a
 maximum of the 10 most recent races.
+ 
+& RACE/ROSTER
+Syntax: race/roster
+ 
+See a list of the racers registered for the upcoming race, including the 
+listed odds and any wagers you have placed.
  
