@@ -32,6 +32,7 @@ module Shiprace
       
       prob = ((spent_total - spent_racer).to_f / spent_racer.to_f).round(1)
       
+      return 1.0 if prob < 0
       return [prob, 10.0].min
     end
   end
