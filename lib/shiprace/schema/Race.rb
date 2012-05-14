@@ -26,8 +26,8 @@ module Shiprace
       spent_racer = [self.balance_by_racer(racer), 1.0].max
       
       unless spent_total > 0
-        return 1.0 if racer.skill < 4
-        return 1 + rand.round(1)
+        return 1 + rand.round(1) if racer.skill < 4
+        return 1.0
       end
       
       prob = ((spent_total - spent_racer).to_f / spent_racer.to_f).round(1)
