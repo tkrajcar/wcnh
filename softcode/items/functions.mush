@@ -1,0 +1,11 @@
+@set #1250=!safe !no_command
+-
+@wipe #1250
+-
+@set #1250=safe
+-
+@desc #1250=Item system functions.
+-
+&FN.GET #1250=rpc(Items.get_attr,%0,%1)
+-
+

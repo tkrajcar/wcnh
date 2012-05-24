@@ -61,6 +61,14 @@
     10,#-1 INVALID SPACESYS\(\) SUBFUNCTION,
     11,ulocal(#208/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
 -
+&ITEMSYS.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#1250,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID ITEMS\(\) SUBFUNCTION,
+    11,ulocal(#1250/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+-
 
 ## IC Time
 &ICTIME.FN #25=
