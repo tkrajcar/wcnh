@@ -7,4 +7,8 @@ module Items
   def self.pj_get_attr(dbref, attr)
     self.get_attr(dbref, attr)
   end
+  
+  def self.pj_list(kind=nil)
+    self.list(kind)
+  end
 end
