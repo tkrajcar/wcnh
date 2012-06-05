@@ -64,3 +64,10 @@ resolution, use +ticket.
  
   +concept lets you view your chargen character concept once you've left
   chargen.
+& +web
+  +web/register <password>
+
+  This command allows you to create a user account on the game's website at 
+  wcmush.com.  Having an account allows you to create and edit wiki pages. 
+  By default, the login for your account is the email you used to register 
+  with the game.
