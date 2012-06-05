@@ -65,6 +65,7 @@ resolution, use +ticket.
   +concept lets you view your chargen character concept once you've left
   chargen.
 & +web
+& +web/register
   +web/register <password>
 
   This command allows you to create a user account on the game's website at 
