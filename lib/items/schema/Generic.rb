@@ -4,6 +4,8 @@ module Items
     include Mongoid::Document
     include Mongoid::Timestamps
     
+    field :number, :type => Integer, :default => lambda {Counters.next("items")}
+    index :number, :unique => true
     field :name, type: String
     field :lowercase_name, type: String
     field :mass, type: Float, default: 0.0

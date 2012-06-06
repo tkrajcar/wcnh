@@ -1,0 +1,10 @@
+&CMD.+ITEM/NEW #115=$+item/new *:@nspemit %#=rpc(Items.new,%0)
+-
+&CMD.+ITEM/DESTROY #115=$+item/destroy *:@nspemit %#=rpc(Items.destroy,%0)
+-
+&CMD.+ITEM/EDIT #115=$+item/edit */*=*:@nspemit %#=rpc(Items.edit,%0,%1,%2)
+-
+&CMD.+ITEM/LIST #115=$+item/list:@nspemit %#=rpc(Items.list)
+-
+&CMD.+ITEM/LIST_ARG #115=$+item/list *:@nspemit %#=rpc(Items.list,%0)
+-
