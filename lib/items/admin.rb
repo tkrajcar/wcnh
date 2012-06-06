@@ -46,9 +46,9 @@ module Items
   def self.destroy(num)
     return "> ".bold.red + "No such item." unless item = Generic.where(number: num).first
 
-    Logs.log_syslog('ITEM DESTROY', "#{R.penn_name(R['enactor'])} removed item no. #{item.num}, name: #{item.name}")
+    Logs.log_syslog('ITEM DESTROY', "#{R.penn_name(R['enactor'])} removed item no. #{item.number}, name: #{item.name}")
     item.destroy
-    return "> ".bold.green + "Item no. #{item.num} destroyed."
+    return "> ".bold.green + "Item no. #{item.number} destroyed."
   end
 
   def self.new(kind)
