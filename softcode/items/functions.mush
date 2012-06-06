@@ -8,4 +8,6 @@
 -
 &FN.GET #1250=rpc(Items.get_attr,%0,%1)
 -
+&SUBFN.CREATE #1250=create(%0)
+-
 

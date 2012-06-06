@@ -11,4 +11,8 @@ module Items
   def self.pj_list(kind=nil)
     self.list(kind)
   end
+
+  def self.pj_create(type)
+    self.create(type)
+  end
 end
