@@ -7,7 +7,9 @@ module Items
     field :dbref, type: String
     field :attribs, type: Hash, default: {}
     
-    belongs_to :kind, :class_name => "Items::Generic", inverse_of: :instances
+    belongs_to :kind, class_name: 'Items::Generic', inverse_of: :instances
+    belongs_to :vendor, class_name: 'Items::Vendor', inverse_of: :items
+    has_many :transactions, class_name: 'Items::Transaction', inverse_of: :item
 
     after_create :construct
     
