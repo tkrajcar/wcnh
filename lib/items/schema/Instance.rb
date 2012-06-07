@@ -32,7 +32,7 @@ module Items
       end
 
       R.set(item_mush, "safe")
-      R.penn_power(item_mush, "api")
+      R.penn_powers(item_mush, "api")
       R.penn_parent(item_mush, MUSH_PARENT)
       R.set(item_mush, "id:#{self._id}")
       return item_mush
