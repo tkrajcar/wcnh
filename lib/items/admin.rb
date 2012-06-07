@@ -60,5 +60,20 @@ module Items
     Logs.log_syslog('ITEM NEW', "#{R.penn_name(R['enactor'])} added a new item parent, id: #{item.number}, class: #{item.class.name}")
     return "> ".bold.green + "Item no. #{item.number} created."
   end
+
+  def self.view(num)
+    return "> ".bold.red + "No such item." unless item = Generic.where(number: num).first
+
+    exclude = %w[materials lowercase_name _type _id created_at updated_at number]
+    fields = item.fields.keys - exclude
+
+    ret = titlebar("Item #{item.number} - #{item.class.name} - #{item.name}")
+    fields.each do |field|
+      ret << "#{field.upcase}: ".cyan + item[field.to_sym] + "\n"
+    end
+    ret << footerbar
+
+    ret
+  end
   
 end
