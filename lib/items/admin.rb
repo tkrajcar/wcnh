@@ -67,7 +67,7 @@ module Items
     exclude = %w[materials lowercase_name _type _id created_at updated_at number]
     fields = item.fields.keys - exclude
 
-    ret = titlebar("Item #{item.number} - #{item.class.name} - #{item.name}")
+    ret = titlebar("Item #{item.number} - #{item.class.name} - #{item.name}") + "\n"
     fields.each do |field|
       ret << "#{field.upcase}: ".cyan + item[field.to_sym].to_s + "\n"
     end
