@@ -24,8 +24,18 @@ module Items
     end
 
     def propagate
-      R.set(self.dbref, "id:#{self._id}") unless self.dbref.nil?
-      return
+      if self.dbref.nil?
+        self.dbref = item_mush = R.penn_u("#{MUSH_FUNCTIONS}/subfn.create",self.kind.name)
+        self.save
+      else
+        item_mush = self.dbref
+      end
+
+      R.set(item_mush, "safe")
+      R.penn_power(item_mush, "api")
+      R.penn_parent(item_mush, MUSH_PARENT)
+      R.set(item_mush, "id:#{self._id}")
+      return item_mush
     end
   end
   

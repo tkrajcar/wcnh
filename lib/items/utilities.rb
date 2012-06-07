@@ -19,18 +19,12 @@ module Items
   end
 
   def self.create(type)
-    return '#-1 INVALID ITEM TYPE' unless item = Generic.where(lowercase_name: type.downcase).first
+    return '#-1 INVALID ITEM TYPE' unless item = Generic.where(number: type.to_i).first
 
     enactor = R["enactor"]
-    item_mush = R.penn_u("#{MUSH_FUNCTIONS}/subfn.create",item.name)
-    item_instance = item.instances.create!
-    item_instance.dbref = item_mush
-    item_instance.save
-    item.propagate
+    instance = item.instances.create!
+    item_mush = instance.propagate
 
-    R.set(item_mush, "safe")
-    R.penn_power(item_mush, "api")
-    R.penn_parent(item_mush, MUSH_PARENT)
     R.tel(item_mush, enactor)
     Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} instantiated #{item_mush}, type: #{item.name}, class: #{item.class.name}")
     return item_mush
