@@ -69,7 +69,7 @@ module Items
 
     ret = titlebar("Item #{item.number} - #{item.class.name} - #{item.name}")
     fields.each do |field|
-      ret << "#{field.upcase}: ".cyan + item[field.to_sym] + "\n"
+      ret << "#{field.upcase}: ".cyan + item[field.to_sym].to_s + "\n"
     end
     ret << footerbar
 
