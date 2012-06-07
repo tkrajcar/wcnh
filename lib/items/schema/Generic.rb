@@ -11,7 +11,7 @@ module Items
     field :mass, type: Float, default: 0.0
     field :volume, type: Float, default: 0.0
     field :materials, type: Hash
-    field :description, type: String
+    field :description, type: String, default: ''
     field :value, type: Integer, default: 0
     
     has_many :instances, :class_name => "Items::Instance", inverse_of: :kind
