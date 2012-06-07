@@ -8,3 +8,5 @@
 -
 &CMD.+ITEM/LIST_ARG #115=$+item/list *:@nspemit %#=rpc(Items.list,%0)
 -
+&CMD.+ITEM/VIEW #115=$+item/view *:@nspemit %#=rpc(Items.view,%0)
+-

@@ -31,4 +31,8 @@ module Items
   def self.pj_new(kind)
     self.new(kind)
   end
+
+  def self.pj_view(num)
+    self.view(num)
+  end
 end
