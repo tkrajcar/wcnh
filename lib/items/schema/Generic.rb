@@ -15,7 +15,10 @@ module Items
     field :value, type: Integer, default: 0
     
     has_many :instances, :class_name => "Items::Instance", inverse_of: :kind
-    
+
+    def self.subclasses
+        ObjectSpace.each_object(Class).select { |klass| klass < self }.sort { |a, b| a.ancestors.count <=> b.ancestors.count }
+    end
   end
   
 end

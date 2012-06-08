@@ -19,7 +19,7 @@ module Items
   end
 
   def self.create(type)
-    return '#-1 INVALID ITEM TYPE' unless item = Generic.where(number: type.to_i).first
+    return "> ".bold.red + "Invalid item ID." unless item = Generic.where(number: type.to_i).first
 
     enactor = R["enactor"]
     instance = item.instances.create!
