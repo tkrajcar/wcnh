@@ -362,3 +362,15 @@
            ),|),
       |,%r)]%r
   [footerbar(words(%q<trackers>,|) trackers)]
+-
+&CMD.+SPACE/CLOAK #367=$+space/cloak *:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+
+  @switch [t(get(%0/space`cloaked))]=
+          1,{@nspemit %#=[ansi(gh,>)] The [name(%0)] is now UNcloaked.;
+             &space`cloaked %0=0
+            },
+            {@nspemit %#=[ansi(gh,>)] The [name(%0)] is now cloaked.;
+             &space`cloaked %0=1
+            }
+-

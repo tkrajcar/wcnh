@@ -550,7 +550,8 @@
   [and(
       hasattrval(%0,space`x),
       hasattrval(%0,space`y),
-      not(hasattrval(%0,data.docked))
+      not(hasattrval(%0,data.docked)),
+      not(get(%0/space`cloaked))
       )]
 -
 &FN.NOTIFY.SHIP #208=
