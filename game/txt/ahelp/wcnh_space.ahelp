@@ -18,10 +18,15 @@ following space cycle.  To force an action immediately, either @notify
  
 +space/active        +space/addcon          +space/addtracker
 +space/advance       +space/audit           +space/classes   
-+space/class         +space/deltracker      +space/jump
-+space/land          +space/launch          +space/load/ship
-+space/ships         +space/stop            +space/taxi
-+space/trackers      +space/unload/ship
++space/class         +space/cloak           +space/deltracker
++space/jump          +space/land            +space/launch
++space/load/ship     +space/ships           +space/stop 
++space/taxi          +space/trackers        +space/unload/ship
+
+& +SPACE/CLOAK 
+Syntax: +space/cloak <ship dbref>
+ 
+Toggle the cloak of a ship on or off.  No emit or indication is given.
 
 & +SPACE/ADDCON
 Syntax: +space/addcon <ship>=<object>

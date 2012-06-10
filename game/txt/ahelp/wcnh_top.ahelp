@@ -4,8 +4,17 @@ This is the admin-only help for WC:NH.
   PAGES:
 
   +acheck        BBOARD         COMBAT         COMMS          CONTRACT
-  +DOSSIER       ECON           +FACTION       +PFILE         +RP
-  +SPACE         +TICKET        WANTED         +ZONE   
+  +DOSSIER       ECON           +FACTION       +gmemit        +PFILE
+  +RP            +SPACE         +TICKET        WANTED         +ZONE   
+
+& +GMEMIT 
+Syntax: +gmemit <text>
+ 
+This makes a global emit that everyone connected to the game will see.  It's
+useful for large scale plots that are happening at the moment, as opposed to 
+summary news posts on an IC news board after the fact.  Additionally, all 
+gmemits are posted to the Galactic Action board.
+
 & +DOSSIER
   This command allows you to make notes about IC matters relating to characters.
   Plot hooks that should be used, IC loans, or anything else related to a chara-
