@@ -8,7 +8,7 @@
 -
 @lock #367==#367
 -
-@lock/use #367=flag^wizard|power^api
+@lock/use #367=flag^wizard|power^api|flag^royal
 -
 &data #367=#351
 -
