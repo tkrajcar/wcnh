@@ -4,13 +4,13 @@ module Items
   MUSH_FUNCTIONS = '#1250'
   MUSH_PARENT = '#1256'
   
-  def self.get_attr(dbref, attr)
+  def self.attr_get(dbref, attr)
     return '#-1 NO SUCH DOCUMENT' unless item = Instance.where(:dbref => dbref).first
     return '#-1 INVALID ATTRIBUTE' if item.attribs[attr].nil?
     return item.attribs[attr].to_s
   end
 
-  def self.set_attr(dbref, attr, value)
+  def self.attr_set(dbref, attr, value)
     return '#-1 NO SUCH DOCUMENT' unless item = Instance.where(:dbref => dbref).first
 
     value.nil? ? item.attribs.delete[attr] : item.attribs[attr] = value

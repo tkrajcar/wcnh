@@ -35,4 +35,16 @@ module Items
   def self.pj_view(num)
     self.view(num)
   end
+
+  def self.pj_vendor_purchase(vendor, item)
+    self.vendor_purchase(vendor, item)
+  end
+
+  def self.pj_vendor_list(vendor)
+    self.vendor_list(vendor)
+  end
+
+  def self.pj_vendor_stock(vendor, item)
+    self.vendor_stock(vendor, item)
+  end
 end

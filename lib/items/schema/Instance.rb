@@ -14,7 +14,7 @@ module Items
     after_create :construct
     
     def construct
-      exclude = [:created_at, :updated_at]
+      exclude = [:created_at, :updated_at, :number]
       
       self.kind.fields.keys.select{ |i| /^_.*/ !~ i && !exclude.include?(i.to_sym) }.each do |field|
         self.attribs[field.to_sym] = self.kind[field.to_sym]
