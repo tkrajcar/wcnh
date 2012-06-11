@@ -47,4 +47,8 @@ module Items
   def self.pj_vendor_stock(vendor, item, amount)
     self.vendor_stock(vendor, item, amount)
   end
+
+  def self.pj_remove(enactor, dbref)
+    self.remove(enactor, dbref)
+  end
 end

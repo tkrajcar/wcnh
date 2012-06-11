@@ -10,5 +10,7 @@
 -
 &CMD.+ITEM/VIEW #115=$+item/view *:@nspemit %#=rpc(Items.view,%0)
 -
-&CMD.+ITEM/create #115=$+item/create *:@nspemit %#=rpc(Items.create,%#,%0)
+&CMD.+ITEM/CREATE #115=$+item/create *:@nspemit %#=rpc(Items.create,%#,%0)
+-
+&CMD.+ITEM/REMOVE #115=$+item/remove *:@nspemit %#=rpc(Items.remove,%#,%0)
 -
