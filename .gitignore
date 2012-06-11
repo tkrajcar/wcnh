@@ -78,3 +78,5 @@ game/ruby/config.yml
 
 # Vagrant stuff
 .vagrant
+
+*.DS_Store
