@@ -11,6 +11,11 @@ module Items
 
     has_many :items, class_name: 'Items::Instance', inverse_of: :vendor
     has_many :transactions, class_name: 'Items::Transaction', inverse_of: :vendor
+
+    def inventory
+        list = self.items.map { |i| i.attribs['name'] }.uniq
+        list.collect { |i| self.items.where('attribs.name' => i).first }
+    end
   end
 
 end

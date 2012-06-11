@@ -22,11 +22,11 @@ module Items
     vendor = Vendor.where(dbref: vendor).first
 
     ret = titlebar("For Sale: #{R.penn_name(vendor.dbref)}") + "\n"
-    ret << 'Item'.ljust(25).yellow + 'Type'.ljust(10).yellow + 'Price '.yellow + "\n"
-    vendor.items.each do |item|
+    ret << 'Item'.ljust(25).yellow + 'Type'.ljust(10).yellow + 'Price       '.yellow + 'Stock'.yellow + "\n"
+    vendor.inventory.each do |item|
       price = (item.attribs['value'] + (item.attribs['value'] * vendor.markup)).to_i
       ret << item.attribs['name'].ljust(25) + item.kind.class.name.partition('::').last.ljust(10)
-      ret << "#{price}c".ljust(10) + "\n"
+      ret << "#{price}c".ljust(14) + vendor.items.where('attribs.name' => item.attribs['name']).count.to_s + "\n"
     end
     ret << "\n" + "Purchase <item> ".bold.yellow + 'to buy something.' + "\n"
     ret << footerbar
