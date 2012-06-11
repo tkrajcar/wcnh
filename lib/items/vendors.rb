@@ -49,11 +49,19 @@ module Items
 
     return "> ".bold.red + "Invalid item number.  Check +item/list." unless item = Generic.where(number: item.to_i).first
     
-    if (item.class == Items::Ammunition) && (existing = vendor.items.where('attribs.name' => item.name).first)
-      existing.attribs['amount'] += 100
-      existing.save
+    if (item.class == Items::Ammunition)
+
+      if (existing = vendor.items.where('attribs.name' => item.name).first)
+        existing.attribs['amount'] += 100
+        existing.save
+      else
+        vendor.items. << item.instances.create!
+        vendor.items.last.attribs['amount'] = 100
+        vendor.items.last.save
+      end
+      
     else
-      vendor.items << item.instances.create!
+      vendor.items. << item.instances.create!
     end
 
     return "> ".bold.green + "#{item.name} added to #{R.penn_name(vendor.dbref)}'s inventory."
