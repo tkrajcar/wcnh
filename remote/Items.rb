@@ -36,8 +36,8 @@ module Items
     self.view(num)
   end
 
-  def self.pj_vendor_purchase(vendor, item)
-    self.vendor_purchase(vendor, item)
+  def self.pj_vendor_purchase(vendor, item, amount)
+    self.vendor_purchase(vendor, item, amount)
   end
 
   def self.pj_vendor_list(vendor)

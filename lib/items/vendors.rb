@@ -1,21 +1,43 @@
 module Items
 
-  def self.vendor_purchase(vendor, item)
+  def self.vendor_purchase(vendor, item, amount)
+    amount = amount.to_i > 0 ? amount.to_i : 1
     enactor = R['enactor']
     wallet = Econ::Wallet.find_or_create_by(id: enactor)
 
     return "> ".bold.red + "Invalid vendor dbref.  Report this via +ticket." unless vendor = Vendor.where(dbref: vendor).first
-    return "> ".bold.red + "Vendor has an invalid account.  Report this via +ticket." unless account = Econ::Account.where(_id: vendor.account).first
-    return "> ".bold.red + "I don't see that item for sale." unless item = vendor.items.where('attribs.lowercase_name' => item.downcase).first
-    return "> ".bold.red + "You don't have enough credits." unless wallet.balance >= (price = item.attribs['value'] + (item.attribs['value'] * vendor.markup))
 
-    item.propagate
-    vendor.items.delete(item)
-    R.tel(item.dbref, enactor)
+    stock = vendor.items.where('attribs.lowercase_name' => item.downcase)
+    available = stock.first.kind.stackable ? stock.first.attribs['amount'] : stock.count
+
+    return "> ".bold.red + "Vendor has an invalid account.  Report this via +ticket." unless account = Econ::Account.where(_id: vendor.account).first
+    return "> ".bold.red + "I don't see that item for sale." unless stock.count > 0
+    return "> ".bold.red + "There are only #{available} of those available." unless available >= amount
+
+    price = ((stock.first.attribs['value'] + (stock.first.attribs['value'] * vendor.markup)) * amount).to_i
+
+    return "> ".bold.red + "You don't have enough credits." unless wallet.balance >= price
+
+    if stock.first.kind.stackable && stock.first.attribs['amount'] > amount
+      instance = Instance.where(dbref: create(stock.first.kind.number)).first
+      instance_stock = Instance.where(_id: stock.first.id).first
+
+      instance_stock.attribs['amount'] -= amount
+      instance.attribs['amount'] += amount
+      instance.save
+      instance_stock.save
+    else
+      instance = stock.first
+      instance.propagate
+      R.tel(instance.dbref, enactor)
+      vendor.items.delete(instance)
+    end
+
     wallet.balance -= price
+    wallet.save
     account.deposit(R.penn_name(vendor.dbref), price)
     vendor.transactions.create!(customer: enactor, price: price)
-    return "> ".bold.green + "You purchase a #{item.attribs['name']} for #{price} credits."
+    return "> ".bold.green + "You purchase #{amount} #{instance.attribs['name']} for #{price} credits."
   end
 
   def self.vendor_list(vendor)
@@ -41,6 +63,7 @@ module Items
     end
 
     ret << "\n" + "Purchase <item> ".bold.yellow + 'to buy something.' + "\n"
+    ret << "Purchase <item>=<amount> ".bold.yellow + 'to buy multiple things.' + "\n"
     ret << footerbar
   end
 

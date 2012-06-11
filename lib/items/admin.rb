@@ -31,8 +31,7 @@ module Items
   def self.edit(num, field, value)
     return "> ".bold.red + "No such item." unless item = Generic.where(number: num.to_i).first
 
-    exclude = %w[materials lowercase_name _type _id created_at updated_at number stackable]
-    fields = item.fields.keys - exclude
+    fields = item.fields.keys - EXCLUDE_FIELDS
 
     return "> ".bold.red + "Invalid field.  Valid fields: " + fields.itemize if fields.find_index(field).nil?
     item.update_attributes(field.to_sym => value)
@@ -64,7 +63,7 @@ module Items
   def self.view(num)
     return "> ".bold.red + "No such item." unless item = Generic.where(number: num).first
 
-    exclude = %w[materials lowercase_name _type _id created_at updated_at number rounds amount]
+    exclude = EXCLUDE_FIELDS + %w[rounds amount] - ['stackable']
     fields = item.fields.keys - exclude
 
     ret = titlebar("Item #{item.number} - #{item.class.name} - #{item.name}") + "\n"

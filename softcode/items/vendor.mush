@@ -8,5 +8,10 @@
 -
 &CMD.VENDOR/STOCK #1262=$vendor/stock *=*:@nspemit %#=itemsys(vendor_stock,%!,%0,%1)
 -
-&CMD.PURCHASE #1262=$purchase *:@nspemit %#=itemsys(vendor_purchase,%!,%0)
+&CMD.PURCHASE #1262=$purchase *:@nspemit %#=
+  ifelse(
+      strmatch(%0,*=*),
+      itemsys(vendor_purchase,%!,before(%0,=),after(%0,=)),
+      itemsys(vendor_purchase,%!,%0,1)
+      )
 -

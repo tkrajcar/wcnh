@@ -14,6 +14,6 @@
 -
 &FN.VENDOR_STOCK #1250=rpc(Items.vendor_stock,%0,%1,%2)
 -
-&FN.VENDOR_PURCHASE #1250=rpc(Items.vendor_purchase,%0,%1)
+&FN.VENDOR_PURCHASE #1250=rpc(Items.vendor_purchase,%0,%1,%2)
 -
 

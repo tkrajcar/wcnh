@@ -3,6 +3,7 @@ require 'wcnh'
 module Items
   MUSH_FUNCTIONS = '#1250'
   MUSH_PARENT = '#1256'
+  EXCLUDE_FIELDS = %w[materials lowercase_name _type _id created_at updated_at number stackable amount] # Fields that shouldn't be viewable/editable via +item 
   
   def self.attr_get(dbref, attr)
     return '#-1 NO SUCH DOCUMENT' unless item = Instance.where(:dbref => dbref).first
@@ -22,11 +23,12 @@ module Items
     return "> ".bold.red + "Invalid item ID." unless item = Generic.where(number: type.to_i).first
 
     enactor = R["enactor"]
+    executor = R["executor"]
     instance = item.instances.create!
     item_mush = instance.propagate
 
     R.tel(item_mush, enactor)
-    Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} instantiated #{item_mush}, type: #{item.name}, class: #{item.class.name}")
+    Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} (via #{R.penn_name(executor)} - #{executor}) instantiated #{item_mush}, type: #{item.name}, class: #{item.class.name}")
     return item_mush
   end
   
