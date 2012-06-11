@@ -39,9 +39,14 @@ module Items
     end
 
     def rename
-      return "> ".bold.red + "Not a groupable item." unless self.kind.stackable
       return "> ".bold.red + "Not propagated." unless self.dbref
-      name = self.kind.group_name(self.attribs['amount'], self.attribs['name'])
+
+      if self.kind.stackable
+        name = self.kind.group_name(self.attribs['amount'], self.attribs['name'])
+      else
+        name = "#{self.attribs['name']} #{self.dbref.split('#').last}"
+      end
+      
       R.penn_name(self.dbref, name)
       return name
     end

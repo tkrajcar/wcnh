@@ -33,6 +33,8 @@ module Items
     end
 
     R.tel(instance.dbref, enactor)
+    instance.rename
+    group(enactor)
     wallet.balance -= price
     wallet.save
     account.deposit(R.penn_name(vendor.dbref), price)
