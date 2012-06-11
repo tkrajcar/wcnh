@@ -44,7 +44,7 @@ module Items
     self.vendor_list(vendor)
   end
 
-  def self.pj_vendor_stock(vendor, item)
-    self.vendor_stock(vendor, item)
+  def self.pj_vendor_stock(vendor, item, amount)
+    self.vendor_stock(vendor, item, amount)
   end
 end

@@ -13,6 +13,7 @@ module Items
     field :materials, type: Hash
     field :description, type: String, default: ''
     field :value, type: Integer, default: 0
+    field :stackable, type: Boolean, default: false # If they can be grouped together like ammo
     
     has_many :instances, :class_name => "Items::Instance", inverse_of: :kind
 

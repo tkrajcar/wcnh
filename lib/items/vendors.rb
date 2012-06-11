@@ -31,7 +31,7 @@ module Items
       ret << item.attribs['name'].ljust(25) + item.kind.class.name.partition('::').last.ljust(14)
       ret << "#{price}c".ljust(11)
 
-      if item.kind.class == Items::Ammunition
+      if item.kind.stackable
         ret << list.inject(0) { |tot, cur| cur.attribs['amount'] + tot }.to_s
       else
         ret << list.count.to_s
@@ -44,27 +44,28 @@ module Items
     ret << footerbar
   end
 
-  def self.vendor_stock(vendor, item)
+  def self.vendor_stock(vendor, item, amount)
+    amount = amount.to_i > 0 ? amount.to_i : 1
     vendor = Vendor.where(dbref: vendor).first
 
     return "> ".bold.red + "Invalid item number.  Check +item/list." unless item = Generic.where(number: item.to_i).first
     
-    if (item.class == Items::Ammunition)
+    if item.stackable
 
       if (existing = vendor.items.where('attribs.name' => item.name).first)
-        existing.attribs['amount'] += 100
+        existing.attribs['amount'] += amount
         existing.save
       else
         vendor.items. << item.instances.create!
-        vendor.items.last.attribs['amount'] = 100
+        vendor.items.last.attribs['amount'] = amount
         vendor.items.last.save
       end
       
     else
-      vendor.items. << item.instances.create!
+      amount.times { vendor.items. << item.instances.create! }
     end
 
-    return "> ".bold.green + "#{item.name} added to #{R.penn_name(vendor.dbref)}'s inventory."
+    return "> ".bold.green + "#{amount} #{item.name} added to #{R.penn_name(vendor.dbref)}'s inventory."
   end
 
 end
