@@ -28,7 +28,7 @@ that have not yet been propagated to the MUSH.  Thus, when someone buys an
 object from a vendor, the item is propagated.  To manipulate a vendor, @tel to
 the room it's in and use the following commands:
  
-vendor/stock <number> - Stock a vendor with item <number>
+vendor/stock <number>=<amount> - Stock a vendor with item <number>
 
 & +GMEMIT 
 Syntax: +gmemit <text>
