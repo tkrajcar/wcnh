@@ -47,6 +47,8 @@ hook_command say after #21/hook.say
 hook_command pose after #21/hook.pose
 hook_command semipose after #21/hook.semipose
 hook_command @emit after #21/hook.emit
+hook_command take after #21/hook.take
+hook_command drop after #21/hook.drop
 
 # You can also add new functions, with
 # add_function <function> <obj>/<attr> [<minargs> [<maxargs>]]
