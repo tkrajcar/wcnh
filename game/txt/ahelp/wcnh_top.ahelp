@@ -4,8 +4,30 @@ This is the admin-only help for WC:NH.
   PAGES:
 
   +acheck        BBOARD         COMBAT         COMMS          CONTRACT
-  +DOSSIER       ECON           +FACTION       +gmemit        +PFILE
-  +RP            +SPACE         +TICKET        WANTED         +ZONE   
+  +DOSSIER       ECON           +FACTION       +gmemit        ITEMS
+  +PFILE         +RP            +SPACE         +TICKET        WANTED
+  +ZONE   
+
+& ITEMS
+There are items, and there are instances of said items.  The 'items' are
+parents.  The 'instances' of each item are what players carry around in their
+inventories.  The following commands let you manipulate the table of items.
+ 
++item/list - See a list of types of items.
++item/list <type> - See a list of items in that category.
++item/view <number> - Details on an item.
++item/new <type> - Add a new item to the specified type category.
++item/edit <num>/<field>=<value> - Edit an existing item.
++item/destroy <num> - Completely destroy an existing item.
+ 
+When an item is instantiated for someone to carry around, the instance that
+exists in the Mongo collection is propagated to the MUSH.  Vendors, which are
+Ruby objects, have an inventory which is a list of instantiated Ruby objects
+that have not yet been propagated to the MUSH.  Thus, when someone buys an
+object from a vendor, the item is propagated.  To manipulate a vendor, @tel to
+the room it's in and use the following commands:
+ 
+vendor/stock <number> - Stock a vendor with item <number>
 
 & +GMEMIT 
 Syntax: +gmemit <text>
