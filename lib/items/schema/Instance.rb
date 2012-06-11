@@ -37,6 +37,14 @@ module Items
       R.set(item_mush, "id:#{self._id}")
       return item_mush
     end
+
+    def rename
+      return "> ".bold.red + "Not a groupable item." unless self.kind.stackable
+      return "> ".bold.red + "Not propagated." unless self.dbref
+      name = self.kind.group_name(self.attribs['amount'], self.attribs['name'])
+      R.penn_name(self.dbref, name)
+      return name
+    end
   end
   
 end

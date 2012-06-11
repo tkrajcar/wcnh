@@ -41,5 +41,31 @@ module Items
     Logs.log_syslog("ITEM REMOVE", "#{R.penn_name(enactor)} removed #{instance.dbref}, type: #{instance.kind.name}")
     return "> ".bold.red + "Item #{instance.dbref} removed from the db."
   end
+
+  def self.group(location)
+    groupable = []
+    removed = 0
+
+    R.lthings(location).split(' ').each do |item|
+      if exists = Instance.where(dbref: item).first
+        groupable << exists if exists.kind.stackable
+      end
+    end
+
+    return "> ".bold.red + "No groupable items in that location." unless groupable.length > 1
+
+    groupable.map { |i| i.attribs['name'] }.uniq.each do |i| # An array of unique groupable item names
+      items = groupable.select { |j| j.attribs['name'] == i } # All of the items for this particular group
+      next if items.length < 2
+      total = items.inject(0) { |k, l| k += l.attribs['amount'] } # How many are there total
+      final = items.pop # The item that will be left after grouping
+      final.attribs['amount'] = total
+      final.save
+      final.rename
+      removed += items.length
+      items.each { |j| remove(MUSH_FUNCTIONS, j.dbref) }
+    end
+    return "> ".bold.green + "#{removed} items removed and grouped."
+  end
   
 end

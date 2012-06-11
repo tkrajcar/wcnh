@@ -51,4 +51,8 @@ module Items
   def self.pj_remove(enactor, dbref)
     self.remove(enactor, dbref)
   end
+
+  def self.pj_group(location)
+    self.group(location)
+  end
 end

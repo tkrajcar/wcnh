@@ -8,6 +8,10 @@ module Items
     after_initialize do |document|
       self.stackable = true
     end
+
+    def group_name(amount, name)
+      return "#{amount} #{amount > 1 ? 'rounds' : 'round'} of #{name}"
+    end
   end
 
 end
