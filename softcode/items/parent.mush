@@ -1,3 +1,5 @@
+@set #1256=!safe no_command
+-
 @wipe #1256
 -
 @desc #1256=itemsys(get,%!,description)
