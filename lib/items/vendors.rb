@@ -19,7 +19,7 @@ module Items
     return "> ".bold.red + "You don't have enough credits." unless wallet.balance >= price
 
     if stock.first.kind.stackable && stock.first.attribs['amount'] > amount
-      instance = Instance.where(dbref: create(stock.first.kind.number)).first
+      instance = Instance.where(dbref: create(vendor.dbref, stock.first.kind.number)).first
       instance_stock = Instance.where(_id: stock.first.id).first
 
       instance_stock.attribs['amount'] -= amount
@@ -29,10 +29,10 @@ module Items
     else
       instance = stock.first
       instance.propagate
-      R.tel(instance.dbref, enactor)
       vendor.items.delete(instance)
     end
 
+    R.tel(instance.dbref, enactor)
     wallet.balance -= price
     wallet.save
     account.deposit(R.penn_name(vendor.dbref), price)

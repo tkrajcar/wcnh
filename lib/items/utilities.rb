@@ -19,16 +19,14 @@ module Items
     return "#{R.penn_name(item.dbref)}/#{attr.upcase} - #{value.nil? ? 'Cleared' : 'Set'}."
   end
 
-  def self.create(type)
+  def self.create(enactor, type)
     return "> ".bold.red + "Invalid item ID." unless item = Generic.where(number: type.to_i).first
 
-    enactor = R["enactor"]
-    executor = R["executor"]
     instance = item.instances.create!
     item_mush = instance.propagate
 
     R.tel(item_mush, enactor)
-    Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} (via #{R.penn_name(executor)} - #{executor}) instantiated #{item_mush}, type: #{item.name}, class: #{item.class.name}")
+    Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} instantiated #{item_mush}, type: #{item.name}, class: #{item.class.name}")
     return item_mush
   end
   

@@ -12,8 +12,8 @@ module Items
     self.list(kind)
   end
 
-  def self.pj_create(type)
-    self.create(type)
+  def self.pj_create(dbref, type)
+    self.create(dbref, type)
   end
 
   def self.pj_set_attr(dbref, attr, value=nil)
