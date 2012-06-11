@@ -64,7 +64,7 @@ module Items
   def self.view(num)
     return "> ".bold.red + "No such item." unless item = Generic.where(number: num).first
 
-    exclude = %w[materials lowercase_name _type _id created_at updated_at number rounds]
+    exclude = %w[materials lowercase_name _type _id created_at updated_at number rounds amount]
     fields = item.fields.keys - exclude
 
     ret = titlebar("Item #{item.number} - #{item.class.name} - #{item.name}") + "\n"

@@ -22,12 +22,24 @@ module Items
     vendor = Vendor.where(dbref: vendor).first
 
     ret = titlebar("For Sale: #{R.penn_name(vendor.dbref)}") + "\n"
-    ret << 'Item'.ljust(25).yellow + 'Type'.ljust(10).yellow + 'Price       '.yellow + 'Stock'.yellow + "\n"
+    ret << 'Item'.ljust(25).yellow + 'Type'.ljust(13).yellow + 'Price'.ljust(10).yellow + 'Amount'.yellow + "\n"
+
     vendor.inventory.each do |item|
       price = (item.attribs['value'] + (item.attribs['value'] * vendor.markup)).to_i
-      ret << item.attribs['name'].ljust(25) + item.kind.class.name.partition('::').last.ljust(10)
-      ret << "#{price}c".ljust(14) + vendor.items.where('attribs.name' => item.attribs['name']).count.to_s + "\n"
+      list = vendor.items.where('attribs.name' => item.attribs['name'])
+
+      ret << item.attribs['name'].ljust(25) + item.kind.class.name.partition('::').last.ljust(14)
+      ret << "#{price}c".ljust(11)
+
+      if item.kind.class == Items::Ammunition
+        ret << list.inject(0) { |tot, cur| cur.attribs['amount'] + tot }.to_s
+      else
+        ret << list.count.to_s
+      end
+
+      ret << "\n"
     end
+
     ret << "\n" + "Purchase <item> ".bold.yellow + 'to buy something.' + "\n"
     ret << footerbar
   end
@@ -35,9 +47,15 @@ module Items
   def self.vendor_stock(vendor, item)
     vendor = Vendor.where(dbref: vendor).first
 
-    return "> ".bold.red + "Invalid item number.  Check +item/list." unless item = Generic.where(number: item).first
+    return "> ".bold.red + "Invalid item number.  Check +item/list." unless item = Generic.where(number: item.to_i).first
     
-    vendor.items << item.instances.create!
+    if (item.class == Items::Ammunition) && (existing = vendor.items.where('attribs.name' => item.name).first)
+      existing.attribs['amount'] += 100
+      existing.save
+    else
+      vendor.items << item.instances.create!
+    end
+
     return "> ".bold.green + "#{item.name} added to #{R.penn_name(vendor.dbref)}'s inventory."
   end
 
