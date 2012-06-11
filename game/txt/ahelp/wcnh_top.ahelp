@@ -20,6 +20,7 @@ inventories.  The following commands let you manipulate the table of items.
 +item/edit <num>/<field>=<value> - Edit an existing item.
 +item/destroy <num> - Completely destroy an existing item.
 +item/create <num> - Instantiate a new MUSH object for an item.
++item/remove <dbref> - @nuke an instantiated item from both game and db.
  
 When an item is instantiated for someone to carry around, the instance that
 exists in the Mongo collection is propagated to the MUSH.  Vendors, which are
