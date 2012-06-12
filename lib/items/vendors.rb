@@ -46,13 +46,13 @@ module Items
     vendor = Vendor.where(dbref: vendor).first
 
     ret = titlebar("For Sale: #{R.penn_name(vendor.dbref)}") + "\n"
-    ret << 'Item'.ljust(25).yellow + 'Type'.ljust(13).yellow + 'Price'.ljust(10).yellow + 'Amount'.yellow + "\n"
+    ret << 'Item'.ljust(30).yellow + 'Type'.ljust(13).yellow + 'Price'.ljust(10).yellow + 'Amount'.yellow + "\n"
 
     vendor.inventory.each do |item|
       price = (item.attribs['value'] + (item.attribs['value'] * vendor.markup)).to_i
       list = vendor.items.where('attribs.name' => item.attribs['name'])
 
-      ret << item.attribs['name'].ljust(25) + item.kind.class.name.partition('::').last.ljust(14)
+      ret << item.attribs['name'].ljust(30) + item.kind.class.name.partition('::').last.ljust(14)
       ret << "#{price}c".ljust(11)
 
       if item.kind.stackable
