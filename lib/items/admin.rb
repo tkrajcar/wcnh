@@ -39,6 +39,13 @@ module Items
     return "> ".bold.red + item.errors[field].join(" ") unless item.valid?
     item.save
 
+    item.instances.each do |instance|
+      unless instance.customized
+        instance.attribs[field] = item[field.to_sym]
+        instance.save
+      end
+    end
+
     return "> ".bold.green + "'#{field.capitalize}' attribute on the parent #{item.name} updated."
   end
 
