@@ -4,7 +4,7 @@ module Items
   PennJSON::register_object(self)
   R = PennJSON::Remote
   
-  def self.pj_get_attr(dbref, attr)
+  def self.pj_attr_get(dbref, attr)
     self.get_attr(dbref, attr)
   end
   
@@ -16,7 +16,7 @@ module Items
     self.create(dbref, type)
   end
 
-  def self.pj_set_attr(dbref, attr, value=nil)
+  def self.pj_attr_set(dbref, attr, value=nil)
     self.set_attr(dbref, attr, value)
   end
 
