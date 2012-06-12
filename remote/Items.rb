@@ -5,7 +5,7 @@ module Items
   R = PennJSON::Remote
   
   def self.pj_attr_get(dbref, attr)
-    self.get_attr(dbref, attr)
+    self.attr_get(dbref, attr)
   end
   
   def self.pj_list(kind=nil)
@@ -17,7 +17,7 @@ module Items
   end
 
   def self.pj_attr_set(dbref, attr, value=nil)
-    self.set_attr(dbref, attr, value)
+    self.attr_set(dbref, attr, value)
   end
 
   def self.pj_edit(num, field, value=nil)
