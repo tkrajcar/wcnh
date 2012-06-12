@@ -6,6 +6,7 @@ module Items
     
     field :dbref, type: String
     field :attribs, type: Hash, default: {}
+    field :customized, type: Boolean, default: false
     
     belongs_to :kind, class_name: 'Items::Generic', inverse_of: :instances
     belongs_to :vendor, class_name: 'Items::Vendor', inverse_of: :items
