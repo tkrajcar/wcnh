@@ -2,5 +2,5 @@
 -
 @wipe #1256
 -
-@desc #1256=itemsys(get,%!,description)
+@desc #1256=itemsys(get,%!,show)
 -
