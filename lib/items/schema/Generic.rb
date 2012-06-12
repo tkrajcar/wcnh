@@ -17,6 +17,10 @@ module Items
     
     has_many :instances, :class_name => "Items::Instance", inverse_of: :kind
 
+    class << self
+        attr_reader :showable # Hash of visible fields in the form of Key (sym) => String (suffix)
+    end
+
     def self.subclasses
         ObjectSpace.each_object(Class).select { |klass| klass < self }.sort { |a, b| a.ancestors.count <=> b.ancestors.count }
     end

@@ -6,7 +6,7 @@
 -
 @desc #1250=Item system functions.
 -
-&FN.GET #1250=rpc(Items.attr_get,%0,%1)
+&FN.GET #1250=rpc(Items.attr_get,%0,show)
 -
 &SUBFN.CREATE #1250=create(%0)
 -

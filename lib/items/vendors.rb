@@ -104,7 +104,7 @@ module Items
     return "> ".bold.red + "I don't see that item for sale." unless stock.count > 0
 
     ret = titlebar(stock.first.attribs['name']) + "\n"
-    ret << stock.first.attribs['description'] + "\n" "\n"
+    ret << stock.first.show + "\n" "\n"
     ret << "#{R.penn_name(vendor.dbref)} has #{available.to_s.bold.yellow} of these available." + "\n"
     ret << footerbar
     return ret

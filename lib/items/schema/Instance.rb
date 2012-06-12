@@ -51,6 +51,18 @@ module Items
       R.penn_name(self.dbref, name)
       return name
     end
+
+    def show
+      ret = self.attribs['description']
+      return ret unless self.kind.class.showable
+      
+      ret << "\n"
+      self.kind.class.showable.each do |field, suffix|
+        ret << "\n" + "#{field.to_s.upcase.cyan}: #{self.attribs[field.to_s]} #{suffix}"
+      end
+
+      return ret
+    end
   end
   
 end
