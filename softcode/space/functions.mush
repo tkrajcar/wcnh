@@ -277,7 +277,7 @@
           [wipe(%0/space`destination)]
           [wipe(%0/space`destination.obj)]
           [u(fn.notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
-          [u(fn.notify.consoles,%0,Arrived at destination %q1.  Speed is now 0 km/h.)]
+          [u(fn.notify.consoles,%0,Arrived at destination %q1.  Speed is now 0 [spacesys(unit)]/h.)]
           )],
       #-1 NO DESTINATION SET
       )
@@ -652,7 +652,7 @@
             #@,
             [name(itext(0))],
             [spacesys(class,itext(0))],
-            [round(spacesys(distance,%0,itext(0)),2,1)]km
+            [round(spacesys(distance,%0,itext(0)),2,1)][spacesys(unit)]
             )],
       ,%r)]%r
   [footerbar([words(%q1)] Contacts)]
@@ -877,7 +877,7 @@
   [table(
       [ansi(y,Class:)] [spacesys(class,%0)]|
       [ansi(y,Location:)] X: [get(%0/space`x)] Y: [get(%0/space`y)]|
-      [ansi(y,Engines:)] [mul(get(v(data)/interval),setr(5,spacesys(speed,%0)))] km/h \(+[mul(100,sub(fdiv(%q5,spacesys(speed.base,%0)),1))]\% skill bonus\)|
+      [ansi(y,Engines:)] [mul(get(v(data)/interval),setr(5,spacesys(speed,%0)))] [spacesys(unit)]/h \(+[mul(100,sub(fdiv(%q5,spacesys(speed.base,%0)),1))]\% skill bonus\)|
       [ansi(y,Hull Integrity:)] [mul(fdiv(first(setr(0,spacesys(hull,%0)),:),last(%q0,:)),100)]\% \([first(%q0,:)]/[last(%q0,:)]\)|
       [ansi(y,Shields:)] [mul(fdiv(first(setr(1,spacesys(shields,%0)),:),last(%q1,:)),100)]\% \([first(%q1,:)]/[last(%q1,:)]\)|
       [ansi(y,Cargo Bay:)] [first(setr(2,spacesys(cargo,%0)),:)] of [last(%q2,:)] m3|
@@ -1356,4 +1356,7 @@
          name(%0,%1),
          #-1 NOT A CONSOLE
         )
-         
+-
+&FN.UNIT #208=
+  get(v(data)/const.unit)
+-
