@@ -14,7 +14,7 @@
   [center(Space System\(\) Documentation,79,-)]%r
   %b%b+[repeat(-,73)]+%r
   [align(2 20 18 33 2,,[ansi(c,SUBFUNCTION)],[ansi(c,ARGUMENTS)],[ansi(c,DESCRIPTION)],,,|)]%r
-  [map(map.doc,[lattr(me/doc.*)], ,%r)]%r
+  [map(map.doc,[lattr(v(docs)/doc.*)], ,%r)]%r
   %b%b+[repeat(-,73)]+%r
   [repeat(-,79)]
 -
@@ -22,6 +22,8 @@
   [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
 -
 &DATA #208=#351
+-
+&DOCS #208=#1272
 -
 @startup #208=
   @trig me/tick;
