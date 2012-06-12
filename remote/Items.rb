@@ -55,4 +55,8 @@ module Items
   def self.pj_group(location)
     self.group(location)
   end
+
+  def self.pj_vendor_preview(vendor, item)
+    self.vendor_preview(vendor, item)
+  end
 end

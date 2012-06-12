@@ -16,4 +16,6 @@
 -
 &FN.VENDOR_PURCHASE #1250=rpc(Items.vendor_purchase,%0,%1,%2)
 -
+&FN.VENDOR_PREVIEW #1250=rpc(Items.vendor_preview,%0,%1)
+-
 

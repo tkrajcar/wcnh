@@ -67,6 +67,7 @@ module Items
 
     ret << "\n" + "Purchase <item> ".bold.yellow + 'to buy something.' + "\n"
     ret << "Purchase <item>=<amount> ".bold.yellow + 'to buy multiple things.' + "\n"
+    ret << "Preview <item> ".bold.yellow + 'to preview an item.' + "\n"
     ret << footerbar
   end
 
@@ -92,6 +93,21 @@ module Items
     end
 
     return "> ".bold.green + "#{amount} #{item.name} added to #{R.penn_name(vendor.dbref)}'s inventory."
+  end
+
+  def self.vendor_preview(vendor, item)
+    return "> ".bold.red + "Invalid vendor dbref.  Report this via +ticket." unless vendor = Vendor.where(dbref: vendor).first
+
+    stock = vendor.items.where('attribs.lowercase_name' => item.downcase)
+    available = stock.first.kind.stackable ? stock.first.attribs['amount'] : stock.count
+
+    return "> ".bold.red + "I don't see that item for sale." unless stock.count > 0
+
+    ret = titlebar(stock.first.attribs['name']) + "\n"
+    ret << stock.first.attribs['description'] + "\n" "\n"
+    ret << "#{R.penn_name(vendor.dbref)} has #{available.to_s.bold.yellow} of these available." + "\n"
+    ret << footerbar
+    return ret
   end
 
 end

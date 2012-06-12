@@ -15,3 +15,5 @@
       itemsys(vendor_purchase,%!,%0,1)
       )
 -
+&CMD.PREVIEW #1262=$preview *:@nspemit %#=itemsys(vendor_preview,%!,%0)
+-
