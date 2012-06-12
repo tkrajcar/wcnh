@@ -42,6 +42,7 @@ module Items
     item.instances.each do |instance|
       unless instance.customized
         instance.attribs[field] = item[field.to_sym]
+        instance.rename if instance.dbref
         instance.save
       end
     end
