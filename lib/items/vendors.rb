@@ -97,11 +97,12 @@ module Items
 
   def self.vendor_preview(vendor, item)
     return "> ".bold.red + "Invalid vendor dbref.  Report this via +ticket." unless vendor = Vendor.where(dbref: vendor).first
-
+    
     stock = vendor.items.where('attribs.lowercase_name' => item.downcase)
-    available = stock.first.kind.stackable ? stock.first.attribs['amount'] : stock.count
 
-    return "> ".bold.red + "I don't see that item for sale." unless stock.count > 0
+    return "> ".bold.red + "There's nothing like that for sale." unless stock.count > 0
+
+    available = stock.first.kind.stackable ? stock.first.attribs['amount'] : stock.count
 
     ret = titlebar(stock.first.attribs['name']) + "\n"
     ret << stock.first.show + "\n" "\n"
