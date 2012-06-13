@@ -38,7 +38,7 @@ module BBoard
       end
       return "> ".bold.green + "You post your note about '#{sub}' in group #{category.num} (#{category.name}) as message ##{postnum}."
     else
-      postnum = category.posts.find_index(thread)
+      postnum = category.posts.find_index(thread) + 1
       notified.each do |i|
         R.nspemit(i.user.id, "(New BB reply posted under message ##{postnum} in group #{category.num} by #{author_name}: #{post.title})")
       end
@@ -130,7 +130,7 @@ module BBoard
     ret = post(
               user.id, # User
               category.name, # Board name
-              (thread.nil? ? user.draft.title : category.posts.find_index(thread)), # Draft title or Postnum of thread 
+              (thread.nil? ? user.draft.title : category.posts.find_index(thread) + 1), # Draft title or Postnum of thread 
               user.draft.body, # Post body
               )
               
