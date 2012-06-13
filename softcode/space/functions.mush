@@ -47,6 +47,7 @@
               set(##,space`audit`movingticks:[inc(default(##/space`audit`movingticks,0))])
              )];
     @notify ##/space`queue`move;
+    think [if(t(get(##/space`lock)),spacesys(lock,##,get(##/space`lock)))];
     think [spacesys(update.report,##)]
     }
 -
@@ -456,6 +457,7 @@
 &FN.HICMD #208=[ansi(hu,%0)]
 -
 &FN.SCAN #208=
+# TODO Add scan indicator when weapons are locked and when someone has a lock
   [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r%b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
   %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
   [iter(
@@ -1172,4 +1174,35 @@
 -
 &FN.UNIT #208=
   get(v(data)/const.unit)
+-
+&FN.HASLOCK #208=
+  cond(
+      hasattrval(%0,space`lock),1|[get(%0/space`lock)],
+      not(setr(PID,first(getpids(%0/space`queue`weaps`lock)))),0,
+      2|[pidinfo(%q<PID>,time)]
+      )
+-
+&FN.WEAPONS #208=
+  1
+-
+&FN.LOCK.TIME #208=
+# TODO Calculate time based on skill
+  15
+-
+&FN.LOCK #208=
+  ncond(
+      spacesys(isactive,%0),spacesys(notify.consoles,%0,Ship inactive. Weapons lock aborted.),
+      strmatch(loc(%0),loc(%1)),spacesys(notify,consoles,%0,The [name(%1)] is no longer on sensors.  Weapons lock aborted.),
+      gte(spacesys(minrange,%0),spacesys(distance,%0,%1)),spacesys(notify.consoles,%0,[name(%1)] is out of range. Weapons lock aborted.),
+
+      [if(
+        not(hasattrval(%0,space`lock)),
+        [set(%0,space`lock:%1)]
+        [spacesys(notify.consoles,%0,Weapons are now locked on the [name(%1)].)]
+        [spacesys(notify.consoles,%1,[ansi(rhf,WARNING:)] The [name(%0)] has obtained a weapons lock.)]
+        )]
+-
+&FN.MINRANGE #208=
+# TODO Calculate minimum lock range based on skill
+  10
 -

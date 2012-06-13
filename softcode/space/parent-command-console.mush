@@ -341,10 +341,6 @@
 -
 @set #204/listen.leave=regexp
 -
-&CMD.LOCK #204=$lock *:
- @assert [not(spacesys(isdocked,setr(Ship,v(data.ship))))]=@nspemit %#=[ansi(rh,>)] The ship is currently docked.;
- @assert [t(lte(%0,words(setr(Ship.report,spacesys(list.report,%q<Ship>)))))]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
- @assert 
- 
+&CMD.LOCK #204=$lock *:+space/lock [v(data.ship)]=%0
 -
 
