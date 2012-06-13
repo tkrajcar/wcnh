@@ -1191,9 +1191,10 @@
 -
 &FN.LOCK #208=
   ncond(
-      spacesys(isactive,%0),spacesys(notify.consoles,%0,Ship inactive. Weapons lock aborted.),
-      strmatch(loc(%0),loc(%1)),spacesys(notify,consoles,%0,The [name(%1)] is no longer on sensors.  Weapons lock aborted.),
-      gte(spacesys(minrange,%0),spacesys(distance,%0,%1)),spacesys(notify.consoles,%0,[name(%1)] is out of range. Weapons lock aborted.),
+      not(strmatch(%1,0)),set(%0,space`lock:),
+      spacesys(isactive,%0),[spacesys(notify.consoles,%0,Ship inactive. Weapons lock aborted.)][set(%0,space`lock:)],
+      strmatch(loc(%0),loc(%1)),[spacesys(notify,consoles,%0,The [name(%1)] is no longer on sensors.  Weapons lock aborted.)][set(%0,space`lock:)],
+      gte(spacesys(minrange,%0),spacesys(distance,%0,%1)),[spacesys(notify.consoles,%0,[name(%1)] is out of range. Weapons lock aborted.)][set(%0,space`lock:)],
 
       [if(
         not(hasattrval(%0,space`lock)),

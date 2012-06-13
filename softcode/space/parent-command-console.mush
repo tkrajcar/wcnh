@@ -341,6 +341,32 @@
 -
 @set #204/listen.leave=regexp
 -
-&CMD.LOCK #204=$lock *:+space/lock [v(data.ship)]=%0
+&CMD.LOCK #204=$lock *:
+ think setr(Ship,v(data.ship));
+ think setr(Ship.report,spacesys(list.report,%q<Ship>));
+ think setr(Target,extract(%q<Ship.report>,%0,1));
+ think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
+ think setr(Caller,%#);
+ think setr(Ship.locktime,spacesys(lock.time,%q<Ship>));
+ think setr(Ship.minrange,spacesys(minrange,%q<Ship>));
+
+ @assert [spacesys(isship,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] Invalid ship object.;
+ @assert [spacesys(isactive,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] This ship is currently inactive.;
+ @assert [t(%q<Target>)]=@nspemit %q<Caller>=[ansi(rh,>)] No such contact on sensors.;
+ @assert [t(spacesys(weapons,%q<Ship>))]=@nspemit %q<Caller>=[ansi(rh,>)] This ship doesn't have any armaments.;
+ @assert [spacesys(isship,%q<Target>)]=@nspemit %q<Caller>=[ansi(rh,>)] Target is not a ship.;
+ @assert [lte(spacesys(distance,%q<Ship>,%q<Target>),%q<Ship.minrange>)]=
+         @nspemit %q<Caller>=[ansi(rh,>)] The [name(%q<Target>)] is out of weapons range.  Minimum range is [ansi(yh,%q<Ship.minrange>)][spacesys(unit)].;
+ @break [eq(first(%q<Ship.lockstatus>,|),2)]=@nspemit %q<Caller>=[ansi(rh,>)] Lock acquisition in progress.  [ansi(yh,timestring(last(%q<Ship.lockstatus>,|)))] remaining.;
+ 
+ @switch [first(%q<Ship.lockstatus>,|)]=
+         
+         1,{@nspemit %q<Caller>=[ansi(gh,>)] Breaking existing weapons lock on the [ansi(yh,name(last(%q<Ship.lockstatus>,|)))].;
+            think spacesys(lock,%q<Ship>,0);
+            think spacesys(notify.consoles,%q<Target>,The [name(%q<Ship>)] has broken its weapons lock on you.)
+           };
+ @wait %q<Ship>/space`queue`weaps`lock/%q<Ship.locktime>=think spacesys(lock,%q<Ship>,%q<Target>);
+ @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(%q<Ship.locktime>))] until successful weapons lock.;
+ think spacesys(notify.consoles,%q<Target>,[ansi(rh,WARNING:)] [ansi(yh,name(%q<Ship>))] is attempting to obtain a weapons lock.);
 -
 

@@ -98,8 +98,7 @@
           110,@nspemit %#=That's not an object.,
           111,{@nspemit %#=Adding [name(%1)]\(%1\) to [name(%0)]\(%0\) as a console.;
                @parent %1=#204;
-               @power %1=api;
-               @power %1=pemit;
+               @power %1=pemit halt api;
                &data.manned %1=;
                &data.ship %1=%0;
                @set %1=listen_parent;
@@ -373,33 +372,5 @@
             {@nspemit %#=[ansi(gh,>)] The [name(%0)] is now cloaked.;
              &space`cloaked %0=1
             }
--
-&CMD.+SPACE/LOCK #367=$+space/lock *=*:
- think setr(Ship,%0);
- think setr(Ship.report,spacesys(list.report,%q<Ship>));
- think setr(Target,extract(%q<Ship.report>,%1,1));
- think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
- think setr(Caller,u(fn.caller));
- think setr(Ship.locktime,spacesys(lock.time,%q<Ship>));
- think setr(Ship.minrange,spacesys(minrange,%q<Ship>));
-
- @assert [spacesys(isship,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] Invalid ship object.;
- @assert [spacesys(isactive,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] This ship is currently inactive.;
- @assert [t(lte(%1,words(%q<Ship.report>)))]=@nspemit %q<Caller>=[ansi(rh,>)] No such contact on sensors.;
- @assert [t(spacesys(weapons,%q<Ship>))]=@nspemit %q<Caller>=[ansi(rh,>)] This ship doesn't have any armaments.;
- @assert [spacesys(isship,%q<Target>)]=@nspemit %q<Caller>=[ansi(rh,>)] Target is not a ship.;
- @assert [lte(spacesys(distance,%q<Ship>,%q<Target>),%q<Ship.minrange>)]=
-         @nspemit %q<Caller>=[ansi(rh,>)] The [name(%q<Target>)] is out of weapons range.  Minimum range is [ansi(yh,%q<Ship.minrange>)][spacesys(unit)].;
- @break [eq(first(%q<Ship.lockstatus>,|),2)]=@nspemit %q<Caller>=[ansi(rh,>)] Lock acquisition in progress.  [ansi(yh,timestring(last(%q<Ship.lockstatus>,|)))] remaining.;
- 
- @switch [first(%q<Ship.lockstatus>,|)]=
-         
-         1,{@nspemit %q<Caller>=[ansi(gh,>)] Breaking existing weapons lock on the [ansi(yh,name(get(%q<Ship>/space`lock)))].;
-            &space`lock %q<Ship>;
-            think spacesys(notify.consoles,%q<Target>,The [name(%q<Ship>)] has broken its weapons lock on you.)
-           };
- @wait %0/space`queue`weaps`lock/%q<Ship.locktime>=think spacesys(lock,%q<Ship>,%q<Target>);
- @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(%q<Ship.locktime>))] until successful weapons lock.;
- think spacesys(notify.consoles,%q<Target>,[ansi(rh,WARNING:)] [ansi(yh,name(%q<Ship>))] is attempting to obtain a weapons lock.);
 -
 
