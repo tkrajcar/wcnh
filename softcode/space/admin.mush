@@ -73,7 +73,7 @@
   @wait %q0/space`queue`move={+space/advance %q0}
 -
 &FN.SPEED.PARSE #367=
-  [mul(setr(a,spacesys(speed,%0)),get(v(data)/interval))] [spacesys(unit)]/h \([ansi(y,+[mul(100,sub(fdiv(%qa,spacesys(speed.base,%0)),1))]\% skill bonus)]\).
+  spacesys(speed.parse,%0)
 -
 &CMD.+SPACE/STOP #367=$+space/stop *:
   @switch [spacesys(isship,%0)]

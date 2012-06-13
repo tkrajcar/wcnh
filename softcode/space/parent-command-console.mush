@@ -109,7 +109,7 @@
 @desc #204=
   A command console. It is currently [ifelse([hasattrval(%!,data.manned)],manned by [spacesys(mannedby,%!)],unmanned)].%r%r
   The ship is currently [ifelse(spacesys(ismoving,setr(0,v(data.ship))),ansi(gh,moving),ansi(rh,stopped))].%r
-  Speed: [ifelse(spacesys(ismoving,%q0),mul(spacesys(speed,%q0),spacesys(interval)),0)] km/h%r
+  Speed: [ifelse(spacesys(ismoving,%q0),spacesys(speed.parse,%q0),0 [spacesys(unit)]/h)]%r
   Heading: [ifelse(spacesys(ismoving,v(data.ship)),round(spacesys(heading,v(data.ship)),0),0)]m0%r%r
   You may [ansi(yh,man)] or [ansi(yh,use)] this console.%r
   See [ansi(yh,help space)] for more information. 
@@ -340,5 +340,11 @@
 &LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!;th [spacesys(rename.console,%!,[trim(before(name(%!),<))] <Unmanned>)]
 -
 @set #204/listen.leave=regexp
+-
+&CMD.LOCK #204=$lock *:
+ @assert [not(spacesys(isdocked,setr(Ship,v(data.ship))))]=@nspemit %#=[ansi(rh,>)] The ship is currently docked.;
+ @assert [t(lte(%0,words(setr(Ship.report,spacesys(list.report,%q<Ship>)))))]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+ @assert 
+ 
 -
 

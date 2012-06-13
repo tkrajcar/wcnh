@@ -36,5 +36,11 @@
 -
 &BIN.PARENTS #351=#566
 -
+# What abbreviation should distances appear in per unit
+# Mm is Megameter or 1,000km, so 1Mm == 1 space "unit"
 &CONST.UNIT #351=Mm
+-
+# Guns
+# Name | Range | Accuracy | Reload Time | Damage
+&GUN.LASER_CANNON #351=Laser Cannon|20|0.5|10
 -

@@ -1,5 +1,7 @@
 @wipe #1272/doc.*
 -
+@desc #1272=Space docs.
+-
 &DOC.ACTIVATE #1272=ship|Activate the ship so it's notified each cycle tick.
 -
 &DOC.ADDCONSOLE #1272=ship:console|Sets up console to work with ship.

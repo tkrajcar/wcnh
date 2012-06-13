@@ -46,7 +46,7 @@
               spacesys(ismoving,##),
               set(##,space`audit`movingticks:[inc(default(##/space`audit`movingticks,0))])
              )];
-    @notify/any ##;
+    @notify ##/space`queue`move;
     think [spacesys(update.report,##)]
     }
 -
@@ -136,6 +136,13 @@
 -
 &FN.ISCAPSHIP #208=
   ifelse(eq(default(%0/space`size,1),2),1,0)
+-
+&FN.SPEED.PARSE #208=
+# Change this to change how "speed" is displayed
+  [mul(mul(setr(a,spacesys(speed,%0)),60),div(60,get(v(data)/interval)))] [spacesys(unit)]/h \([ulocal(subfn.speed.parse.skill,%qa,%0)]\).
+-
+&SUBFN.SPEED.PARSE.SKILL #208=
+  ansi(y,+[mul(100,sub(fdiv(%0,spacesys(speed.base,%1)),1))]\% skill bonus)
 -
 &FN.SPEED.BASE #208=
   mul(default(%0/space`maxspeed,0),2)
@@ -683,7 +690,7 @@
   [table(
       [ansi(y,Class:)] [spacesys(class,%0)]|
       [ansi(y,Location:)] X: [get(%0/space`x)] Y: [get(%0/space`y)]|
-      [ansi(y,Engines:)] [mul(get(v(data)/interval),setr(5,spacesys(speed,%0)))] [spacesys(unit)]/h \(+[mul(100,sub(fdiv(%q5,spacesys(speed.base,%0)),1))]\% skill bonus\)|
+      [ansi(y,Engines:)] [spacesys(speed.parse,%0)]|
       [ansi(y,Hull Integrity:)] [mul(fdiv(first(setr(0,spacesys(hull,%0)),:),last(%q0,:)),100)]\% \([first(%q0,:)]/[last(%q0,:)]\)|
       [ansi(y,Shields:)] [mul(fdiv(first(setr(1,spacesys(shields,%0)),:),last(%q1,:)),100)]\% \([first(%q1,:)]/[last(%q1,:)]\)|
       [ansi(y,Cargo Bay:)] [first(setr(2,spacesys(cargo,%0)),:)] of [last(%q2,:)] m3|
