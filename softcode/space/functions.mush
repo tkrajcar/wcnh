@@ -1183,7 +1183,16 @@
       )
 -
 &FN.WEAPONS #208=
-  1
+# Weapon displayed in the form of Name:Damage:Cooldown (secs):Remaining cooldown
+  iter(
+      lattr(%0/space`guns`),
+      [ifelse(
+          isdbref(setr(Weapon,get(%0/[itext(0)]))),
+          [name(%q<Weapon>)]:[get(%q<Weapon>/damage)]:[get(%q<Weapon>/cooldown)],
+          get(%0/##)
+          )]:
+      [ifelse(t(setr(PID,first(getpids(%0/space`queue`weaps`#@)))),pidinfo(%q<PID>,time),0)],
+      ,|)
 -
 &FN.LOCK.TIME #208=
 # TODO Calculate time based on skill
@@ -1206,4 +1215,8 @@
 &FN.MINRANGE #208=
 # TODO Calculate minimum lock range based on skill
   10
+-
+&FN.ATTACK #208=
+# TODO Ship attacks ship
+  nspemit(%#,%0 attacks %1)
 -

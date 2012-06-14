@@ -369,4 +369,39 @@
  @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(%q<Ship.locktime>))] until successful weapons lock.;
  think spacesys(notify.consoles,%q<Target>,[ansi(rh,WARNING:)] [ansi(yh,name(%q<Ship>))] is attempting to obtain a weapons lock.);
 -
+&CMD.UNLOCK #204=$unlock:
+  think setr(Ship,v(data.ship));
+  think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
+  think setr(Target,last(%q<Ship.lockstatus>,|));
 
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] This ship is currently inactive.;
+  @assert [eq(first(%q<Ship.lockstatus>,|),1)]=@nspemit %#=[ansi(rh,>)] Weapons are not currently locked.;
+
+  think spacesys(notify.consoles,%q<Ship>,Breaking existing weapons lock on the [ansi(yh,name(%q<Target>))].);
+  think spacesys(notify.consoles,%q<Target>,The [name(%q<Ship>)] has broken its weapons lock on you.);
+  think spacesys(lock,%q<Ship>,0)
+-
+&CMD.FIRE #204=$fire:
+  think setr(Ship,v(data.ship));
+  think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
+  think setr(Target,last(%q<Ship.lockstatus>,|));
+  think setr(Ship.weapons,spacesys(weapons,%q<Ship>));
+  think setr(Ship.weapons.canfire,squish(iter(%q<Ship.weapons>,if(eq(last(##,:),0),#@),|,%b)));
+  
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] This ship is currently inactive.;
+  @assert [t(%q<Ship.weapons>)]=@nspemit %#=[ansi(rh,>)] This ship doesn't have any armaments.;
+  @assert [eq(first(%q<Ship.lockstatus>,|),1)]=@nspemit %#=[ansi(rh,>)] Weapons are not currently locked.;
+  @assert [t(%q<Ship.weapons.canfire>)]=@nspemit %#=[ansi(rh,>)] None of your weapons are ready to fire.%r
+                                                    [iter(
+                                                        %q<Ship.weapons>,
+                                                        %b%b<[ansi(rh,#@)]> [first(itext(0),:)] - [ansi(yh,timestring(last(itext(0),:)))] remaining,
+                                                        |,%r
+                                                        )];
+  
+  think spacesys(attack,%q<Ship>,%q<Target>);
+  @dol %q<Ship.weapons.canfire>={@wait %q<Ship>/space`queue`weaps`##/[extract(setr(Weapon,extract(%q<Ship.weapons>,##,1,|)),3,1,:)]=
+                                 think spacesys(notify.consoles,%q<Ship>,<[ansi(rh,##)]> [ansi(yh,first(%q<Weapon>,:))] is ready to fire.)
+                                }
+-
