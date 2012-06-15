@@ -58,22 +58,8 @@ module BBoard
     ret = titlebar("Index: #{category.name}") + "\n"
     ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
     ret << footerbar + "\n"
-    
-    unread_replies = subscription.unread_replies
-    count = 1
-    category.posts.where(:parent_id => nil).asc(:created_at).each do |post|
-      ret << "#{category.num}/#{count}".ljust(5)
-      ret << (!unread_replies[post].nil? ? "R" : " ")
-      ret << (!subscription.read_posts.include?(post.id) ? "U" : " ") + " "
-      ret << '[STICKY] '.green if post.sticky
-      ret << post.title[0,(post.sticky ? 25 : 34)].ljust(post.sticky ? 26 : 35)
-      ret << post.created_at.strftime("%a %b %d").ljust(14) + ((category.anonymous.nil? || R.orflags(dbref, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous)
-      ret << "\n"
-      count += 1
-    end
-    ret << footerbar
-    
-    return ret
+
+    return ShowIndex(subscription, category.posts)
   end
   
   def self.read(dbref, cat, num, showreplies=false)
@@ -216,6 +202,23 @@ module BBoard
     
     return ret
   end
+
+  def self.search(dbref, cat, term)
+    user = User.find_or_create_by(:id => dbref)
+    category = FindCategory(cat)
+
+    return "> ".bold.red + "You do not subscribe to that Group." unless !category.nil?
+
+    subscription = user.subscriptions.where(:category_id => category.id).first
+    
+    return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
+
+    found = subscription.category.posts.where(:body => Regexp.new("(?i)#{term}"))
+
+    return "> ".bold.red + "No posts found." unless found.count > 0
+    
+    return ShowIndex(subscription, found)
+  end
   
   def self.FindCategory(cat)
     if (cat.to_i > 0) then
@@ -280,6 +283,28 @@ module BBoard
     subscription.save
   
     return ret << footerbar
+  end
+
+  def self.ShowIndex(subscription, list)
+    category = subscription.category
+
+    ret = titlebar("Index: #{category.name}") + "\n"
+    ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
+    ret << footerbar + "\n"
+    
+    unread_replies = subscription.unread_replies
+    count = 1
+    list.where(:parent_id => nil).asc(:created_at).each do |post|
+      ret << "#{category.num}/#{count}".ljust(5)
+      ret << (!unread_replies[post].nil? ? "R" : " ")
+      ret << (!subscription.read_posts.include?(post.id) ? "U" : " ") + " "
+      ret << '[STICKY] '.green if post.sticky
+      ret << post.title[0,(post.sticky ? 25 : 34)].ljust(post.sticky ? 26 : 35)
+      ret << post.created_at.strftime("%a %b %d").ljust(14) + ((category.anonymous.nil? || R.orflags(dbref, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous)
+      ret << "\n"
+      count += 1
+    end
+    ret << footerbar
   end
   
 end

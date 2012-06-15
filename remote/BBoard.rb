@@ -91,4 +91,8 @@ module BBoard
   def self.pj_scan(dbref)
     self.scan(dbref)
   end
+
+  def self.pj_search(dbref, cat, term)
+    self.search(dbref, cat, term)
+  end
 end
