@@ -71,5 +71,5 @@
   [rpc(BBoard.scan,%#)]
 -
 &CMD.+BBSEARCH #1139=$+bbsearch */*:@nspemit %#=
-  [rpc(BBoard.search,%#)]
+  [rpc(BBoard.search,%#,%0,%1)]
 -
