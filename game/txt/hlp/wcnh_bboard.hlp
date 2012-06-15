@@ -35,6 +35,13 @@ reading the bulletin boards.  Type 'help <command>' for information.
  
 +bbcatchup          +bbjoin             +bbleave            +bblist
 +bbnext             +bbread             +bbreplies          +bbscan
++bbsearch
+
+& +BBSEARCH
+Syntax: +bbsearch <category>/<term>
+ 
+The +bbsearch command will search the indicated board for posts containing the
+search term.
 
 & +BBCATCHUP
 Syntax: +bbcatchup <board>
