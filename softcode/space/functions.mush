@@ -1207,6 +1207,8 @@
   15
 -
 &FN.LOCK #208=
+# %0 = Ship
+# %1 = Target
   ncond(
       not(strmatch(%1,0)),set(%0,space`lock:),
       spacesys(isactive,%0),[spacesys(notify.consoles,%0,Ship inactive. Weapons lock aborted.)][set(%0,space`lock:)],
@@ -1225,7 +1227,6 @@
   10
 -
 &FN.ATTACK #208=
-# TODO Ship attacks ship
 # %0 = Attacking ship
 # %1 = Console
 # %2 = Gunner
