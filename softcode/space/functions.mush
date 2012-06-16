@@ -123,14 +123,22 @@
 &FILTER.MANNEDCONS #208=
   spacesys(ismanned,%0)
 -
-&FN.SKILL #208=
+&FN.SKILL.MAX #208=
+# Return the max skill value for all manned consoles
   lmath(max,iter(
                 filter(filter.mannedcons,get(%0/data.consoles)),
                 ulocal(subfn.skill,spacesys(mannedby,itext(0)),get(v(data)/skill.%1))
                 ))
 -
+&FN.SKILL #208=
+  ulocal(subfn.skill,%0,get(v(data)/skill.%1))
+-
 &SUBFN.SKILL #208=
   chargen(get.skill,%0,%1)
+-
+&FN.SKILL.ROLL #208=
+# Change this to change how skills are "rolled"
+  add(rand(-2,2),%0)
 -
 &FN.LIST.SKILLS #208=
   lattr(v(data)/skill.*)
@@ -153,7 +161,7 @@
       spacesys(speed.base,%0),
       add(
         switch(
-            spacesys(skill,%0,ifelse(spacesys(iscapship,%0),pilot-cap,pilot-fig)),
+            spacesys(skill.max,%0,ifelse(spacesys(iscapship,%0),pilot-cap,pilot-fig)),
             1,0.575,
             2,0.65,
             3,0.725,
@@ -164,7 +172,7 @@
             0.5
             ),
         switch(
-            spacesys(skill,%0,ifelse(spacesys(iscapship,%0),engineer-cap,engineer-fig)),
+            spacesys(skill.max,%0,ifelse(spacesys(iscapship,%0),engineer-cap,engineer-fig)),
             1,0.575,
             2,0.65,
             3,0.725,
@@ -528,7 +536,7 @@
             [iter(spacesys(list.system.active,loc(%1)),spacesys(update.report,itext(0)))]
             [spacesys(spose,%0,arrives in-system admist a flash of light near the [rest(name(%q1))] jump point.)]
             [iter(spacesys(list.system.active,loc(%0)),spacesys(update.report,itext(0)))]
-            [spacesys(notify.consoles,%0,Jump complete.  New position: [setr(2,ulocal(subfn.jump.calc,get(%q1/space`x),get(%q1/space`y),spacesys(skill,%0,astrogation)))] 
+            [spacesys(notify.consoles,%0,Jump complete.  New position: [setr(2,ulocal(subfn.jump.calc,get(%q1/space`x),get(%q1/space`y),spacesys(skill.max,%0,astrogation)))] 
                                          \([ansi(y,[round(sub(100,dist2d(get(%q1/space`x),get(%q1/space`y),first(%q2),last(%q2))),0)]\% jump accuracy)]\).
                                          )]
             [set(%0,space`x:[first(%q2)])]
@@ -1218,5 +1226,25 @@
 -
 &FN.ATTACK #208=
 # TODO Ship attacks ship
-  nspemit(%#,%0 attacks %1)
+# %0 = Attacking ship
+# %1 = Console
+# %2 = Gunner
+# %3 = Single weapon output from spacesys(weapons)
+# %4 = Target ship
+  [setq(Skill.attacker,spacesys(skill,%2,cond(spacesys(isturret,%1),turret-gun,spacesys(iscapship,%0),pilot-cap,pilot-fig)))]
+  [setq(Skill.defender,spacesys(skill.max,%4,cond(spacesys(iscapship,%4),pilot-cap,pilot-fig)))]
+  [setq(Roll.attacker,spacesys(skill.roll,%q<Skill.attacker>))]
+  [setq(Roll.defender,spacesys(skill.roll,%q<Skill.defender>))]
+
+  [spacesys(spose,%0,fires on the [name(%4)] and [ifelse(gt(%q<Roll.attacker>,%q<Roll.defender>),ansi(rh,hits),ansi(gh,misses))]!)]
+  [spacesys(damage,%4,extract(%3,2,1,:))]
+-
+&FN.ISTURRET #208=
+# TODO Determine if a console is a turret
+  0
+-
+&FN.DAMAGE #208=
+# TODO Apply damage
+# %0 = Target ship
+# %1 = Amount of damage
 -
