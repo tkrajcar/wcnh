@@ -40,4 +40,10 @@
 # Mm is Megameter or 1,000km, so 1Mm == 1 space "unit"
 &CONST.UNIT #351=Mm
 -
+# Where do dead ships go.
+&GRAVEYARD #351=#1278
+-
+# Where players end up when their ship is destroyed.
+&EJECT #351=#1281
+-
 

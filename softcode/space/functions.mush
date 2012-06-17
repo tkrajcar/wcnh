@@ -482,6 +482,7 @@
   [set(%0,space`report:[secs()]|%q1)]
 -
 &FN.SCAN.TARGET #208=
+# TODO Show systems status in targetted scan
   [titlebar(Scan Report: [name(%0)])]%r
   [ifelse(
       hasattrval(%!,subfn.scan.[setr(0,edit(spacesys(class,%0),%b,_))]),
@@ -1277,5 +1278,43 @@
   %q<Damage>
 -
 &FN.DESTROY #208=
-  nspemit(#5,Destroying the [name(%0)].)
+  [setq(Ship.location,spacesys(getshiploc,%0))]
+  [setq(Eject,get(v(data)/eject))]
+  [setq(
+      Ship.occupants,
+      ifelse(
+          strmatch(parent(%0),get(v(data)/parent.ship.multi)),
+          [setq(list,)]
+          [iter(
+              lsearch(all,type,room,zone,%0),
+              setq(list,squish(%q<list> lplayers(itext(0))))
+              )]
+          %q<list>,
+          lplayers(%0)
+          )
+      )]
+
+  [spacesys(notify.ship,%0,ansi(rh,The ship is ripped apart as the hull is breached!))]
+  [spacesys(spose,%0,explodes in a blinding flash of light as its hull is breached!)]
+  [spacesys(deactivate,%0)]
+  [tel(%0,get(v(data)/graveyard))]
+  [iter(
+      %q<Ship.occupants>,
+      [tel(itext(0),%q<Eject>,1)]
+      [nspemit(itext(0),ansi(gh,You manage to eject in an escape pod as the ship is destroyed!))]
+      )]
+  [set(%0,halt)]
+  [iter(
+      lthings(%q<Ship.location>),
+      if(spacesys(isship,itext(0)),spacesys(update.report,itext(0)))
+      )]
+-
+&FN.REPAIR #208=
+  cond(
+    not(spacesys(isship,%0)),#-1 INVALID SHIP,
+    [set(%0,space`armor:[get(parent(%0)/space`armor)])]
+    [set(%0,space`armor`cur:[first(spacesys(hull,parent(%0)),:)])]
+    [set(%0,space`shields:[get(parent(%0)/space`shields)])]
+    [set(%0,space`shields`cur:[first(spacesys(shields,parent(%0)),:)])]
+    )
 -
