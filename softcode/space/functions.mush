@@ -1191,12 +1191,12 @@
       )
 -
 &FN.WEAPONS #208=
-# Weapon displayed in the form of Name:Damage:Cooldown (secs):Remaining cooldown
+# Weapon displayed in the form of Name:Damage:Cooldown (secs):Optimal range:Remaining cooldown
   iter(
       lattr(%0/space`guns`),
       [ifelse(
           isdbref(setr(Weapon,get(%0/[itext(0)]))),
-          [name(%q<Weapon>)]:[get(%q<Weapon>/damage)]:[get(%q<Weapon>/cooldown)],
+          [name(%q<Weapon>)]:[get(%q<Weapon>/damage)]:[get(%q<Weapon>/cooldown)]:[get(%q<Weapon>/range)],
           get(%0/##)
           )]:
       [ifelse(t(setr(PID,first(getpids(%0/space`queue`weaps`#@)))),pidinfo(%q<PID>,time),0)],
@@ -1221,31 +1221,61 @@
         [spacesys(notify.consoles,%0,Weapons are now locked on the [name(%1)].)]
         [spacesys(notify.consoles,%1,[ansi(rhf,WARNING:)] The [name(%0)] has obtained a weapons lock.)]
         )]
+       )
 -
 &FN.MINRANGE #208=
 # TODO Calculate minimum lock range based on skill
-  10
+  100
 -
 &FN.ATTACK #208=
 # %0 = Attacking ship
 # %1 = Console
 # %2 = Gunner
-# %3 = Single weapon output from spacesys(weapons)
-# %4 = Target ship
+# %3 = Target ship
   [setq(Skill.attacker,spacesys(skill,%2,cond(spacesys(isturret,%1),turret-gun,spacesys(iscapship,%0),pilot-cap,pilot-fig)))]
   [setq(Skill.defender,spacesys(skill.max,%4,cond(spacesys(iscapship,%4),pilot-cap,pilot-fig)))]
-  [setq(Roll.attacker,spacesys(skill.roll,%q<Skill.attacker>))]
-  [setq(Roll.defender,spacesys(skill.roll,%q<Skill.defender>))]
+  [setq(Ship.weapons,spacesys(weapons,%0))]
+  [setq(Ship.weapons.canfire,squish(iter(%q<Ship.weapons>,if(eq(last(##,:),0),#@),|,%b)))]
+  [setq(Damage.total,0)]
+  [setq(Shields,get(%3/space`shields`cur))]
+  [setq(Armor,get(%3/space`armor`cur))]
 
-  [spacesys(spose,%0,fires on the [name(%4)] and [ifelse(gt(%q<Roll.attacker>,%q<Roll.defender>),ansi(rh,hits),ansi(gh,misses))]!)]
-  [spacesys(damage,%4,extract(%3,2,1,:))]
+  [iter(
+      %q<Ship.weapons.canfire>,
+      [setq(Roll.attacker,spacesys(skill.roll,%q<Skill.attacker>))]
+      [setq(Roll.defender,spacesys(skill.roll,%q<Skill.defender>))]
+      [setq(Damage,spacesys(damage,extract(%q<Ship.weapons>,itext(0),1,|),spacesys(distance,%0,%3)))]
+      [setq(Damage.total,add(%q<Damage.total>,%q<Damage>))]
+      [spacesys(spose,%0,fires on the [name(%3)] and [ifelse(gt(%q<Damage>,0),ansi(rh,hits),ansi(gh,misses))]!)]
+      )]
+
+  [if(gt(%q<Damage.total>,0),spacesys(notify.ship,%3,The ship rocks as it's struck by incoming fire.))]
+
+  [ifelse(
+        gt(%q<Shields>,%q<Damage.total>),
+        set(%3,space`shields`cur:[sub(%q<Shields>,%q<Damage.total>)]),
+        [setq(Damage,sub(%q<Damage.total>,%q<Shields>)]
+        [set(%3,space`shields`cur:0)]
+        [set(%3,space`armor`cur:[max(sub(%q<Armor>,%q<Damage.total>),0)])]
+        )]
+
+  [if(and(gt(%q<Shields>,0),eq(get(%3/space`shields`cur),0)),spacesys(spose,%3,briefly illuminates the surrounding space with an electric charge as its shields are disabled!))]
+  [if(eq(get(%3/space`armor`cur),0),spacesys(destroy,%3))]
 -
 &FN.ISTURRET #208=
 # TODO Determine if a console is a turret
   0
 -
 &FN.DAMAGE #208=
-# TODO Apply damage
-# %0 = Target ship
-# %1 = Amount of damage
+# %1 = Weapon output from spacesys(weapons)
+# %2 = Range between attacker and defender
+  [setq(Weapon.damage,extract(%0,2,1,:))]
+  [setq(Weapon.range,extract(%0,4,1,:))]
+  [setq(Damage,mul(%q<Weapon.damage>,sub(1.0,max(fdiv(sub(%1,%q<Weapon.range>),%q<Weapon.range>),0))))]
+    
+# Return the total amount of damage to be applied
+  %q<Damage>
+-
+&FN.DESTROY #208=
+  nspemit(#5,Destroying the [name(%0)].)
 -
