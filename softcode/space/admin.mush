@@ -373,4 +373,9 @@
              &space`cloaked %0=1
             }
 -
+&CMD.+SPACE/REPAIR #367=$+space/repair *:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  think spacesys(repair,%0);
+  think syslog(SPACE,[name(%#)] repaired the [name(%0)]\(%0\).)
+-
 

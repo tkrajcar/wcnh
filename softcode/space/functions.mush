@@ -1238,6 +1238,8 @@
   [setq(Ship.weapons,spacesys(weapons,%0))]
   [setq(Ship.weapons.canfire,squish(iter(%q<Ship.weapons>,if(eq(last(##,:),0),#@),|,%b)))]
   [setq(Damage.total,0)]
+  [setq(Damage.shields,0)]
+  [setq(Damage.armor,0)]
   [setq(Shields,get(%3/space`shields`cur))]
   [setq(Armor,get(%3/space`armor`cur))]
 
@@ -1257,11 +1259,21 @@
         set(%3,space`shields`cur:[sub(%q<Shields>,%q<Damage.total>)]),
         [setq(Damage,sub(%q<Damage.total>,%q<Shields>)]
         [set(%3,space`shields`cur:0)]
-        [set(%3,space`armor`cur:[max(sub(%q<Armor>,%q<Damage.total>),0)])]
+        [set(%3,space`armor`cur:[max(sub(%q<Armor>,%q<Damage>),0)])]
         )]
 
+# Messages
+  [setq(Message,[ansi(rh,%q<Damage.total>)] points of damage \([ansi(y,ifelse(t(%q<Damage>),%q<Shields>,%q<Damage.total>))] absorbed by shields\).)]
+  [setq(Message.status.shields,[mul(fdiv(first(setr(1,spacesys(shields,%3)),:),last(%q1,:)),100)]\%)]
+  [setq(Message.status.hull,[mul(fdiv(first(setr(0,spacesys(hull,%3)),:),last(%q0,:)),100)]\%)]
+
+  [syslog(SPACE COMBAT,[name(%2)] in the [name(%0)]\(%0\) attacked the [name(%3)]\(%3\) in [name(loc(%0))] for %q<Damage.total> points of damage.)]
   [if(and(gt(%q<Shields>,0),eq(get(%3/space`shields`cur),0)),spacesys(spose,%3,briefly illuminates the surrounding space with an electric charge as its shields are disabled!))]
-  [if(eq(get(%3/space`armor`cur),0),spacesys(destroy,%3))]
+  [spacesys(notify.consoles,%0,[ansi(gh,Inflicted)] %q<Message>)]
+  [spacesys(notify.consoles,%3,[ansi(yh,Received)] %q<Message>)]
+  [spacesys(notify.consoles,%3,[ansi(rh,WARNING:)]  Shield strength is %q<Message.status.shields>.  Hull integrity is %q<Message.status.hull>.)])]
+
+  [if(eq(get(%3/space`armor`cur),0),spacesys(destroy,%3,%0))]
 -
 &FN.ISTURRET #208=
 # TODO Determine if a console is a turret
@@ -1294,6 +1306,9 @@
           )
       )]
 
+  [syslog(SPACE COMBAT,The [name(%0)]\(%0\) was destroyed in [name(%q<Ship.location>)] by the [name(%1)]\(%1\).  
+                       Ejected occupants: [itemize(iter(%q<Ship.occupants>,name(itext(0)),,|),|)]
+                       )]
   [spacesys(notify.ship,%0,ansi(rh,The ship is ripped apart as the hull is breached!))]
   [spacesys(spose,%0,explodes in a blinding flash of light as its hull is breached!)]
   [spacesys(deactivate,%0)]
