@@ -40,6 +40,12 @@
 # Mm is Megameter or 1,000km, so 1Mm == 1 space "unit"
 &CONST.UNIT #351=Mm
 -
+# Base range to get a weapons lock
+&CONST.LOCK.RANGE #351=10
+-
+# Base time in secs to get a weapons lock
+&CONST.LOCK.TIME #351=15
+-
 # Where do dead ships go.
 &GRAVEYARD #351=#1278
 -

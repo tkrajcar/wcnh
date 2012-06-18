@@ -1193,8 +1193,19 @@
       ,|)
 -
 &FN.LOCK.TIME #208=
-# TODO Calculate time based on skill
-  15
+  mul(
+    get(v(data)/const.lock.time),
+    switch(
+        spacesys(skill,computers),
+        <1,2,
+        1,1.5,
+        2,1.25,
+        3,1,
+        4,0.9,,
+        5,0.75,
+        0.5
+        )
+    )
 -
 &FN.LOCK #208=
 # %0 = Ship
@@ -1214,8 +1225,19 @@
        )
 -
 &FN.MINRANGE #208=
-# TODO Calculate minimum lock range based on skill
-  100
+  mul(
+    get(v(data)/const.lock.range),
+    switch(
+        spacesys(skill,computers),
+        <1,0.5,
+        1,0.75,
+        2,0.9,
+        3,1,
+        4,1.25,
+        5,1.5,
+        2
+        )
+    )
 -
 &FN.ATTACK #208=
 # %0 = Attacking ship
@@ -1323,6 +1345,9 @@
     )
 -
 &FN.LOCKDOWN #208=
-# TODO Return time until ship is no longer locked down or -1 for not locked
-  -1
+  ifelse(
+      gt(setr(Lockdown,default(%0/space`lockdown,0)),secs()),
+      %q<Lockdown>,
+      -1
+      )
 -
