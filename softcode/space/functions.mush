@@ -448,22 +448,6 @@
       #-1 UNMANNED
       )]
 -
-# Subfunction: actors()
-# Debug subfunction used to determine enactor, executor and caller
-&SUBFN.ACTORS #208=[pemit(%#,
-  /@@ Enactor name and DBREF @@/
-  \%#: [name(%#)](%#) 
-
-  /@@ Executor name and DBREF @@/
-  \%!: [name(%!)](%!) 
-
-  /@@ Caller name and DBREF @@/
-  \%@: [name(%@)](%@)
-)]
--
-# Temporary stuff, belongs elsewhere
-&FN.HICMD #208=[ansi(hu,%0)]
--
 &FN.SCAN #208=
   [setq(Lock.origin,spacesys(haslock,%0))]
   [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r%b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
@@ -493,23 +477,19 @@
       )
 -
 &FN.SCAN.TARGET #208=
-# TODO Show systems status in targetted scan
-  [titlebar(Scan Report: [name(%0)])]%r
-  [ifelse(
-      hasattrval(%!,subfn.scan.[setr(0,edit(spacesys(class,%0),%b,_))]),
-      ulocal(subfn.scan.%q0,%0),
-      [u(%0/describe)]%r%r
-      Location%r%t
-      X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
-      [ansi(rh,Landing Area)]: [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),[ansi(gh,Yes)]%r[ansi(rh,Bay Doors Open)]: [ifelse(spacesys(isbayopen,%0),[ansi(gh,Yes)],No)],No)]
+  [cond(
+      spacesys(isship,%0),[spacesys(status,%0)],
+      hasattrval(%!,subfn.scan.[setr(0,edit(spacesys(class,%0),%b,_))]),ulocal(subfn.scan.%q0,%0),
+      [titlebar(Scan Report: [name(%0)])]%r[u(%0/describe)]%r[footerbar(Class: [spacesys(class,%0)]
       )]%r
-  [footerbar(Class: [edit(%q0,_,%b)])]
 -
 &SUBFN.SCAN.CELESTIAL #208=
+  [titlebar(Scan Report: [name(%0)])]%r
   [u(%0/describe)]%r
   Location%r%t
   X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
-  [ansi(rh,Landing Area:)] [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),name(zone(get(%0/data.landing))),N/A)]
+  [ansi(rh,Landing Area:)] [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),name(zone(get(%0/data.landing))),N/A)]%r
+  [footerbar()]
 -
 &FN.SCAN.LAND #208=
   [u(loc(%0)/nameformat)]%r[u(loc(%0)/describe)]%r[u(loc(%0)/conformat,cat(lvplayers(loc(%0)),lvthings(loc(%0))))]
@@ -726,12 +706,11 @@
                  %t<#@> [ifelse(hasattrval(%0,space`guns`#@),first(extract(%q<Ship.weapons>,itext(0),1,|),:),UNINSTALLED)]
                  ,,
                  %r)],
-
             [if(
                hasattrval(%0,data.landing),
                [ansi(y,Bay Doors Open)]: [ifelse(spacesys(isbayopen,%0),[ansi(gh,Yes)],No)]
                )]
-            )]%r
+            )]
       %r[footerbar()]
 -
 &FN.VALUE #208=
