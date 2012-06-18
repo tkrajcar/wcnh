@@ -54,6 +54,9 @@
 &FN.ECON.TRANSFER #595=
   rpc(Econ.grant,%0,%1)
 -
+&FN.ECON.DEPOSIT #595=
+  rpc(Econ.account_deposit,Shipyards,%0)
+-
 &CMD.SHIP/INSPECT #595=$ship/inspect *:
   @switch [gt(words(setr(0,u(fn.listclass,%0))),0)]=
 
@@ -78,6 +81,7 @@
                 @name %q2=[capstr(%1)];
                 @set %q2=data.roster:%#:captain;
                 think u(fn.econ.transfer,%#,-%q3);
+                think u(fn.econ.deposit,%q3);
                 think syslog(SPACE,New ship \([spacesys(class,%q2)]\) purchased by [name(%#)]\(%#\) in [name(loc(%!))]\([loc(%!)]\).);
                 @wait %!/%q1={@nsremit loc(%!)=Maintenance crews carefully tow the [name(%q2)] out of a nearby construction bay.;
                               @tel/silent %q2=loc(%!);
@@ -205,6 +209,7 @@
                            It will take [ansi(yh,[timestring(%q<Time>)] \([mul(bound(chargen(get.skill,%#,construction),0,6),10)]\% skill bonus\))] 
                            for the installation to be completed.  You will be notified via [ansi(yh,@mail)] when your ship is ready.;
   think u(fn.econ.transfer,%#,-%q<Price>);
+  think u(fn.econ.deposit,%q<Price>);
   @set %q<Ship>=space`lockdown:[add(secs(),%q<Time>)];
   @wait %!/%q<Time>={@set %q<Ship>=space`guns:[get(%q<Ship>/space`guns)];
                      @set %q<Ship>=space`guns`%q<Open>:%q<Weapon>;
