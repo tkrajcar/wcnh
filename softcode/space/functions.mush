@@ -693,9 +693,6 @@
 &FN.REACTOR #208=
   [get(%0/space`reactor`cur)]:[mul(100,get(%0/space`reactor))]
 -
-&FN.GUNS #208=
-  [get(%0/space`guns)]|[get(%0/space`guns`cur)]
--
 &FN.STATUS #208=
   [titlebar(Status: [name(%0)])]%r
   [table(
@@ -711,10 +708,11 @@
       )]%r
       [align(38 30,
             [ansi(y,Gun Mounts:)]%r
+            [setq(Ship.weapons,spacesys(weapons,%0))]
             [iter(
-                 lnum(first(setr(4,spacesys(guns,%0)),|)),
-                 %t<#@> [ifelse(gte(words(after(%q4,|)),#@),get(extract(after(%q4,|),#@,1)/title),Laser Cannon)],
-                 ,
+                 lnum(1,get(%0/space`guns)),
+                 %t<#@> [ifelse(hasattrval(%0,space`guns`#@),first(extract(%q<Ship.weapons>,itext(0),1,|),:),UNINSTALLED)]
+                 ,,
                  %r)],
 
             [if(
@@ -1332,4 +1330,8 @@
     [set(%0,space`shields:[get(parent(%0)/space`shields)])]
     [set(%0,space`shields`cur:[first(spacesys(shields,parent(%0)),:)])]
     )
+-
+&FN.LOCKDOWN #208=
+# TODO Return time until ship is no longer locked down or -1 for not locked
+  -1
 -
