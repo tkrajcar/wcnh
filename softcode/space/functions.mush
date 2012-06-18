@@ -465,21 +465,32 @@
 &FN.HICMD #208=[ansi(hu,%0)]
 -
 &FN.SCAN #208=
-# TODO Add scan indicator when weapons are locked and when someone has a lock
+  [setq(Lock.origin,spacesys(haslock,%0))]
   [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r%b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
   %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
   [iter(
       setr(1,spacesys(list.report,%0)),
+      [setq(Lock.target,spacesys(haslock,itext(0)))]
       %b[align(
-            2 39 21 >12,
-            #@,
-            [name(itext(0))],
+            42 21 >12,
+            [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
             [spacesys(class,itext(0))],
             [round(spacesys(distance,%0,itext(0)),2,1)][spacesys(unit)]
             )],
       ,%r)]%r
-  [footerbar([words(%q1)] Contacts)]
+  [footerbar([words(%q1)] Contacts)]%r
+  [ansi(rh,*)] - Locked onto you\, [ansi(gh,*)] - You are locked on\, [ansi(yh,*)] - Mutual weapons lock
   [set(%0,space`report:[secs()]|%q1)]
+-
+&SUBFN.SCAN.LOCKSYM #208=
+  switch(
+      [strmatch(last(%2,|),%1)]
+      [strmatch(last(%3,|),%0)],
+      11,ansi(yh,*),
+      10,ansi(gh,*),
+      01,ansi(rh,*),
+      %b
+      )
 -
 &FN.SCAN.TARGET #208=
 # TODO Show systems status in targetted scan
@@ -570,6 +581,7 @@
       [setq(c,lock(%q1,=%q1))]
       [set(%q1,enter_ok)]
       [set(%q1,!no_command)]
+      [set(%q1,link_ok)]
       [if(hasattrval(%0,roomname),set(%q1,roomname:[get(%0/roomname)]))]
       [powers(%q1,api)]
       [iter(

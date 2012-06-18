@@ -350,6 +350,7 @@
  think setr(Ship.locktime,spacesys(lock.time,%q<Ship>));
  think setr(Ship.minrange,spacesys(minrange,%q<Ship>));
 
+ @assert [strmatch(owner(%q<Ship>),owner(%!))]=@nspemit %#=[ansi(rh,>)] Ship console has invalid owner.  Report this via +ticket.;
  @assert [spacesys(isship,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] Invalid ship object.;
  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] This ship is currently inactive.;
  @assert [t(%q<Target>)]=@nspemit %q<Caller>=[ansi(rh,>)] No such contact on sensors.;
