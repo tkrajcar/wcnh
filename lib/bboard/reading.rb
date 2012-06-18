@@ -300,7 +300,8 @@ module BBoard
       ret << (!subscription.read_posts.include?(post.id) ? "U" : " ") + " "
       ret << '[STICKY] '.green if post.sticky
       ret << post.title[0,(post.sticky ? 25 : 34)].ljust(post.sticky ? 26 : 35)
-      ret << post.created_at.strftime("%a %b %d").ljust(14) + ((category.anonymous.nil? || R.orflags(dbref, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous)
+      ret << post.created_at.strftime("%a %b %d").ljust(14) 
+      ret << ((category.anonymous.nil? || R.orflags(subscription.user.id, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous)
       ret << "\n"
       count += 1
     end
