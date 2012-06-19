@@ -188,27 +188,27 @@
 &SUBFN.RAD2DEG #208=
   add(fdiv(mul(%0,180),pi()),180)
 -
-&OLD.FN.ADVANCE.CALC #208=
-  ifelse(
-      hasattrval(%0,space`destination),
-        vmin(
-            vadd(
-                  vmul(
-                      vmul(
-                          vunit(
-                              vsub(get(%0/space`destination),[get(%0/space`x)] [get(%0/space`y)])
-                              ),
-                          default(%0/space`maxspeed,10)
-                          ),
-                      default(v(data)/default.speed,1)
-                      ),
-                  [get(%0/space`x)] [get(%0/space`y)]
-                  ),
-            get(%0/space`destination)
-            ),
-      #-1 NO DESTINATION SET
-      )
--
+##&OLD.FN.ADVANCE.CALC #208=
+##  ifelse(
+##     hasattrval(%0,space`destination),
+##        vmin(
+##            vadd(
+##                  vmul(
+##                      vmul(
+##                          vunit(
+##                              vsub(get(%0/space`destination),[get(%0/space`x)] [get(%0/space`y)])
+##                              ),
+##                          default(%0/space`maxspeed,10)
+##                          ),
+##                      default(v(data)/default.speed,1)
+##                      ),
+##                  [get(%0/space`x)] [get(%0/space`y)]
+##                  ),
+##            get(%0/space`destination)
+##            ),
+##      #-1 NO DESTINATION SET
+##      )
+##-
 &FN.CLASS #208=
   [ifelse(
       hasattrpval(%0,space`class),
@@ -217,7 +217,11 @@
       )]
 -
 &FN.ISMOVING #208=
-  t(member(iter(getpids(%0),after(pidinfo(itext(0)),SPACE`QUEUE`)),MOVE))
+  firstof(
+      pidinfo(first(getpids(%0/space`queue`move)),time),
+      0
+      )
+#  t(member(iter(getpids(%0),after(pidinfo(itext(0)),SPACE`QUEUE`)),MOVE))
 -
 &FN.CYCLE #208=
   ifelse(t(setr(0,pidinfo(first(lpids(%!,w)),time))),%q0,0)
@@ -402,7 +406,9 @@
 -
 # Function: isdocked(ship DBREF)
 # Returns true if the ship is docked.
-&FN.ISDOCKED #208=[t(hastype([get(%0/data.docked)],ROOM))]
+&FN.ISDOCKED #208=t(hastype(loc(spacesys(docked,%0)),ROOM))
+-
+&FN.DOCKED #208=get(get(%0/data.docked)/space`loc)
 -
 # Function: canboard(ship DBREF, player DBREF)
 # Returns true if the player can board the ship
@@ -480,7 +486,10 @@
   [cond(
       spacesys(isship,%0),[spacesys(status,%0)],
       hasattrval(%!,subfn.scan.[setr(0,edit(spacesys(class,%0),%b,_))]),ulocal(subfn.scan.%q0,%0),
-      [titlebar(Scan Report: [name(%0)])]%r[u(%0/describe)]%r[footerbar(Class: [spacesys(class,%0)]
+      [titlebar(Scan Report: [name(%0)])]%r
+      [u(%0/describe)]%r
+      Location:%r%tX: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
+      [footerbar(Class: [spacesys(class,%0)]
       )]%r
 -
 &SUBFN.SCAN.CELESTIAL #208=
@@ -1349,5 +1358,26 @@
       gt(setr(Lockdown,default(%0/space`lockdown,0)),secs()),
       %q<Lockdown>,
       -1
+      )
+-
+&FN.LAUNCH.TIME #208=
+# TODO Calculate launch time based on skill
+  15
+-
+&FN.LAND.TIME #208=
+# TODO Calculate landing time based on skill
+  15
+-
+&FN.FINDTARGET #208=
+  firstof(
+        extract(setr(Report,spacesys(update.report,%0)),%1,1),
+        grab(%q<Report>,locate(%0,%1,nT)),
+        #-1 NO CONTACT ON SENSORS
+        )
+-
+&FN.LANDLOC #208=
+  firstof(
+      get(%0/data.landing),
+      #-1
       )
 -

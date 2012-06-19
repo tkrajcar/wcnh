@@ -145,11 +145,51 @@
           01,You are already manning the [trim(before(name(%!),<))]!
       )] 
 -
-&CMD.LAND #204=$land *:
-  +space/land [v(data.ship)]=[extract(spacesys(update.report,v(data.ship)),%0,1)]
--
 &CMD.LAUNCH #204=$launch:
-  +space/launch [v(data.ship)]
+  think setq(Ship,v(data.ship));
+  think setq(Ship.dock,get(%q<Ship>/data.docked));
+  think setq(Ship.moving,spacesys(ismoving,%q<Ship>));
+  think setq(Dock.location,spacesys(docked,%q<Ship>));
+  think setq(Time,spacesys(launch.time,%q<Ship>));
+  
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object. Report this to an administrator.;
+  @assert [t(%q<Ship.dock>)]=@nspemit %#=[ansi(rh,>)] The ship is not landed.;
+  @assert [not(%q<Ship.moving>)]=@nspemit %#=[ansi(rh,>)] The ship is already in motion. [ansi(yh,timestring(%q<Ship.moving>))] until orbit.;
+  @assert [t(%q<Dock.location>)]=@nspemit %#=[ansi(rh,>)] Landing zone has an invalid space loc.  Report this to an administrator.;
+  @assert [spacesys(isbayopen,%q<Ship.dock>)]=@nspemit %#=[ansi(rh,>)] The bay doors are closed.;
+  @assert [or(
+              not(spacesys(isship,%q<Ship.dock>)),
+              spacesys(isactive,%q<Ship.dock>)
+              )]=@nspemit %#=[ansi(rh,>)] You cannot launch while the ship you're docked in is landed.;
+
+  @nspemit %#=[ansi(gh,>)] Launching the [name(%q<Ship>)].;
+  think [spacesys(notify.consoles,%q<Ship>,Launch sequence initiated. [ansi(yh,timestring(%q<Time>))] until orbit.)];
+  think [spacesys(notify.ship,%q<Ship>,The ship lurches as it lifts off.)];
+  think [spacesys(activate,%q<Ship>)];
+  @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(launch,%q<Ship>)]
+-
+&CMD.LAND #204=$land *:
+  think setq(Ship,v(data.ship));
+  think setq(Target,spacesys(findtarget,%q<Ship>,%0));
+  think setq(Target.landloc,spacesys(landloc,%q<Target>));
+  think setq(Time,spacesys(land.time,%q<Ship>));
+  
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must come to a complete stop first.;
+  @assert [t(%q<Target>)]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+  @assert [t(eq(spacesys(distance,%q<Ship>,%q<Target>),0))]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  @assert [t(%q<Target.landloc>)]=@nspemit %#=[ansi(rh,>)] No available landing platforms.;
+  @assert [spacesys(isbayopen,%q<Target>)]=@nspemit %#=[ansi(rh,>)] The bay doors are closed.;
+  @assert [nand(
+              spacesys(iscapship,%q<Ship>),
+              spacesys(isship,%q<Target>),
+              not(spacesys(isstation,%q<Target>))
+              )]=@nspemit %#=[ansi(rh,>)] The [name(%q<Ship>)] is too large to fit.;
+
+  @nspemit %#=[ansi(gh,>)] Landing [name(%q<Ship>)] on [name(%q<Target>)].;
+           think [spacesys(notify.consoles,%q<Ship>,Landing sequence initiated. [ansi(yh,timestring(%q<Time>))] until touchdown.)];
+           think [spacesys(notify.ship,%q<Ship>,The engines rumble as the ship prepares to land.)];
+           @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(land,%q<Ship>,%q<Target>)]
 -
 &CMD.PLOT/CALC #204=$plot/calc *:
   @switch [spacesys(isactive,v(data.ship))]
@@ -344,7 +384,7 @@
 &CMD.LOCK #204=$lock *:
  think setr(Ship,v(data.ship));
  think setr(Ship.report,spacesys(list.report,%q<Ship>));
- think setr(Target,extract(%q<Ship.report>,%0,1));
+ think setr(Target,spacesys(findtarget,%q<Ship>,%0));
  think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
  think setr(Caller,%#);
  think setr(Ship.locktime,spacesys(lock.time,%q<Ship>));
