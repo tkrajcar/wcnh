@@ -212,7 +212,18 @@
   +space/stop [v(data.ship)]
 -
 &CMD.JUMP #204=$jump *:
-  +space/jump [v(data.ship)]=[extract(spacesys(update.report,v(data.ship)),%0,1)]
+  think setq(Ship,v(data.ship));
+  think setq(Target,spacesys(findtarget,%q<Ship>,%0));
+  think setq(Time,spacesys(jump.time,%q<Ship>));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isjump,%q<Target>)]=@nspemit %#=[ansi(rh,>)] That is not a jump point.;
+  @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must first come to a complete stop.;
+  @assert [eq(spacesys(distance,%q<Ship>,%q<Target>),0)]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  
+  @nspemit %#=[ansi(gh,>)] Calculating jump.;
+  think spacesys(notify.consoles,%q<Ship>,Initiating jump sequence.  Destination: [rest(name(%q<Target>))].  Time: [ansi(yh,timestring(%q<Time>))].);
+  @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(jump,%q<Ship>,%q<Target>)]
 -
 &CMD.ROSTER/LIST #204=$roster/list:
   @switch [spacesys(isguest,v(data.ship),%#)]=

@@ -1368,6 +1368,10 @@
 # TODO Calculate landing time based on skill
   15
 -
+&FN.JUMP.TIME #208=
+# TODO Calculate jump time based on skill
+  15
+-
 &FN.FINDTARGET #208=
   firstof(
         extract(setr(Report,spacesys(update.report,%0)),%1,1),

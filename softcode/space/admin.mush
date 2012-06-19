@@ -76,23 +76,6 @@
                @set %1=!no_command
               }
 -
-&CMD.+SPACE/JUMP #367=$+space/jump *=*:
-  @switch [spacesys(isship,%0)]
-          [spacesys(isjump,%1)]
-          [t(hasattrval(%1,link))]
-          [not(spacesys(ismoving,%0))]
-          [t(eq(spacesys(distance,%0,%1),0))]=
-
-          0????,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
-          10???,@nspemit [u(fn.caller)]=[ansi(rh,>)] That is not a jump point.,
-          110??,@nspemit [u(fn.caller)]=[ansi(rh,>)] That jump point seems to be unlinked.,
-          1110?,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship must first come to a stop.,
-          11110,@nspemit [u(fn.caller)]=[ansi(rh,>)] Out of range.,
-          11111,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Calculating jump.;
-                 think [spacesys(notify.consoles,%0,Initiating jump sequence in [ansi(yh,[spacesys(cycle)] seconds)].)];
-                 @wait %0/space`queue`move=think [spacesys(jump,%0,%1)]
-                }
--
 &CMD.+SPACE/CLASSES #367=$+space/classes:@nspemit %#=
   [titlebar(List of Classes)]%r
   [ansi(y,align(18 6 4 4 5 5 5 5 7 5,Name,OnGrid,Cap?,Bay?,Jump?,Speed,Cargo,Armor,Shields,#Guns))]%r
