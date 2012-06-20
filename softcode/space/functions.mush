@@ -49,7 +49,7 @@
     think [if(t(get(##/space`lock)),spacesys(lock,##,get(##/space`lock)))];
     think [spacesys(update.report,##)]
     }
--
+#-    
 # Deprecated
 #&FN.MOVE #208=
 #  [set(%0,space`x:%1)][set(%0,space`y:%2)]
@@ -59,8 +59,8 @@
 -
 &FN.ETA #208=
   firstof(
-      spacesys(ismoving,%0),
-      spacesys(eta.start,%0,%1,%2)
+      ulocal(fn.ismoving,%0),
+      ulocal(fn.eta.start,%0,%1,%2)
       )
 # Depcrecated      
 #  ifelse(
@@ -258,6 +258,14 @@
       last(%q<Target.position>)
       )
 -
+&FN.DISTANCE.PARSE #208=
+ switch(
+    %0,
+    <1000,[round(%0,0)][get(v(data)/const.unit)],
+    <1000000,[round(fdiv(%0,1000),2)][get(v(data)/const.unit.1000)],
+    [round(fdiv(%0,1000000),2)][get(v(data)/const.unit.1000000)]
+    )
+-
 &FN.LAND #208=
   [switch(
       [u(fn.isship,%0)]
@@ -362,7 +370,21 @@
 &FN.LIST.REPORT #208=
   ifelse(
       ulocal(fn.isship,%0),
-      ulocal(fn.list.system.all,loc(%0)),
+      [setq(Origin,ulocal(fn.position,%0))]
+      [munge(
+          sort.report,
+          iter(
+              setr(0,remove(u(fn.list.system.all,loc(%0)),%0)),
+              ulocal(
+                  fn.distance.raw,
+                  first(%q<Origin>),
+                  last(%q<Origin>),
+                  setr(Target.position,first(ulocal(fn.position,itext(0)))),
+                  last(%q<Target.position>)
+                  )
+              ),
+          %q0
+          )],
       #-1 INVALID SHIP OBJECT
       )
 #  ifelse(
@@ -471,18 +493,22 @@
   [setq(Lock.origin,ulocal(fn.haslock,%0))]
 
   [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r
-  %b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
-  %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
+  %b[ansi(y,align(2 29 21 5 >12,ID,Name,Class,Speed,Distance))]%r
+  %b[ansi(r,--%b[repeat(-,29)]%b[repeat(-,21)]%b[repeat(-,5)]%b[repeat(-,12)])]%r
 
   [iter(
       setr(1,ulocal(fn.list.report,%0)),
       [setq(Lock.target,ulocal(fn.haslock,itext(0)))]
       [setq(Target.position,ulocal(fn.position,itext(0)))]
       %b[align(
-            42 21 >12,
+            32 21 -5 >12,
             [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
             [ulocal(fn.class,itext(0))],
-            [ulocal(fn.distance.raw,first(%q<Origin>),last(%q<Origin>),first(%q<Target.position>),last(%q<Target.position>))]
+            [ifelse(ulocal(fn.ismoving,itext(0)),ulocal(speed,itext(0)),0)],
+            [ulocal(
+                  fn.distance.parse,
+                  ulocal(fn.distance.raw,first(%q<Origin>),last(%q<Origin>),first(%q<Target.position>),last(%q<Target.position>))
+                  )]
             )],
       ,%r)]%r
 

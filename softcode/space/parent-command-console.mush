@@ -95,12 +95,14 @@
           1,@nspemit %#=[spacesys(scan,%q0)]
 -
 &CMD.SCAN.TARGET #204=$scan *:
-  @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]
-          [t(lte(%0,words(setr(1,spacesys(list.report,%q0)))))]=
+  think setq(Ship,v(data.ship));
+  think setq(Target,spacesys(findtarget,%q<Ship>,%0));
 
-          0?,@nspemit %#=[ansi(rh,>)] The ship is currently landed.,
-          10,@nspemit %#=[ansi(rh,>)] Invalid contact.,
-          11,@nspemit %#=[spacesys(scan.target,extract(%q1,%0,1))]
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is inactive.;
+  @assert [t(%q<Target>)]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+
+  @nspemit %#=[spacesys(scan.target,%q<Target>)]
 -
 @ufail #204=[pemit(%#,
     Console access denied.
