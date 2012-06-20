@@ -46,13 +46,13 @@
               spacesys(ismoving,##),
               set(##,space`audit`movingticks:[inc(default(##/space`audit`movingticks,0))])
              )];
-    @notify ##/space`queue`move;
     think [if(t(get(##/space`lock)),spacesys(lock,##,get(##/space`lock)))];
     think [spacesys(update.report,##)]
     }
 -
-&FN.MOVE #208=
-  [set(%0,space`x:%1)][set(%0,space`y:%2)]
+# Deprecated
+#&FN.MOVE #208=
+#  [set(%0,space`x:%1)][set(%0,space`y:%2)]
 -
 &FN.ETA.START #208=
   fdiv(ulocal(fn.distance.raw,[get(%0/space`x)],[get(%0/space`y)],%1,%2),ulocal(fn.speed,%0))
@@ -62,6 +62,7 @@
       spacesys(ismoving,%0),
       spacesys(eta.start,%0,%1,%2)
       )
+# Depcrecated      
 #  ifelse(
 #      hasattrval(%0,space`destination),
 #      timestring(add(
@@ -158,6 +159,7 @@
   ulocal(subfn.skill,%0,get(v(data)/skill.%1))
 -
 &SUBFN.SKILL #208=
+# Change this to however you're supposed to get a skill value
   chargen(get.skill,%0,%1)
 -
 &FN.SKILL.ROLL #208=
@@ -1385,16 +1387,39 @@
       )
 -
 &FN.LAUNCH.TIME #208=
-# TODO Calculate launch time based on skill
-  15
+  [setq(Skill,ulocal(fn.skill.max,%0,ifelse(ulocal(fn.iscapship,%0),pilot-cap,pilot-fig)))]
+  [setq(Base,30)]
+  [mul(
+    %q<Base>,
+    switch(
+        %q<Skill>,
+        <2,2,
+        2,1.5,
+        3,1,
+        4,0.9,
+        5,0.75,
+        0.5
+        )
+    )]
 -
 &FN.LAND.TIME #208=
-# TODO Calculate landing time based on skill
-  15
+  ulocal(fn.launch.time,%0)
 -
 &FN.JUMP.TIME #208=
-# TODO Calculate jump time based on skill
-  15
+  [setq(Skill,ulocal(fn.skill.max,%0,astrogation))]
+  [setq(Base,15)]
+  [mul(
+    %q<Base>,
+    switch(
+        %q<Skill>,
+        <2,2,
+        2,1.5,
+        3,1,
+        4,0.9,
+        5,0.75,
+        0.5
+        )
+    )]
 -
 &FN.FINDTARGET #208=
   firstof(
