@@ -55,7 +55,7 @@
   [set(%0,space`x:%1)][set(%0,space`y:%2)]
 -
 &FN.ETA.START #208=
-  fdiv(ulocal(fn.distance,[get(%0/space`x)] [get(%0/space`y)],%1 %2),ulocal(fn.speed,%0))
+  fdiv(ulocal(fn.distance.raw,[get(%0/space`x)],[get(%0/space`y)],%1,%2),ulocal(fn.speed,%0))
 -
 &FN.ETA #208=
   firstof(
@@ -244,13 +244,17 @@
          [set(%0,data.consoles:[trim([get(%0/data.consoles)] %1)])]
          )]
 -
+&FN.DISTANCE.RAW #208=
+  dist2d(%0,%1,%2,%3)
+-
 &FN.DISTANCE #208=
-  [dist2d(
-      first(%0),
-      last(%0),
-      first(%1),
-      last(%1)
-      )]
+  ulocal(
+      fn.distance.raw,
+      first(setr(Origin.position,ulocal(fn.position,%0))),
+      last(%q<Origin.position>),
+      first(setr(Target.position,ulocal(fn.position,%1))),
+      last(%q<Target.position>)
+      )
 -
 &FN.LAND #208=
   [switch(
@@ -463,20 +467,24 @@
 &FN.SCAN #208=
   [setq(Origin,ulocal(fn.position,%0))]
   [setq(Lock.origin,ulocal(fn.haslock,%0))]
+
   [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r
   %b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
   %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
+
   [iter(
       setr(1,ulocal(fn.list.report,%0)),
       [setq(Lock.target,ulocal(fn.haslock,itext(0)))]
+      [setq(Target.position,ulocal(fn.position,itext(0)))]
       %b[align(
             42 21 >12,
             [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
             [ulocal(fn.class,itext(0))],
-            [ulocal(fn.distance,%q<Origin>,ulocal(fn.position,itext(0)))]
+            [ulocal(fn.distance.raw,first(%q<Origin>),last(%q<Origin>),first(%q<Target.position>),last(%q<Target.position>))]
             )],
       ,%r)]%r
-  [footerbar([words(%q1)] Contacts)]%r
+
+[footerbar([words(%q1)] Contacts)]%r
   [ansi(rh,*)] - Locked onto you\, [ansi(gh,*)] - You are locked on\, [ansi(yh,*)] - Mutual weapons lock
   [set(%0,space`report:[secs()]|%q1)]
 -
@@ -714,7 +722,7 @@
   [titlebar(Status: [name(%0)])]%r
   [table(
       [ansi(y,Class:)] [spacesys(class,%0)]|
-      [ansi(y,Location:)] X: [get(%0/space`x)] Y: [get(%0/space`y)]|
+      [ansi(y,Location:)] X: [first(setr(Position,ulocal(fn.position,%0)))] Y: [last(%q<Position>)]|
       [ansi(y,Engines:)] [spacesys(speed.parse,%0)]|
       [ansi(y,Hull Integrity:)] [mul(fdiv(first(setr(0,spacesys(hull,%0)),:),last(%q0,:)),100)]\% \([first(%q0,:)]/[last(%q0,:)]\)|
       [ansi(y,Shields:)] [mul(fdiv(first(setr(1,spacesys(shields,%0)),:),last(%q1,:)),100)]\% \([first(%q1,:)]/[last(%q1,:)]\)|

@@ -230,7 +230,17 @@
   @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(advance,%q<Ship>)]
 -
 &CMD.PLOT/STOP #204=$plot/stop:
-  +space/stop [v(data.ship)]
+  think setq(Ship,v(data.ship));
+  think setq(Position,spacesys(position,%q<Ship>));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is inactive.;
+  @assert [spacesys(ismoving,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is not in motion.;
+
+  think spacesys(notify.consoles,%q<Ship>,Stopping the [name(%q<Ship>)].);
+  @drain/all %q<Ship>/space`queue`move;
+  think spacesys(setdest,%q<Ship>,first(%q<Position>),last(%q<Position>));
+  think spacesys(advance,%q<Ship>)
 -
 &CMD.JUMP #204=$jump *:
   think setq(Ship,v(data.ship));
