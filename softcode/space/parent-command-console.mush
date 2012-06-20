@@ -174,7 +174,8 @@
   think setq(Target.landloc,spacesys(landloc,%q<Target>));
   think setq(Time,spacesys(land.time,%q<Ship>));
   
-  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object. Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Ship is inactive.;
   @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must come to a complete stop first.;
   @assert [t(%q<Target>)]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
   @assert [t(eq(spacesys(distance,%q<Ship>,%q<Target>),0))]=@nspemit %#=[ansi(rh,>)] Out of range.;
@@ -192,21 +193,41 @@
            @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(land,%q<Ship>,%q<Target>)]
 -
 &CMD.PLOT/CALC #204=$plot/calc *:
-  @switch [spacesys(isactive,v(data.ship))]
-          [not(spacesys(ismoving,v(data.ship)))]
-          [t(lte(%0,words(setr(0,spacesys(update.report,v(data.ship))))))]=
+  think setq(Ship,v(data.ship));
+  think setq(Ship.report,spacesys(update.report,%q<Ship>));
+  think setq(
+          Destination,
+          ifelse(
+              and(eq(words(%0),2),isnum(first(0)),isnum(last(%0))),
+              squish(%0),
+              spacesys(findtarget,%q<Ship>,%0)
+              )
+          );
+  think setq(Destination.xy,firstof(spacesys(position,%q<Destination>),%q<Destination>));
+  think setq(Time,round(spacesys(eta,%q<Ship>,first(%q<Destination.xy>),last(%q<Destination.xy>)),0));
 
-          0??,@nspemit %#=[ansi(rh,>)] The ship is currently inactive.,
-          10?,@nspemit %#=[ansi(rh,>)] The ship must be stopped before a new course can be calculated.,
-          110,@nspemit %#=[ansi(rh,>)] Invalid contact ID.,
-          111,{think [spacesys(setdest,v(data.ship),setr(1,extract(%q0,max(%0,1),1)))];
-               @nspemit %#=[ansi(gh,>)] Plotting a course to [name(%q1)]...%r
-                           [ansi(gh,>)] Course laid in.  Estimated time of arrival is 
-                                        [ansi(yh,etimefmt($h hours $m minutes,add(stringsecs(spacesys(eta,v(data.ship))),60)))].
-              }
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Ship is inactive.;
+  @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must come to a complete stop first.;
+  @assert [t(%q<Destination>)]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+
+  think spacesys(setdest,%q<Ship>,first(%q<Destination.xy>),last(%q<Destination.xy>));
+  think spacesys(notify.consoles,%q<Ship>,Plotting a course to[if(isdbref(%q<Destination>),%b[name(%q<Destination>)] at)] %q<Destination.xy>);
+  think spacesys(notify.consoles,%q<Ship>,Course laid in.  ETA is [ansi(yh,timestring(%q<Time>))].);
 -
 &CMD.PLOT/ENGAGE #204=$plot/engage:
-  +space/advance [v(data.ship)]=1
+  think setq(Ship,v(data.ship));
+  think setq(Ship.dest,spacesys(destination,%q<Ship>));
+  think setq(Time,round(spacesys(eta,%q<Ship>,first(%q<Ship.dest>),last(%q<Ship.dest>)),0));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is currently inactive.;
+  @assert [t(%q<Ship.dest>)]=@nspemit %#=[ansi(rh,>)] Ship does not have a destination set.  See [ansi(yh,help plot/calc)].;
+
+  think spacesys(notify.ship,%q<Ship>,The ship lurches slightly as it accelerates.);
+  think spacesys(notify.consoles,%q<Ship>,Course engaged.  Destination: %q<Ship.dest>.);
+  think spacesys(notify.consoles,%q<Ship>,Speed: [spacesys(speed.parse,%q<Ship>)] [ansi(y,ETA: [timestring(%q<Time>)])].);
+  @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(advance,%q<Ship>)]
 -
 &CMD.PLOT/STOP #204=$plot/stop:
   +space/stop [v(data.ship)]
@@ -217,6 +238,7 @@
   think setq(Time,spacesys(jump.time,%q<Ship>));
 
   @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Ship is inactive.;
   @assert [spacesys(isjump,%q<Target>)]=@nspemit %#=[ansi(rh,>)] That is not a jump point.;
   @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must first come to a complete stop.;
   @assert [eq(spacesys(distance,%q<Ship>,%q<Target>),0)]=@nspemit %#=[ansi(rh,>)] Out of range.;

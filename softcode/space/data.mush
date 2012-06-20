@@ -36,9 +36,12 @@
 -
 &BIN.PARENTS #351=#566
 -
-# What abbreviation should distances appear in per unit
-# Mm is Megameter or 1,000km, so 1Mm == 1 space "unit"
-&CONST.UNIT #351=Mm
+## What is the abbreviation for speed?
+## kps = km per second
+&CONST.SPEED #351=kps
+-
+## Basic unit measurement.
+&CONST.UNIT #351=km
 -
 # Base range to get a weapons lock
 &CONST.LOCK.RANGE #351=10

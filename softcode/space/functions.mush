@@ -54,64 +54,88 @@
 &FN.MOVE #208=
   [set(%0,space`x:%1)][set(%0,space`y:%2)]
 -
+&FN.ETA.START #208=
+  fdiv(ulocal(fn.distance,[get(%0/space`x)] [get(%0/space`y)],%1 %2),ulocal(fn.speed,%0))
+-
 &FN.ETA #208=
-  ifelse(
-      hasattrval(%0,space`destination),
-      timestring(add(
-                    mul(
-                      floor(fdiv(
-                                dist2d(
-                                      get(%0/space`x),
-                                      get(%0/space`y),
-                                      first(get(%0/space`destination)),
-                                      last(get(%0/space`destination))
-                                      ),
-                                u(fn.speed,%0)
-                                )),
-                      get(v(data)/interval)
-                      ),
-                    u(fn.cycle)
-                    )),
-      #-1 NO DESTINATION SET
+  firstof(
+      spacesys(ismoving,%0),
+      spacesys(eta.start,%0,%1,%2)
       )
+#  ifelse(
+#      hasattrval(%0,space`destination),
+#      timestring(add(
+#                    mul(
+#                      floor(fdiv(
+#                                dist2d(
+#                                      get(%0/space`x),
+#                                      get(%0/space`y),
+#                                      first(get(%0/space`destination)),
+#                                      last(get(%0/space`destination))
+#                                      ),
+#                                u(fn.speed,%0)
+#                                )),
+#                      get(v(data)/interval)
+#                      ),
+#                    u(fn.cycle)
+#                    )),
+#      #-1 NO DESTINATION SET
+#      )
 -
 &FN.ADVANCE #208=
   ifelse(
-      hasattrval(%0,space`destination),
-      [u(fn.move,%0,first(setr(0,ulocal(fn.advance.calc,%0))),last(%q0))]
-      [if(
-          strmatch(%q0,setr(1,get(%0/space`destination))),
-          [wipe(%0/space`destination)]
-          [wipe(%0/space`destination.obj)]
-          [u(fn.notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
-          [u(fn.notify.consoles,%0,Arrived at destination %q1.  Speed is now 0 [spacesys(unit)]/h.)]
-          )],
+      t(setr(Destination,spacesys(destination,%0))),
+
+      [set(%0,space`x:[first(%q<Destination>)])]
+      [set(%0,space`y:[last(%q<Destination>)])]
+      [wipe(%0/space`destination)]
+      [spacesys(notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
+      [spacesys(notify.consoles,%0,Arrived at destination %q<Destination>.  Speed is now 0[get(v(data)/const.speed)].)],
+
+      #-1 NO DESTINATION SET
+      )
+#  ifelse(
+#      hasattrval(%0,space`destination),
+#      [u(fn.move,%0,first(setr(0,ulocal(fn.advance.calc,%0))),last(%q0))]
+#      [if(
+#          strmatch(%q0,setr(1,get(%0/space`destination))),
+#          [wipe(%0/space`destination)]
+#          [wipe(%0/space`destination.obj)]
+#          [u(fn.notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
+#          [u(fn.notify.consoles,%0,Arrived at destination %q1.  Speed is now 0 [spacesys(unit)]/h.)]
+#          )],
+#      #-1 NO DESTINATION SET
+#      )
+-
+&FN.HEADING #208=
+  ifelse(
+      t(setr(0,spacesys(destination,%0))),
+      [setq(dx,sub(first(%q0),get(%0/space`x)))]
+      [setq(dy,sub(last(%q0),get(%0/space`y)))]
+      [u(subfn.rad2deg,atan2(mul(r(dx),-1),r(dy)))],
       #-1 NO DESTINATION SET
       )
 -
-&FN.HEADING #208=
-  [setq(dx,sub(first(setr(0,get(%0/space`destination))),get(%0/space`x)))][setq(dy,sub(last(%q0),get(%0/space`y)))][u(subfn.rad2deg,atan2(mul(r(dx),-1),r(dy)))]
--
 &SUBFN.DELTA_Y #208=
-  [mul(-1,u(fn.speed,%0),sin(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+  [mul(-1,%1,sin(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
 -
 &SUBFN.DELTA_X #208=
-  [mul(-1,u(fn.speed,%0),cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+  [mul(-1,%1,cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+-
+&FN.POSITION #208=
+  [setq(Destination,ulocal(fn.destination,%0))]
+  [setq(Velocity,ulocal(fn.speed,%0))]
+  [setq(Remaining,ulocal(fn.ismoving,%0))]
+  [setq(Elapsed,sub(ulocal(fn.eta.start,%0,first(%q<Destination>),last(%q<Destination>)),%q<Remaining>))]
+
+  [ifelse(
+      %q<Remaining>,
+      ulocal(fn.advance.calc,%0,%q<Velocity>,%q<Elapsed>),
+      [get(%0/space`x)] [get(%0/space`y)]
+      )]
 -
 &FN.ADVANCE.CALC #208=
-  ifelse(
-      lt(
-        dist2d(
-            get(%0/space`x),
-            get(%0/space`y),
-            first(setr(0,get(%0/space`destination))),
-            last(%q0)
-            ),
-        ulocal(fn.speed,%0)
-        ),
-      %q0,
-      [add(get(%0/space`x),ulocal(subfn.delta_x,%0))] [add(get(%0/space`y),ulocal(subfn.delta_y,%0))]
-      )
+  [add(get(%0/space`x),ulocal(subfn.delta_x,%0,mul(%1,%2)))] [add(get(%0/space`y),ulocal(subfn.delta_y,%0,mul(%1,%2)))]
 #  Deprecated
 # ifelse(
 #      t(hasattrval(%0,space`destination)),
@@ -127,7 +151,7 @@
 # Return the max skill value for all manned consoles
   lmath(max,iter(
                 filter(filter.mannedcons,get(%0/data.consoles)),
-                ulocal(subfn.skill,spacesys(mannedby,itext(0)),get(v(data)/skill.%1))
+                ulocal(subfn.skill,ulocal(fn.mannedby,itext(0)),get(v(data)/skill.%1))
                 ))
 -
 &FN.SKILL #208=
@@ -148,42 +172,19 @@
 -
 &FN.SPEED.PARSE #208=
 # Change this to change how "speed" is displayed
-  [mul(mul(setr(a,spacesys(speed,%0)),60),div(60,get(v(data)/interval)))] [spacesys(unit)]/h \([ulocal(subfn.speed.parse.skill,%qa,%0)]\).
--
-&SUBFN.SPEED.PARSE.SKILL #208=
-  ansi(y,+[mul(100,sub(fdiv(%0,spacesys(speed.base,%1)),1))]\% skill bonus)
+  [setr(Speed,spacesys(speed,%0))][get(v(data)/const.speed)] \([ansi(y,[mul(100,sub(fdiv(%q<Speed>,spacesys(speed.base,%0)),1))]\% skill bonus)]\)
 -
 &FN.SPEED.BASE #208=
-  mul(default(%0/space`maxspeed,0),2)
+  firstof(get(%0/space`maxspeed),#-1)
 -
 &FN.SPEED #208=
-    mul(
-      spacesys(speed.base,%0),
-      add(
-        switch(
-            spacesys(skill.max,%0,ifelse(spacesys(iscapship,%0),pilot-cap,pilot-fig)),
-            1,0.575,
-            2,0.65,
-            3,0.725,
-            4,0.8,
-            5,0.875,
-            6,0.95,
-            >6,1,
-            0.5
-            ),
-        switch(
-            spacesys(skill.max,%0,ifelse(spacesys(iscapship,%0),engineer-cap,engineer-fig)),
-            1,0.575,
-            2,0.65,
-            3,0.725,
-            4,0.8,
-            5,0.875,
-            6,0.95,
-            >6,1,
-            0.5
-            )
-        )
-      )
+  [setq(Skill.pilot,ulocal(fn.skill.max,%0,ifelse(ulocal(fn.iscapship,%0),pilot-cap,pilot-fig)))]
+  [setq(Skill.engineer,ulocal(fn.skill.max,%0,ifelse(ulocal(fn.iscapship,%0),engineer-cap,engineer-fig)))]
+  
+  [firstof(
+        mul(ulocal(fn.speed.base,%0),add(1,fdiv(%q<Skill.pilot>,10)),add(1,fdiv(%q<Skill.engineer>,10))),
+        #-1 INVALID BASE SPEED
+        )]
 -
 &SUBFN.RAD2DEG #208=
   add(fdiv(mul(%0,180),pi()),180)
@@ -245,10 +246,10 @@
 -
 &FN.DISTANCE #208=
   [dist2d(
-      get(%0/space`x),
-      get(%0/space`y),
-      get(%1/space`x),
-      get(%1/space`y)
+      first(%0),
+      last(%0),
+      first(%1),
+      last(%1)
       )]
 -
 &FN.LAND #208=
@@ -354,17 +355,22 @@
 -
 &FN.LIST.REPORT #208=
   ifelse(
-      [not(u(fn.isship,%0))],
-      #-1 INVALID SHIP OBJECT,
-      munge(
-          sort.report,
-          iter(
-              setr(0,remove(u(fn.list.system.all,loc(%0)),%0)),
-              u(fn.distance,%0,itext(0))
-              ),
-          %q0
-          )
+      ulocal(fn.isship,%0),
+      ulocal(fn.list.system.all,loc(%0)),
+      #-1 INVALID SHIP OBJECT
       )
+#  ifelse(
+#      not(ulocal(fn.isship,%0)),
+#      #-1 INVALID SHIP OBJECT,
+#      munge(
+#          sort.report,
+#          iter(
+#              setr(0,remove(u(fn.list.system.all,loc(%0)),%0)),
+#              u(fn.distance,%0,itext(0))
+#              ),
+#          %q0
+#          )
+#      )
 -
 &SORT.REPORT #208=
   sort(%0)
@@ -455,17 +461,19 @@
       )]
 -
 &FN.SCAN #208=
-  [setq(Lock.origin,spacesys(haslock,%0))]
-  [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r%b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
+  [setq(Origin,ulocal(fn.position,%0))]
+  [setq(Lock.origin,ulocal(fn.haslock,%0))]
+  [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r
+  %b[ansi(y,align(2 39 21 >12,ID,Name,Class,Distance))]%r
   %b[ansi(r,--%b[repeat(-,39)]%b[repeat(-,21)]%b[repeat(-,12)])]%r
   [iter(
-      setr(1,spacesys(list.report,%0)),
-      [setq(Lock.target,spacesys(haslock,itext(0)))]
+      setr(1,ulocal(fn.list.report,%0)),
+      [setq(Lock.target,ulocal(fn.haslock,itext(0)))]
       %b[align(
             42 21 >12,
             [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
-            [spacesys(class,itext(0))],
-            [round(spacesys(distance,%0,itext(0)),2,1)][spacesys(unit)]
+            [ulocal(fn.class,itext(0))],
+            [ulocal(fn.distance,%q<Origin>,ulocal(fn.position,itext(0)))]
             )],
       ,%r)]%r
   [footerbar([words(%q1)] Contacts)]%r
@@ -507,8 +515,16 @@
   [t(member(get(v(data)/list.active),%0))]
 -
 &FN.SETDEST #208=
-  [set(%0,space`destination:[get(%1/space`x)] [get(%1/space`y)])]
-  [set(%0,space`destination.obj:%1)]
+  set(
+    %0,
+    space`destination:[firstof(get(%1/space`x),%1)] [firstof(get(%1/space`y),%2)]
+    ) 
+-
+&FN.DESTINATION #208=
+  firstof(
+      get(%0/space`destination),
+      #-1 NO DESTINATION SET
+      )
 -
 &FN.ISJUMP #208=
   strmatch(parent(%0),get(v(data)/parent.jump))
