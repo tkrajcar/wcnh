@@ -54,7 +54,7 @@
           [ifelse(spacesys(iscapship,itext(0)),Yes,No)],
           [ifelse(spacesys(hasbay,itext(0)),Yes,No)],
           [ifelse(spacesys(canjump,itext(0)),Yes,No)],
-          [left(num2adj(default(itext(0)/space`maxspeed,0)),5)],
+          [spacesys(speed.base,itext(0))],
           [rjust(default(itext(0)/space`cargo`max,0),5)],
           [left(num2adj(last(default(itext(0)/space`armor,0:0),:)),5)],
           [left(num2adj(last(default(itext(0)/space`shields,0:0),:)),7)],
