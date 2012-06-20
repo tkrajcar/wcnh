@@ -19,42 +19,8 @@
       %#
       )
 -
-&CMD.+SPACE/ADVANCE #367=$+space/advance *:
-  @assert [spacesys(isship,setr(0,before(%0,=)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.;
-  @assert [not(hasattrval(%q0,data.docked))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is currently landed.;
-  @assert [hasattrval(%q0,space`destination)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship does not have a destination set.;
-  
-  @nspemit %#=[ansi(gh,>)] Advancing [name(%q0)].;
-  think [setq(Ship.wasstopped,t(after(%0,=)))];
-  think [setq(Ship.dest,get(%q0/space`destination))];
-
-  think [ifelse(
-                %q<Ship.wasstopped>,
-                [spacesys(notify.ship,%q0,The ship lurches slightly as it accelerates.)]
-                [spacesys(notify.consoles,%q0,Course engaged. Destination: %q<Ship.dest>.%r
-                                              [ansi(gh,>)] Speed: [ulocal(fn.speed.parse,%q0)] [ansi(y,ETA: [spacesys(eta,%q0)])].
-                                              )],
-                spacesys(advance,%q0)
-                )];
-
-  @assert [hasattrval(%q0,space`destination)];
-  @wait %q0/space`queue`move={+space/advance %q0}
--
 &FN.SPEED.PARSE #367=
   spacesys(speed.parse,%0)
--
-&CMD.+SPACE/STOP #367=$+space/stop *:
-  @switch [spacesys(isship,%0)]
-          [spacesys(ismoving,%0)]=
-
-          0?,@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.,
-          10,@nspemit [u(fn.caller)]=[ansi(rh,>)] The ship is not in motion.,
-          11,{@nspemit [u(fn.caller)]=[ansi(gh,>)] Stopping the [name(%0)].;
-              @drain %0/space`queue`move;
-              &space`destination %0=[get(%0/space`x)] [get(%0/space`y)];
-              think [spacesys(advance,%0)];
-              &space`destination %0
-             }
 -
 &CMD.+SPACE/ADDCON #367=$+space/addcon *=*:
   @switch [spacesys(isship,%0)]

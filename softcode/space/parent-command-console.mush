@@ -153,11 +153,13 @@
   think setq(Ship.moving,spacesys(ismoving,%q<Ship>));
   think setq(Dock.location,spacesys(docked,%q<Ship>));
   think setq(Time,spacesys(launch.time,%q<Ship>));
+  think setq(Lockdown,spacesys(lockdown,%q<Ship>));
   
   @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object. Report this to an administrator.;
   @assert [t(%q<Ship.dock>)]=@nspemit %#=[ansi(rh,>)] The ship is not landed.;
   @assert [not(%q<Ship.moving>)]=@nspemit %#=[ansi(rh,>)] The ship is already in motion. [ansi(yh,timestring(%q<Ship.moving>))] until orbit.;
   @assert [t(%q<Dock.location>)]=@nspemit %#=[ansi(rh,>)] Landing zone has an invalid space loc.  Report this to an administrator.;
+  @assert [eq(%q<Lockdown>,-1)]=@nspemit %#=[ansi(rh,>)] This ship is in lockdown for another [ansi(yh,timestring(sub(%q<Lockdown>,secs())))].;
   @assert [spacesys(isbayopen,%q<Ship.dock>)]=@nspemit %#=[ansi(rh,>)] The bay doors are closed.;
   @assert [or(
               not(spacesys(isship,%q<Ship.dock>)),

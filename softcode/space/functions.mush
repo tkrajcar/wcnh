@@ -756,23 +756,22 @@
       [ansi(y,Shields:)] [mul(fdiv(first(setr(1,spacesys(shields,%0)),:),last(%q1,:)),100)]\% \([first(%q1,:)]/[last(%q1,:)]\)|
       [ansi(y,Cargo Bay:)] [first(setr(2,spacesys(cargo,%0)),:)] of [last(%q2,:)] m3|
       [ansi(y,Reactor:)] [first(setr(3,spacesys(reactor,%0)),:)] of [last(%q3,:)] MW|
-      [ansi(y,Computer:)] [mul(fdiv(first(setr(4,spacesys(cpu,%0)),:),last(%q4,:)),100)]\% Avail.,
-      38,79,|
-      )]%r
-      [align(38 30,
-            [ansi(y,Gun Mounts:)]%r
-            [setq(Ship.weapons,spacesys(weapons,%0))]
-            [iter(
-                 lnum(1,get(%0/space`guns)),
-                 %t<#@> [ifelse(hasattrval(%0,space`guns`#@),first(extract(%q<Ship.weapons>,itext(0),1,|),:),UNINSTALLED)]
-                 ,,
-                 %r)],
-            [if(
-               hasattrval(%0,data.landing),
-               [ansi(y,Bay Doors Open)]: [ifelse(spacesys(isbayopen,%0),[ansi(gh,Yes)],No)]
-               )]
-            )]
-      %r[footerbar()]
+      [ansi(y,Computer:)] [mul(fdiv(first(setr(4,spacesys(cpu,%0)),:),last(%q4,:)),100)]\% Avail.|
+      [ansi(y,Gun Mounts:)]|
+      [if(hasattrval(%0,data.landing),[ansi(y,Bay Doors Open)]: [ifelse(spacesys(isbayopen,%0),[ansi(gh,Yes)],No)])]
+      ,38,78,|)]%r
+      [setq(Ship.weapons,spacesys(weapons,%0))]
+      [iter(
+         lnum(1,get(%0/space`guns)),
+         [setq(Weapon,extract(%q<Ship.weapons>,itext(0),1,|))]
+         %t<#@> [ifelse(
+                      hasattrval(%0,space`guns`#@),
+                      [first(%q<Weapon>,:)] \([ansi(c,Damage:)] [extract(%q<Weapon>,2,1,:)]\, 
+                                              [ansi(c,Optimum Range:)] [extract(%q<Weapon>,4,1,:)][get(v(data)/const.unit)]\),
+                      UNINSTALLED
+                      )] 
+          %r)]
+      [footerbar()]
 -
 &FN.VALUE #208=
   get(%0/value)
