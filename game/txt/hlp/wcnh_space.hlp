@@ -2,10 +2,33 @@
 The following commands are for use within the space system.  Most of them
 require that you "man" a console prior to using the command.
  
-bay              board          hail          intercom      jump
-man              land           load/ship     launch        manifest      
-plot             roster         scan          +scheck       ship/track
-spose            status         survey        taxi          unload/ship
+bay              board          fire          hail          intercom
+jump             man            land          launch        load/ship
+lock-space       manifest       plot          roster        scan
++scheck          ship/track     spose         status        survey
+taxi             unload/ship    unlock-space
+
+& FIRE
+Syntax: fire
+ 
+This command will fire all available weapons that aren't currently on cooldown.
+You must have a weapons lock in order to fire your weapons.  The chance of
+success for hitting your target depends on the appropriate IC skill, which
+could be PILOT-FIG, PILOT-CAP, or TURRET-GUN.  The amount of damage you'll do
+depends on the weapon itself.  However, the further you are beyond your
+weapon's optimum range, the less damage it will do.
+
+& LOCK-SPACE
+Syntax: lock <target>
+ 
+This allows you to attempt a weapons lock on a valid target from your 'scan'
+list.  The time it takes to obtain a lock and the maximum lock distance depends
+on your computers skill.
+
+& UNLOCK-SPACE
+Syntax: unlock
+ 
+This will release your current weapons lock.
 
 & SPACE
 At one point or another, chances are that you're going to want to get off the 
@@ -102,16 +125,26 @@ ROSTER    How do I set the crew roster on my ship?
 & SPACE COMBAT
 Eventually in your piloting career, you'll probably come into conflict with
 other ships.  Pirates might attack you while you're hauling cargo.  Perhaps
-you're the pirate!  In space combat, just like in person-to-person combat, a
-Game Master (GM) is required to set the rules and judge the scene (See 'help
-combat').  The following commands will be useful in space combat situations:
+you're the pirate!  Space combat happens in real time using weapons that you've
+installed on your ship.  However, the pace is kept slow so that you should have
+no problem keeping up even if you're not a fast typer.  Additionally, there's
+no complicated math that requires you calculate angles or headings.  As long as
+you're in range, you can shoot back, and your success depends completely on
+your character's IC skills.
  
-Command   Summary
-STATUS    How do I see the current specs and capabilities of my ship?
-SCAN      How do I see the relative capabilities of other ships?
-+911      How do I call for a GM to initiate combat?
-+SCHECK   How do I check skills that are used in space combat?
-SPOSE     How do I roleplay about what my ship is doing in combat?
+Before getting into space combat, you'll probably want to install some weapons
+on your ship.  Weapons are available for installation from the same shipyards
+where you purchased your ship.  Simply look at the shipyard for the commands
+you'll need.
+ 
+Command       Summary
+STATUS        How do I see the current specs and capabilities of my ship?
+SCAN          How do I see the relative capabilities of other ships?
+LOCK-SPACE    How do I obtain a weapons lock on a target?
+FIRE          How do I fire my weapons?
+UNLOCK-SPACE  How do I release a weapons lock?
++SCHECK       How do I check skills misc. skills for space RP?
+SPOSE         How do I roleplay about what my ship is doing in combat?
 
 & SPACE CAPITALS
 There are numerous ship "classes", but there are only two distinctions of ship
@@ -192,7 +225,7 @@ Hails are seen by all players in the same location of the sending or
 receiving console.
 
 & JUMP
-Syntax: jump <contact ID>
+Syntax: jump <contact>
 
 Space is divided into a number of star systems.  Whenever you're flying around,
 you're flying through a star system.  In order to travel between sytems, ships
@@ -224,13 +257,14 @@ Syntax: launch
 Launch a ship that is landed.  You must be manning a console on the ship.
 
 & PLOT
-Syntax: plot/calc <contact ID>
+Syntax: plot/calc <contact> or <X Y>
         plot/engage
         plot/stop
         plot/eta
          
 The first syntax will plot a course to a target destination that is visible on
-sensors.
+sensors. You can either specify a contact you want to fly to, or an arbitrary
+pair of X Y coordinates.
  
 The second syntax engages a plotted course and moves the ship toward its
 destination.

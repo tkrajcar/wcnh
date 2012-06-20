@@ -17,11 +17,10 @@ following space cycle.  To force an action immediately, either @notify
 #208.
  
 +space/active        +space/addcon          +space/addtracker
-+space/advance       +space/audit           +space/classes   
-+space/class         +space/cloak           +space/deltracker
-+space/jump          +space/land            +space/launch
-+space/load/ship     +space/ships           +space/stop 
-+space/taxi          +space/trackers        +space/unload/ship
++space/audit         +space/classes         +space/class
++space/cloak         +space/deltracker      +space/load/ship
++space/ships         +space/taxi            +space/trackers
++space/unload/ship
 
 & +SPACE/CLOAK 
 Syntax: +space/cloak <ship dbref>
@@ -33,36 +32,10 @@ Syntax: +space/addcon <ship>=<object>
  
 Add a console to a ship.  This will do all the parenting and whatnot.
 
-& +SPACE/ADVANCE
-Syntax: +space/advance <ship>
- 
-Move a ship one "step" forward through a cycle toward its destination, provided
-it has a valid destination set.
-
 & +SPACE/CLASSES
 Syntax: +space/classes
  
 See a list of classes.
-
-& +SPACE/JUMP
-Syntax: +space/jump <ship>=<jump point>
- 
-Manually jump a ship through a jump point.
-
-& +SPACE/LAND
-Syntax: +space/land <ship>=<target>
- 
-Land a ship on a destination, provided it's within range and can be landed on.
-
-& +SPACE/LAUNCH
-Syntax: +space/launch <ship>
- 
-Launch a ship, provided it is landed at a valid place.
-
-& +SPACE/STOP
-Syntax: +space/stop <stop>
- 
-Stop a ship that is in motion.
 
 & +SPACE/SHIPS
 Syntax: +space/ships <player>
@@ -112,6 +85,7 @@ Adds a player-accessible tracking device to a ship.
 Syntax: +space/deltracker <ship dbref>=<player>
  
 Removes a player-accessible tracking device from a ship.
+
 & +SPACE/TRACKERS
 Syntax: +space/trackers
  
