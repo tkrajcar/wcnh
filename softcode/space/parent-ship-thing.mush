@@ -35,11 +35,15 @@
 -
 @lock/leave #179=LOCK.CANLEAVE/1
 -
+@lock/link #179=LOCK.ISCONSOLE/1
+-
 &ICONFORMAT #179=[footerbar(u(room_parent.check_active.fn,%!,%#),v(COLOR.Frame))][setq(1,add(u(room_parent.exit_name_max_adjust.fn,setr(0,remove(lexits(%!),#-1))),2))][iter(lnum(max(words(%q0),words(%0))),%r[ljust(switch(extract(%0,#@,1),,,ansi(v(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))],39))),39)][ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[v(COLOR.EXIT)],\<)][ansi(edit(v(COLOR.EXIT),h,),name(#$))][ansi(h[v(COLOR.EXIT)],\>)],%q1)] [ansi(edit(v(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],%b,)]
 -
 @lset #179/enter=!no_inherit
 -
 @lset #179/leave=!no_inherit
+-
+@lset #179/link=!no_inherit
 -
 @lfail #179=The ship isn't landed!
 -
@@ -64,6 +68,8 @@
 &LOCK.CANBOARD #179=[spacesys(canboard,%!,%#)]
 -
 &LOCK.CANLEAVE #179=[hasattrval(%!,data.docked)]
+-
+&LOCK.ISCONSOLE #179=[spacesys(isconsole,%#)]
 -
 @idesc #589=You step into the airlock...
 -

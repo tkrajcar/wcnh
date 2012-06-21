@@ -19,12 +19,27 @@
           words(%q1)
           ),
       ,%r)]%r%r
- [ansi(yh,ship/buy <class>=<title>)] to purchase a ship.%r
- [ansi(yh,ship/inspect <class>)] to inspect the stats of a ship.%r
- [ansi(yh,ship/appraise <ship>)] to find out what a ship is worth.%r
- [ansi(yh,ship/sell <ship>)] to sell a ship that you own.%r
- [ansi(yh,ship/compare)] to list available classes in a comparison table.%r-
--          
+
+  [ansi(yh,shipyard/help)] for commands to use here.
+-
+&DOC.SHIP/BUY #595=[ansi(yh,ship/buy <class>=<title>)] to purchase a ship.
+-
+&DOC.SHIP/INSPECT #595=[ansi(yh,ship/inspect <class>)] to inspect the stats of a ship.
+-
+&DOC.SHIP/APPRAISE #595=[ansi(yh,ship/appraise <ship>)] to find out what a ship is worth.
+-
+&DOC.SHIP/SELL #595=[ansi(yh,ship/sell <ship>)] to sell a ship that you own.
+-
+&DOC.SHIP/COMPARE #595=[ansi(yh,ship/compare)] to list available classes in a comparison table.
+-
+&DOC.SHIP/STATUS #595=[ansi(yh,ship/status <ship>)] to view the stats on a ship you can fly.
+-
+&DOC.WEAP/LIST #595=[ansi(yh,weap/list)] to see a list of available weapons.
+-
+&DOC.WEAP/INSTALL #595=[ansi(yh,weap/install <ship>=<weapon>)] to install a weapon on a ship you own.
+-
+&DOC.WEAP/UNINSTALL #595=[ansi(yh,weap/uninstall <ship>=<slot>)] to uninstall a weapon.
+-
 &FN.LISTCLASS #595=
   squish(iter(lvthings(%!),if(strmatch(spacesys(class,itext(0)),%0),[itext(0)]%b),,))
 -
@@ -38,6 +53,9 @@
 -
 &FN.ECON.TRANSFER #595=
   rpc(Econ.grant,%0,%1)
+-
+&FN.ECON.DEPOSIT #595=
+  rpc(Econ.account_deposit,Shipyards,%0)
 -
 &CMD.SHIP/INSPECT #595=$ship/inspect *:
   @switch [gt(words(setr(0,u(fn.listclass,%0))),0)]=
@@ -63,6 +81,7 @@
                 @name %q2=[capstr(%1)];
                 @set %q2=data.roster:%#:captain;
                 think u(fn.econ.transfer,%#,-%q3);
+                think u(fn.econ.deposit,%q3);
                 think syslog(SPACE,New ship \([spacesys(class,%q2)]\) purchased by [name(%#)]\(%#\) in [name(loc(%!))]\([loc(%!)]\).);
                 @wait %!/%q1={@nsremit loc(%!)=Maintenance crews carefully tow the [name(%q2)] out of a nearby construction bay.;
                               @tel/silent %q2=loc(%!);
@@ -134,3 +153,77 @@
      spacesys(isship,%0),
      wipe(%0/data.roster)
     )
+-
+&CMD.SHIPYARD/HELP #595=$shipyard/help:@nspemit %#=
+  [titlebar(Commands for [name(%!)])]%r
+  [iter(
+      lattrp(%!/DOC.SHIP/*),
+      [eval(%!,itext(0))],
+      ,%r
+      )]%r%r
+
+  [iter(
+      lattrp(%!/DOC.WEAP/*),
+      [eval(%!,itext(0))],
+      ,%r
+      )]%r
+  [footerbar()]
+-
+&CMD.SHIP/STATUS #595=$ship/status *:
+  @assert [setr(Ship,locate(%!,%0,Tn))]=@nspemit %#=[ansi(rh,>)] That ship is not here.;
+  @assert [spacesys(iscrew,%q<Ship>,%#)]=@nspemit %#=[ansi(rh,>)] You are not a crew member on the [name(%q<Ship>)].;
+
+  @nspemit %#=spacesys(status,%q<Ship>);
+-
+&CMD.WEAP/LIST #595=$weap/list:@nspemit %#=
+  [titlebar([name(%!)]: Available Weapons)]%r
+  [ansi(y,Price[space(5)]Weapon[space(10)]Damage%b%bRange%b%bCooldown)]%r
+  [iter(
+      v(list.weapons),
+      [ljust(u(fn.price,itext(0)),10)]
+      [ljust(name(itext(0)),18)]
+      [ljust(get(itext(0)/damage),8)]
+      [ljust(get(itext(0)/range),8)]
+      [timestring(get(itext(0)/cooldown))],
+      ,%r
+      )]%r
+  [footerbar()]
+-
+&CMD.WEAP/INSTALL #595=$weap/install *=*:
+  think [setr(Ship,locate(%!,%0,Tn))];
+  think [setq(Weapon,extract(v(list.weapons),match(iter(v(list.weapons),name(itext(0)),,|),%1,|),1))];
+  think [setq(Ship.slots,get(%q<Ship>/space`guns))];
+  think [setq(Ship.weapons,spacesys(weapons,%q<Ship>))];
+  think [setq(Price,u(fn.price,%q<Weapon>))];
+  think [setq(Time,u(fn.time.purchase,%#,%q<Price>))];
+  think [setq(Wallet,u(fn.econ.balance,%#))];
+
+  @assert [t(%q<Ship>)]=@nspemit %#=[ansi(rh,>)] That ship is not here.;
+  @assert [spacesys(iscaptain,%q<Ship>,%#)]=@nspemit %#=[ansi(rh,>)] You do not own the [name(%q<Ship>)].;
+  @assert [t(%q<Weapon>)]=@nspemit %#=[ansi(rh,>)] No such weapon is available for installation.;
+  @assert [gt(sub(%q<Ship.slots>,words(%q<Ship.weapons>,|)),0)]=@nspemit %#=[ansi(rh,>)] There are no available weapon slots on the [name(%q<Ship>)].;
+  @assert [gte(%q<Wallet>,%q<Price>)]=@nspemit %#=[ansi(rh,>)] You don't have enough credits.;
+
+  think [setq(Open,first(iter(lnum(get(%q<Ship>/space`guns),1),if(not(extract(%q<Ship.weapons>,#@,1,|)),#@))))];
+  @nspemit %#=[ansi(gh,>)] Purchasing a [name(%q<Weapon>)]. 
+                           It will take [ansi(yh,[timestring(%q<Time>)] \([mul(bound(chargen(get.skill,%#,construction),0,6),10)]\% skill bonus\))] 
+                           for the installation to be completed.  You will be notified via [ansi(yh,@mail)] when your ship is ready.;
+  think u(fn.econ.transfer,%#,-%q<Price>);
+  think u(fn.econ.deposit,%q<Price>);
+  @set %q<Ship>=space`lockdown:[add(secs(),%q<Time>)];
+  @wait %!/%q<Time>={@set %q<Ship>=space`guns:[get(%q<Ship>/space`guns)];
+                     @set %q<Ship>=space`guns`%q<Open>:%q<Weapon>;
+                     @mail %#=Weapon Installation/The installation of a [name(%q<Weapon>)] on the [name(%q<Ship>)] at [name(loc(%!))] - [name(zone(loc(%!)))] is complete.
+                    }
+-
+&CMD.WEAP/UNINSTALL #595=$weap/uninstall *=*:
+  think [setr(Ship,locate(%!,%0,Tn))];
+  think [setq(Ship.weapons,spacesys(weapons,%q<Ship>))];
+
+  @assert [t(%q<Ship>)]=@nspemit %#=[ansi(rh,>)] That ship is not here.;
+  @assert [spacesys(iscaptain,%q<Ship>,%#)]=@nspemit %#=[ansi(rh,>)] You do not own the [name(%q<Ship>)].;
+  @assert [hasattrval(%q<Ship>,space`guns`%1)]=@nspemit %#=[ansi(rh,>)] That hardpoint does not have a gun installed.;
+  
+  @wipe %q<Ship>/space`guns`%1;
+  @nspemit %#=[ansi(gh,>)] The [first(extract(%q<Ship.weapons>,%1,1,|),:)] installed on hardpoint %1 of the [name(%q<Ship>)] has been uninstalled.
+-
