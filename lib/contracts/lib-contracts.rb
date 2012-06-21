@@ -30,7 +30,7 @@ module Contract
       ret << "#{q.number.to_s.bold}: #{q.text}\n"
     end
     ret << middlebar("STATUS") + "\n"
-    if c.close > DateTime.now
+    if c.close > DateTime.now.to_date
       ret << "Qualified individuals and organizations are encouraged to submit bids on this contract by its closing date of #{c.close.strftime('%m/%d/%y').bold}.\n"
     else
       ret << "This contract has been closed; no new responses are accepted.\n"
@@ -108,7 +108,7 @@ module Contract
     return "> ".bold + "That isn't a valid contract number." if c.count == 0
     c = c.first
     return "> ".bold + "That contract has not been published." unless c.published
-    return "> ".bold + "That contract is no longer open to new bids." unless DateTime.now < c.close
+    return "> ".bold + "That contract is no longer open to new bids." unless DateTime.now.to_date < c.close
     r = Response.find_or_create_by(author: R["enactor"], contract_id: c._id)
     return "> ".bold + "You've already submitted your response to that contract!" if r.submitted
     q = c.questions.where(number: question.to_i).first
@@ -125,7 +125,7 @@ module Contract
     return "> ".bold + "That isn't a valid contract number." if c.count == 0
     c = c.first
     return "> ".bold + "That contract has not been published." unless c.published
-    return "> ".bold + "That contract is no longer open to new bids." unless DateTime.now < c.close
+    return "> ".bold + "That contract is no longer open to new bids." unless DateTime.now.to_date < c.close
     r = Response.find_or_create_by(author: R["enactor"], contract_id: c._id)
     return "> ".bold + "You've already submitted your response to that contract!" if r.submitted
 
@@ -140,7 +140,7 @@ module Contract
     return "> ".bold + "That isn't a valid contract number." if c.count == 0
     c = c.first
     return "> ".bold + "That contract has not been published." unless c.published
-    return "> ".bold + "That contract has not closed yet." unless DateTime.now > c.close
+    return "> ".bold + "That contract has not closed yet." unless DateTime.now.to_date > c.close
     return "> ".bold + "That contract has already been awarded." unless c.awarded_to = ""
     c.awarded_to = firm
     c.save
@@ -179,7 +179,7 @@ module Contract
   end
 
   def self.reminder
-    list = Contract.where(:published => true, :close.lt => DateTime.now + 24.hours, :close.gt => DateTime.now)
+    list = Contract.where(:published => true, :close.lt => DateTime.now.to_date + 24.hours, :close.gt => DateTime.now.to_date)
     return if list.count < 1
     list_array = []
     list.each { |i| list_array << i.number }

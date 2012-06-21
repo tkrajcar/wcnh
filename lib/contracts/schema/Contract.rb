@@ -19,7 +19,7 @@ module Contract
     def close_string
       if self.close.nil?
         return "Unset".bold.yellow
-      elsif DateTime.now > self.close
+      elsif DateTime.now.to_date > self.close
         return "Closed on #{self.close.strftime('%m/%d/%y')}".bold.red
       else
         return self.close.strftime("%m/%d/%y").bold.cyan
