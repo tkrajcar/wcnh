@@ -138,7 +138,7 @@
                14 8 9 6 9 9 6 >10,
                [get(itext(0)/space`class)],
                [ifelse(spacesys(iscapship,itext(0)),Capital,Fighter)],
-               [num2adj(default(itext(0)/space`maxspeed,0))],
+               [default(itext(0)/space`maxspeed,0)],
                [default(itext(0)/space`cargo`max,0)],
                [num2adj(last(default(itext(0)/space`armor,0:0),:))],
                [num2adj(last(default(itext(0)/space`shields,0:0),:))],
