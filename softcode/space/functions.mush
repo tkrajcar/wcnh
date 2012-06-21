@@ -379,7 +379,7 @@
                   fn.distance.raw,
                   first(%q<Origin>),
                   last(%q<Origin>),
-                  setr(Target.position,first(ulocal(fn.position,itext(0)))),
+                  first(setr(Target.position,ulocal(fn.position,itext(0)))),
                   last(%q<Target.position>)
                   )
               ),
@@ -401,7 +401,7 @@
 #      )
 -
 &SORT.REPORT #208=
-  sort(%0)
+  sort(%0,f)
 -
 &FILTER.ACTIVE #208=
   t(spacesys(isactive,%0)) 
