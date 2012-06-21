@@ -203,6 +203,7 @@
   @assert [t(%q<Weapon>)]=@nspemit %#=[ansi(rh,>)] No such weapon is available for installation.;
   @assert [gt(sub(%q<Ship.slots>,words(%q<Ship.weapons>,|)),0)]=@nspemit %#=[ansi(rh,>)] There are no available weapon slots on the [name(%q<Ship>)].;
   @assert [gte(%q<Wallet>,%q<Price>)]=@nspemit %#=[ansi(rh,>)] You don't have enough credits.;
+  @assert [not(hasattrval(%!,order.%#.weap))]=@nspemit %#=[ansi(rh,>)] You can only install one weapon at a time. [ansi(yh,timestring(sub(v(order.%#.weap),secs())))] remaining.;
 
   think [setq(Open,first(iter(lnum(get(%q<Ship>/space`guns),1),if(not(extract(%q<Ship.weapons>,#@,1,|)),#@))))];
   @nspemit %#=[ansi(gh,>)] Purchasing a [name(%q<Weapon>)]. 
@@ -211,8 +212,10 @@
   think u(fn.econ.transfer,%#,-%q<Price>);
   think u(fn.econ.deposit,%q<Price>);
   @set %q<Ship>=space`lockdown:[add(secs(),%q<Time>)];
+  @set %!=order.%#.weap:[add(secs(),%q<Time>)];
   @wait %!/%q<Time>={@set %q<Ship>=space`guns:[get(%q<Ship>/space`guns)];
                      @set %q<Ship>=space`guns`%q<Open>:%q<Weapon>;
+                     @wipe %!/order.%#.weap;
                      @mail %#=Weapon Installation/The installation of a [name(%q<Weapon>)] on the [name(%q<Ship>)] at [name(loc(%!))] - [name(zone(loc(%!)))] is complete.
                     }
 -
