@@ -493,15 +493,15 @@
   [setq(Lock.origin,ulocal(fn.haslock,%0))]
 
   [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r
-  %b[ansi(y,align(2 29 21 5 >12,ID,Name,Class,Speed,Distance))]%r
-  %b[ansi(r,--%b[repeat(-,29)]%b[repeat(-,21)]%b[repeat(-,5)]%b[repeat(-,12)])]%r
+  %b[ansi(y,align(2 35 15 5 >12,ID,Name,Class,Speed,Distance))]%r
+  %b[ansi(r,--%b[repeat(-,35)]%b[repeat(-,15)]%b[repeat(-,5)]%b[repeat(-,12)])]%r
 
   [iter(
       setr(1,ulocal(fn.list.report,%0)),
       [setq(Lock.target,ulocal(fn.haslock,itext(0)))]
       [setq(Target.position,ulocal(fn.position,itext(0)))]
       %b[align(
-            32 21 -5 >12,
+            38 15 -5 >12,
             [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
             [ulocal(fn.class,itext(0))],
             [ifelse(ulocal(fn.ismoving,itext(0)),ulocal(speed,itext(0)),0)],
