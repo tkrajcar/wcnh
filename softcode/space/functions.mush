@@ -1413,7 +1413,7 @@
 -
 &FN.LAUNCH.TIME #208=
   [setq(Skill,ulocal(fn.skill.max,%0,ifelse(ulocal(fn.iscapship,%0),pilot-cap,pilot-fig)))]
-  [setq(Base,30)]
+  [setq(Base,get(v(data)/const.launch.time))]
   [mul(
     %q<Base>,
     switch(
@@ -1432,7 +1432,7 @@
 -
 &FN.JUMP.TIME #208=
   [setq(Skill,ulocal(fn.skill.max,%0,astrogation))]
-  [setq(Base,15)]
+  [setq(Base,get(v(data)/const.jump.time))]
   [mul(
     %q<Base>,
     switch(
