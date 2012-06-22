@@ -167,7 +167,7 @@
               )]=@nspemit %#=[ansi(rh,>)] You cannot launch while the ship you're docked in is landed.;
 
   @nspemit %#=[ansi(gh,>)] Launching the [name(%q<Ship>)].;
-  think [spacesys(notify.consoles,%q<Ship>,Launch sequence initiated. [ansi(yh,timestring(%q<Time>))] until orbit.)];
+  think [spacesys(notify.consoles,%q<Ship>,Launch sequence initiated. [ansi(yh,timestring(round(%q<Time>,0)))] until orbit.)];
   think [spacesys(notify.ship,%q<Ship>,The ship lurches as it lifts off.)];
   think [spacesys(activate,%q<Ship>)];
   @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(launch,%q<Ship>)]
@@ -192,8 +192,9 @@
               )]=@nspemit %#=[ansi(rh,>)] The [name(%q<Ship>)] is too large to fit.;
 
   @nspemit %#=[ansi(gh,>)] Landing [name(%q<Ship>)] on [name(%q<Target>)].;
-           think [spacesys(notify.consoles,%q<Ship>,Landing sequence initiated. [ansi(yh,timestring(%q<Time>))] until touchdown.)];
+           think [spacesys(notify.consoles,%q<Ship>,Landing sequence initiated. [ansi(yh,timestring(round(%q<Time>,0)))] until touchdown.)];
            think [spacesys(notify.ship,%q<Ship>,The engines rumble as the ship prepares to land.)];
+           think [spacesys(setdest,%q<Ship>,spacesys(position,%q<Target>))];
            @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(land,%q<Ship>,%q<Target>)]
 -
 &CMD.PLOT/CALC #204=$plot/calc *:
@@ -258,7 +259,8 @@
   @assert [eq(spacesys(distance,%q<Ship>,%q<Target>),0)]=@nspemit %#=[ansi(rh,>)] Out of range.;
   
   @nspemit %#=[ansi(gh,>)] Calculating jump.;
-  think spacesys(notify.consoles,%q<Ship>,Initiating jump sequence.  Destination: [rest(name(%q<Target>))].  Time: [ansi(yh,timestring(%q<Time>))].);
+  think spacesys(notify.consoles,%q<Ship>,Initiating jump sequence.  Destination: [rest(name(%q<Target>))].  Time: [ansi(yh,timestring(round(%q<Time>,0)))].);
+  think spacesys(setdest,%q<Ship>,10000 -10000);
   @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(jump,%q<Ship>,%q<Target>)]
 -
 &CMD.ROSTER/LIST #204=$roster/list:

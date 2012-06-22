@@ -291,6 +291,7 @@
             [spacesys(deactivate,%0)]
             [spacesys(update.report,%0)]
             [iter(remove(spacesys(list.system.active,loc(%q1)),%0),spacesys(update.report,itext(0)))]
+            [wipe(%0/space`destination)]
             )]
             [spacesys(audit,%0,land)]
 -
@@ -594,6 +595,7 @@
                                          )]
             [set(%0,space`x:[first(%q2)])]
             [set(%0,space`y:[last(%q2)])]
+            [wipe(%0/space`destination)]
             [spacesys(audit,%0,jump)]
       )
 -
