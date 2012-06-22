@@ -74,7 +74,7 @@
 
   Type 'help <entry>' for information on each command.
 & +check
-  +check[/private] <skill|attribute>
+  +check[/private] <skill|attribute>[=<player list>]
 
   This command runs a skill or attribute check, rolling the dice to see how
   your character does at a task using that skill or attribute. A +check
@@ -84,6 +84,10 @@
 
   +checks are visible to everyone in the same room. If you don't want to spam
   everybody, use +check/private.
+ 
+  When using the /private switch, specifying an optional list of players will
+  show the results of your check only to those players.
+
 See also: chargen overview, +sheet, +skillinfo, +values
 & +sheet
   +sheet
