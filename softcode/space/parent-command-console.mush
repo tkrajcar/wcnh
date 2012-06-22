@@ -437,7 +437,7 @@
  think setr(Target,spacesys(findtarget,%q<Ship>,%0));
  think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
  think setr(Caller,%#);
- think setr(Ship.locktime,spacesys(lock.time,%q<Ship>));
+ think setr(Ship.locktime,spacesys(lock.time,%#));
  think setr(Ship.minrange,spacesys(minrange,%q<Ship>));
 
  @assert [strmatch(owner(%q<Ship>),owner(%!))]=@nspemit %#=[ansi(rh,>)] Ship console has invalid owner.  Report this via +ticket.;
@@ -457,7 +457,7 @@
             think spacesys(notify.consoles,%q<Target>,The [name(%q<Ship>)] has broken its weapons lock on you.)
            };
  @wait %q<Ship>/space`queue`weaps`lock/%q<Ship.locktime>=think spacesys(lock,%q<Ship>,%q<Target>);
- @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(%q<Ship.locktime>))] until successful weapons lock.;
+ @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(round(%q<Ship.locktime>,0)))] until successful weapons lock.;
  think spacesys(notify.consoles,%q<Target>,[ansi(rh,WARNING:)] [ansi(yh,name(%q<Ship>))] is attempting to obtain a weapons lock.);
 -
 &CMD.UNLOCK #204=$unlock:

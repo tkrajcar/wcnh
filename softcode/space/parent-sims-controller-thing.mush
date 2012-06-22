@@ -1,0 +1,98 @@
+@set #1315=!safe no_command
+-
+@wipe #1315
+-
+@set #1315=safe
+-
+@desc #1315=
+  A control panel for ship simulators.%r%r
+  [ansi(y,## Sim[space(12)]Class[space(10)]Status)]%r
+  [iter(
+      v(list.sims),
+      [ljust(#@,3)]
+      [ljust(name(itext(0)),15)]
+      [ljust(get(itext(0)/space`class),15)]
+      [ifelse(t(lvplayers(loc(first(get(itext(0)/data.consoles))))),[ansi(yh,In Use)],[ansi(gh,Empty)])],
+      ,%r
+      )]%r%r
+  [ansi(y,Available Classes:)] [itemize(iter(v(list.classes),get(itext(0)/space`class),,|),|)]%r%r
+  [ansi(yh,sim/status ##)] - See the status of a sim.%r
+  [ansi(yh,sim/repair ##)] - Repair a sim and reset to position 0 0.%r
+  [ansi(yh,sim/class ##=<class>)] - Reclass a sim and set to position 0 0.%r
+  [ansi(yh,sim/weapons)] - See a list of available weapons.%r
+  [ansi(yh,sim/install ##=<weap>)] - Install a weapon on a sim.%r
+  [ansi(yh,sim/uninstall ##=<slot>)] - Remove a weapon from a sim.%r
+  ---      
+-
+&CMD.SIM/REPAIR #1315=$sim/repair *:
+  think setq(Ship,extract(v(list.sims),%0,1));
+
+  @assert [t(%q<Ship>)]=@nspemit %#=[ansi(rh,>)] No such simulator.;
+  
+  think spacesys(repair,%q<Ship>);
+  think spacesys(deactivate,%q<Ship>);
+  think spacesys(activate,%q<Ship>);
+  @tel %q<Ship>=[v(system)];
+  &space`x %q<Ship>=0;
+  &space`y %q<Ship>=0;
+  @nspemit %#=[ansi(gh,>)] [name(%q<Ship>)] has been fully repaired.
+-
+&CMD.SIM/CLASS #1315=$sim/class *=*:
+  think setq(Ship,extract(v(list.sims),%0,1));
+  think setq(Class,extract(v(list.classes),element(iter(v(list.classes),get(itext(0)/space`class),,|),%1,|),1));
+
+  @assert [t(%q<Ship>)]=@nspemit %#=[ansi(rh,>)] No such simulator.;
+  @assert [t(%q<Class>)]=@nspemit %#=[ansi(rh,>)] Invalid class.;
+
+  @nspemit %#=[ansi(gh,>)] [name(%q<Ship>)] has been reclassed as a [get(%q<Class>/space`class)];
+  @parent %q<Ship>=%q<Class>;
+  @wipe %q<Ship>/space`;
+  &space`x %q<Ship>=0;
+  &space`y %q<Ship>=0;
+-
+&CMD.SIM/INSTALL #1315=$sim/install *=*:
+  think [setq(Ship,extract(v(list.sims),%0,1))];
+  think [setq(Weapon,extract(v(list.weapons),match(iter(v(list.weapons),name(itext(0)),,|),%1,|),1))];
+  think [setq(Ship.slots,get(%q<Ship>/space`guns))];
+  think [setq(Ship.weapons,spacesys(weapons,%q<Ship>))];
+
+  @assert [t(%q<Ship>)]=@nspemit %#=[ansi(rh,>)] No such simulator.;
+  @assert [t(%q<Weapon>)]=@nspemit %#=[ansi(rh,>)] No such weapon.;
+  @assert [gt(sub(%q<Ship.slots>,words(%q<Ship.weapons>,|)),0)]=@nspemit %#=[ansi(rh,>)] There are no available weapon slots on the [name(%q<Ship>)].;
+
+  think [setq(Open,first(iter(lnum(get(%q<Ship>/space`guns),1),if(not(extract(%q<Ship.weapons>,#@,1,|)),#@))))];
+  @nspemit %#=[ansi(gh,>)] A [name(%q<Weapon>)] has been installed on [name(%q<Ship>)].;
+  @set %q<Ship>=space`guns:[get(%q<Ship>/space`guns)];
+  @set %q<Ship>=space`guns`%q<Open>:%q<Weapon>;
+-
+&CMD.SIM/UNINSTALL #1315=$sim/uninstall *=*:
+  think [setq(Ship,extract(v(list.sims),%0,1))];
+  think [setq(Ship.weapons,spacesys(weapons,%q<Ship>))];
+
+  @assert [t(%q<Ship>)]=@nspemit %#=[ansi(rh,>)] No such simulator.;
+  @assert [hasattrval(%q<Ship>,space`guns`%1)]=@nspemit %#=[ansi(rh,>)] That hardpoint does not have a gun installed.;
+  
+  @wipe %q<Ship>/space`guns`%1;
+  @nspemit %#=[ansi(gh,>)] The [first(extract(%q<Ship.weapons>,%1,1,|),:)] installed on hardpoint %1 of the [name(%q<Ship>)] has been uninstalled.
+-  
+&CMD.SIM/STATUS #1315=$sim/status *:
+  think [setq(Ship,extract(v(list.sims),%0,1))];
+
+  @assert [t(%q<Ship>)]=@nspemit %#=[ansi(rh,>)] No such simulator.;
+
+  @nspemit %#=[spacesys(status,%q<Ship>)]
+-
+&CMD.SIM/WEAPONS #1315=$sim/weapons:@nspemit %#=
+  [titlebar([name(%!)]: Available Weapons)]%r
+  [ansi(y,Weapon[space(10)]Damage%b%bRange%b%bCooldown)]%r
+  [iter(
+      v(list.weapons),
+      [ljust(name(itext(0)),18)]
+      [ljust(get(itext(0)/damage),8)]
+      [ljust(get(itext(0)/range),8)]
+      [timestring(get(itext(0)/cooldown))],
+      ,%r
+      )]%r
+  [footerbar()]
+-
+

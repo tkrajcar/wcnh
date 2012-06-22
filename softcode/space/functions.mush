@@ -1258,12 +1258,12 @@
   mul(
     get(v(data)/const.lock.time),
     switch(
-        spacesys(skill,computers),
+        spacesys(skill,%0,computers),
         <1,2,
         1,1.5,
         2,1.25,
         3,1,
-        4,0.9,,
+        4,0.9,
         5,0.75,
         0.5
         )
