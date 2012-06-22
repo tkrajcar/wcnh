@@ -31,25 +31,29 @@
 
 @set #15/cmd.+check=regexp
 -
-&cmd.+check #15=$^\+check(/private)? (.*):
-  @swi/first 
-    [t(setr(0,
-      grab(attribute.reason attribute.perception attribute.willpower 
-           attribute.strength attribute.agility attribute.health 
-           [lattr(#111/skill.*)],
-           *.%2*
-      )
-    ))]
-    =0,{@pemit %#=[ansi(hb,>)] That's not a valid skill or attribute.},
-    {th [u(fn.check,
-           switch(%1,
-                  ,
-                  public,
-                  %1),
-           %#,
-           before(%q0,.),
-           after(%q0,.)
-        )]}
+&cmd.+check #15=$^\+check(/private)? (.*)$:
+  think setq(Attribs,iter(lattr(#111/attribute.*),attribute.[lcstr(get(#111/[itext(0)]))]));
+  think setq(List,cat(%q<Attribs>,lattr(#111/skill.*)));
+  think setq(Choice,grab(%q<List>,*.[before(%2,=)]*));
+  think setq(Choice.type,before(%q<Choice>,.));
+  think setq(Choice.arg,after(%q<Choice>,.));
+  think setq(ShowList,iter(after(%2,=),pmatch(itext(0))));
+  think setq(Invalid,matchall(%q<ShowList>,#-1));
+  think setq(Result,add(rand(-2,2),chargen(get.%q<Choice.type>,%#,%q<Choice.arg>)));
+
+  @assert [t(%q<Choice>)]=@nspemit %#=[ansi(rh,>)] That's not a valid skill or attribute.;
+  @assert [or(strmatch(%1,),eq(words(%q<Invalid>),0))]=@nspemit %#=[ansi(rh,>)] Invalid players: [itemize(elements(after(%2,=),%q<Invalid>))];
+
+  think setr(
+          Message,
+          [ansi(hb,>)] [ansi(h,[name(%#)])] [switch(%1,/private,privately%b)]+checks [poss(%#)] 
+                       [ansi(h,chargen(%q<Choice.type>,%q<Choice.arg>,name))] [lcstr(%q<Choice.type>)]: 
+                       [ansi(h,%q<Result>)] \([num2adj(%q<Result>)]\)
+          );
+
+  @switch %1=
+          /private,{@nspemit/list %q<ShowList> %#=%q<Message>},
+          {@nsremit [loc(%#)]=%q<Message>;@nscemit/noisy +RP=%q<Message>}
 -
 &cmd.+sheet #15=$+sheet:@pemit %#=[chargen(sheet,%#)]
 -
@@ -176,7 +180,13 @@
 -
 &sort.idle #15=sub(idlesecs(%0),idlesecs(%1))
 -
-&fn.check #15=[setq(m,[ansi(hb,>)] [ansi(h,[name(%1)])] [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1,%qm),nsremit(loc(%1),%qm)[nscemit(+RP,%qm,1)])]
+&fn.check #15=
+  [setq(m,[ansi(hb,>)] [ansi(h,[name(%1)])] [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))]
+  [switch(
+        %0,
+        /private,nspemit(%1,%qm),
+        [nsremit(loc(%1),%qm)][nscemit(+RP,%qm,1)]
+        )]
 -
 &fn.connected_players_in_room #15=[itemize(iter(filter(filter.isconnected,lcon(%0)),name(##), ,|),|)]
 -
