@@ -505,7 +505,7 @@
             38 15 -5 >12,
             [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
             [ulocal(fn.class,itext(0))],
-            [ifelse(ulocal(fn.ismoving,itext(0)),ulocal(speed,itext(0)),0)],
+            [ifelse(ulocal(fn.ismoving,itext(0)),ulocal(fn.speed,itext(0)),0)],
             [ulocal(
                   fn.distance.parse,
                   ulocal(fn.distance.raw,first(%q<Origin>),last(%q<Origin>),first(%q<Target.position>),last(%q<Target.position>))
