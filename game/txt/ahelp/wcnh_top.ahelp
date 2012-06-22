@@ -120,16 +120,13 @@ when you use these commands.
 Guides can additionally use +zone/checkout and +zone/list in the event that you
 want to farm out some building work.
 & +acheck
-+acheck[/private] <player>=<skill/attribute>
++acheck <player>=<skill/attribute>
 
 Runs an admin-side +check of <player>'s skill or attribute, displayed to
 everyone in the room, just like a normal +check.
 
 Normally players should run +check themselves in scenes, to discourage people
 whining about bad rolls.
- 
-With the private switch, the results are shown only to the admin running the 
-check and the target player.
 
 & CONTRACT
 contract/new - start working on a new contract
