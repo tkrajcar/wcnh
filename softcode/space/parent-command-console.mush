@@ -270,16 +270,16 @@
           1,@nspemit %#=[spacesys(roster,v(data.ship))]
 -
 &CMD.ROSTER/ADD #204=$roster/add *=*:
-  @switch [spacesys(iscaptain,v(data.ship),%#)]
-          [t(setr(0,pmatch(%0)))]
-          [t(match(visitor crew,%1))]=
-
-          0??,@nspemit %#=[ansi(rh,>)] Permission denied.,
-          10?,@nspemit %#=[ansi(rh,>)] Invalid person.,
-          110,@nspemit %#=[ansi(rh,>)] Position must be VISITOR or CREW.,
-          111,{@nspemit %#=[ansi(gh,>)] Roster updated.;
-               think [spacesys(roster.add,v(data.ship),%q0,%1)]
-              }
+  @assert [spacesys(iscrew,v(data.ship),%#)]=@nspemit %#=[ansi(rh,>)] Permission denied.;
+  @assert [t(setr(Player,pmatch(%0)))]=@nspemit %#=[ansi(rh,>)] Invalid person.;
+  @assert [t(match(visitor crew,%1))]=@nspemit %#=[ansi(rh,>)] Position must be VISITOR or CREW.;
+  @assert [or(
+            strmatch(%1,visitor),
+            spacesys(iscaptain,v(data.ship),%#)
+            )]=@nspemit %#=[ansi(rh,>)] Only the captain can add crew members.;
+  
+  @nspemit %#=[ansi(gh,>)] Roster updated.;
+  think [spacesys(roster.add,v(data.ship),%q<Player>,%1)]
 -
 &CMD.ROSTER/REMOVE #204=$roster/remove *:
   @switch [spacesys(iscaptain,v(data.ship),%#)]
