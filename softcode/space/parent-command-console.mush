@@ -167,7 +167,7 @@
               )]=@nspemit %#=[ansi(rh,>)] You cannot launch while the ship you're docked in is landed.;
 
   @nspemit %#=[ansi(gh,>)] Launching the [name(%q<Ship>)].;
-  think [spacesys(notify.consoles,%q<Ship>,Launch sequence initiated. [ansi(yh,timestring(%q<Time>))] until orbit.)];
+  think [spacesys(notify.consoles,%q<Ship>,Launch sequence initiated. [ansi(yh,timestring(round(%q<Time>,0)))] until orbit.)];
   think [spacesys(notify.ship,%q<Ship>,The ship lurches as it lifts off.)];
   think [spacesys(activate,%q<Ship>)];
   @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(launch,%q<Ship>)]
@@ -192,8 +192,9 @@
               )]=@nspemit %#=[ansi(rh,>)] The [name(%q<Ship>)] is too large to fit.;
 
   @nspemit %#=[ansi(gh,>)] Landing [name(%q<Ship>)] on [name(%q<Target>)].;
-           think [spacesys(notify.consoles,%q<Ship>,Landing sequence initiated. [ansi(yh,timestring(%q<Time>))] until touchdown.)];
+           think [spacesys(notify.consoles,%q<Ship>,Landing sequence initiated. [ansi(yh,timestring(round(%q<Time>,0)))] until touchdown.)];
            think [spacesys(notify.ship,%q<Ship>,The engines rumble as the ship prepares to land.)];
+           think [spacesys(setdest,%q<Ship>,spacesys(position,%q<Target>))];
            @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(land,%q<Ship>,%q<Target>)]
 -
 &CMD.PLOT/CALC #204=$plot/calc *:
@@ -202,7 +203,7 @@
   think setq(
           Destination,
           ifelse(
-              and(eq(words(%0),2),isnum(first(0)),isnum(last(%0))),
+              and(eq(words(%0),2),isnum(first(%0)),isnum(last(%0))),
               squish(%0),
               spacesys(findtarget,%q<Ship>,%0)
               )
@@ -258,7 +259,8 @@
   @assert [eq(spacesys(distance,%q<Ship>,%q<Target>),0)]=@nspemit %#=[ansi(rh,>)] Out of range.;
   
   @nspemit %#=[ansi(gh,>)] Calculating jump.;
-  think spacesys(notify.consoles,%q<Ship>,Initiating jump sequence.  Destination: [rest(name(%q<Target>))].  Time: [ansi(yh,timestring(%q<Time>))].);
+  think spacesys(notify.consoles,%q<Ship>,Initiating jump sequence.  Destination: [rest(name(%q<Target>))].  Time: [ansi(yh,timestring(round(%q<Time>,0)))].);
+  think spacesys(setdest,%q<Ship>,10000 -10000);
   @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(jump,%q<Ship>,%q<Target>)]
 -
 &CMD.ROSTER/LIST #204=$roster/list:
@@ -268,16 +270,16 @@
           1,@nspemit %#=[spacesys(roster,v(data.ship))]
 -
 &CMD.ROSTER/ADD #204=$roster/add *=*:
-  @switch [spacesys(iscaptain,v(data.ship),%#)]
-          [t(setr(0,pmatch(%0)))]
-          [t(match(visitor crew,%1))]=
-
-          0??,@nspemit %#=[ansi(rh,>)] Permission denied.,
-          10?,@nspemit %#=[ansi(rh,>)] Invalid person.,
-          110,@nspemit %#=[ansi(rh,>)] Position must be VISITOR or CREW.,
-          111,{@nspemit %#=[ansi(gh,>)] Roster updated.;
-               think [spacesys(roster.add,v(data.ship),%q0,%1)]
-              }
+  @assert [spacesys(iscrew,v(data.ship),%#)]=@nspemit %#=[ansi(rh,>)] Permission denied.;
+  @assert [t(setr(Player,pmatch(%0)))]=@nspemit %#=[ansi(rh,>)] Invalid person.;
+  @assert [t(match(visitor crew,%1))]=@nspemit %#=[ansi(rh,>)] Position must be VISITOR or CREW.;
+  @assert [or(
+            strmatch(%1,visitor),
+            spacesys(iscaptain,v(data.ship),%#)
+            )]=@nspemit %#=[ansi(rh,>)] Only the captain can add crew members.;
+  
+  @nspemit %#=[ansi(gh,>)] Roster updated.;
+  think [spacesys(roster.add,v(data.ship),%q<Player>,%1)]
 -
 &CMD.ROSTER/REMOVE #204=$roster/remove *:
   @switch [spacesys(iscaptain,v(data.ship),%#)]
@@ -435,7 +437,7 @@
  think setr(Target,spacesys(findtarget,%q<Ship>,%0));
  think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
  think setr(Caller,%#);
- think setr(Ship.locktime,spacesys(lock.time,%q<Ship>));
+ think setr(Ship.locktime,spacesys(lock.time,%#));
  think setr(Ship.minrange,spacesys(minrange,%q<Ship>));
 
  @assert [strmatch(owner(%q<Ship>),owner(%!))]=@nspemit %#=[ansi(rh,>)] Ship console has invalid owner.  Report this via +ticket.;
@@ -455,7 +457,7 @@
             think spacesys(notify.consoles,%q<Target>,The [name(%q<Ship>)] has broken its weapons lock on you.)
            };
  @wait %q<Ship>/space`queue`weaps`lock/%q<Ship.locktime>=think spacesys(lock,%q<Ship>,%q<Target>);
- @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(%q<Ship.locktime>))] until successful weapons lock.;
+ @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(round(%q<Ship.locktime>,0)))] until successful weapons lock.;
  think spacesys(notify.consoles,%q<Target>,[ansi(rh,WARNING:)] [ansi(yh,name(%q<Ship>))] is attempting to obtain a weapons lock.);
 -
 &CMD.UNLOCK #204=$unlock:

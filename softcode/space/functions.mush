@@ -291,6 +291,7 @@
             [spacesys(deactivate,%0)]
             [spacesys(update.report,%0)]
             [iter(remove(spacesys(list.system.active,loc(%q1)),%0),spacesys(update.report,itext(0)))]
+            [wipe(%0/space`destination)]
             )]
             [spacesys(audit,%0,land)]
 -
@@ -504,7 +505,7 @@
             38 15 -5 >12,
             [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
             [ulocal(fn.class,itext(0))],
-            [ifelse(ulocal(fn.ismoving,itext(0)),ulocal(speed,itext(0)),0)],
+            [ifelse(ulocal(fn.ismoving,itext(0)),ulocal(fn.speed,itext(0)),0)],
             [ulocal(
                   fn.distance.parse,
                   ulocal(fn.distance.raw,first(%q<Origin>),last(%q<Origin>),first(%q<Target.position>),last(%q<Target.position>))
@@ -594,6 +595,7 @@
                                          )]
             [set(%0,space`x:[first(%q2)])]
             [set(%0,space`y:[last(%q2)])]
+            [wipe(%0/space`destination)]
             [spacesys(audit,%0,jump)]
       )
 -
@@ -1256,12 +1258,12 @@
   mul(
     get(v(data)/const.lock.time),
     switch(
-        spacesys(skill,computers),
+        spacesys(skill,%0,computers),
         <1,2,
         1,1.5,
         2,1.25,
         3,1,
-        4,0.9,,
+        4,0.9,
         5,0.75,
         0.5
         )
