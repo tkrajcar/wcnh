@@ -250,14 +250,24 @@ module BBoard
     
     index = post.category.posts.asc(:created_at).find_index { |i| i.id == post.id }
     replies = post.category.posts.where(:parent_id => post.id)
+    isadmin = R.orflags(subscription.user.id, "Wr").to_bool
     
     ret = titlebar(post.category.name) + "\n"
-    ret << "Message: ".yellow + "#{post.category.num}/#{index + 1}"
-    ret << ' [STICKY]'.green if post.sticky
-    ret << "Posted                    Author".rjust(post.sticky ? 37 : 46).yellow + "\n"
-    ret << post.title[0,25].ljust(27)
+    ret << "Message: ".yellow + "#{post.category.num}/#{index + 1}".ljust(6)
+    ret << (post.sticky ? '[STICKY]' : '').ljust(13).green
+    ret << "Posted                    Author".yellow + "\n"
+    ret << post.title[0,27].ljust(28)
     ret << post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26)
-    ret << ((post.category.anonymous.nil? || R.orflags(subscription.user.id, "Wr").to_bool) ? R.penn_name(post.author) : post.category.anonymous) + "\n"
+
+    namestring = ""
+    if post.category.anonymous.nil? || isadmin
+      namestring << R.penn_name(post.author)
+    else
+      namestring << post.category.anonymous
+    end
+    namestring << "(#{post.category.anonymous})" if !post.category.anonymous.nil? && isadmin
+
+    ret << namestring[0,25] + "\n"
     ret << middlebar('BODY') + "\n"
     ret << post.body + "\n"
     
@@ -289,19 +299,34 @@ module BBoard
     category = subscription.category
 
     ret = titlebar("Index: #{category.name}") + "\n"
-    ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
+    ret << "        Message".ljust(43).yellow + "Posted     Replies  By".yellow + "\n"
     ret << footerbar + "\n"
     
     unread_replies = subscription.unread_replies
     count = 1
     list.where(:parent_id => nil).asc(:created_at).each do |post|
-      ret << "#{category.num}/#{count}".ljust(5)
-      ret << (!unread_replies[post].nil? ? "R" : " ")
-      ret << (!subscription.read_posts.include?(post.id) ? "U" : " ") + " "
+      replies = post.category.posts.where(:parent_id => post.id)
+      isadmin = R.orflags(subscription.user.id, "Wr").to_bool
+
+      numstring = "#{category.num}/#{count}"
+      numstring << (!unread_replies[post].nil? ? "R" : " ")
+      numstring << (!subscription.read_posts.include?(post.id) ? "U" : " ")
+
+      ret << numstring.ljust(8)
       ret << '[STICKY] '.green if post.sticky
       ret << post.title[0,(post.sticky ? 25 : 34)].ljust(post.sticky ? 26 : 35)
-      ret << post.created_at.strftime("%a %b %d").ljust(14) 
-      ret << ((category.anonymous.nil? || R.orflags(subscription.user.id, "Wr").to_bool) ? R.penn_name(post.author) : category.anonymous)
+      ret << post.created_at.strftime("%a %b %d").ljust(14)
+      ret << replies.count.to_s.ljust(6)
+
+      namestring = ""
+      if category.anonymous.nil? || isadmin
+        namestring << R.penn_name(post.author)
+      else
+        namestring << category.anonymous
+      end
+      namestring << "(#{category.anonymous})" if !category.anonymous.nil? && isadmin
+
+      ret << namestring[0,16]
       ret << "\n"
       count += 1
     end
