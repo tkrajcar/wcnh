@@ -203,7 +203,7 @@
   think setq(
           Destination,
           ifelse(
-              and(eq(words(%0),2),isnum(first(0)),isnum(last(%0))),
+              and(eq(words(%0),2),isnum(first(%0)),isnum(last(%0))),
               squish(%0),
               spacesys(findtarget,%q<Ship>,%0)
               )
