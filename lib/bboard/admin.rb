@@ -52,6 +52,14 @@ module BBoard
     post.save
     return "> ".bold.green + "Post #{num} on board #{category.num} (#{category.name}) is #{status == true ? 'now' : 'no longer'} sticky."
   end
+
+  def self.timeout
+    count = 0
+    Category.all.each do |category|
+      count += category.cleanup.to_i
+    end
+    Logs.log_syslog("BBOARD", "#{count} posts timed out and were archived.")
+  end
    
 end
 

@@ -114,4 +114,8 @@
   +gmemit Enigma Sector Procurement would like to remind citizens that only 24 hours remain for interested parties 
           to submit bids on the following contracts: [itemize(%q<Contracts>)].;
 -
-
+&CRON_TIME_BBTIMEOUT #539=|||20|45|
+-
+&CRON_JOB_BBTIMEOUT #539=
+  think rpc(BBoard.timeout)
+-
