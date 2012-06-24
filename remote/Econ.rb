@@ -27,11 +27,11 @@ module Econ
     self.account_list(person)
   end
 
-  def self.pj_account_deposit(account,amount)
-    self.account_deposit(account,amount)
+  def self.pj_account_deposit(dbref,account,amount)
+    self.account_deposit(dbref,account,amount)
   end
 
-  def self.pj_account_withdraw(account,amount)
+  def self.pj_account_withdraw(dbref,account,amount)
     self.account_withdraw(account,amount)
   end
 

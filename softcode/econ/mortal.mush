@@ -49,10 +49,10 @@
 &cmd.account/list #19=$account/list:@nspemit %#=[rpc(Econ.account_list,%#)]
 -
 
-&cmd.account/deposit #19=$account/deposit *=*:@nspemit %#=[rpc(Econ.account_deposit,%0,%1)]
+&cmd.account/deposit #19=$account/deposit *=*:@nspemit %#=[rpc(Econ.account_deposit,%#,%0,%1)]
 -
 
-&cmd.account/withdraw #19=$account/withdraw *=*:@nspemit %#=[rpc(Econ.account_withdraw,%0,%1)]
+&cmd.account/withdraw #19=$account/withdraw *=*:@nspemit %#=[rpc(Econ.account_withdraw,%#,%0,%1)]
 -
 
 &cmd.account/view #19=$^account(/view)? (.+):@nspemit %#=[rpc(Econ.account_view,%2)]

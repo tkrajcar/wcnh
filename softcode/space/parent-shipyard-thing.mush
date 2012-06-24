@@ -55,7 +55,10 @@
   rpc(Econ.grant,%0,%1)
 -
 &FN.ECON.DEPOSIT #595=
-  rpc(Econ.account_deposit,Shipyards,%0)
+  rpc(Econ.account_deposit,%!,Shipyards,%0)
+-
+&FN.ECON.WITHDRAW #595=
+  rpc(Econ.account_withdraw,%!,Shipyards,%0)
 -
 &CMD.SHIP/INSPECT #595=$ship/inspect *:
   @switch [gt(words(setr(0,u(fn.listclass,%0))),0)]=
@@ -124,6 +127,7 @@
   @tel %q<Ship>=%!;
   think u(fn.CleanShip,%q<Ship>);
   think rpc(Econ.grant,%#,%q<Ship.salePrice>);
+  think rpc(Econ.account.withdraw,%q<Ship.salePrice>);
   think syslog(SHIP SALE,%n sold the %q<Ship.name>\(%q<Ship.class> - %q<Ship>\) for %q<Ship.salePrice>c.);
 
   @nspemit %#=[ansi(gh,>)] You are paid [ansi(yh,%q<Ship.salePrice>c)] for the %q<Ship.name>.

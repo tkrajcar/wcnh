@@ -31,31 +31,31 @@ module Econ
     ret << footerbar()
   end
 
-  def self.account_deposit(account, amount)
+  def self.account_deposit(dbref, account, amount)
     a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
-    w = Wallet.find_or_create_by(id: R["enactor"])
+    w = Wallet.find_or_create_by(id: dbref)
     amount = BigDecimal.new(amount.delete(',')).round(1,:floor)
     return ">".bold.green + " You can't deposit negative money!" unless amount > 0
     return ">".bold.green + " That account is closed." unless a.open?
-    return ">".bold.green + " You don't have enough credits to do that!" unless w.balance >= amount || R.orflags(R["enactor"],"Wr").to_bool
-    a.deposit(R.penn_name(R["enactor"]), amount)
+    return ">".bold.green + " You don't have enough credits to do that!" unless w.balance >= amount || R.orflags(dbref,"Wr").to_bool
+    a.deposit(R.penn_name(dbref), amount)
     w.balance = w.balance - amount
     w.save
     ">".bold.green + " You deposit #{credit_format(amount).bold.yellow} credits to account #{a.name.to_s.bold}."
   end
 
-  def self.account_withdraw(account, amount)
+  def self.account_withdraw(dbref, account, amount)
     a = Account.where(lowercase_name: account.downcase).first
     return ">".bold.green + " There's no account by that name." unless !a.nil?
-    w = Wallet.find_or_create_by(id: R["enactor"])
+    w = Wallet.find_or_create_by(id: dbref)
     amount = BigDecimal.new(amount.delete(',')).round(1,:floor)
     return ">".bold.green + " You can't withdraw negative money!" unless amount > 0
     return ">".bold.green + " That account is closed." unless a.open?
-    return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(R["enactor"])
+    return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(dbref)
     return ">".bold.green + " That account does not have sufficient balance!" unless a.balance >= amount
 
-    a.withdraw(R.penn_name(R["enactor"]), amount)
+    a.withdraw(R.penn_name(dbref), amount)
     w.balance = w.balance + amount
     w.save
     ">".bold.green + " You withdraw #{credit_format(amount).bold.yellow} credits from account #{a.name.to_s.bold}."
