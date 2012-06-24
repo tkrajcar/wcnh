@@ -52,6 +52,7 @@ module BBoard
         count += 1
       end
       p "#{count} posts timed out."
+      return count
     end
   end
   

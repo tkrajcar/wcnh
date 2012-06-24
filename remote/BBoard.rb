@@ -95,4 +95,8 @@ module BBoard
   def self.pj_search(dbref, cat, term)
     self.search(dbref, cat, term)
   end
+
+  def self.pj_timeout
+    self.timeout
+  end
 end
