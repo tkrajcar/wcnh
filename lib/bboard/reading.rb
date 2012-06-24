@@ -297,18 +297,17 @@ module BBoard
 
   def self.ShowIndex(subscription, list)
     category = subscription.category
+    isadmin = R.orflags(subscription.user.id, "Wr").to_bool
 
     ret = titlebar("Index: #{category.name}") + "\n"
     ret << "        Message".ljust(43).yellow + "Posted     Replies  By".yellow + "\n"
     ret << footerbar + "\n"
     
     unread_replies = subscription.unread_replies
-    count = 1
     list.where(:parent_id => nil).asc(:created_at).each do |post|
       replies = post.category.posts.where(:parent_id => post.id)
-      isadmin = R.orflags(subscription.user.id, "Wr").to_bool
 
-      numstring = "#{category.num}/#{count}"
+      numstring = "#{category.num}/#{category.posts.find_index(post) + 1}"
       numstring << (!unread_replies[post].nil? ? "R" : " ")
       numstring << (!subscription.read_posts.include?(post.id) ? "U" : " ")
 
@@ -328,7 +327,6 @@ module BBoard
 
       ret << namestring[0,16]
       ret << "\n"
-      count += 1
     end
     ret << footerbar
   end
