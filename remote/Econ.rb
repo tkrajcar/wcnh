@@ -32,7 +32,7 @@ module Econ
   end
 
   def self.pj_account_withdraw(dbref,account,amount)
-    self.account_withdraw(account,amount)
+    self.account_withdraw(dbref,account,amount)
   end
 
   def self.pj_account_view(account)

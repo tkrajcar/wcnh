@@ -126,8 +126,8 @@
   think [setq(Ship.salePrice,mul(get(%q<Ship>/value),v(markdown)))];
   @tel %q<Ship>=%!;
   think u(fn.CleanShip,%q<Ship>);
-  think rpc(Econ.grant,%#,%q<Ship.salePrice>);
-  think rpc(Econ.account.withdraw,%q<Ship.salePrice>);
+  think u(fn.econ.transfer,%#,%q<Ship.salePrice>);
+  think u(fn.econ.withdraw,%q<Ship.salePrice>);
   think syslog(SHIP SALE,%n sold the %q<Ship.name>\(%q<Ship.class> - %q<Ship>\) for %q<Ship.salePrice>c.);
 
   @nspemit %#=[ansi(gh,>)] You are paid [ansi(yh,%q<Ship.salePrice>c)] for the %q<Ship.name>.

@@ -52,7 +52,7 @@ module Econ
     amount = BigDecimal.new(amount.delete(',')).round(1,:floor)
     return ">".bold.green + " You can't withdraw negative money!" unless amount > 0
     return ">".bold.green + " That account is closed." unless a.open?
-    return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(dbref)
+    return ">".bold.green + " Sorry, you don't have access to that account." unless a.accessors.include?(dbref) || R.orflags(dbref, "Wr").to_bool
     return ">".bold.green + " That account does not have sufficient balance!" unless a.balance >= amount
 
     a.withdraw(R.penn_name(dbref), amount)
