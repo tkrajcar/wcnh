@@ -54,10 +54,6 @@ module BBoard
     subscription = user.subscriptions.where(:category_id => category.id).first
     
     return "> ".bold.red + "You do not subscribe to that Group." unless !subscription.nil? && category.canread?(dbref)
-    
-    ret = titlebar("Index: #{category.name}") + "\n"
-    ret << "        Message".ljust(43).yellow + "Posted        By".yellow + "\n"
-    ret << footerbar + "\n"
 
     return ShowIndex(subscription, category.posts)
   end
@@ -298,6 +294,7 @@ module BBoard
   def self.ShowIndex(subscription, list)
     category = subscription.category
     isadmin = R.orflags(subscription.user.id, "Wr").to_bool
+    index = category.posts.where(parent_id: nil).asc(:created_at)
 
     ret = titlebar("Index: #{category.name}") + "\n"
     ret << "        Message".ljust(43).yellow + "Posted     Replies  By".yellow + "\n"
@@ -305,9 +302,9 @@ module BBoard
     
     unread_replies = subscription.unread_replies
     list.where(:parent_id => nil).asc(:created_at).each do |post|
-      replies = post.category.posts.where(:parent_id => post.id)
+      replies = index.where(parent_id: post.id)
 
-      numstring = "#{category.num}/#{category.posts.find_index(post) + 1}"
+      numstring = "#{category.num}/#{index.find_index(post) + 1}"
       numstring << (!unread_replies[post].nil? ? "R" : " ")
       numstring << (!subscription.read_posts.include?(post.id) ? "U" : " ")
 
