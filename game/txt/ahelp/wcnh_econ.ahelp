@@ -5,6 +5,7 @@
   account/list <player> - view a player's account/list
   cargo/create - Create a new randomly generated cargo job
   cargo/edit <num>/<field>=<value> - Edit an existing cargo job
+  +econ/report - See a summary of econ info.
 
   Also:
 
