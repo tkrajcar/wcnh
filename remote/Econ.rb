@@ -106,5 +106,9 @@ module Econ
   def self.pj_cargojob_edit(user, num, opt, val)
     self.cargojob_edit(user, num, opt, val)
   end
+
+  def self.pj_admin_report
+    self.admin_report
+  end
 end
 

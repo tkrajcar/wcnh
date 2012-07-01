@@ -152,3 +152,7 @@
 -
 &cmd.comm/transmit #115=$comm */*=*:
   @nspemit %#=[rpc(Comms.channel_emit,%0,%1,%2)]
+-
+&CMD.+ECON/REPORT #115=$+econ/report:
+  @nspemit %#=[rpc(Econ.admin_report)]
+-
