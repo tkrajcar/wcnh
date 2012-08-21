@@ -9,6 +9,7 @@ module Items
   def self.attr_get(dbref, attr)
     return '#-1 NO SUCH DOCUMENT' unless item = Instance.where(:dbref => dbref).first
     return item.show if attr == 'show'
+    return (item.kind.is_weapon ? '1' : '0') if attr == 'is_weapon'
     return '#-1 INVALID ATTRIBUTE' if item.attribs[attr].nil?
     return item.attribs[attr].to_s
   end

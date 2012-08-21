@@ -493,3 +493,26 @@
                 ),
           ,%r)]%r
      [footerbar(words(%q<trackers_checked>) ships)]
+-
+&CMD.WIELD #15=$wield *:
+  think setq(Item,locate(%#,%0,iT));
+  think setq(Item.name,extract(name(%q<Item>),1,dec(words(name(%q<Item>)))));
+
+  @assert [t(%q<Item>)]=@nspemit %#=[ansi(rh,>)] No such item in your inventory.;
+  @assert [not(hasattrval(%#,char`wielding))]=[ansi(rh,>)] You're already wielding something.;
+  @assert [t(rpc(Items.attr_get,%q<Item>,is_weapon))]=@nspemit %#=[ansi(rh,>)] That's not a weapon.;
+
+  @nspemit %#=\[[ansi(rh,COMBAT)]\] You wield your [ansi(wh,%q<Item.name>)]!;
+  @nsoemit %#=\[[ansi(rh,COMBAT)]\] [name(%#)] wields [poss(%#)] [ansi(wh,%q<Item.name>)]!;
+  &wielded %#=%q<Item>;
+-
+&CMD.UNWIELD #15=$unwield:
+  think setq(Item,get(%#/wielded));
+  think setq(Item.name,extract(name(%q<Item>),1,dec(words(name(%q<Item>)))));
+
+  @assert [t(%q<Item>)]=@nspemit %#=[ansi(rh,>)] You're not wielding anything!;
+
+  @nspemit %#=\[[ansi(rh,COMBAT)]\] You unwield your [ansi(wh,%q<Item.name>)].;
+  @nsoemit %#=\[[ansi(rh,COMBAT)]\] [name(%#)] unwields [poss(%#)] [ansi(wh,%q<Item.name>)].;
+  &wielded %#;
+-

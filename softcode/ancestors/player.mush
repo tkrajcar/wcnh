@@ -17,6 +17,10 @@
       [name(me)] doesn't have a description quite yet.
       )]
     %r
+    [if(
+      hasattrval(%!,wielded),
+      [ansi(rh,%r%S is wielding [art(name(get(%!/wielded)))] [extract(name(get(%!/wielded)),1,dec(words(name(get(%!/wielded)))))]!)]%r
+      )]
     [footerbar()],
     You can't see that from here.
   )

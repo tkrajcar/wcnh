@@ -5,6 +5,10 @@ module Items
     field :skill, type: String
 
     @showable = {mass: 'kg', damage: '', skill: ''}
+    
+    def is_weapon
+      return true
+    end
   end
 
 end

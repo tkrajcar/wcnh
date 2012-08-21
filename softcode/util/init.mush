@@ -21,6 +21,9 @@
 -
 &SPACE.ATTR #25=no_command wizard mortal_dark
 -
+# For public viewing of wielded weaps
+&WIELDED #25=no_command wizard
+-
 
 ### FUNCTIONS
 ### Shouldn't have to worry about localizing due to @function/preserve,

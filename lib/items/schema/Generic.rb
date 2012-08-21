@@ -24,6 +24,10 @@ module Items
     def self.subclasses
         ObjectSpace.each_object(Class).select { |klass| klass < self }.sort { |a, b| a.ancestors.count <=> b.ancestors.count }
     end
+    
+    def is_weapon
+      return false
+    end
   end
   
 end
