@@ -11,9 +11,9 @@ module Items
     end
 
     def group_name(amount, name)
-      singular = self.energy ? 'charge' : 'round'
-      plural = self.energy ? 'charges' : 'rounds'
-      return "#{amount} #{amount > 1 ? plural : singular} of #{name}"
+      singular = self[:energy] ? 'charge' : 'round'
+      plural = self[:energy] ? 'charges' : 'rounds'
+      return "#{amount} #{amount > 1 ? plural : singular} of #{self[:name]}"
     end
   end
 

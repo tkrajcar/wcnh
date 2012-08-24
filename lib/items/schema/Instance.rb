@@ -26,7 +26,7 @@ module Items
 
     def propagate
       if self.dbref.nil?
-        self.dbref = item_mush = R.penn_u("#{MUSH_FUNCTIONS}/subfn.create",self.kind.name)
+        self.dbref = item_mush = R.penn_u("#{MUSH_FUNCTIONS}/subfn.create",self.kind[:name])
         self.save
       else
         item_mush = self.dbref

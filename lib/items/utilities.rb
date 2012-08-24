@@ -27,9 +27,9 @@ module Items
 
     instance = item.instances.create!
     item_mush = instance.propagate
-
+    
     R.tel(item_mush, enactor)
-    Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} instantiated #{item_mush}, type: #{item.name}, class: #{item.class.name}")
+    Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} instantiated #{item_mush}, type: #{item[:name]}, class: #{item.class.name}")
     return item_mush
   end
 

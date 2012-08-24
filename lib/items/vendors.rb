@@ -8,13 +8,13 @@ module Items
     return "> ".bold.red + "Invalid vendor dbref.  Report this via +ticket." unless vendor = Vendor.where(dbref: vendor).first
 
     stock = vendor.items.where('attribs.lowercase_name' => item.downcase)
+    return "> ".bold.red + "I don't see that item for sale." unless stock.count > 0
     available = stock.first.kind.stackable ? stock.first.attribs['amount'] : stock.count
 
     return "> ".bold.red + "Vendor has an invalid account.  Report this via +ticket." unless account = Econ::Account.where(_id: vendor.account).first
-    return "> ".bold.red + "I don't see that item for sale." unless stock.count > 0
     return "> ".bold.red + "There are only #{available} of those available." unless available >= amount
     return "> ".bold.red + "You can only purchase one of those at a time." unless amount == 1 || stock.first.kind.stackable
-
+  
     price = ((stock.first.attribs['value'] + (stock.first.attribs['value'] * vendor.markup)) * amount).to_i
 
     return "> ".bold.red + "You don't have enough credits." unless wallet.balance >= price

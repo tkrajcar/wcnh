@@ -20,7 +20,7 @@ module Items
       ret = titlebar("Items: #{category.name.partition("::").last}") + "\n"
       ret << "ID " "Name".ljust(30).cyan + "Type".ljust(10).cyan + "OnGrid".cyan + "\n"
       category.all.each do |item|
-        ret << item.number.to_s.ljust(3) << item.name.to_s.ljust(27) + item.class.name.partition("::").last.ljust(12) + item.instances.count.to_s + "\n"
+        ret << item.number.to_s.ljust(3) << item[:name].to_s.ljust(27) + item.class.name.partition("::").last.ljust(12) + item.instances.count.to_s + "\n"
       end
     end
    
@@ -47,13 +47,13 @@ module Items
       end
     end
 
-    return "> ".bold.green + "'#{field.capitalize}' attribute on the parent #{item.name} updated."
+    return "> ".bold.green + "'#{field.capitalize}' attribute on the parent #{item[:name]} updated."
   end
 
   def self.destroy(num)
     return "> ".bold.red + "No such item." unless item = Generic.where(number: num).first
 
-    Logs.log_syslog('ITEM DESTROY', "#{R.penn_name(R['enactor'])} removed item no. #{item.number}, name: #{item.name}")
+    Logs.log_syslog('ITEM DESTROY', "#{R.penn_name(R['enactor'])} removed item no. #{item.number}, name: #{item[:name]}")
     item.destroy
     return "> ".bold.green + "Item no. #{item.number} destroyed."
   end
@@ -73,11 +73,12 @@ module Items
 
     exclude = EXCLUDE_FIELDS + %w[rounds amount] - ['stackable']
     fields = item.fields.keys - exclude
-
-    ret = titlebar("Item #{item.number} - #{item.class.name} - #{item.name}") + "\n"
+    
+    ret = titlebar("Item #{item.number} - #{item.class.name} - #{item[:name]}") + "\n"
     fields.each do |field|
       ret << "#{field.upcase}: ".cyan + item[field.to_sym].to_s + "\n"
     end
+    
     ret << footerbar
 
     ret
