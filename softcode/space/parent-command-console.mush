@@ -306,6 +306,12 @@
   @assert [setr(target,spacesys(hail.gettarget,v(data.ship)))]=@nspemit %#=[ansi(rh,>)] You have no communications target.;
   th [spacesys(hail,v(data.ship),%#,%q<target>,%0)]
 -
+&CMD.SEMIT #204=$semit *:
+  @assert [orlflags(%#,wizard royal guide)]=@nspemit %#=Huh? \(Type "help" for help,\);
+  @assert [spacesys(isactive,v(data.ship))]=@nspemit %#=[ansi(rh,>)] The ship is currently landed.;
+
+  think spacesys(spose,v(data.ship),%0,%#,1,1);
+-
 &CMD.SPOSE #204=$spose *:
   @switch [spacesys(isactive,v(data.ship))]=
 

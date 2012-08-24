@@ -358,9 +358,9 @@
 &FN.SPOSE #208=
   [iter(
       spacesys(list.system.active,loc(%0)),
-      spacesys(notify.consoles,itext(0),The [ansi(wh,name(%0))] %1)
+      spacesys(notify.consoles,itext(0),[if(not(%4),The [ansi(wh,name(%0))]%b)]%1)
       )]
-  [if(t(%3),nscemit(Comms,[ansi(yh,SPOSE)]-[ansi(wh,name(%2))]: The [name(%0)] %1,1))]
+  [if(t(%3),nscemit(Comms,[ansi(yh,ifelse(%4,SEMIT,SPOSE))]-[ansi(wh,name(%2))]:[if(not(%4),The [name(%0)]%b)]%1,1))]
 -
 &FN.LIST.SYSTEM.ACTIVE #208=
   filter(filter.active,u(fn.list.system.all,%0))
