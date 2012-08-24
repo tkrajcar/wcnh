@@ -28,10 +28,10 @@ If you want a complete index of game-specific code, try 'help local'.
   +911           ACCOUNT        +BBOARD        +bg            CALENDAR       
   CARGO          cash           CHARGEN        COMBAT         COMMS          
   +concept       CONTRACT       FACTIONS       +finger        +guides
-  +LOG           lock           +map           +ooc           pay
-  PLACES         put down       RACES          +RP            +set
-  SPACE          +staff         +TICKET        time           WANTED
-  +web           +where         +who           +XP
+  GUIDES         +LOG           lock           +map           +ooc
+  pay            PLACES         put down       RACES          +RP
+  +set           SPACE          +staff         +TICKET        time
+  WANTED         +web           +where         +who           +XP
 
 
 & ROLEPLAY

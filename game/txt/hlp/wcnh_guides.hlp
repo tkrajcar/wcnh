@@ -1,0 +1,21 @@
+& GUIDES
+The following commands and topics are restricted for use by Player Guides.
+ 
+See help 'command' for each topic.
+ 
+semit         +zone
+
+& SEMIT
+Syntax: semit <emit>
+ 
+This command allows a Player Guide to effectively make an @emit in space.  You
+must be manning a console in a launched ship.  This tool is made available so
+that Guides can run small events and mini-plots for other players.
+
+& +ZONE
+Syntax: +zone/list
+        +zone/checkout <zone>
+ 
+These commands allow Guides to check out special Building Characters when
+they've been assigned a building task.
+ 
