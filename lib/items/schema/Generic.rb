@@ -19,14 +19,14 @@ module Items
 
     class << self
         attr_reader :showable # Hash of visible fields in the form of Key (sym) => String (suffix)
+        attr_reader :is_weapon, :is_gun # Booleans
     end
+    
+    @is_weapon = false
+    @is_gun = false
 
     def self.subclasses
         ObjectSpace.each_object(Class).select { |klass| klass < self }.sort { |a, b| a.ancestors.count <=> b.ancestors.count }
-    end
-    
-    def is_weapon
-      return false
     end
   end
   

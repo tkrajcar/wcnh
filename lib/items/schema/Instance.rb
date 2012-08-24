@@ -14,6 +14,14 @@ module Items
 
     after_create :construct
     
+    def is_weapon
+      return self.kind.class.is_weapon
+    end
+    
+    def is_gun
+      return self.kind.class.is_gun
+    end
+    
     def construct
       exclude = [:created_at, :updated_at, :number]
       

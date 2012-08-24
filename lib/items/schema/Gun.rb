@@ -6,6 +6,10 @@ module Items
     field :ammunition, type: String 
 
     @showable = {mass: 'kg', damage: '', skill: '', ammunition: ''}
+    @is_gun = true
+    
+    def self.reload(gun, ammunition)
+    end
   end
 
 end
