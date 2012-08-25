@@ -3,6 +3,7 @@ module Items
   class Instance
     include Mongoid::Document
     include Mongoid::Timestamps
+    include Firearms
     
     field :dbref, type: String
     field :attribs, type: Hash, default: {}
