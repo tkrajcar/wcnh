@@ -87,6 +87,8 @@ module Items
   def self.fix(dbref)
     return "> ".bold.red + "Invalid item document." unless item = Instance.where(:dbref => dbref).first
     item.propagate
+    item.rename
+    item.save
     return "> ".bold.green + "Item #{item.dbref} has been fixed."
   end
   
