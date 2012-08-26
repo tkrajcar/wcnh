@@ -45,7 +45,6 @@ module Items
       R.penn_powers(item_mush, "api")
       R.penn_parent(item_mush, MUSH_PARENT)
       R.set(item_mush, "id:#{self._id}")
-      self.rename
       return item_mush
     end
 
