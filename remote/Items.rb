@@ -59,4 +59,9 @@ module Items
   def self.pj_vendor_preview(vendor, item)
     self.vendor_preview(vendor, item)
   end
+  
+  def self.pj_fix(dbref)
+    self.fix(dbref)
+  end
+
 end

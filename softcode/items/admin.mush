@@ -14,3 +14,6 @@
 -
 &CMD.+ITEM/REMOVE #115=$+item/remove *:@nspemit %#=rpc(Items.remove,%#,%0)
 -
+&CMD.+ITEM/FIX #115=$+item/fix *:@nspemit %#=rpc(Items.fix,%0)
+-
+
