@@ -27,7 +27,7 @@ module Items
 
     instance = item.instances.create!
     item_mush = instance.propagate
-    
+
     R.tel(item_mush, enactor)
     Logs.log_syslog("ITEM CREATE", "#{R.penn_name(enactor)} instantiated #{item_mush}, type: #{item[:name]}, class: #{item.class.name}")
     return item_mush
@@ -40,7 +40,7 @@ module Items
     R.powers(dbref, "!api")
     R.tel(dbref, GARBAGE_ROOM)
     instance.destroy
-    Logs.log_syslog("ITEM REMOVE", "#{R.penn_name(enactor)} removed #{instance.dbref}, type: #{instance.kind.name}")
+    Logs.log_syslog("ITEM REMOVE", "#{R.penn_name(enactor)} removed #{instance.dbref}, type: #{instance.kind.attributes['name']}")
     return "> ".bold.red + "Item #{instance.dbref} removed from the db."
   end
 
