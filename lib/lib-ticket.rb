@@ -3,6 +3,15 @@ require 'wcnh'
 module Ticket
   R = PennJSON::Remote
 
+  def self.rename(ticket, name)
+    t = Ticket.where(number: ticket).first
+    isadmin = R.orflags(R["enactor"],"Wr").to_bool
+    return ">".bold.cyan + " Invalid ticket!" unless (!t.nil? && isadmin)
+    t.title = name
+    t.save
+    return "> ".bold.cyan + "Ticket no. #{t.number} has been renamed."
+  end
+  
   # Open a new ticket
   def self.open(title, data)
     return ">".bold.cyan + " Sorry, guests can't open new tickets." unless !R.haspower(R["enactor"], "guest").to_bool

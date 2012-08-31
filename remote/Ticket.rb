@@ -34,4 +34,8 @@ module Ticket
   def self.pj_view(ticket)
     self.view(ticket)
   end
+  
+  def self.pj_rename(ticket, name)
+    self.rename(ticket, name)
+  end
 end
