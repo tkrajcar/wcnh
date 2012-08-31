@@ -38,4 +38,8 @@ module Ticket
   def self.pj_rename(ticket, name)
     self.rename(ticket, name)
   end
+  
+  def self.pj_sort(sort_type)
+    self.sort(sort_type)
+  end
 end

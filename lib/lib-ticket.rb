@@ -2,7 +2,17 @@ require 'wcnh'
 
 module Ticket
   R = PennJSON::Remote
-
+  SORTS = [:title, :requester, :opened, :updated]
+  
+  def self.sort(sort_type)
+    unless SORTS.include?(sort_type.to_sym)
+      return "> ".bold.cyan + "Invalid sort type.  Valid sorts: " + SORTS.map { |i| i.upcase.to_s }.itemize
+    end
+    
+    R.penn_set(R['enactor'], "ticket.sort:#{sort_type}")
+    return "> ".bold.cyan + "Your ticket lists will now be sorted by: " + sort_type    
+  end
+  
   def self.rename(ticket, name)
     t = Ticket.where(number: ticket).first
     isadmin = R.orflags(R["enactor"],"Wr").to_bool
@@ -22,20 +32,24 @@ module Ticket
 
   def self.list(page = 1)
     page = page.to_i
+    sort_type = R.penn_xget(R['enactor'], 'ticket.sort').to_s.to_sym
+    sort_type = SORTS.include?(sort_type) ? sort_type : :opened 
     return ">".bold.cyan + " Invalid page number." unless page > 0
     if R.orflags(R["enactor"],"Wr").to_bool
-      list_output(Ticket.all, "All +Tickets",page,true)
+      list_output(Ticket.all, "All +Tickets",page,true,sort_type)
     else
-      list_output(Ticket.where(requester: R["enactor"]), "Your Opened +Tickets",page,false)
+      list_output(Ticket.where(requester: R["enactor"]), "Your Opened +Tickets",page,false,sort_type)
     end
   end
 
   def self.mine(page)
     page = page.to_i
+    sort_type = R.penn_xget(R['enactor'], 'ticket.sort').to_s.to_sym
+    sort_type = SORTS.include?(sort_type) ? sort_type : :opened
     return ">".bold.cyan + " Invalid page number." unless page > 0
     tickets = Ticket.where(assignee: R["enactor"]).where(status: "open")
     return ">".bold.cyan + " No open +tickets assigned to you." unless tickets.length > 0
-    list_output(tickets, "Your Assigned +Tickets", page,true)
+    list_output(tickets, "Your Assigned +Tickets", page, true, sort_type)
   end
 
   def self.assign(ticket,victim)
@@ -134,10 +148,10 @@ module Ticket
   end
 
   # Given a Mongoid criteria, a title, and a page number, return a ticket list.
-  def self.list_output(criteria, title, page = 1, show_assigned = false)
+  def self.list_output(criteria, title, page = 1, show_assigned = false, sort_type = :opened)
     ret = titlebar(title + " (Page #{page})") + "\n"
     ret << "#### #{"Requester".ljust(15)} S Assign Opened   Updated  Title".cyan + "\n"
-    criteria.desc(:status).desc(:opened).skip(20 * (page.to_i - 1)).limit(20).each do |t|
+    criteria.desc(:status).desc(sort_type).skip(20 * (page.to_i - 1)).limit(20).each do |t|
       ret << t.number.to_s.rjust(4).yellow.bold + " "
       ret << R.penn_name(t.requester ||= "")[0...15].ljust(16)
       ret << (t.status == "open" ? "O".bold.on_blue + " " : "C ".green)
@@ -146,6 +160,9 @@ module Ticket
       ret << (t.updated.nil? ? "         " : t.updated.strftime("%m/%d/%y "))
       ret << t.title[0..30]
       ret << "\n"
+    end
+    if sort_type != :opened
+      ret << "\nSorted by: ".cyan + sort_type.to_s.capitalize + "\n"
     end
     ret << footerbar()
     ret
