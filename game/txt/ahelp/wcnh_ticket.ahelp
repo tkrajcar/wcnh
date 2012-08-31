@@ -9,3 +9,4 @@
   +ticket/claim <ticket number> - Assigns the ticket to yourself.
   +ticket/mine [page <#>] - list +tickets assigned to you.
   +ticket/comment/private <#>=<text> - Add an admin-only comment.
+  +ticket/rename <#>=<title> - Rename a ticket.
