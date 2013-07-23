@@ -1,4 +1,5 @@
-source :rubygems
+require 'yaml'
+source "https://rubygems.org/"
 
 gem 'yajl-ruby', '~> 1.0', :require => 'yajl'
 
@@ -8,8 +9,7 @@ if File.exists?("config.yml")
   config['load_paths'].each do |path|
     gempath = File.expand_path(path + '/Gemfile')
     if File.exists?(gempath)
-      p "Loading gems from #{gempath}."
-      self.send(:eval, File.open(gempath, 'r').read)
+      instance_eval File.read(gempath)
     end
   end
 end

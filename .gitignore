@@ -21,7 +21,6 @@ Makefile
 config.h
 config.log
 config.status
-options.h
 
 # Built binaries.
 src/*.o
@@ -78,5 +77,8 @@ game/ruby/config.yml
 
 # Vagrant stuff
 .vagrant
+puppet/modules
+puppet/.librarian
+puppet/.tmp
 
 *.DS_Store
