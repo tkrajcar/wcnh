@@ -1,6 +1,5 @@
-source :rubygems
+source 'https://rubygems.org/'
 gem "require_all"
-gem "github-v3-api"
 gem "capistrano"
 gem "capistrano-ext"
 gem "railsless-deploy"
