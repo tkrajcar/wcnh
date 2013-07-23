@@ -185,7 +185,7 @@ chunk_migrate 150
 # The port to listen on for SSL connections. This must be an unused
 # port other than the standard connection port. To disable SSL
 # connections, leave this set to 0.
-ssl_port 2299
+ssl_port 0
 
 # The ip address to bind to for the SSL port, if one is specified. 
 # If your host has multiple IP addresses, put the ip address to 

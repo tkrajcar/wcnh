@@ -1,3 +1,10 @@
+##### WARNING #####
+# THIS INFORMATION IS OUT OF DATE
+# There is a Vagrantfile included that should preclude the need for just about all of this.
+###################
+
+
+
 # PREREQUISITE
 # Make sure that you have a checkout of wcnh_systems at '../systems' or '../wcnh_systems' relative to this file.
 # For example, if this file is at /home/foo/mush/README.WCNHDEV, you should have a /home/foo/systems/Gemfile.
