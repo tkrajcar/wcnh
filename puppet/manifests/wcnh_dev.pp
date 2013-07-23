@@ -52,5 +52,11 @@ exec { "cp ../../database.gz.dist outdb.gz":
   path => "/bin"
 }
 
+exec { "cp ../../chatdb.gz.dist chatdb.gz":
+  cwd => "/mush/game/data",
+  creates => "/mush/game/data/chatdb.gz",
+  path => "/bin"
+}
+
 class { installrvm: }
 class { installruby: require => Class[Installrvm] }
