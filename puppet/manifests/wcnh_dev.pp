@@ -42,5 +42,15 @@ class { 'mongodb':
   enable_10gen => true,
 }
 
+file { '/mush/game/ruby/config.yml':
+  content => "load_paths:\n  - example\n  - /systems"
+}
+
+exec { "cp ../../database.gz.dist outdb.gz":
+  cwd => "/mush/game/data",
+  creates => "/mush/game/data/outdb.gz",
+  path => "/bin"
+}
+
 class { installrvm: }
 class { installruby: require => Class[Installrvm] }
