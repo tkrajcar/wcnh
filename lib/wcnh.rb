@@ -1,6 +1,5 @@
 # All includes used by any script should go here.
 require 'time'
-require 'github-v3-api'
 require 'mongoid'
 
 # Go find our MUSH library.
