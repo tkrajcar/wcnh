@@ -1,0 +1,73 @@
+These are instructions for installing the WCNH codebase on a new Ubuntu 12.x box.
+
+12.04 is preferred, 12.10 is OK but you need to backport libyajl to 1.x instead of 2.x.
+
+# update
+apt-get update -y
+
+# install needed Ubuntu packages
+apt-get install libyajl-dev git-core libpcre3-dev gdb gperf make vim telnet gawk g++ libreadline6-dev zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 autoconf libgdbm-dev libncurses5-dev automake libtool bison pkg-config libffi-dev
+
+# install mongoDB using packages published by 10gen
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/10gen.list
+apt-get update -y
+apt-get install mongodb-10gen
+
+# force mongodb to only listen to localhost, and restart
+echo "bind_ip = 127.0.0.1" >> /etc/mongodb.conf
+service mongodb restart
+
+# create user
+adduser myuser
+
+# we're done with root - logout and login as your new user 
+
+# install rvm, a ruby version manager
+\curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
+
+# logout and back in, to activate rvm stuff
+
+# install ruby 1.9.3
+rvm install 1.9.3
+
+# make ruby 1.9.3 default
+rvm use 1.9.3 --default
+
+# clone systems and mush repos
+git clone https://github.com/tkrajcar/wcnh_mush.git mush
+git clone https://github.com/tkrajcar/wcnh_systems.git systems
+
+# set up MUSH ruby config
+cp mush/game/ruby/config.yml.dist mush/game/ruby/config.yml
+
+# Edit mush/game/ruby/config.yml and add a line to the bottom of the file like:
+#  - /home/myuser/systems
+# Fix path as needed.
+
+# install gems
+cd ~/mush/game/ruby && bundle install
+cd ~/systems && bundle install
+
+# compile MUSH
+cd ~/mush && ./configure
+cd ~/mush && make install
+
+# copy distributed 'base' databases to be your real database
+cp ~/mush/database.gz.dist ~/mush/game/data/outdb.gz
+cp ~/mush/chatdb.gz.dist ~/mush/game/data/chatdb.gz
+
+# start MUSH
+sh ~/mush/game/restart
+
+# test
+telnet localhost 2199
+
+# connect #1 ggAioK187yx4cD5q
+# CHANGE THIS PASSWORD IMMEDIATELY!
+
+# think [rpc(Ping.pong)]
+# You should see: PONG[]
+
+# @pcreate yourself a char, @set them wizard, and have at it!
+
