@@ -2,27 +2,27 @@
 # Tread carefully; It Just Works.
 #
 ### CONFIG
-&COLOR.EXIT #9=c
+&COLOR.EXIT #9=default([zone(me)]/color.exit,c)
 -
-&COLOR.FRAME #9=r
+&COLOR.FRAME #9=default([zone(me)]/color.frame,r)
 -
-&COLOR.PLAYER #9=hr
+&COLOR.PLAYER #9=default([zone(me)]/color.player,hr)
 -
-&COLOR.THING #9=y
+&COLOR.THING #9=default([zone(me)]/color.thing,y)
 -
 &DESCRIBE #9=Helpful instructions to go here.
 -
 
 ### FORMATS
 &CONFORMAT #9=
-  [footerbar(u(room_parent.check_active.fn,%!,%#),v(COLOR.Frame))]
+  [footerbar(u(room_parent.check_active.fn,%!,%#),u(COLOR.Frame))]
   [setq(1,add(u(room_parent.exit_name_max_adjust.fn,setr(0,ifelse(orflags(%#,Wr),lexits(%!),lvexits(%!)))),2))]
   [if(setr(s,filter(#lambda/isship(\%0),%0)),u(room_parent.display_ships.fn,%qs))]
   [setq(o,setdiff(%0,%qs))]
   [iter(
     lnum(max(words(%q0),words(%qo))),
     %r
-    [ljust(switch(extract(%qo,#@,1),,,ansi(v(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))][if(hasattrval(#$,wielded),%b[ansi(rh,\(ARMED\))])],30))),30)][ljust(if(and(hasattrval(extract(%q0,#@,1),data.taxiway),match(%@,#208)),[ansi(hy,\[TAXIWAY\])]),9)] [ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[v(COLOR.EXIT)],\<)][ansi(edit(v(COLOR.EXIT),h,),name(#$))][ansi(h[v(COLOR.EXIT)],\>)],%q1)] [ansi(edit(v(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],
+    [ljust(switch(extract(%qo,#@,1),,,ansi(u(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))][if(hasattrval(#$,wielded),%b[ansi(rh,\(ARMED\))])],30))),30)][ljust(if(and(hasattrval(extract(%q0,#@,1),data.taxiway),match(%@,#208)),[ansi(hy,\[TAXIWAY\])]),9)] [ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[u(COLOR.EXIT)],\<)][ansi(edit(u(COLOR.EXIT),h,),name(#$))][ansi(h[u(COLOR.EXIT)],\>)],%q1)] [ansi(edit(u(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],
     %b,
     )]
 -
@@ -40,7 +40,7 @@
                     ),
                   %b<[trim(ifelse(strmatch(last(lparent(%q8)),#179),rest(name(parent(%q8))),before(name(%q8),<)))]>
                   )],
-              v(COLOR.Frame))
+              u(COLOR.Frame))
 -
 
 ### SUBFUNCTIONS
@@ -58,7 +58,7 @@
       or(words(%qA),words(%qI)),
       [if(
         and(words(%qA),words(%qI)),
-        u(room_parent.check_active_format.fn,words(%qA),1)\, 
+        u(room_parent.check_active_format.fn,words(%qA),1)\,
          [u(room_parent.check_active_format.fn,words(%qI))],
         [if(
           words(%qA),
@@ -73,7 +73,7 @@
 -
 &ROOM_PARENT.EXIT_NAME_MAX_ADJUST.FN #9=lmath(max,iter(%0,strlen(name(##)))
 -
-&ROOM_PARENT.DISPLAY_SHIPS.FN #9=%r[align(6 72,ansi(h[v(COLOR.Frame)],Ships:),itemize(map(ROOM_PARENT.FORMAT_SHIPNAME.FN,%0, ,|),|))]
+&ROOM_PARENT.DISPLAY_SHIPS.FN #9=%r[align(6 72,ansi(h[u(COLOR.Frame)],Ships:),itemize(map(ROOM_PARENT.FORMAT_SHIPNAME.FN,%0, ,|),|))]
 -
 &ROOM_PARENT.FORMAT_SHIPNAME.FN #9=[ansi(h,name(%0))]\[[ansi(c,shipclass(%0))]\]
 
