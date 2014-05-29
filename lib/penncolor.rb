@@ -68,6 +68,10 @@ module PennColor
     return "" unless extra_name && EXTRAS[extra_name]
     EXTRAS[extra_name]
   end
+
+  def remove_penn_ansi
+    self.gsub(/\x02.*?\x03/,'')
+  end
 end unless Object.const_defined? :PennColor
 
 String.send(:include, PennColor)

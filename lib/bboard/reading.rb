@@ -252,7 +252,7 @@ module BBoard
     ret << "Message: ".yellow + "#{post.category.num}/#{index + 1}".ljust(6)
     ret << (post.sticky ? '[STICKY]' : '').ljust(13).green
     ret << "Posted                    Author".yellow + "\n"
-    ret << post.title[0,27].ljust(28)
+    ret << post.title.trim_and_ljust_with_ansi(27)
     ret << post.created_at.strftime("%a %b %d @ %H:%M %Z").ljust(26)
 
     namestring = ""
@@ -310,7 +310,7 @@ module BBoard
 
       ret << numstring.ljust(8)
       ret << '[STICKY] '.green if post.sticky
-      ret << post.title[0,(post.sticky ? 25 : 34)].ljust(post.sticky ? 26 : 35)
+      ret << post.title.trim_and_ljust_with_ansi(post.sticky ? 25 : 34)
       ret << post.created_at.strftime("%a %b %d").ljust(14)
       ret << replies.count.to_s.ljust(6)
 
