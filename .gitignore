@@ -75,10 +75,6 @@ game/txt/ahelp.txt
 # Ruby implementation-specific files.
 game/ruby/config.yml
 
-# Vagrant stuff
 .vagrant
-puppet/modules
-puppet/.librarian
-puppet/.tmp
 
 *.DS_Store

@@ -6,7 +6,7 @@
 
 # VAGRANT
 # 0: If you don't already have Ruby installed on your host machine, you need to install it.
-# Doing this varies wildly depending on what operating system you're using. 
+# Doing this varies wildly depending on what operating system you're using.
 # Check out ruby-lang.org for more information.
 
 # 1: Install vagrant on your machine.
@@ -15,35 +15,18 @@ gem install vagrant
 # 2: Install Virtualbox from virtualbox.org
 
 # 3: Initialize the vm. This will take awhile as it needs to download the base box, and then
-#    and then run Puppet to auto-install many packages and prerequisites.
+#    and then run a script to auto-install the packages and prerequisites.
 vagrant up
 
 # 4: Login to vm.
 vagrant ssh
 
-### From here on, all commands are to be run on the VM, unless otherwise specified.
-
-# GEMS
-# 1: Install systems gems
-cd /systems
-bundle install
-
-# 2: Install Penn gems
-cd /mush/game/ruby
-bundle install
-
-# PENNMUSH
-# 1: Configure
-cd /mush
-./configure
-
-# 2: Compile
-make install
-
-# 3: start the game
-sh game/restart
+# 5: Start the game
+sh /mush/game/restart
 
 # If the game comes up properly, it will be on port 2199 (unless overriden in mush.cnf)
 # on the dev VM. That port is automatically mapped through to your host. So, from your
-# host box, you should be able to telnet localhost 2199 and log in, or use your normal 
+# host box, you should be able to telnet localhost 2199 and log in, or use your normal
 # MUSH client to access localhost, port 2199.
+
+# Using the default database, the #1 password is: ggAioK187yx4cD5q

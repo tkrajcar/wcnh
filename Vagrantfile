@@ -35,5 +35,5 @@ Vagrant::Config.run do |config|
     config.vm.share_folder "systems", "/systems", "../wcnh_systems"
   end
 
-  config.vm.provision :shell, :path => "puppet/bootstrap.sh"
+  config.vm.provision :shell, :path => "vagrant_bootstrap.sh", privileged: false
 end

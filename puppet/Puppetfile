@@ -1,3 +1,0 @@
-forge "http://forge.puppetlabs.com"
-mod "puppetlabs/mongodb", "0.1.0"
-mod 'rvm', :git => "git://github.com/blt04/puppet-rvm.git"
