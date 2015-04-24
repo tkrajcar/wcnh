@@ -1,0 +1,16 @@
+&CMD.+RP/STICKY #115=$+rp/sticky *:
+  @nspemit %#=[rpc(RP.sticky,%0)]
+-
+&CMD.+RP/UNSTICK #115=$+rp/unstick *:
+  @nspemit %#=[rpc(RP.unstick,%0)]
+-
+&CMD.+RP/ADDCAT #115=$+rp/addcat *:
+  @nspemit %#=[rpc(RP.addcat,%0)]
+-
+&CMD.+RP/REMCAT #115=$+rp/remcat *:
+  @nspemit %#=[rpc(RP.remcat,%0)]
+-
+&CMD.+RP/DESC #115=$+rp/desc *=*:
+  @nspemit %#=[rpc(RP.desc,%0,%1)]
+-
+

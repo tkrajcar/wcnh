@@ -1,0 +1,505 @@
+##################################
+### PARENT: Command Console (#204)
+##################################
+
+# Setup the MUSH object
+@set #204=!SAFE NO_COMMAND
+-
+@wipe #204
+-
+@set #204=SAFE
+-
+@lock/use #204=LOCK.CANUSECONSOLE/1
+-
+@lock/command #204=LOCK.ISMANNING/1
+-
+@lset #204/use=!no_inherit
+-
+@lset #204/command=!no_inherit
+-
+&DATA #204=#351
+-
+&COMMAND_LOCK`FAILURE #204=
+  [ifelse(
+    not(hasattrval(%!,data.ship)),
+    [ansi(rh,WARNING:)] [trim(before(name(%!),<))] does not have a valid ship object set.,
+    Huh? \(Type "help" for help.\)
+    )]
+-
+&CMD.CON/HELP #204=$con/help:
+  @nspemit %#=[titlebar(Available Console Commands)]%r
+              [iter(
+                  lattrp(%!/HELP.*),
+                  [ansi(y,before(v(itext(0)),|))] - [after(v(itext(0)),|)],
+                  ,%r)]%r
+              [footerbar()]
+-
+&HELP.JUMP #204=
+  jump <contact ID>|Jump to a new system.
+-
+&HELP.SCAN #204=
+  scan|See a list of things within sensor range.
+-
+&HELP.SCAN.TARGET #204=
+  scan <contact ID>|See detailed information on a contact.
+-
+&HELP.LAUNCH #204=
+  launch|Take off.
+-
+&HELP.ROSTER/LIST #204=
+  roster/list|See a list of crew members.
+-
+&HELP.ROSTER/ADD #204=
+  roster/add <person>=CREW/VISITOR|Add a crew member.
+-
+&HELP.ROSTER/REMOVE #204=
+  roster/remove <person>|Remove a crew member.
+-
+&HELP.LAND #204=
+  land <contact ID>|Land on a planet or station.
+-
+&HELP.PLOT/CALC #204=
+  plot/calc <contact ID>|Plot a course to a target.
+-
+&HELP.PLOT/ENGAGE #204=
+  plot/engage|Engage your plotted course.
+-
+&HELP.PLOT/STOP #204=
+  plot/stop|Stop the ship.
+-
+&HELP.UNMAN #204=
+  unman|Stop using the console.
+-
+&HELP.SPOSE #204=
+  spose <message>|Make a ship pose as if using the 'pose' command.
+-
+&HELP.HAIL #204=
+  hail <message>|Send a message to your active communications target .
+-
+&HELP.+SCHECK/LIST #204=
+  +scheck/list|See a list of valid ship skills.
+-
+&HELP.+SCHECK #204=
+  +scheck <skill> or +scheck/private <skill>|Check a ship skill.
+-
+&HELP.TAXI #204=
+  taxi <exit>|Taxis a ship through a taxiway.
+-
+&HELP.HAIL/SET #204=
+  hail/set <ship name>|Sets your communications target.
+-
+&CMD.SCAN #204=$scan:
+  @switch [not(spacesys(isdocked,setr(0,v(data.ship))))]=
+
+          0,@nspemit %#=[spacesys(scan.land,%q0)],
+          1,@nspemit %#=[spacesys(scan,%q0)]
+-
+&CMD.SCAN.TARGET #204=$scan *:
+  think setq(Ship,v(data.ship));
+  think setq(Target,spacesys(findtarget,%q<Ship>,%0));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is inactive.;
+  @assert [t(%q<Target>)]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+
+  @nspemit %#=[spacesys(scan.target,%q<Target>)]
+-
+@ufail #204=[pemit(%#,
+    Console access denied.
+)]
+-
+@desc #204=
+  A command console. It is currently [ifelse([hasattrval(%!,data.manned)],manned by [spacesys(mannedby,%!)],unmanned)].%r%r
+  The ship is currently [ifelse(spacesys(ismoving,setr(0,v(data.ship))),ansi(gh,moving),ansi(rh,stopped))].%r
+  Speed: [ifelse(spacesys(ismoving,%q0),spacesys(speed.parse,%q0),0 [spacesys(unit)]/h)]%r
+  Heading: [ifelse(spacesys(ismoving,v(data.ship)),round(spacesys(heading,v(data.ship)),0),0)]m0%r%r
+  You may [ansi(yh,man)] or [ansi(yh,use)] this console.%r
+  See [ansi(yh,help space)] for more information. 
+-
+&LOCK.CANUSECONSOLE #204=[spacesys(canuseconsole,v(data.ship),%#)]
+-
+&LOCK.ISMANNING #204=[and(spacesys(ismanning,%!,%#),hasattrval(%!,data.ship))]
+-
+&AUSE #204=
+  th [spacesys(rename.console,%!,[trim(before(name(%!),<))] <[name(%#)]>)];
+  &data.manned %!=%#
+-
+&CMD.UNMAN #204=$unman:
+  th [spacesys(rename.console,%!,[trim(before(name(%!),<))] <Unmanned>)];
+  @nspemit %#=You unman the [trim(before(name(%!),<))].;
+  @nsoemit %#=[name(%#)] unmans the [trim(before(name(%!),<))].;
+  &data.manned %!;
+-
+&OUSE #204=
+  [switch(
+          [spacesys(isunmanned,%!)]
+          [match(%#,v(data.manned))],
+          1?,mans the [trim(before(name(%!),<))].,
+          00,relieves the current operator of the [trim(before(name(%!),<))].
+      )]
+-
+&USE #204=
+  [switch(
+          [spacesys(isunmanned,%!)]
+          [match(%#,v(data.manned))],
+          1?,You man the [trim(before(name(%!),<))].,
+          00,You relieve the current operator of the [trim(before(name(%!),<))].,
+          01,You are already manning the [trim(before(name(%!),<))]!
+      )] 
+-
+&CMD.LAUNCH #204=$launch:
+  think setq(Ship,v(data.ship));
+  think setq(Ship.dock,get(%q<Ship>/data.docked));
+  think setq(Ship.moving,spacesys(ismoving,%q<Ship>));
+  think setq(Dock.location,spacesys(docked,%q<Ship>));
+  think setq(Time,spacesys(launch.time,%q<Ship>));
+  think setq(Lockdown,spacesys(lockdown,%q<Ship>));
+  
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object. Report this to an administrator.;
+  @assert [t(%q<Ship.dock>)]=@nspemit %#=[ansi(rh,>)] The ship is not landed.;
+  @assert [not(%q<Ship.moving>)]=@nspemit %#=[ansi(rh,>)] The ship is already in motion. [ansi(yh,timestring(%q<Ship.moving>))] until orbit.;
+  @assert [t(%q<Dock.location>)]=@nspemit %#=[ansi(rh,>)] Landing zone has an invalid space loc.  Report this to an administrator.;
+  @assert [eq(%q<Lockdown>,-1)]=@nspemit %#=[ansi(rh,>)] This ship is in lockdown for another [ansi(yh,timestring(sub(%q<Lockdown>,secs())))].;
+  @assert [spacesys(isbayopen,%q<Ship.dock>)]=@nspemit %#=[ansi(rh,>)] The bay doors are closed.;
+  @assert [or(
+              not(spacesys(isship,%q<Ship.dock>)),
+              spacesys(isactive,%q<Ship.dock>)
+              )]=@nspemit %#=[ansi(rh,>)] You cannot launch while the ship you're docked in is landed.;
+
+  @nspemit %#=[ansi(gh,>)] Launching the [name(%q<Ship>)].;
+  think [spacesys(notify.consoles,%q<Ship>,Launch sequence initiated. [ansi(yh,timestring(round(%q<Time>,0)))] until orbit.)];
+  think [spacesys(notify.ship,%q<Ship>,The ship lurches as it lifts off.)];
+  think [spacesys(activate,%q<Ship>)];
+  @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(launch,%q<Ship>)]
+-
+&CMD.LAND #204=$land *:
+  think setq(Ship,v(data.ship));
+  think setq(Target,spacesys(findtarget,%q<Ship>,%0));
+  think setq(Target.landloc,spacesys(landloc,%q<Target>));
+  think setq(Time,spacesys(land.time,%q<Ship>));
+  
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object. Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Ship is inactive.;
+  @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must come to a complete stop first.;
+  @assert [t(%q<Target>)]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+  @assert [t(eq(spacesys(distance,%q<Ship>,%q<Target>),0))]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  @assert [t(%q<Target.landloc>)]=@nspemit %#=[ansi(rh,>)] No available landing platforms.;
+  @assert [spacesys(isbayopen,%q<Target>)]=@nspemit %#=[ansi(rh,>)] The bay doors are closed.;
+  @assert [nand(
+              spacesys(iscapship,%q<Ship>),
+              spacesys(isship,%q<Target>),
+              not(spacesys(isstation,%q<Target>))
+              )]=@nspemit %#=[ansi(rh,>)] The [name(%q<Ship>)] is too large to fit.;
+
+  @nspemit %#=[ansi(gh,>)] Landing [name(%q<Ship>)] on [name(%q<Target>)].;
+           think [spacesys(notify.consoles,%q<Ship>,Landing sequence initiated. [ansi(yh,timestring(round(%q<Time>,0)))] until touchdown.)];
+           think [spacesys(notify.ship,%q<Ship>,The engines rumble as the ship prepares to land.)];
+           think [spacesys(setdest,%q<Ship>,spacesys(position,%q<Target>))];
+           @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(land,%q<Ship>,%q<Target>)]
+-
+&CMD.PLOT/CALC #204=$plot/calc *:
+  think setq(Ship,v(data.ship));
+  think setq(Ship.report,spacesys(update.report,%q<Ship>));
+  think setq(
+          Destination,
+          ifelse(
+              and(eq(words(%0),2),isnum(first(%0)),isnum(last(%0))),
+              squish(%0),
+              spacesys(findtarget,%q<Ship>,%0)
+              )
+          );
+  think setq(Destination.xy,firstof(spacesys(position,%q<Destination>),%q<Destination>));
+  think setq(Time,round(spacesys(eta,%q<Ship>,first(%q<Destination.xy>),last(%q<Destination.xy>)),0));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Ship is inactive.;
+  @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must come to a complete stop first.;
+  @assert [t(%q<Destination>)]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+
+  think spacesys(setdest,%q<Ship>,first(%q<Destination.xy>),last(%q<Destination.xy>));
+  think spacesys(notify.consoles,%q<Ship>,Plotting a course to[if(isdbref(%q<Destination>),%b[name(%q<Destination>)] at)] %q<Destination.xy>);
+  think spacesys(notify.consoles,%q<Ship>,Course laid in.  ETA is [ansi(yh,timestring(%q<Time>))].);
+-
+&CMD.PLOT/ENGAGE #204=$plot/engage:
+  think setq(Ship,v(data.ship));
+  think setq(Ship.dest,spacesys(destination,%q<Ship>));
+  think setq(Time,round(spacesys(eta,%q<Ship>,first(%q<Ship.dest>),last(%q<Ship.dest>)),0));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is currently inactive.;
+  @assert [t(%q<Ship.dest>)]=@nspemit %#=[ansi(rh,>)] Ship does not have a destination set.  See [ansi(yh,help plot/calc)].;
+
+  think spacesys(notify.ship,%q<Ship>,The ship lurches slightly as it accelerates.);
+  think spacesys(notify.consoles,%q<Ship>,Course engaged.  Destination: %q<Ship.dest>.);
+  think spacesys(notify.consoles,%q<Ship>,Speed: [spacesys(speed.parse,%q<Ship>)] [ansi(y,ETA: [timestring(%q<Time>)])].);
+  @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(advance,%q<Ship>)]
+-
+&CMD.PLOT/STOP #204=$plot/stop:
+  think setq(Ship,v(data.ship));
+  think setq(Position,spacesys(position,%q<Ship>));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is inactive.;
+  @assert [spacesys(ismoving,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] The ship is not in motion.;
+
+  think spacesys(notify.consoles,%q<Ship>,Stopping the [name(%q<Ship>)].);
+  @drain/all %q<Ship>/space`queue`move;
+  think spacesys(setdest,%q<Ship>,first(%q<Position>),last(%q<Position>));
+  think spacesys(advance,%q<Ship>)
+-
+&CMD.JUMP #204=$jump *:
+  think setq(Ship,v(data.ship));
+  think setq(Target,spacesys(findtarget,%q<Ship>,%0));
+  think setq(Time,spacesys(jump.time,%q<Ship>));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.  Report this to an administrator.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Ship is inactive.;
+  @assert [spacesys(isjump,%q<Target>)]=@nspemit %#=[ansi(rh,>)] That is not a jump point.;
+  @assert [not(spacesys(ismoving,%q<Ship>))]=@nspemit %#=[ansi(rh,>)] The ship must first come to a complete stop.;
+  @assert [eq(spacesys(distance,%q<Ship>,%q<Target>),0)]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  
+  @nspemit %#=[ansi(gh,>)] Calculating jump.;
+  think spacesys(notify.consoles,%q<Ship>,Initiating jump sequence.  Destination: [rest(name(%q<Target>))].  Time: [ansi(yh,timestring(round(%q<Time>,0)))].);
+  think spacesys(setdest,%q<Ship>,10000 -10000);
+  @wait %q<Ship>/space`queue`move/%q<Time>=think [spacesys(jump,%q<Ship>,%q<Target>)]
+-
+&CMD.ROSTER/LIST #204=$roster/list:
+  @switch [spacesys(isguest,v(data.ship),%#)]=
+  
+          0,@nspemit %#=[ansi(rh,>)] Permission denied.,
+          1,@nspemit %#=[spacesys(roster,v(data.ship))]
+-
+&CMD.ROSTER/ADD #204=$roster/add *=*:
+  @assert [spacesys(iscrew,v(data.ship),%#)]=@nspemit %#=[ansi(rh,>)] Permission denied.;
+  @assert [t(setr(Player,pmatch(%0)))]=@nspemit %#=[ansi(rh,>)] Invalid person.;
+  @assert [t(match(visitor crew,%1))]=@nspemit %#=[ansi(rh,>)] Position must be VISITOR or CREW.;
+  @assert [or(
+            strmatch(%1,visitor),
+            spacesys(iscaptain,v(data.ship),%#)
+            )]=@nspemit %#=[ansi(rh,>)] Only the captain can add crew members.;
+  
+  @nspemit %#=[ansi(gh,>)] Roster updated.;
+  think [spacesys(roster.add,v(data.ship),%q<Player>,%1)]
+-
+&CMD.ROSTER/REMOVE #204=$roster/remove *:
+  @switch [spacesys(iscaptain,v(data.ship),%#)]
+          [spacesys(isguest,v(data.ship),setr(0,pmatch(%0)))]
+          [not(strmatch(%q0,%#))]=
+
+          0??,@nspemit %#=[ansi(rh,>)] Permission denied.,
+          10?,@nspemit %#=[ansi(rh,>)] That person is not on the ship's roster.,
+          110,@nspemit %#=[ansi(rh,>)] You cannot remove yourself.,
+          111,{@nspemit %#=[ansi(gh,>)] Roster updated.;
+               think [spacesys(roster.remove,v(data.ship),%q0)]
+              }
+-
+&CMD.HAIL/SET #204=$hail/set *:
+  @assert [gte(strlen(%0),4)]=@nspemit %#=[ansi(rh,>)] You must enter at least the first four characters of the target's name.;
+  @assert [setr(target,spacesys(findship.all,v(data.ship),%0))]={
+    @nspemit %#=[ansi(rh,>)] Target not found.;
+    th [spacesys(hail.wipe,v(data.ship))]
+    };
+  @nspemit %#=[ansi(gh,>)] Target located. Channel available.;
+  th [spacesys(hail.set,v(data.ship),%q<target>)]
+-
+&CMD.HAIL #204=$hail *:
+  @assert [setr(target,spacesys(hail.gettarget,v(data.ship)))]=@nspemit %#=[ansi(rh,>)] You have no communications target.;
+  th [spacesys(hail,v(data.ship),%#,%q<target>,%0)]
+-
+&CMD.SEMIT #204=$semit *:
+  @assert [orlflags(%#,wizard royal guide)]=@nspemit %#=Huh? \(Type "help" for help,\);
+  @assert [spacesys(isactive,v(data.ship))]=@nspemit %#=[ansi(rh,>)] The ship is currently landed.;
+
+  think spacesys(spose,v(data.ship),%0,%#,1,1);
+-
+&CMD.SPOSE #204=$spose *:
+  @switch [spacesys(isactive,v(data.ship))]=
+
+          0,@nspemit %#=[ansi(rh,>)] The Ship is currently landed.,
+          1,[spacesys(spose,v(data.ship),%0,%#,1)]
+-
+&CMD.SCHECK #204=$^\+scheck(/private)? (.*):
+  @swi/first [t(setr(0,grab(setr(1,spacesys(list.skills)),*.%2*)))]=
+    
+             0,{@nspemit %#=[ansi(hr,>)] That's not a valid skill. Valid ship skills are: [itemize(iter(%q1,capstr(lcstr(after(itext(0),.)))))]},
+             {th [u(fn.scheck,switch(%1,,public,%1),v(data.ship),after(%q0,.))]}
+-
+&FN.SCHECK #204=
+  [setq(m,
+      [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,%2)] skill: 
+      [ansi(h,setr(r,add(
+                      rand(-2,2),
+                      spacesys(skill.max,%1,%2)
+                      )))] 
+      ([num2adj(%qr)])
+      )]
+  [switch(%0,/private,spacesys(notify.consoles,%1,The [ansi(h,name(%1))] %qm),spacesys(spose,%1,%qm))]
+-
+&CMD.SCHECK_DUMMY #204=$+scheck:
+  @nspemit %#=[ansi(rh,>)] Try [ansi(yh,+scheck <skill>)] or see [ansi(yh,help +scheck)] for more information.
+-
+@set #204/cmd.scheck=regexp
+-
+&CMD.SCHECK/LIST #204=$+scheck/list:
+  @nspemit %#=[ansi(gh,>)] Valid ship skills: [itemize(iter(spacesys(list.skills),capstr(lcstr(after(itext(0),.)))))].
+-
+&CMD.PLOT/ETA #204=$plot/eta:
+  think setq(Ship,v(data.ship));
+  think setq(Destination,spacesys(destination,%q<Ship>));
+
+  @assert [t(%q<Destination>)]=@nspemit %#=[ansi(rh,>)] The ship does not have a destination set.;
+
+  @nspemit %#=[ansi(gh,>)] ETA to [ansi(yh,%q<Destination>)] is [ansi(yh,timestring(spacesys(eta,%q<Ship>)))].
+-
+&CMD.STATUS #204=$status:
+  @nspemit %#=[spacesys(status,v(data.ship))]
+-
+&CMD.BAY/OPEN #204=$bay/open:
+  @assert [spacesys(hasbay,v(data.ship))]=@nspemit %#=[ansi(rh,>)] This ship does not have a docking bay.;
+  @assert [not(spacesys(isbayopen,v(data.ship)))]=@nspemit %#=[ansi(rh,>)] The bay doors are already open.;
+
+  think [spacesys(openbay,v(data.ship))];
+  think [spacesys(spose,v(data.ship),opens its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Opening the bay doors.
+-
+&CMD.BAY/CLOSE #204=$bay/close:
+  @assert [spacesys(hasbay,v(data.ship))]=@nspemit %#=[ansi(rh,>)] This ship does not have a docking bay.;
+  @assert [spacesys(isbayopen,v(data.ship))]=@nspemit %#=[ansi(rh,>)] The bay doors are already closed.;
+
+  think [spacesys(closebay,v(data.ship))];
+  think [spacesys(spose,v(data.ship),closes its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Closing the bay doors.
+-
+&CMD.BAY/SHIPS #204=$bay/ships:
+  @assert [spacesys(hasbay,v(data.ship))]=@nspemit %#=[ansi(rh,>)] This ship does not have a docking bay.;
+  @nspemit %#=
+              [titlebar(Ships in the [name(v(data.ship))]'s bay:)]%r
+              [itemize(setr(s,squish(iter(
+                                  iter(
+                                      lvthings(get(v(data.ship)/data.landing)),
+                                      if(
+                                        spacesys(isship,itext(0)),
+                                        itext(0)
+                                        )
+                                      ),
+                                  [ansi(hw,name(itext(0)))]\[
+                                  [ansi(c,spacesys(class,itext(0)))]\]
+                                  ,,|))),|)]%r
+              [footerbar(words(%qs,|) ships)]
+-
+&CMD.SURVEY #204=$survey *:
+  @assert [not(spacesys(isdocked,setr(Ship,v(data.ship))))]=@nspemit %#=[ansi(rh,>)] The ship is currently docked.;
+  @assert [t(lte(%0,words(setr(Ship.report,spacesys(list.report,%q<Ship>)))))]=@nspemit %#=[ansi(rh,>)] No such contact on sensors.;
+  @assert [strmatch(spacesys(class,setr(Celestial,extract(%q<Ship.report>,%0,1))),Celestial)]=@nspemit %#=[ansi(rh,>)] You can only survey celestial objects like planets and asteroids.;
+  @assert [eq(spacesys(distance,%q<Ship>,%q<Celestial>),0)]=@nspemit %#=[ansi(rh,>)] You are out of range.;
+  @assert [gte(secs(),setr(Expires,add(spacesys(survey.last,%q<Ship>,%q<Celestial>),21600)))]=
+          @nspemit %#=[ansi(rh,>)] You must wait at least [ansi(yh,timestring(sub(%q<Expires>,secs())))] 
+                      before anyone will be interested in purchasing new survey data for that celestial object.;
+  
+  think setr(Pay,spacesys(survey,%q<Ship>,%q<Celestial>,%#));
+  @nspemit %#=[ansi(gh,>)] You are paid [ansi(yh,%q<Pay>c)] by Von Sprechen Industries for your survey data.
+-
+&cmd.manifest #204=$manifest:
+  @nspemit %#=[spacesys(manifest,v(data.ship))]
+-
+&CMD.TAXI #204=$taxi *:
+  +space/taxi [v(data.ship)]=%0
+-
+&CMD.UNLOAD/SHIP #204=$unload/ship *:
+  @assert [setr(t,spacesys(findship.bay,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  +space/unload/ship [v(data.ship)]=%qt
+-
+&CMD.LOAD/SHIP #204=$load/ship *:
+  @assert [setr(t,spacesys(findship.room,v(data.ship),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  +space/load/ship [v(data.ship)]=%qt
+-
+&CMD.BAY/OPEN/REMOTE #204=$bay/open/remote *:
+  @assert [setr(t,spacesys(findship.room,setr(s,v(data.ship)),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  @assert [t(eq(spacesys(distance,%qt,%qs),0))]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  @assert [spacesys(canboard,%qt,%#)]=@nspemit %#=[ansi(rh,>)] You lack permission to access the [name(%qt)].;
+  @assert [spacesys(hasbay,%qt)]=@nspemit %#=[ansi(rh,>)] The [name(%qt)] has no bay.;
+  @assert [not(spacesys(isbayopen,%qt))]=@nspemit %#=[ansi(hr,>)] The bay doors are already open.;
+  think [spacesys(openbay,%qt)];
+  think [spacesys(spose,%qt,opens its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Opening the bay doors on the [name(%qt)].
+-
+&CMD.BAY/CLOSE/REMOTE #204=$bay/close/remote *:
+  @assert [setr(t,spacesys(findship.room,setr(s,v(data.ship)),%0))]=@nspemit %#=[ansi(rh,>)] Ship not found.;
+  @assert [t(eq(spacesys(distance,%qt,%qs),0))]=@nspemit %#=[ansi(rh,>)] Out of range.;
+  @assert [spacesys(canboard,%qt,%#)]=@nspemit %#=[ansi(rh,>)] You lack permission to access the [name(%qt)].;
+  @assert [spacesys(hasbay,%qt)]=@nspemit %#=[ansi(rh,>)] The [name(%qt)] has no bay.;
+  @assert [spacesys(isbayopen,%qt)]=@nspemit %#=[ansi(hr,>)] The bay doors are already closed.;
+  think [spacesys(closebay,%qt)];
+  think [spacesys(spose,%qt,closes its bay doors.)];
+  @nspemit %#=[ansi(gh,>)] Closing the bay doors on the [name(%qt)].
+-
+&LISTEN.LEAVE #204=^(.+) (has left|disembarks).:@assert [strmatch(%1,name(v(data.manned)))];&data.manned %!;th [spacesys(rename.console,%!,[trim(before(name(%!),<))] <Unmanned>)]
+-
+@set #204/listen.leave=regexp
+-
+&CMD.LOCK #204=$lock *:
+ think setr(Ship,v(data.ship));
+ think setr(Ship.report,spacesys(list.report,%q<Ship>));
+ think setr(Target,spacesys(findtarget,%q<Ship>,%0));
+ think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
+ think setr(Caller,%#);
+ think setr(Ship.locktime,spacesys(lock.time,%#));
+ think setr(Ship.minrange,spacesys(minrange,%q<Ship>));
+
+ @assert [strmatch(owner(%q<Ship>),owner(%!))]=@nspemit %#=[ansi(rh,>)] Ship console has invalid owner.  Report this via +ticket.;
+ @assert [spacesys(isship,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] Invalid ship object.;
+ @assert [spacesys(isactive,%q<Ship>)]=@nspemit %q<Caller>=[ansi(rh,>)] This ship is currently inactive.;
+ @assert [t(%q<Target>)]=@nspemit %q<Caller>=[ansi(rh,>)] No such contact on sensors.;
+ @assert [t(spacesys(weapons,%q<Ship>))]=@nspemit %q<Caller>=[ansi(rh,>)] This ship doesn't have any armaments.;
+ @assert [spacesys(isship,%q<Target>)]=@nspemit %q<Caller>=[ansi(rh,>)] Target is not a ship.;
+ @assert [lte(spacesys(distance,%q<Ship>,%q<Target>),%q<Ship.minrange>)]=
+         @nspemit %q<Caller>=[ansi(rh,>)] The [name(%q<Target>)] is out of weapons range.  Minimum range is [ansi(yh,%q<Ship.minrange>)][spacesys(unit)].;
+ @break [eq(first(%q<Ship.lockstatus>,|),2)]=@nspemit %q<Caller>=[ansi(rh,>)] Target acquisition in progress.  [ansi(yh,timestring(last(%q<Ship.lockstatus>,|)))] remaining.;
+ 
+ @switch [first(%q<Ship.lockstatus>,|)]=
+         
+         1,{@nspemit %q<Caller>=[ansi(gh,>)] Breaking existing weapons lock on the [ansi(yh,name(last(%q<Ship.lockstatus>,|)))].;
+            think spacesys(lock,%q<Ship>,0);
+            think spacesys(notify.consoles,%q<Target>,The [name(%q<Ship>)] has broken its weapons lock on you.)
+           };
+ @wait %q<Ship>/space`queue`weaps`lock/%q<Ship.locktime>=think spacesys(lock,%q<Ship>,%q<Target>);
+ @nspemit %q<Caller>=[ansi(gh,>)] Targetting the [ansi(yh,name(%q<Target>))].  [ansi(yh,timestring(round(%q<Ship.locktime>,0)))] until successful weapons lock.;
+ think spacesys(notify.consoles,%q<Target>,[ansi(rh,WARNING:)] [ansi(yh,name(%q<Ship>))] is attempting to obtain a weapons lock.);
+-
+&CMD.UNLOCK #204=$unlock:
+  think setr(Ship,v(data.ship));
+  think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
+  think setr(Target,last(%q<Ship.lockstatus>,|));
+
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] This ship is currently inactive.;
+  @assert [eq(first(%q<Ship.lockstatus>,|),1)]=@nspemit %#=[ansi(rh,>)] Weapons are not currently locked.;
+
+  think spacesys(notify.consoles,%q<Ship>,Breaking existing weapons lock on the [ansi(yh,name(%q<Target>))].);
+  think spacesys(notify.consoles,%q<Target>,The [name(%q<Ship>)] has broken its weapons lock on you.);
+  think spacesys(lock,%q<Ship>,0)
+-
+&CMD.FIRE #204=$fire:
+  think setr(Ship,v(data.ship));
+  think setr(Ship.lockstatus,spacesys(haslock,%q<Ship>));
+  think setr(Target,last(%q<Ship.lockstatus>,|));
+  think setr(Ship.weapons,spacesys(weapons,%q<Ship>));
+  think setr(Ship.weapons.canfire,squish(iter(%q<Ship.weapons>,if(eq(last(##,:),0),#@),|,%b)));
+  
+  @assert [spacesys(isship,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(isactive,%q<Ship>)]=@nspemit %#=[ansi(rh,>)] This ship is currently inactive.;
+  @assert [t(%q<Ship.weapons>)]=@nspemit %#=[ansi(rh,>)] This ship doesn't have any armaments.;
+  @assert [eq(first(%q<Ship.lockstatus>,|),1)]=@nspemit %#=[ansi(rh,>)] Weapons are not currently locked.;
+  @assert [t(%q<Ship.weapons.canfire>)]=@nspemit %#=[ansi(rh,>)] None of your weapons are ready to fire.%r
+                                                    [iter(
+                                                        %q<Ship.weapons>,
+                                                        %b%b<[ansi(rh,#@)]> [first(itext(0),:)] - [ansi(yh,timestring(last(itext(0),:)))] remaining,
+                                                        |,%r
+                                                        )];
+  
+  @nspemit %#=[ansi(gh,>)] Firing on the [name(%q<Target>)] with hardpoints [itemize(%q<Ship.weapons.canfire>)].;
+  think spacesys(attack,%q<Ship>,%!,%#,%q<Target>);
+  @dol %q<Ship.weapons.canfire>={@wait %q<Ship>/space`queue`weaps`##/[extract(setr(Weapon,extract(%q<Ship.weapons>,##,1,|)),3,1,:)]=
+                                 think spacesys(notify.consoles,%q<Ship>,<[ansi(rh,##)]> [ansi(yh,first(%q<Weapon>,:))] is ready to fire.)
+                                }
+-

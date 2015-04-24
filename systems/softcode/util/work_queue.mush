@@ -1,0 +1,46 @@
+&FN.NEW_DOSSIER_NOTE #65=
+  /@@ %0 = dossier target, %1 = author, %2 = content @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|4|[name(%0)](%0), by [name(%1)]|%2
+  )
+-
+&FN.CONTRACT_PUBLISH #65=
+  /@@ %0 = contract number, %1 = contract title, %2 = close date @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|19|Contract %0 (%1) Published|Enigma Sector Procurement hereby officially solicits bids from qualified individuals and organizations on contract %0, titled '%1'. All responses must be submitted by %2 \[RL time\].%r%r\[See '[ansi(h,contract %0)]' for more details on this contract, or '[ansi(h,help contract)]' for more information on how to respond.\]
+  )
+-
+&FN.CONTRACT_AWARD #65=
+  /@@ %0 = contract number, %1 = contract title, %2 = selected firm @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|19|Intent To Award Contract %0 (%1)|Enigma Sector Procurement hereby makes public its intention to award contract %0, titled '%1', to [ansi(hy,%2)].%r%rEnigma Sector Procurement thanks all individuals and organizations that submitted a response for their time and interest in doing business in the Enigma Sector.
+  )
+-
+&FN.NPC_MESSAGE_RECVD #65=
+  /@@ %0 = from dbref, %1 = from handle, %2 = to handle, %3 = message @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|5|From %1 to %2|[ansi(c,Received at [ansi(h,time())] from)] [ansi(hy,%1)] ([ansi(h,name(%0))]) [ansi(c,to)] [ansi(hc,%2)]:%r%3
+  )
+-
+&FN.NPC_MESSAGE_SENT #65=
+  /@@ %0 = admin dbref, %1 = from handle, %2 = to handle, %3 = message @@/
+  attrib_set(
+    me/job_[secs()]_[rand(1000)],
+    +bbpost|5|To %2 from %1|[ansi(c,Sent at [ansi(h,time())] by)] [ansi(h,name(%0))] to [ansi(hy,%2)] [ansi(c,from)] [ansi(hc,%1)]:%r%3
+  )
+-
+&TRI.RUN #65=
+  @pemit %#=Running: [time()];
+  @dol [lattr(me/job_*)]=
+    {
+      think setq(0,v(##));
+      @swi extract(%q0,1,1,|)=+bbpost,{
+        +bbpost [extract(%q0,2,1,|)]/[extract(%q0,3,1,|)]=[extract(%q0,4,1,|)]
+        };
+      think attrib_set(#65/##);
+    };
+

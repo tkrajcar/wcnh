@@ -1,0 +1,191 @@
+### ATTRIBUTES
+# chargen tree
+&CHAR.ATTR #25=no_command wizard mortal_dark
+-
+# faction tree
+&FAC.ATTR #25=no_command wizard mortal_dark
+-
+&DESCRIBE.ATTR #25=no_command
+-
+&EMAIL.ATTR #25=no_command wizard
+-
+&RAP_SHEET.ATTR #25=no_command wizard mortal_dark
+-
+&SUMMON.ATTR #25=no_command wizard mortal_dark
+-
+&JAILED_IN.ATTR #25=no_command wizard mortal_dark
+-
+&PFILE.ATTR #25=no_command wizard mortal_dark
+-
+&TIMEOUT.ATTR #25=no_command wizard mortal_dark
+-
+&SPACE.ATTR #25=no_command wizard mortal_dark
+-
+# For public viewing of wielded weaps
+&WIELDED #25=no_command wizard
+-
+
+### FUNCTIONS
+### Shouldn't have to worry about localizing due to @function/preserve,
+### but use of ulocal() over u() is still prudent.
+## Systems
+
+&ZONES.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#227,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID ZONES\(\) SUBFUNCTION,
+    11,ulocal(#227/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+    )
+-
+&CHARGEN.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#112,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID CHARGEN\(\) SUBFUNCTION,
+    11,ulocal(#112/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+  )
+-
+&FACTION.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#114,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID FACTION\(\) SUBFUNCTION,
+    11,ulocal(#114/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+-
+&SPACESYS.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#208,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID SPACESYS\(\) SUBFUNCTION,
+    11,ulocal(#208/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+-
+&ITEMSYS.FN #25=
+  switch(
+    [or(haspower(%@,API),orflags(%@,Wr))]
+    [hasattr(#1250,fn.%0)],
+    0*,#-1 PERMISSION DENIED,
+    10,#-1 INVALID ITEMS\(\) SUBFUNCTION,
+    11,ulocal(#1250/fn.%0,%1,%2,%3,%4,%5,%6,%7,%8,%9)
+-
+
+## IC Time
+&ICTIME.FN #25=
+  setq(0,ifelse(inc(%0),%0,icsecs()))
+  [setq(1,convsecs(%q0))]
+  [ifelse(
+    gte(%q0,0),
+    extract(%q1,1,4) [add(last(%q1),760)],
+    #-1 ARGUMENT MUST BE POSITIVE INTEGER
+  )]
+-
+
+&ICSECS.FN #25=mul(sub(secs(),1320000000),3)
+-
+
+
+## Cosmetics
+&CMDGRAB.FN #25=if(%1,ansi(hw,extract(after({%0},@@),%1,1,|))
+-
+&TITLEBAR.FN #25=ifelse(%0,[ansi(if(%1,edit(%1,h,),r),>--)][ansi(if(%1,h%1,hr),\[)][left(%0,setr(6,switch(strlen(%0),>70,70,lit(#$))))][ansi(if(%1,h%1,hr),\])][ansi(if(%1,edit(%1,h,),r),---[repeat(-,sub(70,%q6))]<)],[ansi(if(%1,edit(%1,h,),r),repeat(-,79))])
+-
+&MIDDLEBAR.FN #25=[ansi(r,center([ansi(hy,%0)],79,-))]
+-
+&FOOTERBAR.FN #25=ifelse(%0,[ansi(if(%1,edit(%1,h,),r),>--[repeat(-,sub(70,setr(6,switch(strlen(%0),>70,70,lit(#$)))))])][ansi(if(%1,h%1,hr),\[)][left(%0,%q6)][ansi(if(%1,h%1,hr),\])][ansi(if(%1,edit(%1,h,),r),---<)],[ansi(if(%1,edit(%1,h,),r),>[repeat(-,77)]<)])
+-
+&NUM2ADJ.FN #25=[switch(%0,<1,[ansi(Rx,Awful)],1,[ansi(hr,Poor)],2,[ansi(y,switch(%1,short,Medcr,Mediocre))],3,[ansi(hy,Fair)],4,[ansi(g,Good)],5,[ansi(hg,Great)],6,[ansi(Bh,switch(%1,short,Suprb,Superb))],>6,[ansi(Rhu,switch(%1,short,Legnd,Legend))],#-1)]
+-
+&TIMESTRING2.FN #25=[setq(0,timestring(%0,2))][if(gte(before(extract(%q0,1,1),d),1),extract(%q0,1,1)%b)][before(extract(%q0,2,1),h)]:[before(extract(%q0,3,1),m)]:[before(extract(%q0,4,1),s)]
+-
+
+## General utilities
+&ATTRIBREPORT.FN #25=if(controls(%@,%0),[if(setr(8,iter(setr(1,lattr(%0/CMD.*)),[setr(0,itext(0))][if(hasflag(%0/%q0,no_command),%b\(disabled\))],%b,|)),Command:%r[table(%q8,25,78,|)]%r%r)][if(setr(2,lattr(%0/FN.*)),Functions:%r[table(%q2,25)]%r%r)][if(setr(3,iter(setdiff(setr(9,lattr(%0)),%q1),if(not(hasflag(%0/[setr(0,itext(0))],no_command)),%q0))),Not set NO_COMMAND:%r[table(%q3,25)]%r%r)][if(setr(8,setdiff(%q9,%q1 %q2 %q3)),Other:%r[table(%q8,25)])])
+-
+# This is only here to prevent weird output in the output from the ascii2mu converter I use. Silly, I know.
+&C.FN #25=c
+-
+&DB.FN #25=[default(#30/db.%0,#-1)]
+-
+# destination() is a replacement for loc() for the room parent for exits.
+# If the exit is non-variable, it will return loc(exit) as normal.
+# If the exit is variable, it evaluates the destination().
+# This function is only callable by rooms, and will only work on exits in
+# the calling room, for security.
+&DESTINATION.FN #25=
+  switch(
+    locate(%@,%0,EFc),
+    #-*,#$,
+    switch(
+      loc(#$),
+      #-2,
+      uldefault(%$1/destination,
+        uldefault(%$1/exitto,#-1)
+        ),
+      %$0)
+    )
+-
+&ISADMIN.FN #25=cand(if(strmatch(%0,me),%#,pmatch(%0)),isoadmin(%0))
+-
+&ISCONN.FN #25=[if(isadmin(%1),gte(conn(%0),1),and(gte(conn(%0),1),not(hasflag(%0,dark))))]
+-
+&ISOADMIN.FN #25=orflags(%0,Wr)
+-
+&MCONTROLS.FN #25=or(isadmin(%0),or(match(%0,[owner(%1)]),[controls(%0,%1)]))
+-
+&MPMATCH.FN #25=ifelse(cand(setr(Z,pmatch(secure(%0))),not(isadmin(%qZ))),%qZ,#-1 NO MATCH)
+-
+&MYWHO.FN #25=objeval(%#,lwho())
+-
+&SYSLOG.FN #25=
+  ifelse(
+    or(
+      orflags(%@,Wr),
+      orflags(%#,Wr),
+      haspower(%@,api)
+    ),
+    rpc(
+      Logs.log_syslog,
+      if(%1,%0,MISC),
+      if(%1,%1,%0)
+    ),
+    #-1 PERMISSION DENIED
+  )
+-
+&FNORD.FN #25=
+  rpc(Silly.fnord)
+-
+&ISSHIP.FN #25=
+  spacesys(ISSHIP,%0)
+-
+&SHIPCLASS.FN #25=
+  [ifelse(hastype(%@,ROOM),spacesys(CLASS,%0),#-1 PERMISSION DENIED)]
+-
+### ACTUAL MAKE-IT-GO-NESS
+&DESCRIBE #25=Global @functions go here, in the format 'funname.fn'%rAlso global attributes, in the format 'funname.attr', with the contents of the attribute being the list of attribute flags assigned.%r%r[AttribReport(%!)]%r
+-
+
+&FN.LIST #25=#25
+-
+&USE.ALIAS #25=man
+-
+&ENTER.ALIAS #25=board
+-
+&LEAVE.ALIAS #25=disembark
+-
+&STARTUP #25=
+    @dol [setr(0,iter(v(FN.List),iter(lattr([setr(1,##)]/*.FN),%q1\,[itext(0)])))]=
+    
+         {@function/preserve [before(rest(lit(##),\,),.FN)]=##};
+    @cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] 
+                  [ansi(hw,@Functions initialized.)] 
+                  %([ansi(c,[iter(%q0,[first(setr(1,lit(##)),\,)]:[before(rest(%q1,\,),.FN)])])]%);
+    @dol [lattr(me/*.ATTR)]=
+    
+         {@attrib/access/retroactive [before(##,.ATTR)]=[xget(#25,##)]};
+    @cemit syslog=[ansi(hb,\[)]SysLog[ansi(hb,\])] 
+                  [ansi(hw,Shared Attributes initialized.)] %([ansi(c,[iter(lattr(me/*.ATTR),[before(##,.ATTR)])])]%)
+- 

@@ -1,0 +1,162 @@
+&cmd.+sheet #115 = $+sheet *:
+  @switch t(pmatch(%0))=
+    0,{@pemit %#=[ansi(hb,>)] Who?},
+    {@pemit %#=chargen(sheet,pmatch(%0))}
+-
+
+# Pfile system
+&cmd.+pfile/add #115=$+pfile/add */*=*:@pemit %#=[rpc(PlayerFile.add_note,%0,%2,%1)]
+-
+
+&cmd.+pfile #115=$+pfile *:@pemit %#=[rpc(PlayerFile.view,%0)]
+-
+
+&cmd.+pfile/view #115=$+pfile/view *:@pemit %#=[rpc(PlayerFile.view,%0)]
+-
+
+&cmd.+pfile/register #115=$+pfile/register *=*:@pemit %#=[rpc(PlayerFile.register,%0,%1)]
+-
+
+&cmd.+pfile/secondary #115=$+pfile/secondary *=*:@pemit %#=[rpc(PlayerFile.register_secondary,%0,%1)]
+-
+
+&cmd.+pfile/search #115=$+pfile/search *:@pemit %#=[rpc(PlayerFile.search,%0)]
+-
+
+&cmd.+pfile/ip #115=$+pfile/ip *:@pemit %#=[rpc(PlayerFile.search_connections,%0)]
+-
+
+&cmd.+pfile/connections #115=$+pfile/connections *:@pemit %#=[rpc(PlayerFile.view_connections,%0)]
+-
+
+# Ticket system
+&cmd.+ticket/comment/private #115=$+ticket/comment/private *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,true)]
+-
+
+&cmd.+ticket/assign #115=$+ticket/assign *=*:@pemit %#=[rpc(Ticket.assign,%0,%1)]
+-
+
+&cmd.+ticket/mine #115=$+ticket/mine:@pemit %#=[rpc(Ticket.list_mine,1)]
+-
+
+&cmd.+ticket/mine/page #115=$+ticket/mine page *:@pemit %#=[rpc(Ticket.list_mine,%0)]
+-
+&CMD.+TICKET/RENAME #115=$+ticket/rename *=*:@nspemit %#=[rpc(Ticket.rename,%0,%1)]
+-
+&CMD.+TICKET/SORT #115=$+ticket/sort *:@nspemit %#=[rpc(Ticket.sort,%0)]
+-
+&cmd.+bg #115=$+bg *:
+  @assert [setr(0,pmatch(*%0))]=
+    @nspemit %#=[ansi(hb,>)] Player not found.;
+  @nspemit %#=[titlebar(Background for [name(%q0)])]%r[u(#15/fn.bgquestions,%q0)]%r[footerbar()]
+-
+&cmd.+concept #115=$+concept *:
+  @assert [setr(0,pmatch(*%0))]=
+    @nspemit %#=[ansi(hb,>)] Player not found.;
+  @nspemit %#=[titlebar(Background for [name(%q0)])]%r[u(%q0/char`concept)]%r[footerbar()]
+-
+&CMD.+GMEMIT #115=$+gmemit *:
+  +bbpost Galactic Action/Emit: [timefmt($m/$d/$Y)] @ [timefmt($H:$M)]=[ansi(hg,setr(0,edit(escape(%0),\\,)))];
+  @dol lwho()=@nspemit ##=[ansi(hg,[if(orflags(##,Wr),<GEmit by [name(%#)]>%b)]%q0)]
+-
+&cmd.+xp #115=$+xp *:
+  @nspemit %#=[rpc(XP.view,%0)];
+-
+
+&cmd.+xp/award #115=$+xp/award */*=*:
+  @nspemit %#=[rpc(XP.award,%0,%1,%2)];
+-
+&CMD.RACE/TICKETS #115=$race/tickets:
+  @nspemit %#=[rpc(Shiprace.tickets)]
+-
+&cmd.cash #115=$cash *:@nspemit %#=[rpc(Econ.cash,%0)]
+-
+&cmd.account/list #115=$account/list *:@nspemit %#=[rpc(Econ.account_list,%0)]
+-
+&cmd.handle/list #115=$handle/list *:@pemit %#=[rpc(Comms.handle_list,%0)]
+-
+&cmd.comm/list #115=$comm/list *:@pemit %#=[rpc(Comms.channel_list,%0)]
+-
+&cmd.+dossier #115=$+dossier *:
+  /@@ Some regmatch trickery with the goal of %q0 = person, %q1 = page number. @@/
+  @pemit %#=
+    [ifelse(
+      regmatch(%0,(.+) page (\\d+),1:0 2:1),
+      ,
+      [setq(0,%0)][setq(1,1)]
+    )]
+    [rpc(Dossier.view,%q0,%q1)]
+-
+&cmd.+dossier/add #115=$+dossier/add *=*:@pemit %#=[rpc(Dossier.add,%0,%1)]
+-
+&cmd.wanted/set #115=$wanted/set */*=*:@pemit %#=[rpc(Dossier.wanted_set,%0,%1,%2)]
+-
+&cmd.wanted/delete #115=$wanted/delete *:@pemit %#=[rpc(Dossier.wanted_delete,%0)]
+-
+&cmd.+ticket/claim #115=$+ticket/claim *:@pemit %#=[rpc(Ticket.assign,%0    ,%#)]
+-
+&cmd.+acheck #115=$^\+acheck(/private)? (.+)=(.+)$:
+  @assert setr(victim,pmatch(*%2))=
+    @nspemit %#=[ansi(hr,>)] Invalid player.;
+  @assert t(get(%q<victim>/char`approved))=
+    @nspemit %#=[ansi(hr,>)] That player hasn't finished chargen yet!;
+  @assert setr(0,
+            grab(attribute.reason attribute.perception attribute.willpower
+                 attribute.strength attribute.agility attribute.health
+                 [lattr(#111/skill.*)],
+                 *.%3*
+            )
+          )=
+    @nspemit %#=[ansi(hr,>)] Invalid attribute or skill.;
+  th [u(fn.acheck,%1,%q<victim>,before(%q0,.),after(%q0,.),%#)]
+
+-
+@set #115/cmd.+acheck=regexp
+-
+&fn.acheck #115=[setq(m,[ansi(hb,>)] [ansi(h,[name(%4)])] [switch(%0,/private,privately%b)]+checks [ansi(h,name(%1))]'s [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))][switch(%0,/private,nspemit(%1 %4,%qm),[nsremit(loc(%1),%qm)][nscemit(+RP,%qm,1)])]
+-
+&cmd.contract/new #115=$contract/new:
+  @nspemit %#=[rpc(Contract.create_new)]
+-
+&cmd.contract/title #115=$contract/title *:
+  @nspemit %#=[rpc(Contract.set_title,%0)]
+-
+&cmd.contract/date #115=$contract/date * * *:
+  @nspemit %#=[rpc(Contract.set_date,%0,%1,%2)]
+-
+&cmd.contract/background #115=$contract/background *:
+  @nspemit %#=[rpc(Contract.set_background,%0)]
+-
+&cmd.contract/question #115=$contract/question *=*:
+  @nspemit %#=[rpc(Contract.set_question,%0,%1)]
+-
+&cmd.contract/publish #115=$contract/publish:
+  @nspemit %#=[rpc(Contract.publish)]
+-
+&cmd.contract/award #115=$contract/award *=*:
+  @nspemit %#=[rpc(Contract.award,%0,%1)]
+-
+&cmd.contract/responses #115=$contract/responses *:
+  @Nspemit %#=[rpc(Contract.responses,%0)]
+-
+&cmd.contract/response/view #115=$contract/response/view *=*:
+  @nspemit %#=[rpc(Contract.response_view,%0,%1)]
+-
+&CMD.CARGO/CREATE #115=$cargo/create:
+  @nspemit %#=[rpc(Econ.cargojob_generate,%#)]
+-
+&CMD.CARGO/EDIT #115=$cargo/edit */*=*:
+  @nspemit %#=[rpc(Econ.cargojob_edit,%#,%0,%1,%2)]
+-
+&cmd.handle/npc #115=$handle/npc *:
+  @nspemit %#=[rpc(Comms.handle_npc,%0)]
+-
+&cmd.message/npc #115=$message/npc */*=*:
+  @nspemit %#=[rpc(Comms.message_npc_send,%0,%1,%2)]
+-
+&cmd.comm/transmit #115=$comm */*=*:
+  @nspemit %#=[rpc(Comms.channel_emit,%0,%1,%2)]
+-
+&CMD.+ECON/REPORT #115=$+econ/report:
+  @nspemit %#=[rpc(Econ.admin_report)]
+-

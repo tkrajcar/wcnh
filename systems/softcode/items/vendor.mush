@@ -1,0 +1,19 @@
+@set #1262=!safe !no_command
+-
+@wipe #1262
+-
+@set #1262=safe
+-
+@desc #1262=itemsys(vendor_list,%!)
+-
+&CMD.VENDOR/STOCK #1262=$vendor/stock *=*:@nspemit %#=itemsys(vendor_stock,%!,%0,%1)
+-
+&CMD.PURCHASE #1262=$purchase *:@nspemit %#=
+  ifelse(
+      strmatch(%0,*=*),
+      itemsys(vendor_purchase,%!,before(%0,=),after(%0,=)),
+      itemsys(vendor_purchase,%!,%0,1)
+      )
+-
+&CMD.PREVIEW #1262=$preview *:@nspemit %#=itemsys(vendor_preview,%!,%0)
+-

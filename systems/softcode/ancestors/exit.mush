@@ -1,0 +1,11 @@
+&FAILURE #10=The door to [name(loc(%!))] is locked.
+-
+&ODROP #10=enters from [ansi(h,name(home(%!)))].
+-
+&OSUCCESS #10=exits to [ansi(h,name(loc(%!)))].
+-
+&SUCCESS #10=You enter [ansi(h,name(loc(%!)))].
+-
+&HASKEY #10=[orflags(%#,Wr)]
+-
+

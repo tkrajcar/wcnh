@@ -1,0 +1,29 @@
+###############################
+### PARENT: Airlock Exit (#209)
+###############################
+
+# Setup the MUSH object
+@set #209=!SAFE NO_COMMAND
+-
+@wipe #209
+-
+@set #209=SAFE
+-
+@lock #209=LOCK.ISDOCKED/1
+-
+@lset #209/basic=!no_inherit
+-
+&DESTINATION #209=[get(zone(%!)/data.docked)]
+-
+@desc #209=
+  The airlock [ifelse(spacesys(isdocked,zone(%!)),leads to the [ansi(wh,name(u(%!/destination)))],is sealed shut)].
+-
+@failure #209=You cannot go that way. The airlock is sealed shut.
+-
+&LOCK.ISDOCKED #209=[spacesys(isdocked,zone(%!))]
+-
+@SUCCESS #209=You disembark to the [ansi(wh,name(u(%!/destination)))].
+-
+@OSUCCESS #209=exits to the [ansi(wh,name(u(%!/destination)))].
+-
+@ODROP #209=exits from the [ansi(wh,name(zone(home(%!))))].

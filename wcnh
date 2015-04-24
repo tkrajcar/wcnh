@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# Handy little console for WCNH systems development.
+
+require 'rubygems'
+require 'bundler'
+Bundler.setup
+require File.expand_path('../lib/wcnh.rb', __FILE__)
+require 'awesome_print'
+require 'pry'
+Pry.start

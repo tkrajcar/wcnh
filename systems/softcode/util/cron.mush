@@ -1,0 +1,121 @@
+@desc #539=[repeat(=,78)]%r%b[iter(lattr(me/cron_time_*),[ljust(rest(rest(##,_),_),25)][v(##)]%r)][repeat(-,78)]%rPattern of CRON_TIME_* attributes:%r%t<month>|<date>|<day of week>|<hour>|<minute>|<args>%r(ex. Mar||Sun|04|54| would trigger a cron job at 4:54am every sunday in the month of march)%r[repeat(=,78)]
+-
+
+&CRON #539=@trigger me/cronjobs; @wait 60={@trigger me/cron}
+-
+
+&CRONJOBS #539=@dolist [setq(8,time())][setq(1,extract(%q8,2,1))][setq(2,extract(%q8,3,1))][setq(3,extract(%q8,1,1))][setq(4,extract(extract(%q8,4,1),1,1,:))][setq(5,extract(time(),2,1,:))][lattr(me/cron_time_*)]={@switch and(or(member(extract([setq(0,v(##))]%q0,1,1,|),%q1),not(strlen(extract(%q0,1,1,|)))), or(member(extract(%q0,2,1,|),%q2), not(strlen(extract(%q0,2,1,|)))), or(member(extract(%q0,3,1,|),%q3), not(strlen(extract(%q0,3,1,|)))), or(member(extract(%q0,4,1,|),%q4), not(strlen(extract(%q0,4,1,|)))), or(member(extract(%q0,5,1,|),%q5), not(strlen(extract(%q0,5,1,|)))))=1,{@pemit #1=Triggering CRON_JOB_[extract(##,3,1,_)]; @trigger me/cron_job_[extract(##,3,1,_)]=[last(%q0,|)]}}
+-
+
+&CREDITS #539=mushcron was coded by Myrddin (merlin@firstmagic.com). Permission is granted to distribute the code freely as long as the initial CREDIT attribute is kept intact. This code is located at www.firstmagic.com/~merlin/mushcode
+-
+
+&CRON_TIME_STATSLOG #539=||||00|
+-
+
+&CRON_JOB_STATSLOG #539=
+  think [rpc(Logs.log_statistic,lwho())]
+-
+
+&CRON_TIME_NOMS #539=||Sun|01|00|
+-
+
+&CRON_JOB_NOMS #539=think [rpc(XP.run_noms)]
+-
+
+&CRON_TIME_ACTIVITY #539=|||00|30|
+-
+
+&CRON_JOB_ACTIVITY #539=think [rpc(XP.run_activity)]
+-
+
+&CRON_TIME_UNREADMESSAGES_1 #539=||||00|
+-
+&CRON_TIME_UNREADMESSAGES_2 #539=||||15|
+-
+&CRON_TIME_UNREADMESSAGES_3 #539=||||30|
+-
+&CRON_TIME_UNREADMESSAGES_4 #539=||||45|
+-
+
+&CRON_JOB_UNREADMESSAGES #539=
+  think [rpc(Comms.run_unread_message_notification)];
+  @dol [setdiff(lwho(),)]={@swi [setr(0,extract(mail(##),2,1))]=>0,{@pemit ##=[ansi(hy,>)] You have [ansi(h,%q0)] unread @mail[if(gt(%q0,1),s)].}}
+-
+
+&CRON_TIME_SHIPRACE #539=|||18|00|
+-
+
+&CRON_JOB_SHIPRACE #539=think [rpc(Shiprace.runrace)]
+-
+
+&CRON_TIME_WORKQUEUE #539=|||||
+-
+&CRON_JOB_WORKQUEUE #539=@trigger #65/tri.run
+-
+
+&CRON_TIME_GENERATECARGOJOBS #539=||||00|
+-
+&CRON_JOB_GENERATECARGOJOBS #539=think [rpc(Econ.cargojob_generate)]
+-
+&CRON_TIME_RPDECAY #539=|||02|17|
+-
+&CRON_JOB_RPDECAY #539=think [rpc(RP.decay)]
+-
+&CRON_TIME_HEAL #539=||||03|
+-
+&CRON_JOB_HEAL #539=think [rpc(Anatomy.cronHeal)]
+-
+&CRON_TIME_HEAL.UNCON #539=||||03 18 33 48|
+-
+&CRON_JOB_HEAL.UNCON #539=@dol [rpc(Anatomy.cronUncon)]={@nspemit ##=[ansi(y,You awake from your unconscious state!)]}
+-
+&CRON_TIME_EVENTREMINDER #539=||||00 15 30 45|
+-
+&CRON_JOB_EVENTREMINDER #539=think [rpc(Calendar.notify)]
+-
+&CRON_TIME_LOGBLOCKED_1 #539=||||05|
+-
+&CRON_TIME_LOGBLOCKED_2 #539=||||20|
+-
+&CRON_TIME_LOGBLOCKED_3 #539=||||35|
+-
+&CRON_TIME_LOGBLOCKED_4 #539=||||50|
+-
+&CRON_JOB_LOGBLOCKED #539=@dol [lwho()]=@swi [default(##/CHAR`LOGROLEPLAY,1)]=0,{@pemit %#=[ansi(h,> )] [ansi(hy,WARNING)]: You currently have RP logging disabled.
+-
+&CRON_TIME_UNFINDABLE #539=||||01|
+-
+&CRON_JOB_UNFINDABLE #539=@dol [lwho()]=@swi [and(hasflag(##,unfindable),not(orflags(##,Wr)))]=1,{@nspemit %#=[ansi(h,>)] [ansi(hr,REMINDER:)] You are currently set UNFINDABLE.}
+-
+#&CRON_TIME_SPACEAUDIT #539=|||00|15|
+#-
+# &CRON_JOB_SPACEAUDIT #539=@mail pen=Audit Logs/
+#   [iter(
+#         spacesys(list.ship.all),
+#         squish(
+#                if(
+#                   t(add(
+#                         setr(land,default(itext(0)/space`audit`land,0)),
+#                         setr(launch,default(itext(0)/space`audit`launch,0)),
+#                         setr(jump,default(itext(0)/space`audit`jump,0)),
+#                         setr(activeticks,default(itext(0)/space`audit`activeticks,0)),
+#                         setr(movingticks,default(itext(0)/space`audit`movingticks,0))
+#                        )),
+#                   %r[itext(0)]%b%q<land>%b%q<launch>%b%q<jump>%b%q<activeticks>%b%q<movingticks>
+#                  )
+#               )
+#        )]
+
+&CRON_TIME_REMIND.CONTRACT #539=|||17|30|
+-
+&CRON_JOB_REMIND.CONTRACT #539=
+  @assert [gt(words(setr(Contracts,rpc(Contract.reminder))),0)];
+  +gmemit Enigma Sector Procurement would like to remind citizens that only 24 hours remain for interested parties 
+          to submit bids on the following contracts: [itemize(%q<Contracts>)].;
+-
+&CRON_TIME_BBTIMEOUT #539=|||20|45|
+-
+&CRON_JOB_BBTIMEOUT #539=
+  think rpc(BBoard.timeout)
+-

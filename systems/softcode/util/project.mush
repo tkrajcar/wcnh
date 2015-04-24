@@ -1,0 +1,43 @@
+@set #975=no_command !safe
+-
+@wipe #975
+-
+@set #975=safe
+-
+@desc #975=
+  [titlebar([name(%!)]: [v(project)])]%r
+  [ansi(y,Phase[space(24)]Skill[space(16)]Diff[space(10)]Progress)]%r
+  [iter(
+      lattr(%!/phase.*),
+      [ljust(edit(after(itext(0),.),_,%b),28)] [ljust(first(setr(geti,get(%!/[itext(0)])),|),20)] [ljust(num2adj(extract(%q<geti>,2,1,|)),13)] 
+      [first(extract(%q<geti>,3,1,|),:)] of [last(extract(%q<geti>,3,1,|),:)],
+      ,%r)]%r
+  [footerbar()]%r
+  [ansi(yh,work on <phase>)] to work on something once every 3 RL hours.
+-
+&CMD.WORK #975=$work on *:
+  @assert [t(setr(Board.phase,grab(lattr(%!/PHASE.*),PHASE.[ucstr(edit(%0,%b,_))]*)))]=@nspemit %#=[ansi(rh,>)] Invalid project phase.;
+  @assert [lt(first(setr(Board.current,extract(get(%!/%q<Board.phase>),3,1,|)),:),last(%q<Board.current>,:))]=@nspemit %#=[ansi(rh,>)] That phase is completed.;
+  @assert [gte(secs(),setr(Char.canwork,add(default(%!/last.%#,0),10800)))]=
+          @nspemit %#=[ansi(rh,>)] You can work on the project again in [ansi(yh,timestring(sub(%q<Char.canwork>,secs())))].;
+  
+  @nsremit loc(%#)=[name(%#)] does some work on the [ansi(wh,after(lcstr(edit(%q<Board.phase>,_,%b)),.))] phase of the [name(%!)] and 
+                   [ifelse(
+                        gte(
+                          setr(Char.succ,add(rand(-2,2),chargen(get.skill,%#,first(get(%!/%q<Board.phase>),|)))),
+                          setr(Board.diff,extract(get(%!/%q<Board.phase>),2,1,|))
+                          ),
+                        ansi(gh,succeeds),
+                        ansi(rh,fails)
+                        )]!;
+  @set %!=last.%#:[secs()];
+  @set %!=%q<Board.phase>:[replace(
+                                get(%!/%q<Board.phase>),
+                                3,
+                                [add(
+                                    first(%q<Board.current>,:),
+                                    ifelse(eq(setr(Board.newval,sub(%q<Char.succ>,%q<Board.diff>)),0),1,%q<Board.newval>)
+                                    )]:[last(%q<Board.current>,:)]
+                                ,|)];
+-
+

@@ -1,0 +1,71 @@
+# Comm system player globals.
+
+@lock/use #341=FLAG^IC|FLAG^ROYALTY|FLAG^WIZARD
+-
+
+&COMMAND_LOCK`FAILURE #341=[ansi(hy,>)] You can't use comms while OOC.
+-
+
+&cmd.handle/list #341=$handle/list:@pemit %#=[rpc(Comms.handle_list,%#)]
+-
+
+&cmd.handle/register #341=$handle/register *:@pemit %#=[rpc(Comms.handle_register,%0)]
+-
+
+&cmd.handle/unregister #341=$handle/unregister *:@pemit %#=[rpc(Comms.handle_unregister,%0)]
+-
+
+&cmd.handle/use #341=$handle/use *:@pemit %#=[rpc(Comms.handle_use,%0)]
+-
+
+&cmd.message/list #341=$message/list:@pemit %#=[rpc(Comms.message_list_summary)]
+-
+
+&cmd.message/listhandle #341=$message/list *:
+  /@@ Some regmatch trickery with the goal of %q0 = person, %q1 = page number. @@/
+  @pemit %#=
+    [ifelse(
+      regmatch(%0,(.+) page (\\d+),1:0 2:1),
+      ,
+      [setq(0,%0)][setq(1,1)]
+    )]
+    [rpc(Comms.message_list,%q0,%q1)] 
+-
+
+&cmd.message #341=$message *=*:@pemit %#=[rpc(Comms.message_send,%0,%1)]
+-
+
+&cmd.message/unread #341=$message/unread:@pemit %#=[rpc(Comms.message_unread)]
+-
+
+&cmd.message/sent #341=$message/sent:@pemit %#=[rpc(Comms.message_sent,1)]
+-
+
+&cmd.message/sent_2 #341=$message/sent page *:@pemit %#=[rpc(Comms.message_sent,%0)]
+-
+
+&cmd.comm/list #341=$comm/list:@pemit %#=[rpc(Comms.channel_list,%#)]
+-
+
+&cmd.comm/on #341=$comm/on *:
+  /@@ more regmatch trickery. %q0 is the channel to join, %q1 is the alias. if no alias specified by user, will join with alias = channel. @@/
+  @pemit %#=
+    [ifelse(
+      regmatch(%0,(.+)=(.+),1:0 2:1),
+      ,
+      [setq(0,%0)][setq(1,%0)]
+    )]
+    [rpc(Comms.channel_on,%q0,%q1)]
+-
+
+&cmd.comm/off #341=$comm/off *:@pemit %#=[rpc(Comms.channel_off,%0)]
+-
+
+&cmd.comm/handle #341=$comm/handle *=*:@pemit %#=[rpc(Comms.channel_handle,%0,%1)]
+-
+
+&cmd.comm/transmit #341=$-* *:@pemit %#=[rpc(Comms.channel_transmit,%0,%1)]
+-
+
+&cmd.comm/tightbeam #341=$comm/tightbeam *=*:@pemit %#=[rpc(Comms.channel_tightbeam,%0,%1)]
+

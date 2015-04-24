@@ -1,0 +1,199 @@
+@wipe #1272/doc.*
+-
+@desc #1272=Space docs.
+-
+&DOC.ACTIVATE #1272=ship|Activate the ship so it's notified each cycle tick.
+-
+&DOC.ADDCONSOLE #1272=ship:console|Sets up console to work with ship.
+-
+&DOC.ADVANCE #1272=ship|Moves ship 1 step forward if destination is set.
+-
+&DOC.ADVANCE.CALC #1272=ship|Returns next anticipated position if destination is set.
+-
+&DOC.AUDIT #1272=ship:audit-type|Increments ship's audit counter for type: jump,launch,land
+-
+&DOC.CANBOARD #1272=ship:player|Returns 1 if player can board ship.
+-
+&DOC.CANFLY #1272=ship|Returns 1 if ship can be flown. Capships need >1 con manned.
+-
+&DOC.CANUSECONSOLE #1272=console:player|Returns 1 if player can man console.
+-
+&DOC.CLASS #1272=object|Returns object's class.
+-
+&DOC.CLONE.SHIP #1272=ship|Makes an exact copy of ship.
+-
+&DOC.CLONE.CONSINROOM #1272=console|If it's a console, clone it.
+-
+&DOC.CLOSEBAY #1272=ship|Close a ship's bay.
+-
+&DOC.CPU #1272=ship|Get ship's CPU value.
+-
+&DOC.CYCLE #1272=|Returns time in seconds until next space tick.
+-
+&DOC.DEACTIVATE #1272=ship|Deactivates the ship for landing etc.
+-
+&DOC.DISTANCE #1272=object1:object2|Returns distance between two objects.
+-
+&DOC.ETA #1272=ship|Returns ETA in timestring format if destination is set.
+-
+&DOC.FINDSHIP.BAY #1272=ship1:ship2|Find ship2 by dbref or name in ship1's bay.
+-
+&DOC.FINDSHIP.ROOM #1272=ship1:ship2|Find ship2 by dbref or name in location of ship1.
+-
+&DOC.GUNS #1272=ship|Return number of ship's guns.
+-
+&DOC.HAIL #1272=ship1:enactor:ship2:message|Message ship2 from ship1 with message.
+-
+&DOC.HAIL.GETTARGET #1272=ship|Return hail target of ship.
+-
+&DOC.HAIL.SET #1272=ship1:ship2|Set ship2 as ship1's hail target.
+-
+&DOC.HAIL.WIPE #1272=ship|Wipe ship's hail target.
+-
+&DOC.HICMD #1272=input|Highlight, underline input.
+-
+&DOC.INTERVAL #1272=|Return tick interval.
+-
+&DOC.ISBAYOPEN #1272=ship|Return 1 if the ship's bay is open.
+-
+&DOC.ISUNMANNED #1272=console|Return 1 if console is unmanned.
+-
+&DOC.LIST.SHIP.ACTIVE #1272=|List active ships.
+-
+&DOC.LIST.SHIP.ALL #1272=|List all ships.
+-
+&DOC.OPENBAY #1272=ship|Open ship's bay.
+-
+&DOC.REACTOR #1272=ship|Return ship's reactor value.
+-
+&DOC.SCAN.LAND #1272=ship|Return view from outside the ship.
+-
+&DOC.SURVEY #1272=ship:target:enactor|Survey target from ship, pay enactor.
+-
+&DOC.SURVEY.LAST #1272=ship:target|Return the last time ship surveyed target.
+-
+&DOC.HASSHUTTLE #1272=player|Returns 1 if player was given a free shuttle.
+-
+&DOC.HEADING #1272=ship|Returns heading of ship.
+-
+&DOC.ISACTIVE #1272=ship|Returns 1 if ship is active.
+-
+&DOC.ISCAPSHIP #1272=ship|1 if it's a capship, 0 otherwise.
+-
+&DOC.ISCAPTAIN #1272=ship:player|Returns 1 if player meets captain permissions for ship.
+-
+&DOC.ISCONSOLE #1272=object|1 if object is a valid console.
+-
+&DOC.ISCREW #1272=ship:player|1 if player meets crew permissions for ship.
+-
+&DOC.ISDOCKED #1272=ship|1 if ship is in a valid landing area.
+-
+&DOC.ISGUEST #1272=ship:player|1 if player meets guest permissions for ship.
+-
+&DOC.ISJUMP #1272=object|1 if object is a valid jump point.
+-
+&DOC.ISMANNED #1272=console|1 if console is currently manned.
+-
+&DOC.ISMANNING #1272=console:player|1 if player is manning console.
+-
+&DOC.ISMOVING #1272=ship|1 if ship has a move action queued.
+-
+&DOC.ISSHIP #1272=ship|1 if it's a valid ship object.
+-
+&DOC.JUMP #1272=ship:jump point|Jumps ship through jump point if both are valid.
+-
+&DOC.LAND #1272=ship:target|Lands ship on target.
+-
+&DOC.LAUNCH #1272=ship|Launches the ship.
+-
+&DOC.LIST.REPORT #1272=ship|Space delimited list of visible contacts.
+-
+&DOC.LIST.SKILLS #1272=|List of valid space skills for +scheck.
+-
+&DOC.LIST.SYSTEM.ACTIVE #1272=system|Space delimited list of active ships in system.
+-
+&DOC.LIST.SYSTEM.ALL #1272=system|Space delimited list of all objects in system.
+-
+&DOC.MANNEDBY #1272=console|Returns name of person manning console.
+-
+&DOC.MOVE #1272=object:x:y|Move object.
+-
+&DOC.NOTIFY.CONSOLES #1272=ship|Sends message prefixed with ">" to manned consoles.
+-
+&DOC.NOTIFY.SHIP #1272=ship|Sends non-prefixed message to everyone on ship.
+-
+&DOC.ROSTER #1272=ship|Ascii formatted ship roster.
+-
+&DOC.ROSTER.ADD #1272=ship:player:position|Add a player to a ship roster.
+-
+&DOC.ROSTER.REMOVE #1272=ship:player|Remove a player from a ship roster.
+-
+&DOC.SCAN #1272=ship|Ascii formatted list of visible contacts.
+-
+&DOC.SCAN.TARGET #1272=target|Ascii formatted scan results for target.
+-
+&DOC.SETDEST #1272=ship:x:y|Set the ship's intended destination.
+-
+&DOC.SKILL #1272=ship:skill|Return the max skill value out of everyone manning a console on ship.
+-
+&DOC.SPEED #1272=ship|Return skill-adjusted max speed value for ship on a 0-7 scale.
+-
+&DOC.SPEED.BASE #1272=ship|Return base speed value of ship on a 0-7 scale.
+-
+&DOC.SPOSE #1272=ship:message|Emits a name-prefixed ship pose to all active ships in system.
+-
+&DOC.UPDATE.REPORT #1272=ship|Updates ship's list of contacts and notifies of any changes.
+-
+&DOC.HASBAY #1272=ship|1 if ship has a landable bay.
+-
+&DOC.CANJUMP #1272=ship|1 if ship is capable of jumping.
+-
+&DOC.HULL #1272=ship|Current:Max
+-
+&DOC.STATUS #1272=ship|Ascii printout of ship status.
+-
+&DOC.SHIELDS #1272=ship|Current:Max
+-
+&DOC.CARGO #1272=ship|Current:Max
+-
+&DOC.VALUE #1272=ship|Econ value of ship.
+-
+&DOC.MANIFEST #1272=ship|Pre-formatted manifest for ship.
+-
+&DOC.SHIPSBYCAPTAIN #1272=player|Return list of ships captained by player.
+-
+&DOC.ISSTATION #1272=ship|1 if ship is a station.
+-
+&DOC.FINDCLASS #1272=dbref or string|firstof match against list of classes and list of class names. Returns dbref of class. Dbref input used to verify ISCLASS, partial string match returns dbref of class name.
+-
+&DOC.GETCAPTAIN #1272=ship|Returns dbref of ship's captain.
+-
+&DOC.FINDEXIT #1272=ship:exit|firstof match against exit dbref or name to verify that an exit is in the same location as a ship.
+-
+&DOC.ISTAXIWAY #1272=exit|1 if exit is taxiable. 
+-
+&DOC.TAXI #1272=ship:exit|Taxis a ship through an exit.
+-
+&DOC.GETDESTOBJ #1272=ship|Returns destination object of ship.
+-
+&DOC.FINDSHIP.UNLOAD #1272=ship:ship dbref or string|Locates %1 in %0's bay by partial string match or dbref verify.
+-
+&DOC.FINDSHIP.LOAD #1272=ship:ship dbref or string|Locates %1 at %0's location by partial string match or dbref verify.
+-
+&DOC.LOAD.SHIP #1272=ship:victim-ship:enactor-dbref|Checks permissions and loads victim-ship aboard ship.
+-
+&DOC.UNLOAD.SHIP #1272=ship:victim-ship:enactor-dbref|Checks permissions and unloads victim-ship from ship.
+-
+&DOC.FINDSHIP.ALL #1272=ship:ship dbref or string|Locates %1 anywhere by partial string match or dbref verify.
+-
+&DOC.ADDTRACKER #1272=ship:player|Adds a tracker to ship for player.
+-
+&DOC.DELTRACKER #1272=ship:player|Delete a tracker on ship for player.
+-
+&DOC.GETSHIPLOC #1272=ship|Gets the location of a ship.
+-
+&DOC.LIST.TRACKERS #1272=ship|List who's tracking a ship.
+-
+&DOC.LIST.TRACKERS.PLAYER #1272=player|List which ships a player is tracking.
+-
+&DOC.RENAME.CONSOLE #1272=console:name|Renames a console.

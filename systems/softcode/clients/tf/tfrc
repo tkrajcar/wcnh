@@ -1,0 +1,3 @@
+; /upload command to run unformatter and quote a file. Change paths as desired.
+;
+/def upload=/quote -0 -w !perl ~/Projects/wcnh_systems/softcode/unformat.pl ~/Projects/wcnh_systems/softcode/%1.mush

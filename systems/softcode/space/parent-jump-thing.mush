@@ -1,0 +1,8 @@
+@set #393=!safe no_command
+-
+@wipe #393
+-
+@set #393=safe
+-
+@desc #393=%b
+-

@@ -1,0 +1,8 @@
+&MSG.WELCOME #459=[ansi(h,Welcome\, [name(%0)]!)] Thanks for stopping by. Take a look around, ask questions, and when you're ready to get a character, type 'LOGOUT' and use the register command from the front/connection screen.
+-
+
+&TRI.GUEST.CONNECT #459=@chan/on newbie=%0;@cemit/noisy newbie=[ansi(h,name(%0))] [ansi(c,has connected using [first(terminfo(%0))].)];think [syslog(Guest,Guest connection to [name(%0)]\(%0\) by [get(%0/lastsite)] - [get(%0/lastip)].)];&doing %0=Visiting WCNH!;@wait 2=@pemit %0=[u(msg.welcome,%0)]
+-
+
+&TRI.GUEST.DISCONNECT #459=@cemit/noisy newbie=[ansi(h,name(%0))] [ansi(c,has disconnected.)];@tel %0=#14;@chan/off public=%0;@fo %0=@mail/clear all;@fo %0=@mail/purge;&bb_read %0;
+                           think [rpc(BBoard.join,%0,all)]

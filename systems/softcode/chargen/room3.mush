@@ -1,0 +1,79 @@
+# chargen room 3: description & profile.
+# +bg/questions
+# +bg/answer <question>=<text>
+# +bg/question <question>
+# @desc me=<desc>
+
+@desc #214=
+  In this room you will be able to set your character's description, and describe his or her background (the events of his her life leading up to their entry into the game). We use a simple question-based system to make life easier!
+  %r%r
+  [ansi(hy,For the commands\, see 'help chargen room 3'.)] 
+-
+
+&cmd.+bg/questions #214=$+bg/questions:
+  @pemit %#=
+  [titlebar(Chargen Questions)]%r
+  [middlebar(REQUIRED QUESTIONS)]%r
+  [iter(lattr(me/question.required.*),[ansi(hy,rjust(last(##,.),2))]: [u(##,%#)] [ifelse(hasattr(%#,char`bg`[last(##,.)]`a),[ansi(hg,<Answered>)],[ansi(hr,<Unanswered>)])], ,%r)]%r
+  [middlebar(OPTIONAL QUESTIONS)]%r
+  [iter(sort(lattr(me/question.optional.*)),[ansi(hy,rjust(last(##,.),2))]: [u(##,%#)], ,%r)]%r
+  [footerbar()]
+-
+
+&cmd.+bg/answer #214=$+bg/answer *=*:
+  th [setq(0,val(%0))];
+  @assert setr(1,grab(lattr(me/question.required.*) [lattr(me/question.optional.*)],question.*.%q0))=
+    @pemit %#=[ansi(hb,>)] That's not a valid question!;
+  @assert gte(strlen(%1),40)=
+    @pemit %#=[ansi(hb,>)] That's not much of an answer, is it? You can do better than that!;
+  &char`bg`%q0`q %#=[v(%q1)];
+  &char`bg`%q0`a %#=%1;
+  @pemit %#=[ansi(hb,>)] You answered '[ansi(h,u(%q1,%#))]' with: %1;
+-
+
+&cmd.+bg/question #214=$+bg/question *:
+  th [setq(0,val(%0))];
+  @assert setr(1,grab(lattr(me/question.required.*) [lattr(me/question.optional.*)],question.*.%q0))=
+    @pemit %#=[ansi(hb,>)] That's not a valid question!;
+  @pemit %#=[ansi(hb,>)] [ansi(h,u(%q1,%#))]: [default(%#/char`bg`%q0`a,No answer yet.)]
+-
+
+# Exit from room 3 to room 4.
+@lock #218==#0 
+-
+
+@afail #218=
+  @pemit %#=[ansi(hb,>)] Checking character [ansi(h,%n)].;
+  @assert [lmath(and,iter(lattr(#214/question.required.*),hasattr(%#,char`bg`[last(##,.)]`a)))]=
+    @pemit %#=[ansi(hb,>)] You need to to answer all of the required background questions.;
+  @assert gte(strlen(get(%#/desc)),140)=
+    @pemit %#=[ansi(hb,>)] You need to set a longer description.;
+  @pemit %#=[ansi(hb,>)] Checks passed. Proceeding...;
+  @oemit %#=%n moves on to Room 4.;
+  @tel %#=loc(me);
+-
+
+# need a blank @fail to prevent the 'You failed to enter' message.
+@fail #218=
+-
+
+&question.required.1 #214=Where did you grow up?
+-
+&question.required.2 #214=How did you learn to do what you do?
+-
+&question.required.3 #214=Why are you in the Enigma Sector, and what do you hope to accomplish here?
+-
+&question.required.4 #214=Do you have any friends, family, etc. in the sector?
+-
+&question.required.5 #214=What do you think of the [switch(chargen(get.race,%0),Kilrathi,Kilrathi Commonwealth,Enigma Sector Consortium)] government?
+-
+&question.required.6 #214=How do you feel about the [switch(chargen(get.race,%0),Kilrathi,Humans,Kilrathi)]?
+-
+&question.required.7 #214=Briefly describe your character's personality.
+-
+&question.required.8 #214=Is there anything notable about you physically?
+-
+&question.optional.9 #214=How did you decide on your choice of profession/job?
+-
+&question.optional.10 #214=Describe your character's normal social scene - what kind of people do you associate with?
+

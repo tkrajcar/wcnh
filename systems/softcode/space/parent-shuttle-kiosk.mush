@@ -1,0 +1,59 @@
+################################
+### PARENT: Shuttle Kiosk (#203)
+################################
+
+# Setup the MUSH object
+@set #203=!SAFE NO_COMMAND
+-
+@wipe #203
+-
+@set #203=SAFE
+-
+@desc #203=
+  A kiosk for purchasing shuttle tickets.%r%r
+  COMMANDS:%r
+  [ansi(yh,shuttle/ride <number>)] - Take a free taxi to your destination.%r%r
+  Travel Times:%r
+  [iter(
+      remove(v(list.destinations),loc(%!)),
+      <#@> [ljust(name(zone(itext(0))),20)] [timestring(u(fn.travel.calc,loc(%!),itext(0)))],
+      ,%r
+      )]%r
+  -
+-
+&DATA #203=#351
+-
+&CMD.SHUTTLE/CLAIM #203=
+/@@ removed @@/
+-
+&CMD.DEPART #580=$depart:
+  @switch [lte(secs(),last(setr(0,extract(v(passengers),match(v(passengers),%#:*))),:))]=
+
+          1,@nspemit %#=[ansi(rh,>)] You will arrive at your destination in [ansi(yh,timestring(sub(last(%q0,:),secs())))].,
+          0,{@nsoemit %#=[name(%#)] disembarks from the shuttle at [ansi(wh,name(zone(extract(%q0,2,1,:))))].;
+             @set %!=passengers:[remove(v(passengers),%q0)];
+             @tel %#=[extract(%q0,2,1,:)]
+            }
+-
+&CMD.SHUTTLE/RIDE #203=$shuttle/ride *:
+  @switch [t(lte(%0,words(setr(3,remove(v(list.destinations),loc(%!))))))]=
+
+          0,@nspemit %#=[ansi(rh,>)] That is not a valid destination.,
+          1,{@nspemit %#=[ansi(gh,>)] You purchase your ticket to [name(setr(1,extract(zones(lzone,setr(0,extract(%q3,%0,1))),2,1)))].;
+             @nsoemit %#=[name(%#)] purchases a shuttle ticket and boards a transport from the platform.;
+             @tel %#=[v(shuttle)];
+             @nsoemit %#=[name(%#)] boards the shuttle from [name(%q1)].;
+             @nspemit %#=[ansi(gh,>)] You will arrive at your destination in [ansi(yh,timestring(setr(2,u(fn.travel.calc,loc(%!),%q0))))].;
+             @set [v(shuttle)]=passengers:[trim([get(v(shuttle)/passengers)] %#:%q0:[add(secs(),%q2)])];
+             @wait [v(shuttle)]/%q2={@nspemit %#=You have arrived at your destination and may now [ansi(yh,depart)].}
+            }
+-
+&FN.TRAVEL.CALC #203=
+  val(mul(add(1,power(val(rpc(Econ.location_distance,xget(%0,space`loc),xget(%1,space`loc))),0.8)),50))
+-
+&LIST.DESTINATIONS #203=#223 #1054 #428 #387 #349 
+-
+&SHUTTLE.MULTIPLIER #203=8
+-
+&SHUTTLE #203=#580
+-

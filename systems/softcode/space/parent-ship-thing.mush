@@ -1,0 +1,86 @@
+#############################
+### PARENT: Ship Thing (#179)
+#############################
+
+# Setup the MUSH object
+@set #179=!SAFE NO_COMMAND ENTER_OK
+-
+@wipe #179
+-
+@set #179=SAFE
+-
+@set #589=!SAFE NO_COMMAND
+-
+@wipe #589
+-
+@set #589=SAFE
+-
+@dol remove(lattr(#9),CONFORMAT NAMEFORMAT)=@cpattr #9/##=#179
+-
+@cpattr #9/conformat=#179/iconformat
+-
+@conformat #179=
+-
+@nameformat #179=
+  [titlebar([ifelse(hasattrval(%!,roomname),get(%!/roomname),name(%!))]
+  [if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%![flags(%!)]\))]
+  [if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)]
+  [if(and(setr(8,parent(%!)),not(strmatch(%q8,#179))),%b<[trim(rest(name(%q8)))]>)],v(COLOR.Frame))]
+-
+@edit #179/iconformat=lexits(%!),remove(lexits(%!),#-1)
+-
+@idescformat #179=[u(idescribe)]%r[u(iconformat,remove(lvcon(%!),%#))]
+-
+@lock/enter #179=LOCK.CANBOARD/1
+-
+@lock/leave #179=LOCK.CANLEAVE/1
+-
+@lock/link #179=LOCK.ISCONSOLE/1
+-
+&ICONFORMAT #179=[footerbar(u(room_parent.check_active.fn,%!,%#),v(COLOR.Frame))][setq(1,add(u(room_parent.exit_name_max_adjust.fn,setr(0,remove(lexits(%!),#-1))),2))][iter(lnum(max(words(%q0),words(%0))),%r[ljust(switch(extract(%0,#@,1),,,ansi(v(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))],39))),39)][ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[v(COLOR.EXIT)],\<)][ansi(edit(v(COLOR.EXIT),h,),name(#$))][ansi(h[v(COLOR.EXIT)],\>)],%q1)] [ansi(edit(v(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],%b,)]
+-
+@lset #179/enter=!no_inherit
+-
+@lset #179/leave=!no_inherit
+-
+@lset #179/link=!no_inherit
+-
+@lfail #179=The ship isn't landed!
+-
+@efail #179=Boarding access [ansi(rh,denied)].
+-
+@enter #179=You board the [ansi(wh,name(%!))].
+-
+@oenter #179=boards the vessel from outside.
+-
+@oxenter #179=boards the [name(%!)].
+-
+@leave #179=You disembark from the [ansi(wh,name(%!))].
+-
+@oleave #179=disembarks.
+-
+@oxleave #179=disembarks from the [name(%!)].
+-
+@idesc #179=The inside of the ship.
+-
+@desc #179=It's a space ship!
+-
+&LOCK.CANBOARD #179=[spacesys(canboard,%!,%#)]
+-
+&LOCK.CANLEAVE #179=[hasattrval(%!,data.docked)]
+-
+&LOCK.ISCONSOLE #179=[spacesys(isconsole,%#)]
+-
+@idesc #589=You step into the airlock...
+-
+@aenter #589=@tel %#=[home(v(connected))]
+-
+@enter #589=
+-
+@leave #589=
+-
+&ICONFORMAT #589=
+-
+&CMD.INTERCOM #589=$intercom *:
+  @nszemit [zone(%!)]=[ansi(wh,\[)][ansi(g,INTERCOM)][ansi(wh,\])] %0
+-

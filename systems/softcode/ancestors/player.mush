@@ -1,0 +1,36 @@
+@ADESCRIBE #8=th [ansi(c,>>>)] [ansi(h,%n)] looked at your description.
+-
+@DESCFORMAT #8=
+  if(
+    or(controls(%#,%!),nearby(%#,%!)),
+    [titlebar(
+      [if(
+        v(title),
+        v(title)%b
+        )]
+      [name(me)]
+      )]
+    %r
+    [if(
+      %0,
+      %0,
+      [name(me)] doesn't have a description quite yet.
+      )]
+    %r
+    [if(
+      hasattrval(%!,wielded),
+      [ansi(rh,%r%S is wielding [art(name(get(%!/wielded)))] [extract(name(get(%!/wielded)),1,dec(words(name(get(%!/wielded)))))]!)]%r
+      )]
+    [footerbar()],
+    You can't see that from here.
+  )
+-
+@CONFORMAT #8=
+  if(
+    and(%0,or(controls(%#,%!),nearby(%#,%!))),
+    Carrying:%r
+    [map(map.conformat,%0, , %r)]
+  )
+-
+&map.conformat #8=
+  [ansi(h,name(%0))][if(or(orflags(%#,Wr),controls(%#,%0)),\(%0[flags(%0)]\))]

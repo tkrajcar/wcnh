@@ -1,0 +1,46 @@
+# RP logging system.
+# All calls call u(logrp) with %0 = enactor, %1 = location dbref, %2 = the actual pose.
+# This should handle the following RP commands:
+# @emit \\ say " pose : semipose ;
+
+&HOOK.SAY #21=[if(hasflag(%#,IC),u(logrp,%#,%L,%n says\, "[rest(%u)]",0))]
+-
+
+&HOOK.POSE #21=
+  [setq(0,
+    switch(
+      mid(%u,0,1),
+      :,
+      %n [delete(%u,0,1)],
+      %n [rest(%u)]
+    )
+  )]
+  [if(hasflag(%#,IC),u(logrp,%#,%L,%q0,0))]
+-
+
+&HOOK.SEMIPOSE #21=
+  [setq(0,
+    switch(
+      mid(%u,0,1),
+      ;,
+      %n[delete(%u,0,1)],
+      %n[rest(%u)]
+    )
+  )]
+  [if(hasflag(%#,IC),u(logrp,%#,%L,%q0,0))]
+-
+
+&HOOK.EMIT #21=[if(hasflag(%#,IC),u(logrp,%#,%L,rest(%u),1))]
+-
+
+&HOOK.WHISPER #21=[cemit(+RP,[ansi(g,\[[name(%L)]\(%L\)\])] <WHISPER> %n to [rest(%u)],1)]
+-
+
+&HOOK.REMIT #21=[setq(c,rest(%u))][u(logrp,%#,before(%qc,=),after(%qc,=),1)]
+-
+&LOGRP #21=[rpc(Logs.log_rp,%0,%1,trim(%2,%r%t%b),%3)]
+-
+&HOOK.TAKE #21=[rpc(Items.group,%#)]
+-
+&HOOK.DROP #21=[rpc(Items.group,loc(%#))]
+-

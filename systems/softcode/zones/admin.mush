@@ -1,0 +1,61 @@
+&CMD.+ZONE/HISTORY #115=$+zone/history *:
+  @nspemit %#=[rpc(Zones.history,zones(bc.checkout,%0))]
+-
+&CMD.+ZONE/ASSIGN #115=$+zone/assign *=*:
+  @assert [t(setr(Zone,zones(findzone,%0)))]=@nspemit %#=[ansi(rh,>)] No such zone.;
+  @assert [lt(words(%q<Zone>),2)]=@nspemit %#=[ansi(rh,>)] Specify one of: [itemize(iter(%q<Zone>,name(itext(0)),,|),|,or)].;
+  @assert [t(setr(ParentZone,zones(findzone,%1)))]=@nspemit %#=[ansi(rh,>)] Invalid parent zone.;
+  @assert [lt(words(%q<ParentZone>),2)]=@nspemit %#=[ansi(rh,>)] Multiple parent zone matches: [itemize(iter(%q<ParentZone>,[name(itext(0))]\([itext(0)]\),,|),|,or)];
+
+  @chzone %q<Zone>=%q<ParentZone>;
+  @nspemit %#=[ansi(gh,>)] [name(%q<Zone>)] has been subzoned under [name(%q<ParentZone>)].;
+  think syslog(ZONES,[name(%q<Zone>)]\(%q<Zone>\) subzoned under [name(%q<ParentZone>)]\(%q<ParentZone>\) by [name(%#)].);
+  @nspemit %#=[ansi(gh,>)] [name(%q<Zone>)]\(%q<Zone>\) is now subzoned under [name(%q<ParentZone>)]\(%q<ParentZone>\).
+-
+&CMD.+ZONE/CREATE #115=$+zone/create *:
+  @assert [not(zones(findzone,%0))]=@nspemit %#=[ansi(rh,>)] Zone name must be unique.;
+  
+  think setq(Zone,create(%0));
+  @lock %q<Zone>==%q<Zone>;
+  @lock/zone %q<Zone>==%q<Zone>;
+  @lock/chzone %q<Zone>=flag^wizard;
+  @lset %q<Zone>/chzone=wizard;
+  @lset %q<Zone>/zone=wizard;
+  &bc %q<Zone>=;
+  @set %q<Zone>/bc=wizard;
+  think syslog(ZONES,New zone [name(%q<Zone>)]\(%q<Zone>\) created by [name(%#)].);
+  @nspemit %#=[ansi(gh,>)] New zone [name(%q<Zone>)]\(%q<Zone>\) created.
+-
+&CMD.+ZONE/MAKEBC #115=$+zone/makebc *:
+  @assert [t(setr(BC,pmatch(%0)))]=@nspemit %#=[ansi(rh,>)] No player object found.  @pcreate the BC first.;
+  @assert [not(hasattrval(%q<BC>,char`approved))]=@nspemit %#=[ansi(rh,>)] Cannot make a BC from an approved character.;
+  @assert [strmatch(right(name(%q<BC>),2),BC)]=@nspemit %#=[ansi(rh,>)] BC name must be in the form of "NameBC".;
+  @assert [not(haspower(%q<BC>,builder))]=@nspemit %#=[ansi(rh,>)] That is already a BC.;
+  
+  &char`announced %q<BC>=1;
+  @lock %q<BC>==%q<BC>;
+  @lock/chzone %q<BC>=flag^wizard;
+  @lset %q<BC>/chzone=wizard;
+  @squota %q<BC>=+500;
+  @power %q<BC>=builder;
+  think syslog(ZONES,New BC [name(%q<BC>)]\(%q<BC>\) created by [name(%#)].);
+  @nspemit %#=[ansi(gh,>)] [name(%q<BC>)]\(%q<BC>\) is now a BC.  Use [ansi(yh,+zone/bc <zone>=%q<BC>)] to give it a zone to work on.
+-
+&CMD.+ZONE/BC #115=$+zone/bc *=*:
+  @assert [t(setr(Zone,zones(findzone,%0)))]=@nspemit %#=[ansi(rh,>)] No such zone.;
+  @assert [eq(words(%q<Zone>),1)]=@nspemit %#=[ansi(rh,>)] Specify one of: [itemize(iter(%q<Zone>,name(itext(0)),,|),|,or)].;
+  @assert [t(setr(BC,lsearch(all,type,player,power,builder,name,name(pmatch(%1)))))]=@nspemit %#=[ansi(rh,>)] No such BC.;
+  @assert [eq(words(%q<BC>),1)]=@nspemit %#=[ansi(rh,>)] Multiple BC matches.  Be more specific.;
+  
+  @lock %q<Zone>==%q<BC>;
+  @tel %q<Zone>=%q<BC>;
+  @chzone %q<BC>=%q<Zone>;
+  &BC %q<Zone>=%q<BC>;
+  think setr(oldZone,zone(%q<Zone>));
+  @chown %q<Zone>=%q<BC>;
+  @switch t(%q<oldZone>)=1,{@chzone %q<Zone>=%q<oldZone>};
+  @set %q<Zone>=!halt;
+  think syslog(ZONES,[name(%q<Zone>)]\(%q<Zone>\) assigned to [name(%q<BC>)]\(%q<BC>\) by [name(%#)].);
+  @nspemit %#=[ansi(gh,>)] [name(%q<Zone>)]\(%q<Zone>\) assigned to [name(%q<BC>)]\(%q<BC>\) and @tel'd to the BC's inventory.
+-
+

@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE muclient>
+<!-- Saved on Friday, October 28, 2005, 10:01 PM -->
+
+<!--
+     Version 2.0 of MUSHClient Unformat.
+-->
+
+<muclient>
+<plugin
+   name="Upload"
+   author="Rick Bird and Tim Krajcar"
+   language="PerlScript"
+   purpose="Utilize MPP and Adam Dray's Unformat in MUSHClient"
+   date_written="2011-10-24 12:00:00"
+   requires="3.65"
+   id="000000000001234567891235"
+   version="1.0"
+   >
+
+   <description trim="y">
+	   Preprocessor Upload 2.0 for MUSHClient
+	   This script requires perlscript, recommended use with ActivePerl
+
+	   Use
+	   =========================================================
+	   #up 'file' - Uploads a file.
+	   #upload_format 'fileformat' - Valid choices are 'mpp' and 'unformat' without the quotes.
+   </description>
+
+</plugin>
+
+<include name="constants.pl"/>
+
+<!-- Alias -->
+<aliases>
+	<alias script="Upload" 
+		name="up"
+		match="^#up (.*)$" 
+		enabled="y" 
+		regexp ="y" />
+	<alias script="DoSetUploadFormat" 
+		name="uploadformat"
+		match="^#upload_format (.*)$" 
+		enabled="y" 
+		regexp ="y" />
+</aliases>
+
+<!--  Script  -->
+
+
+<script>
+<![CDATA[
+
+
+$donecommand = "think Upload Complete.";
+$code_directory = "c:\\wcnh\\softcode\\";
+
+# Command to postpone end notification by some queue-cycles.
+# Useful if you have @dolists or somesuch at the end of your code.
+#
+$postpone_command = "\@wait 0 = \@wait 0 = \@wait 0 = ";
+
+
+#############################################################################
+# End of configuration stuff
+#############################################################################
+
+$header1 = "Adam Dray's 'Unformat' and Alan Schwartz 'MPP' Processors.";
+$header2 = "Using code directory: " . $code_directory;
+$header3 = "MUSHClient Modifications by Nveid - RLB and Tim Krajcar.";
+
+
+$DEBUG_DEFINES = 0;
+
+# $filetable is a global associative array of files that have been visited
+
+
+sub OnPluginInstall {
+  &client_output("Loading...");
+  &client_output($header1);
+  &client_output($header2);
+  &client_output($header3);
+  $world->SetVariable("UploadFormat", "unformat");
+}
+
+sub OnPluginClose {
+  &client_output("Closing MUSHCode Unformatter.");
+}
+
+sub DoSetUploadFormat {
+    my ($sName, $theoutput, $wildcards) = @_;
+
+    $file_format = $world->trim($world->GetAliasInfo ($sName, 101));
+
+    if($file_format eq "mpp") {
+       $world->SetVariable("UploadFormat", "mpp");
+       &client_output("Upload format set to Alan Schwart'z MPP");
+    } elsif($file_format eq "unformat") {
+        $world->SetVariable("UploadFormat", "unformat");
+	&client_output("Upload format set to Adam Dray's Unformat 2.0 Beta");
+	} else {
+	&client_output("Unrecognized upload format. / " . $file_format);
+	}
+              
+}
+
+sub Upload {
+  my ($sName, $theoutput, $wildcards) = @_;
+  $filename = $code_directory . $world->trim($world->GetAliasInfo ($sName, 101));
+  if ($filename !~ m/\.mush$/ ) {
+    $filename = $filename . ".mush";
+  }
+  my $output = "";
+  
+  &client_output("Uploading/" . $world->GetVariable("UploadFormat")  .": ". $filename);
+  if($world->GetVariable("UploadFormat") eq "unformat") {
+     &fmt_unformat($filename, "filehandle00");
+  } else {
+     &fmt_mpp($filename);
+   }
+  # Make sure its all flushed
+   &mush_output_flush();
+
+  if($successful) {
+    &mush_output($postpone_command, $donecommand);
+  } else {
+     exit -1;
+     }
+}
+
+
+#############################################################################
+
+sub fmt_mpp {
+  local($file) = @_;
+  my $line, $input;
+
+   unless(open($input, $file)) {
+        &client_output("Can't open $file: $!.", -1);
+        $successful = 0;
+    }
+
+  while (<$input>) {
+    next if /^@@/;
+    next if /^$/;
+    s/\t/ /g;
+    chomp;
+    if (/^\s/) {
+    # Continuation of previous line
+       s/^\s+//;
+       $line .= $_;
+    } else {
+    # Start of a new line, print the buffer
+
+      &mush_output($line) if defined($line);
+      $line = $_;
+    }
+  }
+
+   &mush_output("$line") if defined($line);
+   $successful = 1;
+
+}
+
+sub fmt_unformat {
+    local($file, $input) = @_;
+
+    $input++;
+
+    unless(open($input, $file)) {
+          &error("Can't open $file: $!.", -1);
+          $successful = 0;
+     }
+
+  GETTEXT:
+    #
+    # Start looking for commands.
+    #
+    # Commands start at the beginning of a line, without leading whitespace.
+    # Any line starting with #include or #define (ignore leading whitespace)
+    # is processed appropriately.  All other lines starting with '#' are
+    # tossed out as comments (note that in this case, leading whitespace
+    # followed by a # is NOT a comment).
+    # Macro substitution is done on a per-line basis.
+    #
+    while (<$input>) {
+        chomp;
+        next GETTEXT if /^\s*$/;        # skip empty lines
+
+        study;
+
+
+        #################
+        # handle includes
+        #
+        if ( /^\s*#\s*include\s+(\S.*)/ ) {
+            if ( !$filetable{$1} ) {
+                $filetable{$1} ++;
+                &fmt_unformat($1, $input);
+                next GETTEXT;
+            } else {
+                &client_output("WARNING: Attempted to include file '$1' more than once. Ignored.");
+                next GETTEXT;
+            }
+        }
+
+
+        ########################
+        # read and store defines
+        #
+        if ( /^\s*#\s*define\s+(\S+)\s*$/ ) {
+            $macros{$1} = 1;
+            next GETTEXT;
+        }
+        elsif ( /^\s*#\s*define\s+(\S+)\s+(.+)/ ) {
+               $macros{$1} = $2;
+               next GETTEXT;
+        }
+        elsif ( /^\s*#\s*define/ ) {
+               &client_output("WARNING: Bad #define on line $. of file $file. Ignored.");
+               next GETTEXT;
+        }
+
+        
+        ###############
+        # skip comments
+        #
+        if ( /^#.*/ ) {
+            next GETTEXT;
+        }
+
+        #########################
+        # start reading a command
+        #
+        if ( /^\S/ ) {
+            $text = $_;
+        
+            #########################
+            # zap all inline comments
+            #
+            $text =~ s|/@@.+@@/||g;
+
+            # make macro substitutions on text
+            #
+#           $text = &macro_substitute($text, %macros);
+            $text = &substitute($text, %macros);
+            &mush_output_buffer($text);        # print the first part of it
+        }
+
+      GETCOMMAND:
+        #
+        # At this point, we're 'inside' a command.
+        # That is, we're going to ignore leading whitespace and append
+        # all text onto our command string until we reach a - at the
+        # beginning of a line, by itself (trailing whitespace is okay).
+        # Macro replacements occur on a per-line basis.
+        #
+        while (<$input>) {
+            chomp;
+        
+            ##########################################
+            # end if '-' (trailing whitespace is okay)
+            #
+            last GETCOMMAND if /^-\s*$/;
+        
+            #################
+            # handle includes
+            #
+            if ( /^\s*#\s*include\s+(\S.*)/ ) {
+                if ( !$filetable{$1} ) {
+                    $filetable{$1} ++;
+                    &fmt_unformat($1, $input);
+                    next;
+                } else {
+                    &client_output("WARNING: Attempted to include file '$1' more than once. Ignored.");
+                    next;
+                }
+            }
+
+            ###################
+            # handle ascii mode
+            #
+            if ( /^\s*#\s*ascii\s*$/ ) {
+                &process_ascii($input);
+            }
+            elsif ( /^\s*#\s*ascii/ ) {
+                   &client_output("WARNING: Bad #ascii directive on line $. of file $file. Ignored.");
+
+            }
+
+            ###############
+            # skip comments
+            #
+            next GETCOMMAND if /^#/;
+        
+
+            #############################################################
+            # remove leading space and inline comments and print the rest
+            #
+            $text = $_;
+            $text =~ s/^\s*//;
+            $text =~ s|/@@.+@@/||g;
+            $text = &substitute($text, %macros);
+            &mush_output_buffer($text);
+        }
+	&mush_output_flush();
+    }
+    close $input;
+
+    if ( $DEBUG_DEFINES ) {
+        &client_output("-----------------------------------------------");
+        &client_output("                   Defines");
+        &client_output("-----------------------------------------------");
+        foreach $macro (sort keys %macros) {
+            &client_output("$macro = '$macros{$macro}'");
+        }
+        &client_output("-----------------------------------------------");
+    }
+}
+
+
+
+# &error("error text message", integer_exit_code);
+#
+# Outputs an error message to the game and to STDERR, then
+# exits with the exit code.
+#
+sub error {
+    local ($text, $exitcode) = @_;
+
+    $text = "Unknown error" unless $text;
+    $exitcode = -1 unless $exitcode;
+
+    &client_output("ERROR: $text");
+    exit $exitcode;
+}
+
+
+# &clientoutput("line to be outputted to the client");
+#
+# Issues the proper command to send a message to the game
+#
+sub client_output {
+    local ($text) = @_;
+
+    $world->note($text);
+}
+
+#
+# Do MUSH Output via MUSHClient style
+#
+
+sub mush_output {
+   local($text) = @_;
+
+   $world->SendNoEcho($text);
+}
+
+sub mush_output_buffer {
+   local($text) = @_;
+
+   $output .= $text;
+}
+
+sub mush_output_flush {
+    &mush_output($output);
+    $output = "";
+}
+
+
+# &substitute($text, %macros)
+#
+# Returns a new string which represents a new version of $text
+# after processing all macro substitutions in %macros.
+#
+# At this time, the macro substitutions happen in an unpredictable order.
+#
+sub substitute {
+    local ($text, %macros) = @_;
+
+    foreach $macro (sort keys %macros) {
+        $with = $macros{$macro};
+        $text =~ s/$macro/$with/g;
+    }
+
+    return $text;
+}
+
+
+# &process_ascii($file)
+#
+# Read lines of text from filehandle $file until an #ascii line is reached.
+# Process all lines as if they were literal text, translating characters
+# as follows, in order to load them into a MUSH: all spaces are converted
+# to %b, a %r is placed at the end of each line, all literal tabs are changed
+# to %t's, and a \ is placed before any [, {, and ( character.  All %'s are
+# prepended with another % except when the % is followed by any of the
+# following characters: aclnopqsvACLNOPQSV0123456789#! (%-substitutions
+# used in programming on MUSH and MUX).
+#
+sub process_ascii {
+    local ($infile) = @_;
+    my $line;
+
+    while (<$infile>) {
+        chomp;
+
+        if ( /^\s*#\s*ascii\s*$/ ) {
+	    &mush_output_flush();
+            exit;
+        }
+        if ( /^\s*#\s*ascii/ ) {
+            &client_output("WARNING: Bad #ascii directive on line $. in file $file. Exiting anyhow.");
+            exit;
+        }
+
+        $line = $_;
+
+        ################################################
+        # convert % to %% except when % is followed by a
+        # substitution character.
+        #
+        $line =~ s/%([^aclnopqsvACLNOPQSV0123456789#!])/%%$1/g;
+
+        ####################
+        # other translations
+        #
+        $line =~ s#\\#\\\\#g;   # \\
+        $line =~ s/  / %b/g;    # %b
+        $line =~ s/\t/%t/g;     # %b
+        $line =~ s/\{/\\\{/g;   # \{
+        $line =~ s/\[/\\\[/g;   # \[
+        $line =~ s/\(/\\\(/g;   # \(
+        $line =~ s/$/%r/;
+
+        &mush_output_buffer($line);
+    }
+}
+
+]]>
+</script>
+
+
+</muclient>

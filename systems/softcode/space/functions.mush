@@ -1,0 +1,1463 @@
+###########################
+### FUNCTIONS: Space (#208)
+###########################
+
+# Setup the MUSH object
+
+@set #208=!SAFE NO_COMMAND
+-
+@wipe #208
+-
+@set #208=SAFE
+-
+@desc #208=
+  [center(Space System\(\) Documentation,79,-)]%r
+  %b%b+[repeat(-,73)]+%r
+  [align(2 20 18 33 2,,[ansi(c,SUBFUNCTION)],[ansi(c,ARGUMENTS)],[ansi(c,DESCRIPTION)],,,|)]%r
+  [map(map.doc,[lattr(v(docs)/doc.*)], ,%r)]%r
+  %b%b+[repeat(-,73)]+%r
+  [repeat(-,79)]
+-
+&MAP.DOC #208=
+  [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
+-
+&DATA #208=#351
+-
+&DOCS #208=#1272
+-
+@startup #208=
+  @trig me/tick;
+  @cemit SysLog=[ansi(bh,\[)]SysLog[ansi(bh,\])] Resuming GhettoSpace.  [words(get(v(data)/list.active))] active ships.
+-
+&SUBFN.RESTART #208=
+  think [syslog(
+            SPACE,
+            Rebooting GhettoSpace.  [words(get(v(data)/list.active))] active ships. 
+            Cycle interval set to [default(v(data)/interval,60)] seconds.
+            )];
+  @dol get(v(data)/list.active)={@drain/any/all ##;@nszemit ##=[ansi(rh,WARNING:)] Space System Reboot by Admin.}; 
+  @trig me/tick
+-
+&TICK #208=
+  @wait [default(v(data)/interval,60)]={@trig me/tick};
+  @dol get(v(data)/list.active)={
+    think [set(##,space`audit`activeticks:[inc(default(##/space`audit`activeticks,0))])];
+    think [if( 
+              spacesys(ismoving,##),
+              set(##,space`audit`movingticks:[inc(default(##/space`audit`movingticks,0))])
+             )];
+    think [if(t(get(##/space`lock)),spacesys(lock,##,get(##/space`lock)))];
+    think [spacesys(update.report,##)]
+    }
+#-    
+# Deprecated
+#&FN.MOVE #208=
+#  [set(%0,space`x:%1)][set(%0,space`y:%2)]
+-
+&FN.ETA.START #208=
+  fdiv(ulocal(fn.distance.raw,[get(%0/space`x)],[get(%0/space`y)],%1,%2),ulocal(fn.speed,%0))
+-
+&FN.ETA #208=
+  firstof(
+      ulocal(fn.ismoving,%0),
+      ulocal(fn.eta.start,%0,%1,%2)
+      )
+# Depcrecated      
+#  ifelse(
+#      hasattrval(%0,space`destination),
+#      timestring(add(
+#                    mul(
+#                      floor(fdiv(
+#                                dist2d(
+#                                      get(%0/space`x),
+#                                      get(%0/space`y),
+#                                      first(get(%0/space`destination)),
+#                                      last(get(%0/space`destination))
+#                                      ),
+#                                u(fn.speed,%0)
+#                                )),
+#                      get(v(data)/interval)
+#                      ),
+#                    u(fn.cycle)
+#                    )),
+#      #-1 NO DESTINATION SET
+#      )
+-
+&FN.ADVANCE #208=
+  ifelse(
+      t(setr(Destination,spacesys(destination,%0))),
+
+      [set(%0,space`x:[first(%q<Destination>)])]
+      [set(%0,space`y:[last(%q<Destination>)])]
+      [wipe(%0/space`destination)]
+      [spacesys(notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
+      [spacesys(notify.consoles,%0,Arrived at destination %q<Destination>.  Speed is now 0[get(v(data)/const.speed)].)],
+
+      #-1 NO DESTINATION SET
+      )
+#  ifelse(
+#      hasattrval(%0,space`destination),
+#      [u(fn.move,%0,first(setr(0,ulocal(fn.advance.calc,%0))),last(%q0))]
+#      [if(
+#          strmatch(%q0,setr(1,get(%0/space`destination))),
+#          [wipe(%0/space`destination)]
+#          [wipe(%0/space`destination.obj)]
+#          [u(fn.notify.ship,%0,The hum of the engines diminishes as the ship comes to a stop.)]
+#          [u(fn.notify.consoles,%0,Arrived at destination %q1.  Speed is now 0 [spacesys(unit)]/h.)]
+#          )],
+#      #-1 NO DESTINATION SET
+#      )
+-
+&FN.HEADING #208=
+  ifelse(
+      t(setr(0,spacesys(destination,%0))),
+      [setq(dx,sub(first(%q0),get(%0/space`x)))]
+      [setq(dy,sub(last(%q0),get(%0/space`y)))]
+      [u(subfn.rad2deg,atan2(mul(r(dx),-1),r(dy)))],
+      #-1 NO DESTINATION SET
+      )
+-
+&SUBFN.DELTA_Y #208=
+  [mul(-1,%1,sin(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+-
+&SUBFN.DELTA_X #208=
+  [mul(-1,%1,cos(mul(0.017453294444,add(90,u(fn.heading,%0)))))]
+-
+&FN.POSITION #208=
+  [setq(Destination,ulocal(fn.destination,%0))]
+  [setq(Velocity,ulocal(fn.speed,%0))]
+  [setq(Remaining,ulocal(fn.ismoving,%0))]
+  [setq(Elapsed,sub(ulocal(fn.eta.start,%0,first(%q<Destination>),last(%q<Destination>)),%q<Remaining>))]
+
+  [ifelse(
+      %q<Remaining>,
+      ulocal(fn.advance.calc,%0,%q<Velocity>,%q<Elapsed>),
+      [get(%0/space`x)] [get(%0/space`y)]
+      )]
+-
+&FN.ADVANCE.CALC #208=
+  [add(get(%0/space`x),ulocal(subfn.delta_x,%0,mul(%1,%2)))] [add(get(%0/space`y),ulocal(subfn.delta_y,%0,mul(%1,%2)))]
+#  Deprecated
+# ifelse(
+#      t(hasattrval(%0,space`destination)),
+#      [min(add(get(%0/space`x),u(subfn.delta_x,%0)),first(get(%0/space`destination)))] 
+#       [min(add(get(%0/space`y),u(subfn.delta_y,%0)),last(get(%0/space`destination)))],
+#      #-1 NO DESTINATION SET
+#      )
+-
+&FILTER.MANNEDCONS #208=
+  spacesys(ismanned,%0)
+-
+&FN.SKILL.MAX #208=
+# Return the max skill value for all manned consoles
+  lmath(max,iter(
+                filter(filter.mannedcons,get(%0/data.consoles)),
+                ulocal(subfn.skill,ulocal(fn.mannedby,itext(0)),get(v(data)/skill.%1))
+                ))
+-
+&FN.SKILL #208=
+  ulocal(subfn.skill,%0,get(v(data)/skill.%1))
+-
+&SUBFN.SKILL #208=
+# Change this to however you're supposed to get a skill value
+  chargen(get.skill,%0,%1)
+-
+&FN.SKILL.ROLL #208=
+# Change this to change how skills are "rolled"
+  add(rand(-2,2),%0)
+-
+&FN.LIST.SKILLS #208=
+  lattr(v(data)/skill.*)
+-
+&FN.ISCAPSHIP #208=
+  ifelse(eq(default(%0/space`size,1),2),1,0)
+-
+&FN.SPEED.PARSE #208=
+# Change this to change how "speed" is displayed
+  [setr(Speed,spacesys(speed,%0))][get(v(data)/const.speed)] \([ansi(y,[mul(100,sub(fdiv(%q<Speed>,spacesys(speed.base,%0)),1))]\% skill bonus)]\)
+-
+&FN.SPEED.BASE #208=
+  firstof(get(%0/space`maxspeed),#-1)
+-
+&FN.SPEED #208=
+  [setq(Skill.pilot,ulocal(fn.skill.max,%0,ifelse(ulocal(fn.iscapship,%0),pilot-cap,pilot-fig)))]
+  [setq(Skill.engineer,ulocal(fn.skill.max,%0,ifelse(ulocal(fn.iscapship,%0),engineer-cap,engineer-fig)))]
+  
+  [firstof(
+        mul(ulocal(fn.speed.base,%0),add(1,fdiv(%q<Skill.pilot>,10)),add(1,fdiv(%q<Skill.engineer>,10))),
+        #-1 INVALID BASE SPEED
+        )]
+-
+&SUBFN.RAD2DEG #208=
+  add(fdiv(mul(%0,180),pi()),180)
+-
+##&OLD.FN.ADVANCE.CALC #208=
+##  ifelse(
+##     hasattrval(%0,space`destination),
+##        vmin(
+##            vadd(
+##                  vmul(
+##                      vmul(
+##                          vunit(
+##                              vsub(get(%0/space`destination),[get(%0/space`x)] [get(%0/space`y)])
+##                              ),
+##                          default(%0/space`maxspeed,10)
+##                          ),
+##                      default(v(data)/default.speed,1)
+##                      ),
+##                  [get(%0/space`x)] [get(%0/space`y)]
+##                  ),
+##            get(%0/space`destination)
+##            ),
+##      #-1 NO DESTINATION SET
+##      )
+##-
+&FN.CLASS #208=
+  [ifelse(
+      hasattrpval(%0,space`class),
+      get(%0/space`class),
+      Unknown
+      )]
+-
+&FN.ISMOVING #208=
+  firstof(
+      pidinfo(first(getpids(%0/space`queue`move)),time),
+      0
+      )
+#  t(member(iter(getpids(%0),after(pidinfo(itext(0)),SPACE`QUEUE`)),MOVE))
+-
+&FN.CYCLE #208=
+  ifelse(t(setr(0,pidinfo(first(lpids(%!,w)),time))),%q0,0)
+-
+&FN.ADDCONSOLE #208=
+  [switch(
+      [spacesys(isship,%0)]
+      [spacesys(isconsole,%1)] 
+
+      0?,#-1 INVALID SHIP OBJECT,
+      10,#-1 INVALID CONSOLE OBJECT,
+      11,[set(%1,data.ship:%0)]
+         [setq(b,zone(%1,%0))]
+         [powers(%1,api)]
+         [powers(%1,pemit_all)]
+         [setq(a,lock(%1,=%1))]
+         [set(%1,listen_parent)]
+         [set(%1,monitor)]
+         [set(%0,data.consoles:[trim([get(%0/data.consoles)] %1)])]
+         )]
+-
+&FN.DISTANCE.RAW #208=
+  dist2d(%0,%1,%2,%3)
+-
+&FN.DISTANCE #208=
+  ulocal(
+      fn.distance.raw,
+      first(setr(Origin.position,ulocal(fn.position,%0))),
+      last(%q<Origin.position>),
+      first(setr(Target.position,ulocal(fn.position,%1))),
+      last(%q<Target.position>)
+      )
+-
+&FN.DISTANCE.PARSE #208=
+ switch(
+    %0,
+    <1000,[round(%0,0)][get(v(data)/const.unit)],
+    <1000000,[round(fdiv(%0,1000),2)][get(v(data)/const.unit.1000)],
+    [round(fdiv(%0,1000000),2)][get(v(data)/const.unit.1000000)]
+    )
+-
+&FN.LAND #208=
+  [switch(
+      [u(fn.isship,%0)]
+      [t(setr(1,locate(%0,%1,nT)))]
+      [not(u(fn.isdocked,%0))]
+      [and(
+          eq(get(%0/space`x),get(%q1/space`x)),
+          eq(get(%0/space`y),get(%q1/space`y))
+          )]
+      [t(hasattrval(%q1,data.landing))],
+
+      0????,#-1 INVALID SHIP OBJECT,
+      10???,#-1 INVALID TARGET OBJECT,
+      110??,#-1 SHIP IS ALREADY DOCKED,
+      1110?,#-1 OUT OF RANGE,
+      11110,#-1 NO LANDING ZONE ON TARGET,
+      11111,[u(fn.notify.ship,%0,The ship lurches as it touches down.)]
+            [spacesys(spose,%0,disappears as it [ifelse(spacesys(isship,%q1),docks with the,descends toward)] [name(%q1)].)]
+            [tel(%0,setr(2,get(%q1/data.landing)),silent)]
+            [nsremit(%q2,The [ansi(wh,name(%0))] touches down in the landing area.)]
+            [set(%0,data.docked:%q2)]
+            [set(%0,!opaque)]
+            [spacesys(deactivate,%0)]
+            [spacesys(update.report,%0)]
+            [iter(remove(spacesys(list.system.active,loc(%q1)),%0),spacesys(update.report,itext(0)))]
+            [wipe(%0/space`destination)]
+            )]
+            [spacesys(audit,%0,land)]
+-
+&FN.DEACTIVATE #208=
+  switch(
+      u(fn.isactive,%0),
+
+      1,set(v(data),list.active:[remove(get(v(data)/list.active),%0)]),
+      #-1 SHIP IS NOT ACTIVE
+      )
+-
+&FN.ACTIVATE #208=
+  switch(
+      [u(fn.isship,%0)]
+      [not(u(fn.isactive,%0))],
+
+      0?,#-1 INVALID SHIP OBJECT.,
+      10,#-1 SHIP IS ALREADY ACTIVE.,
+      11,[set(v(data),list.active:[trim([get(v(data)/list.active)] %0)])]
+-
+&FN.LAUNCH #208=
+  [switch(
+      [u(fn.isship,%0)]
+      [u(fn.isdocked,%0)]
+      [hasattrval(loc(%0),space`loc)],
+
+      0??,#-1 INVALID SHIP OBJECT,
+      10?,#-1 SHIP ALREADY UNDOCKED,
+      110,#-1 INVALID LANDING AREA SPACE LOC
+      111,[u(fn.notify.ship,%0,The roar of the engines diminishes as the ship breaks into orbit.)]
+          [nsremit(loc(%0),The [ansi(wh,name(%0))] dissapears from sight as it's propelled into orbit.)]
+          [tel(%0,loc(setr(0,get(loc(%0)/space`loc))),silent)]
+          [set(%0,data.docked:)]
+          [set(%0,opaque)]
+          [set(%0,space`x:[get(%q0/space`x)])]
+          [set(%0,space`y:[get(%q0/space`y)])]
+          [u(fn.notify.consoles,%0,Launch sequence complete.)]
+          [iter(spacesys(list.system.active,loc(%0)),spacesys(update.report,itext(0)))]
+          [spacesys(spose,%0,ifelse(
+                                spacesys(isship,%q0),
+                                glides out of the [name(%q0)]'s docking bay.,
+                                rises out of the atmosphere of [name(%q0)].
+                                ))]
+          )]
+          [spacesys(audit,%0,launch)]
+-
+&FN.ISSHIP #208=
+  [strmatch(last(lparent(%0)),get(v(data)/parent.ship))]
+-
+&FN.UPDATE.REPORT #208=
+# %q0 = New contacts detected.
+# %q1 = Contacts lost from sensors.
+  [ifelse(
+      [not(u(fn.isship,%0))],
+      #-1 INVALID SHIP OBJECT,
+      [setq(0,setdiff(setr(2,u(fn.list.report,%0)),after(setr(3,get(%0/space`report)),|)))]
+      [setq(1,setdiff(after(%q3,|),%q2))]
+      [iter(%q0,u(fn.notify.consoles,%0,New contact [name(itext(0))] [ansi(gh,detected)] on sensors.))]
+      [iter(%q1,u(fn.notify.consoles,%0,Contact [name(itext(0))] [ansi(rh,lost)] from sensors.))]
+      [set(%0,space`report:[secs()]|%q2)]
+      %q2
+      )]
+-
+&FN.SPOSE #208=
+  [iter(
+      spacesys(list.system.active,loc(%0)),
+      spacesys(notify.consoles,itext(0),[if(not(%4),The [ansi(wh,name(%0))]%b)]%1)
+      )]
+  [if(t(%3),nscemit(Comms,[ansi(yh,ifelse(%4,SEMIT,SPOSE))]-[ansi(wh,name(%2))]:[if(not(%4),The [name(%0)]%b)]%1,1))]
+-
+&FN.LIST.SYSTEM.ACTIVE #208=
+  filter(filter.active,u(fn.list.system.all,%0))
+-
+&FN.LIST.SYSTEM.ALL #208=
+  filter(filter.spaceobj,lcon(%0))
+-
+&FN.LIST.REPORT #208=
+  ifelse(
+      ulocal(fn.isship,%0),
+      [setq(Origin,ulocal(fn.position,%0))]
+      [munge(
+          sort.report,
+          iter(
+              setr(0,remove(u(fn.list.system.all,loc(%0)),%0)),
+              ulocal(
+                  fn.distance.raw,
+                  first(%q<Origin>),
+                  last(%q<Origin>),
+                  first(setr(Target.position,ulocal(fn.position,itext(0)))),
+                  last(%q<Target.position>)
+                  )
+              ),
+          %q0
+          )],
+      #-1 INVALID SHIP OBJECT
+      )
+#  ifelse(
+#      not(ulocal(fn.isship,%0)),
+#      #-1 INVALID SHIP OBJECT,
+#      munge(
+#          sort.report,
+#          iter(
+#              setr(0,remove(u(fn.list.system.all,loc(%0)),%0)),
+#              u(fn.distance,%0,itext(0))
+#              ),
+#          %q0
+#          )
+#      )
+-
+&SORT.REPORT #208=
+  sort(%0,f)
+-
+&FILTER.ACTIVE #208=
+  t(spacesys(isactive,%0)) 
+-
+&FILTER.SPACEOBJ #208=
+  [and(
+      hasattrval(%0,space`x),
+      hasattrval(%0,space`y),
+      not(hasattrval(%0,data.docked)),
+      not(get(%0/space`cloaked))
+      )]
+-
+&FN.NOTIFY.SHIP #208=
+  [nsremit(%0,%1)]
+  [nszemit(%0,%1)]
+-
+&FN.NOTIFY.CONSOLES #208=
+  nsremit(
+    setunion(iter(get(%0/data.consoles),loc(itext(0))),),
+    [ansi(gh,>)] %1
+    )
+-
+# Function: iscrew(ship DBREF, player DBREF)
+# Returns true if the player is the ship's captain or a crew member
+&FN.ISCREW #208=[t(firstof(
+                    member(setr(0,get(%0/data.roster)),%1:captain),
+                    member(%q0,%1:crew),
+                    orflags(%1,Wr),
+                    0))]
+-
+&FN.ISGUEST #208=
+  or(
+    orflags(%1,Wr),
+    t(match(get(%0/data.roster),%1:*))
+    )
+-
+# Function: isdocked(ship DBREF)
+# Returns true if the ship is docked.
+&FN.ISDOCKED #208=t(hastype(loc(spacesys(docked,%0)),ROOM))
+-
+&FN.DOCKED #208=get(get(%0/data.docked)/space`loc)
+-
+# Function: canboard(ship DBREF, player DBREF)
+# Returns true if the player can board the ship
+&FN.CANBOARD #208=[or(
+                    t(match(get(%0/data.roster),%1:*)),
+                    orflags(%1,Wr)
+                    )]
+-
+# Function: canuseconsole(console DBREF, player DBREF)
+# Returns true if the player can use the console
+&FN.CANUSECONSOLE #208=
+  [firstof(
+        [u(#208/fn.ismanning,%0,%1)],
+        [and(
+            [u(#208/fn.isunmanned,%0)],
+            [u(#208/fn.iscrew,%0,%1)]
+            )],
+        [and(
+            u(fn.ismanned,%0),
+            not(strmatch(loc(get(%0/data.manned)),loc(%0))),
+            u(fn.iscrew,%0,%1)
+            )],
+        0)]
+-
+# Function: ismanned(console DBREF)
+# Returns true if the console is manned
+&FN.ISMANNED #208=[t(get(%0/data.manned))]
+-
+# Function: isunmanned(console DBREF)
+# Returns true if the console is unmanned
+&FN.ISUNMANNED #208=[not(get(%0/data.manned))]
+-
+# Function: ismanning(console DBREF, player DBREF)
+# Returns true if the player is manning the console
+&FN.ISMANNING #208=[strmatch([get(%0/data.manned)],%1)]
+-
+# Function: mannedby(console DBREF)
+# Returns the name of the player manning the console
+&FN.MANNEDBY #208=
+  [ifelse(
+      u(fn.ismanned,%0),
+      name(get(%0/data.manned)),
+      #-1 UNMANNED
+      )]
+-
+&FN.SCAN #208=
+  [setq(Origin,ulocal(fn.position,%0))]
+  [setq(Lock.origin,ulocal(fn.haslock,%0))]
+
+  [titlebar(Sensor Report: [name(%0)] in [trim(before(name(loc(%0)),last(name(loc(%0)))))])]%r
+  %b[ansi(y,align(2 35 15 5 >12,ID,Name,Class,Speed,Distance))]%r
+  %b[ansi(r,--%b[repeat(-,35)]%b[repeat(-,15)]%b[repeat(-,5)]%b[repeat(-,12)])]%r
+
+  [iter(
+      setr(1,ulocal(fn.list.report,%0)),
+      [setq(Lock.target,ulocal(fn.haslock,itext(0)))]
+      [setq(Target.position,ulocal(fn.position,itext(0)))]
+      %b[align(
+            38 15 -5 >12,
+            [ljust(#@,2)][ulocal(subfn.scan.locksym,%0,itext(0),%q<Lock.origin>,%q<Lock.target>)][name(itext(0))],
+            [ulocal(fn.class,itext(0))],
+            [ifelse(ulocal(fn.ismoving,itext(0)),ulocal(fn.speed,itext(0)),0)],
+            [ulocal(
+                  fn.distance.parse,
+                  ulocal(fn.distance.raw,first(%q<Origin>),last(%q<Origin>),first(%q<Target.position>),last(%q<Target.position>))
+                  )]
+            )],
+      ,%r)]%r
+
+[footerbar([words(%q1)] Contacts)]%r
+  [ansi(rh,*)] - Locked onto you\, [ansi(gh,*)] - You are locked on\, [ansi(yh,*)] - Mutual weapons lock
+  [set(%0,space`report:[secs()]|%q1)]
+-
+&SUBFN.SCAN.LOCKSYM #208=
+  switch(
+      [strmatch(last(%2,|),%1)]
+      [strmatch(last(%3,|),%0)],
+      11,ansi(yh,*),
+      10,ansi(gh,*),
+      01,ansi(rh,*),
+      %b
+      )
+-
+&FN.SCAN.TARGET #208=
+  [cond(
+      spacesys(isship,%0),[spacesys(status,%0)],
+      hasattrval(%!,subfn.scan.[setr(0,edit(spacesys(class,%0),%b,_))]),ulocal(subfn.scan.%q0,%0),
+      [titlebar(Scan Report: [name(%0)])]%r
+      [u(%0/describe)]%r
+      Location:%r%tX: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
+      [footerbar(Class: [spacesys(class,%0)]
+      )]%r
+-
+&SUBFN.SCAN.CELESTIAL #208=
+  [titlebar(Scan Report: [name(%0)])]%r
+  [u(%0/describe)]%r
+  Location%r%t
+  X: [get(%0/space`x)]%tY: [get(%0/space`y)]%r
+  [ansi(rh,Landing Area:)] [ifelse(and(not(xget(%0,data.landing.hidden)),hasattrval(%0,data.landing)),name(zone(get(%0/data.landing))),N/A)]%r
+  [footerbar()]
+-
+&FN.SCAN.LAND #208=
+  [u(loc(%0)/nameformat)]%r[u(loc(%0)/describe)]%r[u(loc(%0)/conformat,cat(lvplayers(loc(%0)),lvthings(loc(%0))))]
+-
+&FN.ISACTIVE #208=
+  [t(member(get(v(data)/list.active),%0))]
+-
+&FN.SETDEST #208=
+  set(
+    %0,
+    space`destination:[firstof(get(%1/space`x),%1)] [firstof(get(%1/space`y),%2)]
+    ) 
+-
+&FN.DESTINATION #208=
+  firstof(
+      get(%0/space`destination),
+      #-1 NO DESTINATION SET
+      )
+-
+&FN.ISJUMP #208=
+  strmatch(parent(%0),get(v(data)/parent.jump))
+-
+&SUBFN.JUMP.CALC #208=
+  [setq(0,switch(%2,>6,0,6,5,5,10,4,20,3,30,2,40,1,50,70))]
+  [add(%0,rand(sub(%q0,mul(%q0,2)),%q0))] [add(%1,rand(sub(%q0,mul(%q0,2)),%q0))]
+-
+&FN.JUMP #208=
+  switch(
+      [u(fn.isship,%0)]
+      [u(fn.isjump,%1)]
+      [t(hasattrval(%1,link))]
+      [not(ulocal(fn.ismoving,%0))]
+      [t(eq(u(fn.distance,%0,%1),0))],
+
+      0????,#-1 INVALID SHIP OBJECT,
+      10???,#-1 INVALID JUMP POINT,
+      110??,#-1 JUMP IS UNLINKED,
+      1110?,#-1 SHIP IS IN MOTION,
+      11110,#-1 OUT OF RANGE,
+      11111,[spacesys(spose,%0,disappears in a flash of light through the [rest(name(%1))] jump point.)]
+            [u(fn.notify.consoles,%0,Jumping to [name(loc(setr(1,get(%1/link))))]...)]
+            [u(fn.notify.ship,%0,Reality is briefly distorted as the ship is hurtled through a jump point.)]
+            [tel(%0,loc(%q1))]
+            [iter(spacesys(list.system.active,loc(%1)),spacesys(update.report,itext(0)))]
+            [spacesys(spose,%0,arrives in-system admist a flash of light near the [rest(name(%q1))] jump point.)]
+            [iter(spacesys(list.system.active,loc(%0)),spacesys(update.report,itext(0)))]
+            [spacesys(notify.consoles,%0,Jump complete.  New position: [setr(2,ulocal(subfn.jump.calc,get(%q1/space`x),get(%q1/space`y),spacesys(skill.max,%0,astrogation)))] 
+                                         \([ansi(y,[round(sub(100,dist2d(get(%q1/space`x),get(%q1/space`y),first(%q2),last(%q2))),0)]\% jump accuracy)]\).
+                                         )]
+            [set(%0,space`x:[first(%q2)])]
+            [set(%0,space`y:[last(%q2)])]
+            [wipe(%0/space`destination)]
+            [spacesys(audit,%0,jump)]
+      )
+-
+&FN.HASSHUTTLE #208=
+  t(hasattrval(%0,space`shuttle))
+-
+&FN.CLONE.CONSINROOM #208=
+  iter(
+      lvcon(%0),
+      if(
+        spacesys(isconsole,itext(0)),
+        [setr(0,clone(itext(0)))][set(%q0,!halt)]
+        )
+      )
+-
+&FN.CLONE.SHIP #208=
+  ifelse(
+      not(strmatch(last(lparent(%0)),get(v(data)/parent.ship))),
+      #-1 INVALID SHIP PARENT,
+      [setr(1,create(%1))]
+      [setq(a,parent(%q1,%0))]
+      [setq(b,lock(%q1/zone,=%q1))]
+      [setq(d,zone(%q1,%q1))]
+      [set(%q1,space`x:)]
+      [set(%q1,space`y:)]
+      [setq(c,lock(%q1,=%q1))]
+      [set(%q1,enter_ok)]
+      [set(%q1,!no_command)]
+      [set(%q1,link_ok)]
+      [if(hasattrval(%0,roomname),set(%q1,roomname:[get(%0/roomname)]))]
+      [powers(%q1,api)]
+      [iter(
+          spacesys(clone.consinroom,%0),
+          [tel(itext(0),%q1)][spacesys(addconsole,%q1,itext(0))]
+          )]
+      [if(hasattrval(%0,connected),ulocal(subfn.clone.ship.rooms,%0,%q1))]
+      )
+-
+&SUBFN.CLONE.SHIP.ROOMS #208=
+# First create the rooms.  Do the rooms alphabetically just so we know the lists are ordered.
+  [iter(
+      setr(1,sort(lsearch(all,type,room,zone,%0),name)),
+      [setq(0,cat(%q0,clone(itext(0))))]
+      [setq(a,zone(last(%q0),%1))]
+      [set(last(%q0),describe:[get(itext(0)/describe)])]
+      )]
+# For each room, clone consoles, make exits, link appropriately.
+  [iter(
+      %q0,
+      [iter(
+          spacesys(clone.consinroom,extract(%q1,inum(0),1)),
+          [tel(itext(0),itext(1))][spacesys(addconsole,%1,itext(0))]
+          )]
+      [iter(
+          setr(2,lexits(extract(%q1,inum(0),1))),
+          [setq(3,
+              cat(%q3,open(
+                        name(itext(0)),
+                        extract(%q0,match(%q1,loc(itext(0))),1),
+                        itext(1)
+                        ))
+              )]
+          [setq(b,zone(last(%q3),%1))]
+# Set up the exit hatch             
+          [if(
+            strmatch(name(itext(0)),Disembark),
+            [set(%1,connected:[last(%q3)])]
+            [link(last(%q3),variable)]
+            [setq(b,zone(last(%q3),%1))]
+            [setq(d,parent(last(%q3),get(v(data)/parent.airlock)))]
+            [set(last(%q3),dark no_warn)]
+            [powers(last(%q3),link)]
+            [powers(last(%q3),api)]
+            [alias(last(%q3),leave)]
+            )]
+          )]
+      )]
+-
+&FN.ISCONSOLE #208=
+  t(strmatch(last(lparent(%0)),get(v(data)/parent.console)))
+-
+&FN.ROSTER #208=
+  [titlebar(Ship Roster: [name(%0)])]%r
+  [ansi(y,align(30 14 32,Name,Access,Location))]%r
+  [iter(
+      sort(get(%0/data.roster),name),
+      align(
+          30 14 32,
+          name(setr(0,first(itext(0),:))),
+          capstr(last(itext(0),:)),
+          ifelse(strmatch(zone(loc(%q0)),%0),name(loc(%q0)),ansi(rh,NOT ABOARD))
+          ),
+      ,%r)]%r
+  [footerbar()]
+-
+&FN.ISCAPTAIN #208=
+  ifelse(
+      not(spacesys(isship,%0)),
+      #-1 INVALID SHIP OBJECT,
+      or(orflags(%1,Wr),t(match(get(%0/data.roster),%1:captain)))
+      )
+-
+&FN.ROSTER.ADD #208=
+  switch(
+      [spacesys(isship,%0)]
+      [spacesys(isguest,%0,%1)],
+
+      0?,#-1 INVALID SHIP OBJECT,
+      10,set(%0,data.roster:[trim([get(%0/data.roster)] %1:[lcstr(%2)])]),
+      11,set(%0,data.roster:[regediti(get(%0/data.roster),%1:\\w*,%1:[lcstr(%2)])])
+      )
+-
+&FN.ROSTER.REMOVE #208=
+  ifelse(
+      spacesys(isship,%0),
+      set(%0,data.roster:[trim(ldelete(setr(0,get(%0/data.roster)),match(%q0,%1:*)))]),
+      #-1 INVALID SHIP OBJECT
+      )
+-
+&FN.HASBAY #208=
+  hasattrval(%0/space`bay)
+-
+&FN.ISBAYOPEN #208=
+  or(
+    last(get(%0/space`bay),|),
+    not(spacesys(isship,%0))
+    )
+-
+&FN.OPENBAY #208=
+  set(%0,space`bay:[first(get(%0/space`bay),|)]|1)
+-
+&FN.CLOSEBAY #208=
+  set(%0,space`bay:[first(get(%0/space`bay),|)]|0)
+-
+&FN.CANJUMP #208=
+  1
+-
+&FN.HULL #208=
+  [get(%0/space`armor`cur)]:[max(power(mul(get(%0/space`armor),10),2),10)]
+-
+&FN.SHIELDS #208=
+  [get(%0/space`shields`cur)]:[max(power(mul(get(%0/space`shields),10),2),10)]
+-
+&FN.CARGO #208=
+  [get(%0/space`cargo`cur)]:[get(%0/space`cargo`max)]
+-
+&FN.CPU #208=
+  [get(%0/space`cpu`cur)]:[max(mul(10,get(%0/space`cpu)),10)]
+-
+&FN.REACTOR #208=
+  [get(%0/space`reactor`cur)]:[mul(100,get(%0/space`reactor))]
+-
+&FN.STATUS #208=
+  [titlebar(Status: [name(%0)])]%r
+  [table(
+      [ansi(y,Class:)] [spacesys(class,%0)]|
+      [ansi(y,Location:)] X: [first(setr(Position,ulocal(fn.position,%0)))] Y: [last(%q<Position>)]|
+      [ansi(y,Engines:)] [spacesys(speed.parse,%0)]|
+      [ansi(y,Hull Integrity:)] [mul(fdiv(first(setr(0,spacesys(hull,%0)),:),last(%q0,:)),100)]\% \([first(%q0,:)]/[last(%q0,:)]\)|
+      [ansi(y,Shields:)] [mul(fdiv(first(setr(1,spacesys(shields,%0)),:),last(%q1,:)),100)]\% \([first(%q1,:)]/[last(%q1,:)]\)|
+      [ansi(y,Cargo Bay:)] [first(setr(2,spacesys(cargo,%0)),:)] of [last(%q2,:)] m3|
+      [ansi(y,Reactor:)] [first(setr(3,spacesys(reactor,%0)),:)] of [last(%q3,:)] MW|
+      [ansi(y,Computer:)] [mul(fdiv(first(setr(4,spacesys(cpu,%0)),:),last(%q4,:)),100)]\% Avail.|
+      [ansi(y,Gun Mounts:)]|
+      [if(hasattrval(%0,data.landing),[ansi(y,Bay Doors Open)]: [ifelse(spacesys(isbayopen,%0),[ansi(gh,Yes)],No)])]
+      ,38,78,|)]%r
+      [setq(Ship.weapons,spacesys(weapons,%0))]
+      [iter(
+         lnum(1,get(%0/space`guns)),
+         [setq(Weapon,extract(%q<Ship.weapons>,itext(0),1,|))]
+         %t<#@> [ifelse(
+                      hasattrval(%0,space`guns`#@),
+                      [first(%q<Weapon>,:)] \([ansi(c,Damage:)] [extract(%q<Weapon>,2,1,:)]\, 
+                                              [ansi(c,Optimum Range:)] [extract(%q<Weapon>,4,1,:)][get(v(data)/const.unit)]\),
+                      UNINSTALLED
+                      )] 
+          %r)]
+      [footerbar()]
+-
+&FN.VALUE #208=
+  get(%0/value)
+-
+&FN.INTERVAL #208=
+  get(v(data)/interval)
+-
+&FN.CANFLY #208=
+  or(
+    not(spacesys(iscapship,%0)),
+    gt(words(filter(filter.mannedcons,get(%0/data.consoles))),1)
+    )
+-
+&FN.SURVEY #208=
+  [set(%0,space`survey`%1:[secs()])]
+  [rpc(Econ.grant,%2,setr(Payout,mul(default(%1/space`survey.mult,1),chargen(get.skill,%2,science),rand(15,60))))]
+  %q<Payout>
+-
+&FN.SURVEY.LAST #208=
+  default(%0/space`survey`%1,0)
+-
+&FN.HAIL #208=
+  [spacesys(notify.consoles,%2,[ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] from [ansi(wh,name(%0))]: %3)]
+  [spacesys(notify.consoles,%0,[ansi(gh,\[)][ansi(g,MESSAGE)][ansi(gh,\])] [ansi(wh,Outgoing)]: %3)]
+  [nscemit(Comms,[ansi(yh,HAIL)]-[ansi(wh,name(%0))]\([name(%1)]\)->[ansi(wh,name(%2))]: %3,1)]
+-
+&FN.MANIFEST #208=
+  [rpc(Econ.cargojob_manifest,%0)]
+-
+&FN.SHIPSBYCAPTAIN #208=
+  switch(
+         [t(setr(p,pmatch(%0)))]
+         [t(strlen(
+                   setr(r,
+                        squish(
+                               map(
+                                   #lambda/
+                                   \[if(
+                                        strmatch(get(%%0/data.roster),*%qp:captain*),
+                                        %%0
+                                       )\],
+                                   iter(
+                                        lvthings(get(v(data)/bin.parents)),
+                                        children(itext(0))
+                                       )
+                                  )
+                              )
+                       )
+                   ))],
+         0?,#-1 NOT A PLAYER,
+         10,#-1 NO SHIPS FOUND,
+         %qr
+        )
+-
+&FN.ISSTATION #208=
+  ifelse(eq(default(%0/space`size,1),9),1,0)
+-
+&FN.FINDCLASS #208=
+  firstof(
+         setinter(
+                 %0,
+                 setr(l,lvthings(get(v(data)/bin.parents)))
+                 ),
+         if(setr(p,element(
+                          iter(
+                              %ql,
+                              get(itext(0)/space`class)
+                              ,,|),
+                          *%0*,|)),
+           elements(
+                   %ql,
+                   %qp
+                   ),
+           0)
+         ,#-1)
+-
+&FN.GETCAPTAIN #208=
+  switch(
+        [spacesys(isship,%0)]
+        [setr(c,trim(
+                    grab(
+                        get(%0/data.roster),
+                        *:captain),
+                    :captain)
+                    )],
+        0*,#-1 NOT A SHIP,
+        1,#-1 NO CAPTAIN,
+        %qc)
+-
+&FN.FINDEXIT #208=
+  firstof(
+         setinter(
+                 %1,
+                 setr(l,lexits(room(%0)))
+                 ),
+         if(setr(e,element(
+                          iter(
+                              %ql,
+                              name(##)
+                              ,,|),
+                          *%1*,|)),
+           elements(
+                   %ql,
+                   %qe
+                   ),
+           0)
+         ,#-1)
+-
+&FN.ISTAXIWAY #208=
+  hasattrval(%0/data.taxiway)
+-
+&FN.TAXI #208=
+  switch(
+        [spacesys(isship,%0)]
+        [spacesys(isdocked,%0)]
+        [not(spacesys(iscapship,%0))]
+        [if(setr(e,spacesys(findexit,%0,%1)),1,0)]
+        [t(spacesys(istaxiway,%qe))],
+        0????,#-1 INVALID SHIP OBJECT,
+        10???,#-1 SHIP NOT DOCKED,
+        110??,#-1 CAPSHIPS CANNOT TAXI,
+        1110?,#-1 EXIT NOT FOUND,
+        11110,#-1 NOT A TAXIWAY,
+        11111,
+             [nsremit(loc(%0),The [ansi(wh,name(%0))] taxis towards [ansi(wh,name(loc(%qe)))].)]
+             [tel(%0,loc(%qe))]A
+             [nsremit(loc(%0,The [ansi(wh,name(%0))] taxis in from [ansi(wh,name(home(%qe)))].)]
+             [set(%0,data.docked:[loc(%qe)])]
+             [spacesys(notify.consoles,%0,Taxi procedure complete.)]
+             [spacesys(notify.ship,%0,The ship shudders as it comes to a halt.)]
+             [spacesys(deactivate,%0)]
+        )
+-
+&FN.GETDESTOBJ #208= 
+  [firstof(
+           default(%0/space`destination.obj,0),
+           #-1 NO DESTINATION SET
+          )]
+-
+&FN.UNLOAD.SHIP #208=
+  switch(
+        [spacesys(isship,%0)]
+        [spacesys(hasbay,%0)]
+        [spacesys(isdocked,%0)]
+        [spacesys(isship,%1)]
+        [not(spacesys(iscapship,%1))]
+        [spacesys(isdocked,%1)]
+        [spacesys(isbayopen,%0)]
+        [spacesys(canboard,%0,%2)]
+        [spacesys(canboard,%1,%2)]
+        [match(get(%1/data.docked),get(%0/data.landing))],
+        0?????????,#-1 INVALID ACTOR SHIP,
+        10????????,#-1 ACTOR SHIP HAS NO BAY,
+        110???????,#-1 ACTOR SHIP NOT DOCKED,
+        1110??????,#-1 INVALID VICTIM SHIP,
+        11110?????,#-1 VICTIM SHIP IS CAPSHIP,
+        111110????,#-1 VICTIM SHIP NOT DOCKED,
+        1111110???,#-1 ACTOR SHIP BAY DOORS CLOSED,
+        11111110??,#-1 ACTOR SHIP PERMISSION DENIED,
+        111111110?,#-1 VICTIM SHIP PERMISSION DENIED,
+        1111111111,
+               [nsremit(loc(%1),The [ansi(wh,name(%1))] is lifted free of the [ansi(wh,name(%0))]'s docking bay by the bay's loader arms. )]
+               [tel(%1,loc(%0))]
+               [nsremit(loc(%1),The [ansi(wh,name(%1))] is lifted out of the [ansi(wh,name(%0))]'s docking bay by massive loader arms, and is placed on the ground.)]
+               [set(%1,data.docked:[loc(%1)])]
+               [spacesys(notify.consoles,%0,The [name(%1)] has been unloaded successfully from the [name(%0)].)]
+               [spacesys(notify.consoles,%1,The [name(%1)] has been unloaded successfully from the [name(%0)].)]
+               [spacesys(notify.ship,%1,The ship shudders and rocks as it is deposited on the ground by the [name(%0)]'s loader arms.)]
+               [spacesys(deactivate,%0)]
+               [spacesys(deactivate,%1)]
+        ,#-1 SHIP NOT IN BAY)
+-
+&FN.LOAD.SHIP #208=
+  switch(
+        [not(match(%0,%1))]
+        [spacesys(isship,%0)]
+        [spacesys(hasbay,%0)]
+        [spacesys(isdocked,%0)]
+        [spacesys(isship,%1)]
+        [not(spacesys(iscapship,%1))]
+        [spacesys(isdocked,%1)]
+        [spacesys(isbayopen,%0)]
+        [spacesys(canboard,%0,%2)]
+        [spacesys(canboard,%1,%2)]
+        [match(loc(%0),loc(%1))],
+        0??????????,#-1 CANNOT LOAD SELF,
+        10?????????,#-1 INVALID ACTOR SHIP,
+        110????????,#-1 ACTOR SHIP HAS NO BAY,
+        1110???????,#-1 ACTOR SHIP NOT DOCKED,
+        11110??????,#-1 INVALID VICTIM SHIP,
+        111110?????,#-1 VICTIM SHIP IS CAPSHIP,
+        1111110????,#-1 VICTIM SHIP NOT DOCKED,
+        11111110???,#-1 ACTOR SHIP BAY DOORS CLOSED,
+        111111110??,#-1 ACTOR SHIP PERMISSION DENIED,
+        1111111110?,#-1 VICTIM SHIP PERMISSION DENIED,
+        11111111111,
+                [nsremit(loc(%1),The [ansi(wh,name(%1))] is lifted into the [ansi(wh,name(%0))]'s docking bay by the bay's loader arms.)]
+                [tel(%1,get(%0/data.landing))]
+                [nsremit(loc(%1),The [ansi(wh,name(%1)])] is lifted into the [ansi(wh,name(%0))]'s docking bay by the bay's loader arms, and placed upon the deck.)]
+                [set(%1,data.docked:[get(%0/data.landing)])]
+                [spacesys(notify.consoles,%0,The [name(%1)] has been loaded successfully aboard the [name(%0)].)]
+                [spacesys(notify.consoles,%1,The [name(%1)] has been loaded successfully aboard the [name(%0)].)]
+                [spacesys(notify.ship,%1,The ship shudders and rocks as it is deposited in the bay of the [name(%0)].)]
+                [spacesys(deactivate,%0)]
+                [spacesys(deactivate,%1)]
+        ,#-1 SHIPS NOT ADJACENT)
+-
+&FN.FINDSHIP.ROOM #208=
+  firstof(
+         setinter(
+                  %1,
+                  setr(l,edit(lvthings(room(%0)),%0,))
+                  ),
+         if(setr(e,element(
+                          iter(
+                              %ql,
+                              name(##)
+                              ,,|),
+                          *%1*,|)),
+            elements(
+                    %ql,
+                    %qe
+                    ),
+            0)
+         ,#-1)
+-
+&FN.FINDSHIP.BAY #208=
+  firstof(
+         setinter(
+                  %1,
+                  setr(l,lvthings(get(%0/data.landing)))
+                  ),
+         if(setr(e,element(
+                          iter(
+                              %ql,
+                              name(##)
+                              ,,|),
+                          *%1*,|)),
+            elements(
+                    %ql,
+                    %qe
+                    ),
+            0)
+         ,#-1)
+-
+&FN.FINDSHIP.ALL #208=
+  firstof(
+          setinter(
+                   %1,
+                   setr(local_list,
+                        setdiff(
+                                lvthings(
+                                         room(%0)
+                                        ),
+                                %0,
+                               )
+                       )
+                  ),
+          ifelse(
+                 setr(list_pos,
+                      element(
+                              iter(
+                                   %q<local_list>,
+                                   name(##),
+                                   ,|
+                                  ),
+                              %1*,
+                              |
+                             )
+                     ),
+                 elements(
+                          %q<local_list>,
+                          %q<list_pos>
+                         ),
+                 0
+                ),
+          setinter(
+                   %1,
+                   setr(full_list,
+                        setdiff(
+                                iter(
+                                     lvthings(get(v(data)/bin.parents)),
+                                     children(itext(0))
+                                    ),
+                                %q<local_list>
+                               )
+                       )
+                  ),
+          ifelse(
+                 setr(list_pos,
+                      element(
+                              iter(
+                                   %q<full_list>,
+                                   name(##),
+                                   ,|
+                                  ),
+                              %1*,
+                              |
+                             )
+                     ),
+                 elements(
+                          %q<full_list>,
+                          %q<list_pos>
+                         ),
+                 0
+                ),
+          #-1
+         )
+-
+&FN.HAIL.WIPE #208=
+  if(
+     hasattrval(%0/data.hailtarget),
+     wipe(%0/data.hailtarget)
+    )
+-
+&FN.HAIL.SET #208=
+  if(
+     spacesys(isship,%0),
+     set(%0,data.hailtarget:%1)
+    )
+-
+&FN.HAIL.GETTARGET #208=
+  ifelse(
+     hasattrval(%0/data.hailtarget),
+     get(%0/data.hailtarget),
+     #-1
+    )
+-
+&FN.AUDIT #208=
+  ifelse(
+         spacesys(isship,%0),
+         switch(%1,
+                land,
+                  set(%0,space`audit`land:[inc(default(%0/space`audit`land,0))]),
+                launch,
+                  set(%0,space`audit`launch:[inc(default(%0/space`audit`launch,0))]),
+                jump,
+                  set(%0,space`audit`jump:[inc(default(%0/space`audit`jump,0))]),
+                #-1 AUDIT UNKNOWN
+               ),
+         #-1 NOT A SHIP
+        )
+-
+&FN.LIST.SHIP.ALL #208=
+  squish(
+         iter(
+              lvthings(get(v(data)/bin.parents)),
+              children(itext(0))
+             )
+        )
+-
+&FN.LIST.SHIP.ACTIVE #208=
+  get(v(data)/list.active)
+-
+&FN.LIST.TRACKERS #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(trackers,
+                 default(%0/space`tracking`trackers,0)
+                ))],
+         0?,#-1 NOT A SHIP,
+         10,#-1 UNTRACKED,
+         11,%q<trackers>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.LIST.TRACKERS.PLAYER #208=
+  switch(
+         [t(setr(player,
+                 pmatch(%0)
+                ))]
+         [t(setr(trackers,
+                 default(%q<player>/space`tracking`allowed,0)
+                ))],
+         0?,#-1 NOT A PLAYER,
+         10,#-1 NOT TRACKING,
+         11,%q<trackers>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.GETSHIPLOC #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(loc,
+                 ifelse(
+                        setr(zone,
+                             zone(setr(room,
+                                       room(%0)
+                                      )
+                                 )
+                            ),
+                        %q<zone>,
+                        %q<room>
+                       )
+                ))],
+         0?,#-1 NOT A SHIP,
+         10,#-1 SHIP HAS NO LOCATION!?,
+         11,%q<loc>,
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.ADDTRACKER #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(player,
+                 pmatch(%1)
+                ))]
+         [not(and(
+                  t(setinter(
+                             spacesys(list.trackers,%0),
+                             %q<player>
+                            )), 
+                  t(setinter(
+                             spacesys(list.trackers.player,%q<player>),
+                             %0
+                            ))  
+                 ))],
+         0??,#-1 NOT A SHIP,
+         10?,#-1 NOT A PLAYER,
+         110,#-1 TRACKER ALREADY INSTALLED OR DUPLEX ISSUE,
+         111,
+             [set(%0,space`tracking`trackers:[squish(insert(get(%0/space`tracking`trackers),-1,%q<player>))])]
+             [set(%q<player>,space`tracking`allowed:[squish(insert(get(%q<player>/space`tracking`allowed),-1,%0))])],
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.DELTRACKER #208=
+  switch(
+         [spacesys(isship,%0)]
+         [t(setr(player,
+                 pmatch(%1)
+                ))]
+         [and(
+              t(setinter(
+                         spacesys(list.trackers,%0),
+                         %q<player>
+                        )),
+              t(setinter(
+                         spacesys(list.trackers.player,%q<player>),
+                         %0
+                        ))
+             )],
+         0??,#-1 NOT A SHIP,
+         10?,#-1 NOT A PLAYER,
+         110,#-1 TRACKER NOT INSTALLED OR DUPLEX ISSUE,
+         111,
+             [set(%0,space`tracking`trackers:[squish(remove(get(%0/space`tracking`trackers),%q<player>))])]
+             [set(%q<player>,space`tracking`allowed:[squish(remove(get(%q<player>/space`tracking`allowed),%0))])],
+         #-1 SOMETHING IS BROKEN ##
+        )
+-
+&FN.RENAME.CONSOLE #208=
+  ifelse(
+         spacesys(isconsole,%0),
+         name(%0,%1),
+         #-1 NOT A CONSOLE
+        )
+-
+&FN.UNIT #208=
+  get(v(data)/const.unit)
+-
+&FN.HASLOCK #208=
+  cond(
+      hasattrval(%0,space`lock),1|[get(%0/space`lock)],
+      not(setr(PID,first(getpids(%0/space`queue`weaps`lock)))),0,
+      2|[pidinfo(%q<PID>,time)]
+      )
+-
+&FN.WEAPONS #208=
+# Weapon displayed in the form of Name:Damage:Cooldown (secs):Optimal range:Remaining cooldown
+  iter(
+      lattr(%0/space`guns`),
+      [ifelse(
+          isdbref(setr(Weapon,get(%0/[itext(0)]))),
+          [name(%q<Weapon>)]:[get(%q<Weapon>/damage)]:[get(%q<Weapon>/cooldown)]:[get(%q<Weapon>/range)],
+          get(%0/##)
+          )]:
+      [ifelse(t(setr(PID,first(getpids(%0/space`queue`weaps`#@)))),pidinfo(%q<PID>,time),0)],
+      ,|)
+-
+&FN.LOCK.TIME #208=
+  mul(
+    get(v(data)/const.lock.time),
+    switch(
+        spacesys(skill,%0,computers),
+        <1,2,
+        1,1.5,
+        2,1.25,
+        3,1,
+        4,0.9,
+        5,0.75,
+        0.5
+        )
+    )
+-
+&FN.LOCK #208=
+# %0 = Ship
+# %1 = Target
+  ncond(
+      not(strmatch(%1,0)),set(%0,space`lock:),
+      spacesys(isactive,%0),[spacesys(notify.consoles,%0,Ship inactive. Weapons lock aborted.)][set(%0,space`lock:)],
+      strmatch(loc(%0),loc(%1)),[spacesys(notify,consoles,%0,The [name(%1)] is no longer on sensors.  Weapons lock aborted.)][set(%0,space`lock:)],
+      gte(spacesys(minrange,%0),spacesys(distance,%0,%1)),[spacesys(notify.consoles,%0,[name(%1)] is out of range. Weapons lock aborted.)][set(%0,space`lock:)],
+
+      [if(
+        not(hasattrval(%0,space`lock)),
+        [set(%0,space`lock:%1)]
+        [spacesys(notify.consoles,%0,Weapons are now locked on the [name(%1)].)]
+        [spacesys(notify.consoles,%1,[ansi(rhf,WARNING:)] The [name(%0)] has obtained a weapons lock.)]
+        )]
+       )
+-
+&FN.MINRANGE #208=
+  mul(
+    get(v(data)/const.lock.range),
+    switch(
+        spacesys(skill,computers),
+        <1,0.5,
+        1,0.75,
+        2,0.9,
+        3,1,
+        4,1.25,
+        5,1.5,
+        2
+        )
+    )
+-
+&FN.ATTACK #208=
+# %0 = Attacking ship
+# %1 = Console
+# %2 = Gunner
+# %3 = Target ship
+  [setq(Skill.attacker,spacesys(skill,%2,cond(spacesys(isturret,%1),turret-gun,spacesys(iscapship,%0),pilot-cap,pilot-fig)))]
+  [setq(Skill.defender,spacesys(skill.max,%4,cond(spacesys(iscapship,%4),pilot-cap,pilot-fig)))]
+  [setq(Ship.weapons,spacesys(weapons,%0))]
+  [setq(Ship.weapons.canfire,squish(iter(%q<Ship.weapons>,if(eq(last(##,:),0),#@),|,%b)))]
+  [setq(Damage.total,0)]
+  [setq(Damage.shields,0)]
+  [setq(Damage.armor,0)]
+  [setq(Shields,get(%3/space`shields`cur))]
+  [setq(Armor,get(%3/space`armor`cur))]
+
+  [iter(
+      %q<Ship.weapons.canfire>,
+      [setq(Roll.attacker,spacesys(skill.roll,%q<Skill.attacker>))]
+      [setq(Roll.defender,spacesys(skill.roll,%q<Skill.defender>))]
+      [setq(Damage,spacesys(damage,extract(%q<Ship.weapons>,itext(0),1,|),spacesys(distance,%0,%3)))]
+      [setq(Damage.total,add(%q<Damage.total>,%q<Damage>))]
+      [spacesys(spose,%0,fires on the [name(%3)] and [ifelse(gt(%q<Damage>,0),ansi(rh,hits),ansi(gh,misses))]!)]
+      )]
+
+  [if(gt(%q<Damage.total>,0),spacesys(notify.ship,%3,The ship rocks as it's struck by incoming fire.))]
+
+  [ifelse(
+        gt(%q<Shields>,%q<Damage.total>),
+        set(%3,space`shields`cur:[sub(%q<Shields>,%q<Damage.total>)]),
+        [setq(Damage,sub(%q<Damage.total>,%q<Shields>)]
+        [set(%3,space`shields`cur:0)]
+        [set(%3,space`armor`cur:[max(sub(%q<Armor>,%q<Damage>),0)])]
+        )]
+
+# Messages
+  [setq(Message,[ansi(rh,%q<Damage.total>)] points of damage \([ansi(y,ifelse(t(%q<Damage>),%q<Shields>,%q<Damage.total>))] absorbed by shields\).)]
+  [setq(Message.status.shields,[mul(fdiv(first(setr(1,spacesys(shields,%3)),:),last(%q1,:)),100)]\%)]
+  [setq(Message.status.hull,[mul(fdiv(first(setr(0,spacesys(hull,%3)),:),last(%q0,:)),100)]\%)]
+
+  [syslog(SPACE COMBAT,[name(%2)] in the [name(%0)]\(%0\) attacked the [name(%3)]\(%3\) in [name(loc(%0))] for %q<Damage.total> points of damage.)]
+  [if(and(gt(%q<Shields>,0),eq(get(%3/space`shields`cur),0)),spacesys(spose,%3,briefly illuminates the surrounding space with an electric charge as its shields are disabled!))]
+  [spacesys(notify.consoles,%0,[ansi(gh,Inflicted)] %q<Message>)]
+  [spacesys(notify.consoles,%3,[ansi(yh,Received)] %q<Message>)]
+  [spacesys(notify.consoles,%3,[ansi(rh,WARNING:)]  Shield strength is %q<Message.status.shields>.  Hull integrity is %q<Message.status.hull>.)])]
+
+  [if(eq(get(%3/space`armor`cur),0),spacesys(destroy,%3,%0))]
+-
+&FN.ISTURRET #208=
+# TODO Determine if a console is a turret
+  0
+-
+&FN.DAMAGE #208=
+# %1 = Weapon output from spacesys(weapons)
+# %2 = Range between attacker and defender
+  [setq(Weapon.damage,extract(%0,2,1,:))]
+  [setq(Weapon.range,extract(%0,4,1,:))]
+  [setq(Damage,mul(%q<Weapon.damage>,sub(1.0,max(fdiv(sub(%1,%q<Weapon.range>),%q<Weapon.range>),0))))]
+    
+# Return the total amount of damage to be applied
+  %q<Damage>
+-
+&FN.DESTROY #208=
+  [setq(Ship.location,spacesys(getshiploc,%0))]
+  [setq(Eject,get(v(data)/eject))]
+  [setq(
+      Ship.occupants,
+      ifelse(
+          strmatch(parent(%0),get(v(data)/parent.ship.multi)),
+          [setq(list,)]
+          [iter(
+              lsearch(all,type,room,zone,%0),
+              setq(list,squish(%q<list> lplayers(itext(0))))
+              )]
+          %q<list>,
+          lplayers(%0)
+          )
+      )]
+
+  [syslog(SPACE COMBAT,The [name(%0)]\(%0\) was destroyed in [name(%q<Ship.location>)] by the [name(%1)]\(%1\).  
+                       Ejected occupants: [itemize(iter(%q<Ship.occupants>,name(itext(0)),,|),|)]
+                       )]
+  [spacesys(notify.ship,%0,ansi(rh,The ship is ripped apart as the hull is breached!))]
+  [spacesys(spose,%0,explodes in a blinding flash of light as its hull is breached!)]
+  [spacesys(deactivate,%0)]
+  [tel(%0,get(v(data)/graveyard))]
+  [iter(
+      %q<Ship.occupants>,
+      [tel(itext(0),%q<Eject>,1)]
+      [nspemit(itext(0),ansi(gh,You manage to eject in an escape pod as the ship is destroyed!))]
+      )]
+  [set(%0,halt)]
+  [iter(
+      lthings(%q<Ship.location>),
+      if(spacesys(isship,itext(0)),spacesys(update.report,itext(0)))
+      )]
+-
+&FN.REPAIR #208=
+  cond(
+    not(spacesys(isship,%0)),#-1 INVALID SHIP,
+    [set(%0,space`armor:[get(parent(%0)/space`armor)])]
+    [set(%0,space`armor`cur:[first(spacesys(hull,parent(%0)),:)])]
+    [set(%0,space`shields:[get(parent(%0)/space`shields)])]
+    [set(%0,space`shields`cur:[first(spacesys(shields,parent(%0)),:)])]
+    )
+-
+&FN.LOCKDOWN #208=
+  ifelse(
+      gt(setr(Lockdown,default(%0/space`lockdown,0)),secs()),
+      %q<Lockdown>,
+      -1
+      )
+-
+&FN.LAUNCH.TIME #208=
+  [setq(Skill,ulocal(fn.skill.max,%0,ifelse(ulocal(fn.iscapship,%0),pilot-cap,pilot-fig)))]
+  [setq(Base,get(v(data)/const.launch.time))]
+  [mul(
+    %q<Base>,
+    switch(
+        %q<Skill>,
+        <2,2,
+        2,1.5,
+        3,1,
+        4,0.9,
+        5,0.75,
+        0.5
+        )
+    )]
+-
+&FN.LAND.TIME #208=
+  ulocal(fn.launch.time,%0)
+-
+&FN.JUMP.TIME #208=
+  [setq(Skill,ulocal(fn.skill.max,%0,astrogation))]
+  [setq(Base,get(v(data)/const.jump.time))]
+  [mul(
+    %q<Base>,
+    switch(
+        %q<Skill>,
+        <2,2,
+        2,1.5,
+        3,1,
+        4,0.9,
+        5,0.75,
+        0.5
+        )
+    )]
+-
+&FN.FINDTARGET #208=
+  firstof(
+        extract(setr(Report,spacesys(update.report,%0)),%1,1),
+        grab(%q<Report>,locate(%0,%1,nT)),
+        #-1 NO CONTACT ON SENSORS
+        )
+-
+&FN.LANDLOC #208=
+  firstof(
+      get(%0/data.landing),
+      #-1
+      )
+-

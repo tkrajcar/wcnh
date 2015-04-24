@@ -1,0 +1,95 @@
+# cash - view your on-hand cash
+# pay <person>=<credits> - pay somebody. This is silent.
+# put down <#> - drop a credit chit.
+#
+# account/list - list all your accounts
+# account/deposit <account>=<credits> - deposit
+# account/withdraw <account>=<credits> - withdraw
+# account[/view] <account> - view audit log
+# account/access <account>=<+|-><person> - add or remove account access
+# account/owner <account>=<person> - permanently change owner
+# account/open <account>
+# account/close <account>
+
+@lock/use #19=FLAG^IC|FLAG^ROYALTY|FLAG^WIZARD
+
+-
+&COMMAND_LOCK`FAILURE #341=[ansi(hg,>)] You can't use economy commands while OOC.
+-
+
+&cmd.cash #19=$cash:@nspemit %#=[rpc(Econ.cash,%#)]
+-
+
+&cmd.pay #19=$pay *=*:@nspemit %#=[rpc(Econ.pay,%0,%1)]
+-
+
+&cmd.putdown #19=$put down *:
+  @assert [t(setr(0,round(%0,1)))]=
+    @nspemit %#=[ansi(hg,>)] That's not even a number!;
+  @assert [or(orflags(%#,Wr),gte(rpc(Econ.on_hand_balance,%#),%0))]=
+    @nspemit %#=[ansi(hg,>)] You don't have that many credits on hand!;
+  @assert [gte(%0,1)]=
+    @nspemit %#=[ansi(hg,>)] You need to put down at least [ansi(h,1)] credit.;
+  think
+    [syslog(ECONPUTDOWN,%n put down %0 credits in %L.)]
+    [rpc(Econ.grant,%#,mul(%q0,-1))]
+    [setq(1,create(%q0 credits))];
+
+  @parent %q1=#22;
+  &amount %q1=%q0;
+  @power %q1=api;
+  @set %q1=wizard;
+  think [tel(%q1,%L)];
+  @link %q1=#100;
+  @oemit %#=[ansi(hg,>)] [ansi(h,%n)] sets down [ansi(hy,%q0)] credits.;
+  @pemit %#=[ansi(hg,>)] You set down [ansi(hy,%q0)] credits.;
+
+-
+
+&cmd.account/list #19=$account/list:@nspemit %#=[rpc(Econ.account_list,%#)]
+-
+
+&cmd.account/deposit #19=$account/deposit *=*:@nspemit %#=[rpc(Econ.account_deposit,%#,%0,%1)]
+-
+
+&cmd.account/withdraw #19=$account/withdraw *=*:@nspemit %#=[rpc(Econ.account_withdraw,%#,%0,%1)]
+-
+
+&cmd.account/view #19=$^account(/view)? (.+):@nspemit %#=[rpc(Econ.account_view,%2)]
+-
+@set #19/cmd.account/view=regexp
+-
+
+&cmd.account/access #19=$account/access *=*:@nspemit %#=[rpc(Econ.account_access,%0,%1)]
+-
+
+&cmd.account/owner #19=$account/owner *=*:@nspemit %#=[rpc(Econ.account_owner,%0,%1)]
+-
+
+&cmd.account/open #19=$account/open *:@nspemit %#=[rpc(Econ.account_open,%0)]
+-
+
+&cmd.account/close #19=$account/close *:@nspemit %#=[rpc(Econ.account_close,%0)]
+-
+
+&cmd.account/rename #19=$account/rename *=*:@nspemit %#=[rpc(Econ.account_rename,%0,%1)]
+-
+
+&cmd.cargo #19=$^cargo(/list)?$:@nspemit %#=[rpc(Econ.cargojob_list)]
+-
+@set #19/cmd.cargo=regexp
+-
+&cmd.cargo/claim #19=$cargo/claim *:@nspemit %#=[rpc(Econ.cargojob_claim,%0)]
+-
+&cmd.cargo/unclaim #19=$cargo/unclaim *:@nspemit %#=[rpc(Econ.cargojob_unclaim,%0)]
+-
+&cmd.cargo/load #19=$cargo/load *=*:@nspemit %#=[rpc(Econ.cargojob_load,%0,%1)]
+-
+&cmd.cargo/deliver #19=$cargo/deliver *:@nspemit %#=[rpc(Econ.cargojob_deliver,%0)]
+-
+&cmd.cargo/assign #19=$cargo/assign *=*:@nspemit %#=[rpc(Econ.cargojob_assign,%0,%1)]
+-
+&cmd.cargo/unassign #19=$cargo/unassign *:@nspemit %#=[rpc(Econ.cargojob_unassign,%0)]
+-
+&cmd.cargo/transfer #19=$cargo/transfer *=*:@nspemit %#=[rpc(Econ.cargojob_transfer,%0,%1)]
+

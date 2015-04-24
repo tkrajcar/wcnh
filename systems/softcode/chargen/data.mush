@@ -1,0 +1,101 @@
+# RACES
+&RACE_ATTRIBUTES #111=name|starting rea|starting per|starting wil|starting str|starting agi|starting hea|free attribute levels|starting skill points
+-
+&RACE.HUMAN #111=Human|3|3|3|3|3|3|2|20
+-
+&RACE.KILRATHI #111=Kilrathi|2|3|2|4|3|4|2|20
+-
+
+# ATTRIBUTES
+&ATTRIBUTE_ATTRIBUTES #111=Name|Description
+-
+&ATTRIBUTE.AGI #111=Agility|TODO
+-
+&ATTRIBUTE.HEA #111=Health|TODO
+-
+&ATTRIBUTE.PER #111=Perception|TODO
+-
+&ATTRIBUTE.REA #111=Reason|TODO
+-
+&ATTRIBUTE.STR #111=Strength|TODO
+-
+&ATTRIBUTE.WIL #111=Willpower|TODO
+-
+
+
+# SKILLS
+&SKILL_ATTRIBUTES #111=Name|Group|Complex|Base|Modifier|Description
+-
+&SKILL.ACROBATICS #111=Acrobatics|Athletic|1|||Used when attempting to perform any type of flips, somersaults, tightrope walking or other reasonably specialized feats of physical prowess. No default attribute as most of the feats covered by this skill require some minimum of professional training.
+-
+&SKILL.ANTIQUE-ARMS #111=Antique-Arms|Combat|1|||Knowledge and use of antiquated weaponry - anything more than 100 years old. Swords, polearms, and 20th & 21st century slugthrowers.
+-
+&SKILL.ASTROGATION #111=Astrogation|Knowledge|0|REA|-2|Astrogation covers your ability to plot jumps between star systems. An individual with a high Astrogation skill has a knack for the complex calculations and an intuitive grasp of plotting accurate jumps quickly.
+-
+&SKILL.BATTLESUIT #111=Battlesuit|Combat|1|||Used when attempting to pilot a personal powered battlesuit. Includes the use of integrated weapon systems and knowing how to push the suit in combat to get the most out of it.
+-
+&SKILL.BRAWLING #111=Brawling|Combat|0|STR|-1|The art of fisticuffs, or bare handed fighting. Mostly applies to untrained street fighting, with no really fancy moves. This skill is used for all aspects of the fight, offensive and defensive.
+-
+&SKILL.CLIMBING #111=Climbing|Athletic|0|STR|-1|Used when needing to traverse any near vertical wall or otherwise difficult vertical obstacle (slippery ladder etc.) either with, or without ropes.
+-
+&SKILL.COMPUTERS #111=Computers|Knowledge|0|REA|-2|While virtually anyone in the 28th century can use a computer, this skill covers activities beyond basic computer usage, such as programming, hardware repair and replacement, and the defense of computer systems against electronic attack (or, conversely, the bypassing of said defenses).
+-
+&SKILL.CON #111=Con|Social|0|WIL|-1|Used when trying to deceive, lie or convince another person or persons something that they normally would not believe. Can be used both when dealing with an individual or when speaking to a crowd (Political speeches etc.).
+-
+&SKILL.CONSTRUCTION #111=Construction|Professional|0|STR|-2|The skill of building and repairing structures. While most of this skill is focused upon the physical construction process, it also covers knowing how to create a construction plan, how to read blueprints, and how to determine the proper materials to use on a job. In a limited way, it covers all of the classic building trades, from plumbing and pipefitting to carpentry to ironworking and concrete use. It can also cover general-purpose 'manufacturing knowledge', like shop-floor optimization, etc.
+-
+&SKILL.DEMOLITIONS #111=Demolitions|Professional|1|||This skill represents your character's general ability to identify, create, set, arm, disarm, and dismantle explosive devices, from pipe bombs and small fireworks to large military ordnance. Characters with a high Demolitions skill can create improvised explosive devices, disarm planted explosives, and have knowledge on proper placement of demolitions for desired yields.
+-
+&SKILL.DISGUISE #111=Disguise|Social|0|WIL|-2|Used for attempting to conceal your identity using various forms of clothing, makeup, masks or other accessories.
+-
+&SKILL.ECONOMICS #111=Economics|Knowledge|0|REA|-2|More than just "buy low, sell high", this skill covers all aspects of trading, including general knowledge of business management and administration, market forces, effective management of supply chains, etc.
+-
+&SKILL.ENGINEER-CAP #111=Engineer-Cap|Professional|0|REA|-3|The fine art of maintaining, repairing, and generally working on the 'mechanics' of capital ships (ships with a bridge crew instead of a single pilot). This skill encompasses maintaining, repairing, and overall knowledge of all the ship's systems: power, engines, life support, weaponry, navigation, sensors, and so on.
+-
+&SKILL.ENGINEER-FIG #111=Engineer-Fig|Professional|0|REA|-2|The fine art of maintaining, repairing, and generally working on the 'mechanics' of fighters and small craft (ships with a single pilot). This skill encompasses maintaining, repairing, and overall knowledge of all the ship's systems: power, engines, life support, weaponry, navigation, sensors, and so on.
+-
+&SKILL.FIRST-AID #111=First-Aid|Outdoor|0|PER|-1|First-Aid covers applying medical knowledge to wounds. In contrast to Medicine, First-Aid covers "improvisational healing", normally performed outside of a hospital, ambulance, or other actual first aid facility; applying bandages, dressing wounds, improvising splints, and so on. 
+-
+&SKILL.FORGERY #111=Forgery|Professional|1|||Forgery covers all aspects of making, adapting, or imitating objects, documents, or other physical objects, with the intent to deceive. Electronic forgery, hacking, and so on, is usually covered by Computers.
+-
+&SKILL.FORTIFY #111=Fortify|Outdoor|0|STR|-1|The skill of building field fortifications and temporary improvements, like foxholes, improvised shelters, and so on. Crosses over with Construction, which is used for more permanent constructs.
+-
+&SKILL.GAMBLING #111=Gambling|Social|0|PER|-2|Used when running or playing a game for the purpose of wagering money or posessions. Provides general knowledge of how these types of games work and the various odds involved.
+-
+&SKILL.HEAVY-ARMS #111=Heavy-Arms|Combat|0|STR|-2|Knowledge in the ways and hows of large guns - squad-level weapons such as mounted/fixed machine guns, and person-portable weapons such as grenade/missile/rocket launchers, sniper rifles, etc. Applies to all long barreled character portable weapons, both projectile and energy based.
+-
+&SKILL.INTERROGATE #111=Interrogate|Social|0|WIL|-2|Used when attempting to extract information from both willing and unwilling subjects. Involves knowing the right questions to ask as well as how to apply more aggressive tactics.
+-
+&SKILL.INTIMIDATE #111=Intimidate|Social|0|WIL|-1|Used when a character wishes to cow or awe another through force of personality.
+-
+&SKILL.LEADERSHIP #111=Leadership|Social|0|WIL|-1|Used when commanding other willing individuals while acting as a higher authority. Involves both providing instruction in unique group tactics as well as being able to convey information about the 'bigger picture' in a concise manner.
+-
+&SKILL.MARTIAL-ARTS #111=Martial-Arts|Combat|1|||Whether it's Kung Fu or a mystic Kilrathi art, this skill is used when you've spent many years of study and training to gain specialized knowledge in unarmed fighting.
+-
+&SKILL.MEDICINE #111=Medicine|Knowledge|1|||Medicine covers all aspects of advanced medical knowledge; surgery, proper trauma care, diagnosis of diseases and other conditions, and so on. In contrast to First-Aid, Medicine is normally used for more 'scientific' knowledge rather than 'applied', and is more commonly used for complex treatments, procedures, diagnoses, and so on.
+-
+&SKILL.PILOT-CAP #111=Pilot-Cap|Professional|0|PER|-3|Short for Piloting-Capital Ships. Used to fly capital ships (ships with a bridge crew instead of a single pilot). In-system navigation, basic maneuvers, formations and fleet maneuvers, and evasive actions.
+-
+&SKILL.PILOT-FIG #111=Pilot-Fig|Professional|0|AGI|-2|Short for Piloting-Fighters. Used to fly fighters and small craft (ships with a single pilot). In-system navigation, basic maneuvers, dogfighting, and atmospheric operation.
+-
+&SKILL.RESEARCH #111=Research|Knowledge|0|REA|-1|The core skill of academic life, Research covers primarily document review - even with the powerful computers of the modern age, this is still hardly an easy task, particularly as databases have exploded in size and complexity, and as the sheer volume of material available to researchers has reached nearly-impossible-to-comprehend levels.
+-
+&SKILL.RUNNING #111=Running|Athletic|0|HEA|-1|Used in the determination of how far/fast you can run or how successful a character might be at moving quickly across an uneven/broken surface.
+-
+&SKILL.SCIENCE #111=Science|Knowledge|0|REA|-2|This skill covers broad knowledge of the sciences, with the notable exception of Medicine and Computers. Chemistry, biology, physics, astronomy, zoology, geology, and most other -ologies.
+-
+&SKILL.SMALL-ARMS #111=Small-Arms|Combat|0|AGI|-2|Knowledge in the use of smaller pistols and hand weapons, including smaller automatic weapons. Includes both projectile and energy based weapons.
+-
+&SKILL.STREETWISE #111=Streetwise|Social|0|PER|-1|The general skill of knowing how to survive in an urban setting. Includes knowing how to act among certain stereotypes, and how read a potentially dangerous situations.
+-
+&SKILL.SURVIVAL #111=Survival|Outdoor|0|HEA|-1|The skill of surviving in a wilderness environment, with or without survival equipment. Covers both basic applicable knowledge, and advanced, environment-specific training.
+-
+&SKILL.SWIMMING #111=Swimming|Athletic|0|HEA|-1|Used in the determination of how far/fast you can swim or how successful a character might be at swimming through dangerous/choppy/swift moving water.
+-
+&SKILL.TINKER #111=Tinker|Knowledge|0|REA|-2|This skill represents your character's general ability to jury-rig, patch, duct-tape, or MacGyver your way out of a mechanical or technical situation. Characters with a high Tinker skill are good at finding exactly the right part in the junkyard, adapting the the thirty-year-old cooling rods to work in a modern engine, and so on.
+-
+&SKILL.TRACKING #111=Tracking|Outdoor|0|PER|-2|The skill of finding things in outdoor situations, both urban and wilderness. Covers things such as following tracks, spotting signs, and other facets of fieldcraft.
+-
+&SKILL.TURRET-GUN #111=Turret-Gun|Professional|0|AGI|-2|This skill covers the use of turret-based gun emplacements, whether in space, atmosphere, or ground. Turrets may be permanently mounted or vehicle-portable, and are commonly found on capital ships.
+-
+&SKILL.ZERO-G #111=Zero-G|Athletic|0|AGI|-2|Used when a character needs to function in a zero gravity environment, including moving, or even performing basic tasks due to the unique effects of weightlessness. 

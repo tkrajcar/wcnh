@@ -1,0 +1,70 @@
+@set #351=safe no_command
+-
+@desc #351=Space data.
+-
+&INTERVAL #351=60
+-
+&PARENT.SHIP #351=#179
+-
+&PARENT.SHIP.MULTI #351=#589
+-
+&DEFAULT.SPEED #351=1
+-
+&PARENT.CONSOLE #351=#204
+-
+&PARENT.JUMP #351=#393
+-
+&PARENT.SHUTTLE #351=#190
+-
+&PARENT.AIRLOCK #351=#209
+-
+&SKILL.PILOT-FIG #351=pilot-fig
+-
+&SKILL.PILOT-CAP #351=pilot-cap
+-
+&SKILL.ENGINEER-CAP #351=engineer-cap
+-
+&SKILL.ENGINEER-FIG #351=engineer-fig
+-
+&SKILL.TURRET-GUN #351=turret-gun
+-
+&SKILL.ASTROGATION #351=astrogation
+-
+&SKILL.COMPUTERS #351=computers
+-
+&SKILL.SCIENCE #351=science
+-
+&BIN.PARENTS #351=#566
+-
+# What is the abbreviation for speed?
+# kps = km per second
+&CONST.SPEED #351=kps
+-
+# Basic unit measurement.
+&CONST.UNIT #351=km
+-
+# If distance >1000, divide and show this abbreviation 
+&CONST.UNIT.1000 #351=Mm
+-
+# If distance >1,000,000, divide and show this abbreviation
+&CONST.UNIT.1000000 #351=Gm
+-
+# Base range to get a weapons lock
+&CONST.LOCK.RANGE #351=5000
+-
+# Base time in secs to get a weapons lock
+&CONST.LOCK.TIME #351=15
+-
+# Base time in secs to launch (and land)
+&CONST.LAUNCH.TIME #351=30
+-
+# Base time in secs to jump
+&CONST.JUMP.TIME #351=15
+-
+# Where do dead ships go.
+&GRAVEYARD #351=#1278
+-
+# Where players end up when their ship is destroyed.
+&EJECT #351=#1281
+-
+

@@ -1,0 +1,53 @@
+# on player connect, trigger everything that's waiting...
+&player`connect #13 =
+  /@@ %0 = objid:timestring, %1 = number of connections, %2 = descriptor @@/
+  @trigger #114/trig.aconnect=[before(%0,:)];
+  @trigger #227/trig.aconnect=[before(%0,:)];
+  @trigger #812/trig.aconnect=[before(%0,:)];
+  @trigger #1139/trig.aconnect=[before(%0,:)];
+  @trigger #15/trig.aconnect=[before(%0,:)];
+  think [if(hasattr(before(%0,:),pfile),rpc(PlayerFile.connect,get(before(%0,:)/pfile),get(before(%0,:)/lastip),get(before(%0,:)/lastsite),%2,num(before(%0,:))))];
+  @swi [haspower(before(%0,:),guest)]=1,@tri #459/tri.guest.connect=[before(%0,:)];
+  @swi [or(haspower(before(%0,:),guest),not(hasattr(before(%0,:),char`announced)))]=1,{
+    @wait 7=@nspemit %#=[ansi(h,New to MUSHes?)] You can talk to others by typing: [ansi(h,+new Hi there!)]%rWe're friendly - feel free to ask questions, or ask for help! Your name is [ansi(h,name(%#))].
+  };
+  @swi [nor(hidden(before(%0,:)),hasflag(before(%0,:),dark),hasattr(before(%0,:),char`announced))]=
+    1,{
+      &char`announced [before(%0,:)]=1;
+      @cemit/noisy Newbie=[ansi(c,Say hello to our newest player\,)] [ansi(h,name(before(%0,:)))][ansi(c,!)]
+    }
+
+-
+
+&player`disconnect #13 =
+  /@@ %0 = objid, %1 = number of remaining connections, %2 = hidden?, %3 = cause of disconnection, %4 = ip, %5 = descriptor, %6 = conn() secs, %7 = idle() secs, %8 = recv bytes/sent bytes/command/count @@/
+  think [if(hasattr(%0/pfile),rpc(PlayerFile.disconnect,get(%0/pfile),%5))];
+  @swi [haspower(%0,guest)]=1,@tri #459/tri.guest.disconnect=%0;
+  @set %0=!unfind;
+  &char`rp %0=0;
+-
+
+&player`create #13 =
+  /@@ %0 = objid, %1 = name, %2 = how, %3 = descriptor @@/
+  @swi %2=
+  pcreate,
+  {
+    think [syslog(
+      PCREATE,
+      New player [name(%0)]\([num(%0)]\) has been @pcreated by [name(%#)].
+    )]
+  },
+  {
+    think [syslog(
+      PCREATE,
+      New player [name(%0)]\([num(%0)]\) has been %2ed to [get(%0/registered_email)].
+    )];
+    @assert [hasattr(%0,registered_email)];
+    +pfile/register [get(%0/registered_email)]=[num(%0)];
+  };
+  ;
+  @chan/on q&a=%0;
+  @chan/on newbie=%0;
+  think [rpc(BBoard.join,%0,all)];
+
+

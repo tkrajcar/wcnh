@@ -1,0 +1,71 @@
+# chargen room 4: discharge
+# help terms of service
+# +I accept the TOS
+# +list
+# +choose <planet> 
+# +finish (undocumented - result of +choose)
+
+@desc #217=
+  So close to being done! Admin will review your background and let you know if there are any issues, but in the meantime, you can start exploring and roleplaying your character. There's just two things left - accept our Terms of Service and select your starting location.
+  %r%r
+  [ansi(hy,For the commands\, see 'help chargen room 4'.)] 
+-
+
+&cmd.+tos #217=$+I accept the TOS:
+  @pemit %#=[ansi(hb,>)] Great! You're good to go.;
+  &char`tos %#=Accepted: [secs()]
+-
+
+&cmd.+list #217=$+list:
+  @pemit %#=[titlebar(Starting Planets)]%r
+  [iter(lattr(me/planet.*),[ansi(hy,after(##,.))]: [extract(v(##),2,1,|)], ,%R)]%r
+  [ansi(y,Type)] [ansi(hy,+choose <planet>)] [ansi(y,once you are ready to leave chargen and enter the game.)]%r
+  [footerbar()]
+-
+
+&cmd.+choose #217=$+choose *:
+  @assert [hasattr(me,planet.%0)]=
+    @pemit %#=[ansi(hb,>)] That's not a valid starting planet! Type [ansi(h,+list)] to see them.;
+  &char`startingplanet %#=%0;
+  @pemit %#=[ansi(hb,>)] Starting planet set. If you need to edit your character more, just type [ansi(h,back)] to go back through the rooms as needed. [ansi(y,If you are now ready to leave character generation)] [ansi(hyu,permanently)][ansi(y,\, type)] [ansi(h,+finish)].
+-
+
+&cmd.+finish #217=$+finish:
+  @break [orflags(%#,Wr)]=
+    @pemit %#=[ansi(hb,>)] Yeah, admin REALLY shouldn't run that command.;
+  @assert [hasattr(%#,char`tos)]=
+    @pemit %#=[ansi(hb,>)] You must accept the Terms of Service before finishing chargen.;
+  @assert [hasattr(%#,char`startingplanet)]=
+    @pemit %#=[ansi(hb,>)] You must choose a starting planet!;
+  @pemit %#=[ansi(hb,>)] Finalizing character. Stand by...;
+  @tri me/tri.finalize=%#;
+-
+
+&tri.finalize #217=
+  think [rpc(PlayerFile.register,get(%0/registered_email),%0)];
+  think [syslog(New player [name(%0)]\(%0\), [get(%0/registered_email)]. Starting on [get(%0/char`startingplanet)].)];
+  &char`approved %0=[secs()];
+  &char`noms %0=1;
+  @set %0=IC;
+  think [tel(%0,extract(v(planet.[get(%0/char`startingplanet)]),1,1,|))];
+  @pemit %#=[ansi(hb,>)] You have entered the game world.;
+  &unapproved.players #111=[setunion(get(#111/unapproved.players),%0)];
+  @fo %0=handle/register [name(%0)];
+  @fo %0=handle/use [name(%0)];
+  @fo %0=comm/on 100.00;
+  @swi [hasattr(%0,char`startingcashpaid)]=0,{
+    pay %0=3500;
+    &char`startingcashpaid %0=1;
+  }
+  @chan/on public=%0;
+  @chan/on roleplay=%0;
+  think [rpc(BBoard.join,%0,all)]
+-
+
+&PLANET.CABREA #217=#349|Cabrea II is one of the prime worlds of the Kilrathi Commonwealth and their de-facto headquarters in the Sector.
+-
+
+&PLANET.STING #217=#387|Sting (technically Midgard C III) is where most of the more lawless folks in the Sector might be found.
+-
+
+&PLANET.VESPUS #217=#223|Vespus I is the capital of the Enigma Sector Consortium, and a good starting place for wealthier characters of either faction.

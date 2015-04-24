@@ -1,0 +1,200 @@
+@set #191=safe !no_command
+-
+@wipe #191
+-
+@set #191=safe
+-
+&cmd.+fac/boot #191=$+fac/boot *=*:
+  @switch [or(orflags(%#,Wr),t(member(setr(3,faction(list.leaders,%0)),%#)))]
+          [t(match(faction(list.memberof,setr(1,pmatch(%1))),%0))]
+          [not(member(%q3,%q1))]=
+
+          0??,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
+          10?,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
+          110,@nspemit %#=[ansi(c,<Faction>)] Leaders must be demoted before they are ejected.,
+          111,{@nspemit %#=[ansi(c,<Faction>)] Ejecting [name(%q1)] from [ucstr(%0)].;
+               @nspemit %q1=[ansi(c,<Faction>)] You have been removed from [ucstr(%0)].;
+               think [faction(remmember,%0,%q1)];
+               @switch [t(member(cwho(setr(2,faction(channel,%0))),%q1))]=1,{@channel/off %q2=%q1};
+               @fo %q1=comm/off %0;
+               @wipe %q1/fac`%0
+              }
+-
+&cmd.+fac/position #191=$+fac/position */*=*:
+  @switch [or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#)))]
+          [t(member(faction(list.memberof,setr(1,pmatch(%1))),ucstr(%0)))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
+          10,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
+          11,{@nspemit %#=[ansi(c,<Faction>)] [name(%q1)]'s position updated.;
+              @set %q1=fac`%0`position:[decompose(stripansi(stripaccents(%2)))]
+             }
+-                                                                     
+&cmd.+fac/assign #191=$+fac/assign */*=*:
+  @switch [or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#)))]
+          [t(member(faction(list.memberof,setr(1,pmatch(%1))),ucstr(%0)))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.,
+          10,@nspemit %#=[ansi(c,<Faction>)] That person is not a member of [ucstr(%0)].,
+          11,{@nspemit %#=[ansi(c,<Faction>)] [name(%q1)]'s assignment updated.;
+              @set %q1=fac`%0`assignment:[decompose(stripansi(stripaccents(%2)))]
+             }
+-
+&cmd.+fac/demote #191=$+fac/demote *=*:
+  @break [not(or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#))))]=
+         @nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.;
+
+  @switch [faction(remleader,%0,%1)]=
+
+          #-1 INVALID FACTION,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
+          #-1 INVALID PLAYER,@nspemit %#=[ansi(c,<Faction>)] No such player.,
+          #-1 INVALID LEADER,@nspemit %#=[ansi(c,<Faction>)] They are not a leader of [ucstr(%0)].,
+          ,{@nspemit %#=[ansi(c,<Faction>)] You have removed [name(setr(0,pmatch(%1)))] as a leader of [ucstr(%0)].;
+            @nspemit %q0=[ansi(c,<Faction>)] [name(%#)] has removed you as a leader of [ucstr(%0)].
+           },
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported to the administration.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
+&cmd.+fac/promote #191=$+fac/promote *=*:
+  @break [not(or(orflags(%#,Wr),t(member(faction(list.leaders,%0),%#))))]=
+         @nspemit %#=[ansi(c,<Faction>)] You must be a leader to do that.;
+
+  @switch [faction(addleader,%0,%1)]=
+
+          #-1 INVALID FACTION,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
+          #-1 INVALID PLAYER,@nspemit %#=[ansi(c,<Faction>)] No such player.,
+          #-1 INVALID MEMBER,@nspemit %#=[ansi(c,<Faction>)] They are not a member of [ucstr(%0)].,
+          #-1 EXISTING LEADER,@nspemit %#=[ansi(c,<Faction>)] [name(pmatch(%1))] is already a leader of [ucstr(%0)].,
+          ,{@nspemit %#=[ansi(c,<Faction>)] You have made [name(setr(0,pmatch(%1)))] a leader of [ucstr(%0)].;
+            @nspemit %q0=[ansi(c,<Faction)] [name(%#)] has made you a [ansi(yh,leader)] of [ucstr(%0)].
+           },
+          {@nspemit %#=[ansi(c,<Faction>)] System error.  This has been reported to the administration.;
+           think [faction(error,%=,%0,%1)]
+          }
+-
+&cmd.+fac/leave #191=$+fac/leave *:
+  @switch [t(member(faction(list.members,%0),%#))]
+          [not(member(faction(list.leaders,%0),%#))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] You are not a member of that faction.,
+          10,@nspemit %#=[ansi(c,<Faction>)] You would first need to resign your leadership.,
+          11,{@nspemit %#=[ansi(c,<Faction>)] You have quit [ucstr(%0)]!;
+              think [faction(remmember,%0,%#)];
+              @switch [t(member(cwho(setr(0,faction(channel,%0))),%#))]=1,{@channel/off %q0=%#};
+              @cemit/noisy %q0=[ansi(wh,name(%#))] has quit [ucstr(%0)]!;
+              @fo %#=comm/off %0;
+              @wipe %#/fac`%0
+             }
+-
+&cmd.+fac/invites #191=$+fac/invites:
+  @switch [t(setr(0,get(%#/fac`invites)))]=
+
+          1,@nspemit %#=[ansi(c,<Faction>)] You have pending invitations to join: [itemize(ucstr(%q0))],
+          @nspemit %#=[ansi(c,<Faction>)] You have no pending invitations.
+-
+&cmd.+fac/join #191=$+fac/join *:
+  @switch [t(member(setr(0,get(%#/fac`invites)),ucstr(%0)))]=
+
+          1,{@nspemit %#=[ansi(c,<Faction>)] You have joined [ansi(wh,setr(2,faction(name,%0)))]!%r
+                                  [space(9)] Remember to [ansi(wh,+bblist)] and [ansi(wh,+bbjoin)] your new faction's bboard!;
+             think [set(%#,fac`invites:[squish(remove(%q0,ucstr(%0)))])];
+             think [if(t(setr(1,faction(channel,%0))),nscemit(%q1,[ansi(wh,name(%#))] has joined [ansi(wh,%q2)]!,noisy))];
+             think [faction(addmember,%0,%#)];
+             @chan/on %q1=%#
+            },
+            @nspemit %#=[ansi(c,<Faction>)] You don't have a pending invitation to join that faction.
+-
+&cmd.+fac/reject #191=$+fac/reject *:
+  @switch [t(member(setr(0,get(%#/fac`invites)),ucstr(%0)))]=
+  
+          1,{@nspemit %#=[ansi(c,<Faction>)] You have rejected your invitation to join [ucstr(%0)].;
+             think [set(%#,fac`invites:[squish(remove(%q0,ucstr(%0)))])]
+            },
+            @nspemit %#=[ansi(c,<Faction>)] You don't have any invitations to join that faction.
+-
+&cmd.+fac/invite #191=$+fac/invite * to *:
+  @switch [t(setr(0,pmatch(%0)))]
+    [t(setr(2,faction(name,%1)))]
+    [or(orflags(%#,Wr),t(member(faction(list.leaders,%1),%#)))]
+    [not(member(setr(1,get(%q0/fac`invites)),ucstr(%1)))]
+    [not(member(faction(list.members,%1),%q0))]=
+    
+    0*,@nspemit %#=[ansi(c,<Faction>)] No such player.,
+    10*,@nspemit %#=[ansi(c,<Faction>)] No such faction.,
+    110*,@nspemit %#=[ansi(c,<Faction>)] You must be a faction leader.,
+    1110?,@nspemit %#=[ansi(c,<Faction>)] They already have a pending invitation to [ucstr(%1)].,
+    11110,@nspemit %#=[ansi(c,<Faction>)] They are already a member of [ucstr(%1)].,
+    11111,{@nspemit %#=[ansi(c,<Faction>)] You have invited [name(%q0)] to join [ucstr(%1)].;
+           @nspemit %q0=[ansi(c,<Faction>)] [ansi(wh,name(%#))] has invited you to join [ansi(wh,faction(name,%1))].%r
+            [space(10)]Use [ansi(yh,+fac/join [ucstr(%1)])] to accept the invitation or 
+            [ansi(yh,+fac/reject [ucstr(%1)])] to reject it.;
+           think [set(%q0,fac`invites:[squish(edit(%q1,$,%b[ucstr(%1)]))])]
+          }
+-
+&cmd.+fac/list #191=$+fac/list:
+  @nspemit %#=[faction(list.factiontree)]
+-
+&cmd.+fac/roster #191=$+fac/roster*:@nspemit %#=
+  [switch(
+        [faction(
+              isfaction,
+              setr(0,
+                  ifelse(
+                      t(%0),
+                      squish(%0),
+                      faction(active,%#)
+                      )
+                  )
+              )]
+        [or(orflags(%#,Wr),faction(ismember,%q0,%#))],
+
+        0?,[ansi(c,<Faction>)] No such faction.,
+        10,[ansi(c,<Faction>)] You are not a member of that faction.,
+        11,[faction(roster.parse,%q0)]
+        )]
+-
+&cmd.+fwho #191=$+fwho*:@nspemit %#=
+  [switch(
+        [faction(
+              isfaction,
+              setr(0,
+                  ifelse(
+                      t(%0),
+                      squish(%0),
+                      faction(active,%#)
+                      )
+                  )
+              )]
+        [or(orflags(%#,Wr),faction(ismember,%q0,%#))],
+
+        0?,[ansi(c,<Faction>)] No such faction.,
+        10,[ansi(c,<Faction>)] You are not a member of that faction.,
+        11,[faction(fwho.parse,%q0)]
+        )]
+-
+&CMD.+FAC/DETAILS #191=$+fac/details *=*:
+  @switch [faction(isfaction,%0)]
+          [or(orflags(%#,Wr),faction(isleader,%0,%#))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] Invalid faction.,
+          10,@nspemit %#=[ansi(c,<Faction>)] You are not a faction leader.,
+          11,{@nspemit %#=[ansi(c,<Faction>)] Details for [ucstr(%0)] set.;
+              think [faction(setdetails,%0,%1)]
+             }
+-
+&CMD.+FAC/INFO #191=$+fac/info *:
+  @assert [faction(isfaction,%0)]={@nspemit %#=[ansi(rh,>)] No such faction.};
+  @nspemit %#=[faction(info,%0)]
+-
+&CMD.+FAC/ACTIVE #191=$+fac/active *:
+  @switch [faction(isfaction,%0)]
+          [or(orflags(%#,Wr),faction(ismember,%0,%#))]=
+
+          0?,@nspemit %#=[ansi(c,<Faction>)] Invalid faction.,
+          10,@nspemit %#=[ansi(c,<Faction>)] You are not a member of that faction.,
+          11,{@nspemit %#=[ansi(c,<Faction>)] Your active faction is now [ansi(wh,faction(name,%0))].;
+              &fac`active %#=%0
+             }
+-
+

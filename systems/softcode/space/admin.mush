@@ -1,0 +1,298 @@
+@set #367=!safe !no_command
+-
+@wipe #367
+-
+@set #367=safe
+-
+@desc #367=Global space commands.
+-
+@lock #367==#367
+-
+@lock/use #367=flag^wizard|power^api|flag^royal
+-
+&data #367=#351
+-
+&FN.CALLER #367=
+  ifelse(
+      hastype(%#,thing),
+      get(%#/data.manned),
+      %#
+      )
+-
+&FN.SPEED.PARSE #367=
+  spacesys(speed.parse,%0)
+-
+&CMD.+SPACE/ADDCON #367=$+space/addcon *=*:
+  @switch [spacesys(isship,%0)]
+          [isdbref(%1)]
+          [hastype(%1,thing)]=
+
+          0??,@nspemit %#=Invalid ship object.,
+          10?,@nspemit %#=Invalid console dbref.,
+          110,@nspemit %#=That's not an object.,
+          111,{@nspemit %#=Adding [name(%1)]\(%1\) to [name(%0)]\(%0\) as a console.;
+               @parent %1=#204;
+               @power %1=pemit halt api;
+               &data.manned %1=;
+               &data.ship %1=%0;
+               @set %1=listen_parent;
+               @set %1=monitor;
+               @set %0=data.consoles:[trim([get(%0/data.consoles)] %1)];
+               @lock %1==%1;
+               @set %1=!no_command
+              }
+-
+&CMD.+SPACE/CLASSES #367=$+space/classes:@nspemit %#=
+  [titlebar(List of Classes)]%r
+  [ansi(y,align(18 6 4 4 5 5 5 5 7 5,Name,OnGrid,Cap?,Bay?,Jump?,Speed,Cargo,Armor,Shields,#Guns))]%r
+  [iter(
+      setr(0,lvthings(get(v(data)/bin.parents))),
+      align(
+          18 -6 4 4 5 5 5 5 7 -5,
+          [get(itext(0)/space`class)]\([ansi(c,[itext(0)])]\),
+          [words(children(itext(0)))],
+          [ifelse(spacesys(iscapship,itext(0)),Yes,No)],
+          [ifelse(spacesys(hasbay,itext(0)),Yes,No)],
+          [ifelse(spacesys(canjump,itext(0)),Yes,No)],
+          [spacesys(speed.base,itext(0))],
+          [rjust(default(itext(0)/space`cargo`max,0),5)],
+          [left(num2adj(last(default(itext(0)/space`armor,0:0),:)),5)],
+          [left(num2adj(last(default(itext(0)/space`shields,0:0),:)),7)],
+          [first(default(itext(0)/space`guns,0|),|)]
+          ),
+      ,%r)]%r
+  [footerbar([words(%q0)] Classes)]
+-
+&CMD.+SPACE/SHIPS #367=$+space/ships *:
+  @assert [setr(l,pmatch(%0))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+  @assert [setr(s,spacesys(shipsbycaptain,%ql))]=@nspemit %#=[ansi(rh,>)] Player owns no ships.;
+  @nspemit %#=
+    [titlebar(Ships belonging to [name(%ql)])]%r
+    [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
+    [iter(
+         setr(s,spacesys(shipsbycaptain,%ql)),
+         align(30 15 30,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              [get(itext(0)/space`class)],
+              [ifelse(
+                     setr(c,zone(setr(r,room(itext(0))))),
+                     [name(%qc)]\([ansi(c,%qc)]\),
+                     [name(%qr)]\([ansi(c,%qr)]\)
+                     )]
+              ),
+         ,%r)]%r
+    [footerbar(words(%qs) Ships)]
+-
+&CMD.+SPACE/CLASS #367=$+space/class *:
+  @assert [setr(c,spacesys(findclass,%0))]=@nspemit %#=[ansi(rh,>)] That is not a class.;
+  @nspemit %#=
+    [titlebar(List of [get(%qc/space`class)] class ships)]%r
+    [ansi(y,align(25 25 25,Name,Owner,Located in Zone))]%r
+    [iter(
+         setr(s,children(%qc)),
+         align(25 25 25,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              [if(setr(p,spacesys(getcaptain,itext(0))),
+                 [name(%qp)]\([ansi(c,%qp)]\),
+                 [ansi(rh,NONE)]
+                 )],
+              [ifelse(
+                     setr(z,zone(setr(r,room(itext(0))))),
+                     [name(%qz)]\([ansi(c,%qz)]\),
+                     [name(%qr)]\([ansi(c,%qr)]\)
+                     )]
+              ),
+         ,%r)]%r
+    [footerbar(words(%qs) Ships)]
+-
+&CMD.+SPACE/TAXI #367=$+space/taxi *=*:
+  @assert [spacesys(isship,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.;
+  @assert [not(spacesys(iscapship,%0))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] is too large to taxi.;
+  @assert [t(setr(d,hasattrval(%0,data.docked)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] There's nowhere to taxi in space.;
+  @assert [not(spacesys(ismoving,%0))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] This ship is moving. You can't taxi if you're already moving.;
+  @assert [setr(e,spacesys(findexit,%0,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid taxiway.;
+  @assert [spacesys(istaxiway,%qe)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] [ansi(c,name(%qe))] is not a taxiway.;
+  @nspemit [u(fn.caller)]=[ansi(gh,>)] Taxiing through [ansi(c,name(%qe))].;  think [spacesys(notify.consoles,%0,Taxi sequence initiated. [ansi(yh,timestring(spacesys(cycle)))] remaining.)];
+  @nsremit [loc(%0)]=The [ansi(wh,name(%0))] fires a burst of thrust and begins to move along the ground.;
+  think [spacesys(notify.ship,%0,The ship lurches as it rolls along the ground.)];
+  think [spacesys(activate,%0)];
+  @wait %0/space`queue`move=think [spacesys(taxi,%0,%qe)]
+-
+&CMD.+SPACE/UNLOAD/SHIP #367=$+space/unload/ship *=*:
+  @assert [spacesys(isship,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(hasbay,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] has no bay.;
+  @assert [spacesys(isdocked,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] is not docked.;
+  @assert [spacesys(isship,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid victim ship object.;
+  @assert [not(spacesys(iscapship,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Capships cannot be unloaded. How did that happen?!;
+  @assert [spacesys(isdocked,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] is not docked.;
+  @assert [spacesys(isbayopen,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The bay doors on the [name(%0)] are closed.;
+  @assert [spacesys(canboard,%0,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%0)].;
+  @assert [spacesys(canboard,%1,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%1)].;
+  @assert [match(get(%1/data.docked),get(%0/data.landing))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] is not in the [name(%0)]'s bay.;
+  @assert [not(or(spacesys(ismoving,%0),spacesys(ismoving,%1)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Both ships must be at rest.;
+  @nspemit [u(fn.caller)]=[ansi(gh,>)] Unloading the [ansi(c,name(%1))].;
+  @nsremit [loc(%0)]=The [ansi(wh,name(%0))]'s bay shows activity as the ship's docking arms begin to unload a ship.;
+  @nsremit [loc(%1)]=The bay's loader arms move towards the [ansi(wh,name(%1))].;
+  think [spacesys(notify.ship,%1,The ship lurches as it is lifted by the [name(%0)]'s loading arms.)];
+  think [spacesys(activate,%1)];
+  think [spacesys(activate,%0)];
+  @wait %0/space`queue`move=think [spacesys(unload.ship,%0,%1,[u(fn.caller)])];
+  @wait %1/space`queue`move=think %b
+-
+&CMD.+SPACE/LOAD/SHIP #367=$+space/load/ship *=*:
+  @assert [not(match(%0,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You can't load yourself!;
+  @assert [spacesys(isship,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid ship object.;
+  @assert [spacesys(hasbay,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] has no bay.;
+  @assert [spacesys(isdocked,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%0)] is not docked.;
+  @assert [spacesys(isship,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Invalid victim ship object.;
+  @assert [not(spacesys(iscapship,%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Capital ships cannot be loaded.;
+  @assert [spacesys(isdocked,%1)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] is not docked.;
+  @assert [spacesys(isbayopen,%0)]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The bay doors on the [name(%0)] are closed.;
+  @assert [spacesys(canboard,%0,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%0)].;
+  @assert [spacesys(canboard,%1,u(fn.caller))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] You lack permission to access the [name(%1)].;
+  @assert [match(loc(%0),loc(%1))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] The [name(%1)] and [name(%0)] are not adjacent.;
+  @assert [not(or(spacesys(ismoving,%0),spacesys(ismoving,%1)))]=@nspemit [u(fn.caller)]=[ansi(rh,>)] Both ships must be at rest.;
+  @nspemit [u(fn.caller)]=[ansi(gh,>)] Loading the [ansi(c,name(%1))].;
+  @nsremit [loc(%0)]=The [ansi(wh,name(%0))]'s docking arms move towards the [ansi(wh,name(%1))].;
+  think [spacesys(notify.ship,%1,The ship lurches as it is lifted by the [name(%0)]'s loading arms.)];
+  think [spacesys(activate,%1)];
+  think [spacesys(activate,%0)];
+  @wait %0/space`queue`move=think [spacesys(load.ship,%0,%1,[u(fn.caller)])];
+  @wait %1/space`queue`move=think %b
+-
+&CMD.+SPACE/ACTIVE #367=$+space/active:@nspemit %#=
+  [titlebar(Active Ships)]%r
+  [ansi(y,align(30 15 30,Name,Class,Located in Zone))]%r
+  [iter(
+        setr(s,spacesys(list.ship.active)),
+        align(30 15 30,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              [get(itext(0)/space`class)],
+              [ifelse(
+                      setr(c,zone(setr(r,room(itext(0))))),
+                      [name(%qc)]\([ansi(c,%qc)]\),
+                      [name(%qr)]\([ansi(c,%qr)]\)
+                     )]
+             ),
+       ,%r)]%r
+  [footerbar(words(%qs Active Ships)]
+-
+&CMD.+SPACE/AUDIT #367=$+space/audit:@nspemit %#=
+  [titlebar(Ship Activity Audit)]%r
+  [ansi(y,align(30 >8 >6 >6 >8 >8,Name,Launch,Land,Jump,Active,Moving))]%r
+  [null(
+        [setq(list_all,spacesys(list.ship.all))]
+        [setq(sums_all,
+              iter(
+                   %q<list_all>,
+                   add(
+                       default(itext(0)/space`audit`land,0),
+                       default(itext(0)/space`audit`launch,0),
+                       default(itext(0)/space`audit`jump,0),
+                       default(itext(0)/space`audit`activeticks,0),
+                       default(itext(0)/space`audit`movingticks,0)
+                      ),
+                  ,|)
+             )]
+        [setq(list_summed,
+              elements(
+                       %q<list_all>,
+                       squish(
+                              iter(
+                                   %q<sums_all>,
+                                   if(
+                                      itext(0),
+                                      inum(0)
+                                     ),
+                                   |)
+                             )
+                      )
+             )]
+       )]
+  [iter(%q<list_summed>,
+        align(30 >8 >6 >6 >8 >8,
+              [name(itext(0))]\([ansi(c,[itext(0)])]\),
+              default(itext(0)/space`audit`launch,0),
+              default(itext(0)/space`audit`land,0),
+              default(itext(0)/space`audit`jump,0),
+              default(itext(0)/space`audit`activeticks,0),
+              default(itext(0)/space`audit`movingticks,0)
+             ),
+       ,%r)]%r
+  [footerbar(words(%q<list_summed>) ships)]
+-
+&CMD.+SPACE/ADDTRACKER #367=$+space/addtracker *=*:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [setr(player,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+  @assert [not(and(
+                   t(setinter(
+                              spacesys(list.trackers,%0),
+                              %q<player>
+                             )),
+                   t(setinter(
+                              spacesys(list.trackers.player,%q<player>),
+                              %0
+                             ))
+                 ))]=@nspemit %#=[ansi(rh,>)] The [ansi(h,name(%0))] is already tracked by [ansi(h,name(%q<player>))]!;
+  @nspemit %#=[ansi(gh,>)] The [ansi(h,name(%0))] is now tracked by [ansi(h,name(%q<player>))].;
+  think [spacesys(addtracker,%0,%q<player>)]
+-
+&CMD.+SPACE/DELTRACKER #367=$+space/deltracker *=*:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  @assert [setr(player,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] Invalid player.;
+  @assert [and(
+               t(setinter(
+                          spacesys(list.trackers,%0),
+                          %q<player>
+                         )),
+               t(setinter(
+                          spacesys(list.trackers.player,%q<player>),
+                          %0
+                         ))
+              )]=@nspemit %#=[ansi(rh,>)] The [ansi(h,name(%0))] is not tracked by [ansi(h,name(%q<player>))]!;
+  @nspemit %#=[ansi(gh,>)] The [ansi(h,name(%0))] is no longer tracked by [ansi(h,name(%q<player>))].;
+  think [spacesys(deltracker,%0,%q<player>)]
+-
+&CMD.+SPACE/TRACKERS #367=$+space/trackers:@nspemit %#=
+  [titlebar(Installed Trackers)]%r
+  [ansi(y,align(30 15 30,Name,Class,Tracked By))]%r
+  [map(
+       #lambda/
+       align(30 15 30,
+             \[name(setr(s,extract(%%0,1)))\]\(\[ansi(c,%%qs)\]\),
+             \[get(%%qs/space`class)\],
+             \[name(setr(p,extract(%%0,2)))\]\(\[ansi(c,%%qp)\]\)
+            ),
+       squish(setr(trackers,
+            iter(    
+                 filter(
+                        #lambda/
+                        \[hasattrval(%%0,space`tracking`trackers)\],
+                        spacesys(list.ship.all)
+                       ),
+                 iter(
+                      squish(get(itext(0)/space`tracking`trackers)),
+                      [itext(1)]%b[itext(0)],
+                     ,|),
+                ,|)
+           ),|),
+      |,%r)]%r
+  [footerbar(words(%q<trackers>,|) trackers)]
+-
+&CMD.+SPACE/CLOAK #367=$+space/cloak *:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+
+  @switch [t(get(%0/space`cloaked))]=
+          1,{@nspemit %#=[ansi(gh,>)] The [name(%0)] is now UNcloaked.;
+             &space`cloaked %0=0
+            },
+            {@nspemit %#=[ansi(gh,>)] The [name(%0)] is now cloaked.;
+             &space`cloaked %0=1
+            }
+-
+&CMD.+SPACE/REPAIR #367=$+space/repair *:
+  @assert [spacesys(isship,%0)]=@nspemit %#=[ansi(rh,>)] Invalid ship object.;
+  think spacesys(repair,%0);
+  think syslog(SPACE,[name(%#)] repaired the [name(%0)]\(%0\).)
+-
+

@@ -1,0 +1,16 @@
+@set #1430=!safe !no_command
+-
+@wipe #1430
+-
+@set #1430=safe
+-
+@desc #1430=Global space commands.
+-
+@lock #1430==#1430
+-
+@lock/use #1430=flag^wizard|flag^royal|flag^ic
+-
+&CMD.RELOAD #1430=$reload *=*:
+  @nspemit %#=[rpc(Combat.reload,%#,locate(%#,%0,iT),locate(%#,%1,iT))]
+-
+

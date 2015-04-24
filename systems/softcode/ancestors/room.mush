@@ -1,0 +1,79 @@
+# Room parent by Code Unit.
+# Tread carefully; It Just Works.
+#
+### CONFIG
+&COLOR.EXIT #9=default([zone(me)]/color.exit,c)
+-
+&COLOR.FRAME #9=default([zone(me)]/color.frame,r)
+-
+&COLOR.PLAYER #9=default([zone(me)]/color.player,hr)
+-
+&COLOR.THING #9=default([zone(me)]/color.thing,y)
+-
+&DESCRIBE #9=Helpful instructions to go here.
+-
+
+### FORMATS
+&CONFORMAT #9=
+  [footerbar(u(room_parent.check_active.fn,%!,%#),u(COLOR.Frame))]
+  [setq(1,add(u(room_parent.exit_name_max_adjust.fn,setr(0,ifelse(orflags(%#,Wr),lexits(%!),lvexits(%!)))),2))]
+  [if(setr(s,filter(#lambda/isship(\%0),%0)),u(room_parent.display_ships.fn,%qs))]
+  [setq(o,setdiff(%0,%qs))]
+  [iter(
+    lnum(max(words(%q0),words(%qo))),
+    %r
+    [ljust(switch(extract(%qo,#@,1),,,ansi(u(COLOR.[type(#$)]),left([name(#$)][if(cand(mcontrols(%#,#$),not(hasflag(%#,MYOPIC))),\(#$[flags(#$)]\))][if(hasattrval(#$,wielded),%b[ansi(rh,\(ARMED\))])],30))),30)][ljust(if(and(hasattrval(extract(%q0,#@,1),data.taxiway),match(%@,#208)),[ansi(hy,\[TAXIWAY\])]),9)] [ljust(switch(extract(%q0,#@,1),,,[ljust([ansi(h[u(COLOR.EXIT)],\<)][ansi(edit(u(COLOR.EXIT),h,),name(#$))][ansi(h[u(COLOR.EXIT)],\>)],%q1)] [ansi(edit(u(COLOR.EXIT),h,),switch(setr(9,loc(#$)),#-1,--- UNLINKED ---,#-2,name(destination(#$)),name(%q9)))]),39)],
+    %b,
+    )]
+-
+&EXITFORMAT #9=
+-
+&NAMEFORMAT #9=
+        titlebar(
+              [name(%!)]
+               [if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%![flags(%!)]\))]
+               [if(setr(9,zone(%!)),%b- [name(%q9)][if(and(mcontrols(%#,%!),not(hasflag(%#,myopic))),\(%q9[flags(%q9)]\))],)]                    
+               [if(
+                  and(
+                    setr(8,zone(%q9)),
+                    not(strmatch(%q8,#222))
+                    ),
+                  %b<[trim(ifelse(strmatch(last(lparent(%q8)),#179),rest(name(parent(%q8))),before(name(%q8),<)))]>
+                  )],
+              u(COLOR.Frame))
+-
+
+### SUBFUNCTIONS
+&ROOM_PARENT.CHECK_ACTIVE.FN #9=
+    null(
+        iter(
+            u(room_parent.mlplayers.fn,%0,%1),
+            if(
+              not(match(##,%1)),
+              if(isconn(##,%1),setq(A,%qA ##),setq(I,%qI ##))
+              )
+            )
+        )
+    [if(
+      or(words(%qA),words(%qI)),
+      [if(
+        and(words(%qA),words(%qI)),
+        u(room_parent.check_active_format.fn,words(%qA),1)\,
+         [u(room_parent.check_active_format.fn,words(%qI))],
+        [if(
+          words(%qA),
+          [u(room_parent.check_active_format.fn,words(%qA),1)],
+          [u(room_parent.check_active_format.fn,words(%qI))]
+          )]
+        )]
+      )]
+    [if(setr(P,places(%0)),[words(%qP)] Places Available)]
+-
+&ROOM_PARENT.CHECK_ACTIVE_FORMAT.FN #9=%0 [if(%1,Active,Inactive)] Player[if(not(match(%0,1)),s)]
+-
+&ROOM_PARENT.EXIT_NAME_MAX_ADJUST.FN #9=lmath(max,iter(%0,strlen(name(##)))
+-
+&ROOM_PARENT.DISPLAY_SHIPS.FN #9=%r[align(6 72,ansi(h[u(COLOR.Frame)],Ships:),itemize(map(ROOM_PARENT.FORMAT_SHIPNAME.FN,%0, ,|),|))]
+-
+&ROOM_PARENT.FORMAT_SHIPNAME.FN #9=[ansi(h,name(%0))]\[[ansi(c,shipclass(%0))]\]
+

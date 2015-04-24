@@ -1,0 +1,75 @@
+@set #1139=!safe !no_command
+-
+@wipe #1139
+-
+@set #1139=safe
+-
+@desc #1139=BBoard commands.
+-
+&TRIG.ACONNECT #1139=@nspemit %0=[rpc(BBoard.scan,%0)]
+-
+&CMD.+BBLIST #1139=$+bblist:
+  @nspemit %#=[rpc(BBoard.list,%#)]
+-
+&CMD.+BBREAD #1139=$+bbread:
+  @nspemit %#=[rpc(BBoard.toc,%#)]
+-
+&CMD.+BBREAD_ARG #1139=$+bbread *:@nspemit %#=
+  [ifelse(
+         strmatch(%0,*/*),
+         rpc(BBoard.read,%#,before(%0,/),after(%0,/)),
+         rpc(BBoard.index,%#,%0)
+         )]
+-
+&CMD.+BBPOST_DRAFT #1139=$+bbpost:@nspemit %#=
+  [rpc(BBoard.draft_post,%#)]
+-
+&CMD.+BBPOST #1139=$+bbpost *:@nspemit %#=
+  [ifelse(
+        strmatch(%0,*/*=*),
+        rpc(BBoard.post,%#,before(%0,/),before(after(%0,/),=),after(%0,=)),
+        rpc(BBoard.draft_start,%#,before(%0,/),after(%0,/))
+        )]
+-
+&CMD.+BBWRITE2 #1139=$+bb *:@nspemit %#=
+  [rpc(BBoard.draft_write,%#,%0)]
+-
+&CMD.+BBWRITE #1139=$+bbwrite *:@nspemit %#=
+  [rpc(BBoard.draft_write,%#,%0)]
+-
+&CMD.+BBPROOF #1139=$+bbproof:@nspemit %#=
+  [rpc(BBoard.draft_proof,%#)]
+-
+&CMD.+BBTOSS #1139=$+bbtoss:@nspemit %#=
+  [rpc(BBoard.draft_toss,%#)]
+-
+&CMD.+BBJOIN #1139=$+bbjoin *:@nspemit %#=
+  [rpc(BBoard.join,%#,%0)]
+-
+&CMD.+BBLEAVE #1139=$+bbleave *:@nspemit %#=
+  [rpc(BBoard.leave,%#,%0)]
+-
+&CMD.+BBREPLIES #1139=$+bbreplies */*:@nspemit %#=
+  [rpc(BBoard.replies,%#,%0,%1)]
+-
+&CMD.+BBCATCHUP #1139=$+bbcatchup *:@nspemit %#=
+  [rpc(BBoard.catchup,%#,%0)]
+-
+&CMD.+BBCATCHUP2 #1139=$+bbcatchup:@nspemit %#=
+  [rpc(BBoard.catchup,%#,all)]
+-
+&CMD.+BBNEXT #1139=$+bbnext:@nspemit %#=
+  [rpc(BBoard.next,%#)]
+-
+&CMD.+BBREMOVE #1139=$+bbremove */*:@nspemit %#=
+  [rpc(BBoard.remove,%#,%0,%1)]
+-
+&CMD.+BBEDIT #1139=$+bbedit */*=*/*:@nspemit %#=
+  [rpc(BBoard.edit,%#,%0,%1,%2,%3)]
+-
+&CMD.+BBSCAN #1139=$+bbscan:@nspemit %#=
+  [rpc(BBoard.scan,%#)]
+-
+&CMD.+BBSEARCH #1139=$+bbsearch */*:@nspemit %#=
+  [rpc(BBoard.search,%#,%0,%1)]
+-

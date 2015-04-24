@@ -1,0 +1,49 @@
+@set #888=!no_command !safe
+-
+@wipe #888
+-
+@set #888=safe
+-
+@desc #888=+RP Globals
+-
+&CMD.+RP #888=$+rp:
+  @nspemit %#=[rpc(RP.toc)]
+-
+&CMD.+RP/POST #888=$+rp/post */*=*:
+  @nspemit %#=[rpc(RP.create,%0,%1,%2,%#)]
+-
+&CMD.+RP_ARGS #888=$+rp *:
+  @nspemit %#=[ifelse(
+                    isnum(%0),
+                    rpc(RP.view,%0),
+                    rpc(RP.index,first(%0),ifelse(gt(words(%0),1),last(%0),1))
+                    )]
+-
+&CMD.+RP/SEARCH #888=$+rp/search *:
+  @nspemit %#=[rpc(RP.search,%0)]
+-
+&CMD.+RP/TOP #888=$+rp/top:
+  @nspemit %#=[rpc(RP.top)]
+-
+&CMD.+RP/RECENT #888=$+rp/recent *:
+  @nspemit %#=[rpc(RP.recent,%0)]
+-
+&CMD.+RP/REMOVE #888=$+rp/remove *:
+  @nspemit %#=[rpc(RP.remove,%0)]
+-
+&CMD.+RP/VOTE #888=$+rp/vote *:
+  @nspemit %#=[rpc(RP.vote,%0,%#)]
+-
+&CMD.+RP/ON #888=$+rp/on:
+  @assert [not(t(get(%#/char`rp)))]=@nspemit %#=[ansi(rh,>)] You are already flagged as looking for RP.;
+  @assert [hasflag(%#,ic)]=@nspemit %#=[ansi(rh,>)] You can only use that command while IC.;
+  @nspemit %#=[ansi(gh,>)] You are now advertising as looking for RP.;
+  &char`rp %#=1;
+  @nscemit/noisy Roleplay=[ansi(yh,name(%#))] is now looking for RP at [ansi(y,[name(loc(%#))][if(and(t(zone(loc(%#))),not(spacesys(isship,loc(%#)))),%b- [name(zone(loc(%#)))])])].
+-
+&CMD.+RP/OFF #888=$+rp/off:
+  @assert [t(get(%#/char`rp))]=@nspemit %#=[ansi(rh,>)] You are not currently flagged as looking for RP.;
+  @nspemit %#=[ansi(gh,>)] You are no longer looking for RP.;
+  &char`rp %#=0
+-
+

@@ -1,0 +1,518 @@
+&TRIG.ACONNECT #15=
+  @nspemit %0=[rpc(Contract.list)]
+-
+&cmd.+set #15=$+set *:
+  @assert match(IC OOC,%0)=
+    @pemit %#=[ansi(hb,>)] Huh? Try IC or OOC.;
+  @assert or(match(IC,%0),hasflag(%#,IC))=
+    @pemit %#=[ansi(hb,>)] You are already [ucstr(%0)]!;
+  @break orflags(%#,Wr)=
+    @pemit %#=[ansi(hb,>)] Admins should never be set IC. @tel #20 if you're trying to get to the OOC area.;
+  @assert t(get(%#/char`approved))=
+    @pemit %#=[ansi(hb,>)] You are not approved yet. Be patient there, pardner.;
+  @assert or(match(OOC,%0),hastype(get(%#/char`icloc),room thing))=
+    @pemit %#=[ansi(hb,>)] You don't appear to have a valid IC location.;
+  think switch(%0,
+  IC,
+    [nspemit(%#,[ansi(hb,>)] Returning IC...)]
+    [nsoemit(%#,%n returns IC.)]
+    [tel(%#,get(%#/char`icloc))]
+    [nsoemit(%#,%n returns IC.)]
+    [set(%#,IC)],
+  OOC,
+    [nspemit(%#,[ansi(hb,>)] Going OOC...)]
+    [nsoemit(%#,%n goes OOC.)]
+    [attrib_set(%#/char`icloc,loc(%#))]
+    [tel(%#,#20)]
+    [set(%#,!IC)]
+    [nsoemit(%#,%n enters from the IC world.)]
+  )
+-
+
+@set #15/cmd.+check=regexp
+-
+&cmd.+check #15=$^\+check(/private)? (.*)$:
+  think setq(Attribs,iter(lattr(#111/attribute.*),attribute.[lcstr(get(#111/[itext(0)]))]));
+  think setq(List,cat(%q<Attribs>,lattr(#111/skill.*)));
+  think setq(Choice,grab(%q<List>,*.[before(%2,=)]*));
+  think setq(Choice.type,before(%q<Choice>,.));
+  think setq(Choice.arg,after(%q<Choice>,.));
+  think setq(ShowList,iter(after(%2,=),pmatch(itext(0))));
+  think setq(Invalid,matchall(%q<ShowList>,#-1));
+  think setq(Result,add(rand(-2,2),chargen(get.%q<Choice.type>,%#,%q<Choice.arg>)));
+
+  @assert [t(%q<Choice>)]=@nspemit %#=[ansi(rh,>)] That's not a valid skill or attribute.;
+  @assert [or(strmatch(%1,),eq(words(%q<Invalid>),0))]=@nspemit %#=[ansi(rh,>)] Invalid players: [itemize(elements(after(%2,=),%q<Invalid>))];
+
+  think setr(
+          Message,
+          [ansi(hb,>)] [ansi(h,[name(%#)])] [switch(%1,/private,privately%b)]+checks [poss(%#)] 
+                       [ansi(h,chargen(%q<Choice.type>,%q<Choice.arg>,name))] [lcstr(%q<Choice.type>)]: 
+                       [ansi(h,%q<Result>)] \([num2adj(%q<Result>)]\)
+          );
+
+  @switch %1=
+          /private,{@nspemit/list %q<ShowList> %#=%q<Message>},
+          {@nsremit [loc(%#)]=%q<Message>;@nscemit/noisy +RP=%q<Message>}
+-
+&cmd.+sheet #15=$+sheet:@pemit %#=[chargen(sheet,%#)]
+-
+&cmd.+skillinfo #15=$+skillinfo *:
+  @assert setr(0,chargen(skill,secure(%0),name))=
+    @pemit %#=[ansi(hb,>)] Invalid skill! See [ansi(h,+sheet)] for valid skills.;
+  @pemit %#=
+    [titlebar(Skill Info: [ansi(hy,%q0)])]%r
+    [align(1 38 38,
+      , /@@ blank @@/
+      Group: [ansi(h,chargen(skill,%q0,group))],
+      Base:%b
+      [ifelse(chargen(skill,%q0,complex),
+        [ansi(h,None \(Complex Skill\))],
+        [ansi(h,chargen(skill,%q0,base)[chargen(skill,%q0,modifier)])]
+      )]
+    )]%r
+    [align(1 12 65,
+      , /@@ blank @@/
+      Description:,
+      chargen(skill,%q0,description)
+    )]%r
+    [footerbar()]
+-
+&cmd.+values #15=$+values:@pemit %#=[titlebar(Adjective Values)]%r%b%b>= [ansi(h,7)]: [num2adj(7)]%r[space(5)][ansi(h,6)]: [num2adj(6)]%r[space(5)][ansi(h,5)]: [num2adj(5)]%r[space(5)][ansi(h,4)]: [num2adj(4)]%r[space(5)][ansi(h,3)]: [num2adj(3)]%r[space(5)][ansi(h,2)]: [num2adj(2)]%r[space(5)][ansi(h,1)]: [num2adj(1)]%r%b%b<= [ansi(h,0)]: [num2adj(0)]%r[footerbar()]
+-
+&cmd.time #15=$(^time$)|(^\+time)$:@pemit %#=
+  [ansi(hr,Current Galactic Standard Time:)] [ansi(h,timefmt($H:$M on $A\, $B $d,icsecs())\, [add(760,timefmt($Y,icsecs()))]%r
+  %b[ansi(hr,Current Out-of-Character Time:)] [ansi(h,[timefmt($H:$M on $A\, $B $d\, $Y,convtime(time(%#)))] \(TZ = [default(%#/tz,0)]\))] 
+-
+@set #15/cmd.time=regexp
+-
+# &cmd.+where #15=$+where:@pemit %#=[titlebar(+where)]%r[iter(u(fn.rooms_with_connected_players),ansi(h,name(##)): [u(fn.connected_players_in_room,##)], ,%r)]%r[footerbar(words(mwho()) players)]
+&cmd.+where #15=$+where:
+  @pemit %#=[titlebar(Populated Areas)]%r
+            [iter(
+                sortby(sort.where,setunion(iter(filter(filter.mortals,mwho()),loc(itext(0))),)),
+                [if(
+                    not(xget(zone(itext(0)),IS.HIDDEN)),
+                    [if(and(t(zone(itext(0))),not(spacesys(isship,itext(0)))),[ansi(y,name(zone(itext(0))))]\,%b)]
+                    [ansi(yh,name(itext(0)))] - 
+                    [itemize(squish(iter(
+                                  lvplayers(itext(0)),
+                                  if(
+                                    not(orflags(itext(0),UD)),
+                                    ansi(switch([t(get(itext(0)/char`rp))][gt(idle(itext(0)),3600)],?1,hx,1?,hg,n),name(itext(0)))
+                                    )
+                                  ,,|),|),|)]
+                    )]
+                ,,%r)]%r%r
+            [ansi(hg,*)] - [ansi(hg,Highlighted)] players are looking for RP. [ansi(hx,Darkened)] players are idle >1hr.%r
+            [footerbar()]
+-
+&SORT.WHERE #15=
+  [comp(zone(%0),zone(%1))]
+-
+&FILTER.MORTALS #15=
+  ncor(orflags(%0,Wr),hasflag(%0,unfindable),strmatch(zone(loc(%0)),#343),not(get(%0/char`approved)))
+-
+@set #15/cmd.+who=regexp
+-
+@set #15/cmd.+who2=regexp
+-
+&cmd.+who #15=$^[\+@]?who$:
+  @nspemit %#=u(fn.who,filter(filter.unidle,lports(%#)),1)
+-
+&cmd.+who2 #15=$^[\+@]?who (.+)$:
+  @nspemit %#=[setq(0,%1)][u(fn.who,filterbool(filter.name,lports(%#)),0)]
+-
+
+&fn.who #15=
+  [titlebar(+who)]%r
+  %b[ansi(y,align(3 25 >8 >8 29,Sta,Name\(Alias\),Idle,On For,ifelse(orflags(%#,Wr),Location,Doing)))]%r
+  %b[ansi(r,--- [repeat(-,25)] [repeat(-,8)] [repeat(-,8)] [repeat(-,29)])]%r
+  [map(map.+who,%0, ,%r)]%r
+  [if(
+    and(%1,setr(i,filter(filter.idle,lports(%#)))),
+    %b[ansi(r,repeat(-,77))]%r
+    %b[ansi(y,Idle:)] [align(70,map(map.+who.short,sortby(sort.idle,%qi), ,\,%b), , ,%r[space(7)])]%r
+  )]
+  %b[ansi(r,repeat(-,77))]%r
+  %b[wrap(fnord(),77,77,%r%b)]%r
+  [footerbar(words(lwho(%#)) players online)]
+-
+&map.+who #15=
+  [setq(p,player(%0))]
+  [ifelse(setr(LFRP,t(get(%qp/char`rp))),ansi(yh,!),%b)]
+  [rjust(switch(
+            [orflags(%qp,Wr)]
+            [t(hidden(%qp))]
+            [t(default(%qp/char`approved,0))]
+            [hasflag(%qp,IC)],
+            10*,[ansi(hy,ADM)],
+            11*,[ansi(hx,HID)],
+            000*,[ansi(hm,NEW)],
+            0011,[ansi(hg,IC)],
+            [ansi(hr,OOC)]
+            ),3)][ifelse(%q<LFRP>,ansi(yh,!),%b)]
+  [align(
+      25 >8 >8 29,
+      [ansi(switch([hidden(%qp)][orflags(%qp,Wr)],1*,hx,01,hy,h),name(%qp))][if(hasattr(%qp,alias),\([get(%qp/alias)]\))],
+      ansi(switch(idlesecs(%0),>3600,r,>1800,m,>900,y,g),extract(timestring(idlesecs(%0)),1,2)),
+      extract(timestring(conn(%0)),1,2),
+      mid(
+        ifelse(orflags(%#,Wr),
+          [ansi(hc,rjust(loc(%qp),4))] [ansi(w,[name(loc(%qp))])][if(zone(loc(%qp)),-[ansi(c,name(zone(loc(%qp))))])],
+          doing(%qp)
+      ),0,29)
+  )]
+-
+&map.+who.short #15=
+  [setq(p,player(%0))]
+  ansi(switch(hidden(%qp)[orflags(%qp,Wr)],1*,hx,01,hy,h),name(%qp))\(
+  [squish(first(timestring(idlesecs(%0))))]
+  \)
+-
+&filter.isconnected #15=[hasflag(%0,connected)]
+-
+&filter.unidle #15=lte(idlesecs(%0),3600)
+-
+&filter.idle #15=gt(idlesecs(%0),3600)
+-
+&filter.name #15=match(name(player(%0)),%q0*,|)
+-
+&sort.idle #15=sub(idlesecs(%0),idlesecs(%1))
+-
+&fn.check #15=
+  [setq(m,[ansi(hb,>)] [ansi(h,[name(%1)])] [switch(%0,/private,privately%b)]+checks [poss(%1)] [ansi(h,chargen(%2,%3,name))] [lcstr(%2)]: [ansi(h,setr(r,add(rand(-2,2),chargen(get.%2,%1,%3))))] ([num2adj(%qr)]))]
+  [switch(
+        %0,
+        /private,nspemit(%1,%qm),
+        [nsremit(loc(%1),%qm)][nscemit(+RP,%qm,1)]
+        )]
+-
+&fn.connected_players_in_room #15=[itemize(iter(filter(filter.isconnected,lcon(%0)),name(##), ,|),|)]
+-
+&fn.rooms_with_connected_players #15=[setunion(iter(mwho(),loc(##)),)]
+-
+@set #15/cmd.+ooc=regexp
+-
+&cmd.+ooc #15=$^[\+]?ooc (.*)$:th [setr(0,[name(%#)][switch(%1,:*,%b[after(%1,:)],;*,after(%1,;),%b[ansi(hx,says%,%b")]%1[ansi(hx,")])])][remit(loc(%#),ansi(hx,<+OOC>) %q0))][nscemit(+OOC,[ansi(m,\[[name(loc(%#))]-[loc(%#)]\])] %q0,1)]
+-
+
+# Ticket system globals
+&cmd.+ticket/open #15=$+ticket/open *=*:@pemit %#=[rpc(Ticket.open,%0,%1)]
+-
+
+&cmd.+ticket/list #15=$+ticket/list:@pemit %#=[rpc(Ticket.list,1)]
+-
+
+&cmd.+ticket/listpage #15=$+ticket/list page *:@pemit %#=[rpc(Ticket.list,%0)]
+-
+
+&cmd.+ticket/comment #15=$+ticket/comment *=*:@pemit %#=[rpc(Ticket.comment,%0,%1,false)]
+-
+
+&cmd.+ticket/close #15=$+ticket/close *:@pemit %#=[rpc(Ticket.close,%0)]
+-
+
+&cmd.+ticket/reopen #15=$+ticket/reopen *:@pemit %#=[rpc(Ticket.reopen,%0)]
+-
+
+&cmd.+ticket/view #15=$+ticket/view *:@pemit %#=[rpc(Ticket.view,%0)]
+-
+
+&cmd.+finger #15=$+finger *:
+  @switch [t(setr(0,pmatch(%0)))]=0,
+
+          @pemit %#=[ansi(rh,>)] No such player.,
+          @pemit %#=[titlebar(+Finger: [name(%q0)])]%r
+                    [table(
+                        [ansi(c,Alias:)] [alias(%q0)]|
+                        [ansi(c,Race:)] [default(%q0/char`race,Human)]|
+                        [ansi(c,Sex:)] [get(%q0/sex)]|
+                        [ansi(c,Status:)] [ifelse(hasflag(%q0,IC),IC,OOC)]|
+                        [ansi(c,Last On:)] [ifelse(
+                                              or(orflags(%q0,D!c),hidden(%q0)),
+                                              timefmt($m/$d/$Y $I:$M $p,convtime(get(%q0/last))),
+                                              [ansi(gh,Online)] \(Idle: [first(timestring(idlesecs(%q0)))]\)
+                                              )],
+                        38,79,|)]%r%r
+                    [ansi(c,Info:)] [u(%q0/info)]%r
+                    [footerbar()]
+-
+
+&CMD.+STAFF #15=$+staff:
+  @nspemit %#=[titlebar(Staff Listing)]%r
+              [ansi(y,align(20 18 39,Name\(alias\),Last On,Duties))]%r
+              [iter(
+                  v(list.staff),
+                  align(
+                      20 18 39,
+                      [name(itext(0))]\([alias(itext(0))]\),
+                      [ifelse(
+                            and(member(mwho(),itext(0)),not(hasflag(itext(0),dark))),
+                            [ansi(gh,ON)] \(Idle: [first(timestring(idle(itext(0))))]\),
+                            timefmt($m/$d/$Y,convtime(get(itext(0)/last)))
+                            )],
+                      get(itext(0)/duties)
+                      ),
+                  ,%r)]%r
+                  [footerbar()]
+-
+
+&CMD.+GUIDES #15=$+guides:
+  @nspemit %#=[titlebar(Player Guide Listing)]%r
+              [ansi(y,align(35 18,Name\(alias\),Last On))]%r
+              [iter(
+                  v(list.guides),
+                  align(
+                      35 18,
+                      [name(itext(0))]\([alias(itext(0))]\),
+                      ifelse(
+                            and(member(mwho(),itext(0)),not(hasflag(itext(0),dark))),
+                            [ansi(gh,ON)] \(Idle: [first(timestring(idle(itext(0))))]\),
+                            timefmt($m/$d/$Y,convtime(get(itext(0)/last)))
+                            )
+                      ),
+                  ,%r)]%r
+                  [footerbar()]
+-
+
+&cmd.+bg #15=$+bg:
+  @nspemit %#=[titlebar(Background for %n)]%r[u(fn.bgquestions,%#)]%r[footerbar()]
+-
+
+&fn.bgquestions #15=
+  iter(
+    sort(lattr(%0/char`bg`*`q),m),
+    [ansi(h,extract(##,3,1,`))]: [ansi(c,u(%0/##,%0))]%r[xget(%0,replace(##,4,A,`))],
+    %b,
+    %r
+  )
+-
+&CMD.+CONCEPT #15=$+concept:
+  @nspemit %#=[titlebar(Concept for %n)]%r[u(%#/char`concept)]%r[footerbar()]
+-
+&cmd.+xp #15=$+xp:
+  @nspemit %#=[rpc(XP.view,%#)];
+-
+
+&cmd.+nom #15=$+nom *=*:
+  @nspemit %#=[rpc(XP.add_nom,%0,%1)];
+-
+
+&cmd.+nom2 #15=$+nom:
+  @nspemit %#=[rpc(XP.nom_view,%#)];
+-
+
+&cmd.+xp/raise #15=$+xp/raise *:
+  think
+    [switch(
+      grab(attribute.reason attribute.perception attribute.willpower attribute.strength attribute.agility attribute.health [lattr(#111/skill.*)],*.%0*),
+      SKILL.*,u(fn.raise.skill,after(#$,.)),
+      ATTRIBUTE.*,u(fn.raise.attribute,after(#$,.)),
+      pemit(%#,[ansi(hb,>)] Invalid skill or attribute!)
+    )]
+-
+
+&fn.raise.skill #15=
+  switch(
+    [t(setr(n,chargen(skill,%0,name)))]/@@ were we given a valid skill? @@/
+    [gte(get(%#/char`xp`available),setr(c,u(subfn.skill.cost,setr(s,inc(chargen(get.skill.raw,%#,%0))))))]/@@ does executor have enough xpd? @@/
+    [lte(inc(chargen(get.skill,%#,%0)),6)],/@@ don't allow a skill greater than 6 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid skill!),
+    10*,pemit(%#,[ansi(hb,>)] That would cost [ansi(h,%qc)] available XP, and you only have [ansi(h,setr(r,get(%#/char`xp`available)))].),
+    110,pemit(%#,[ansi(hb,>)] Sorry, you can't have a skill above 6.),
+    111,
+      /@@ decrease their remaining spoints @@/
+      [attrib_set(%#/char`xp`available,val(sub(get(%#/char`xp`available),%qc)))]
+      /@@ increase their skill @@/
+      [chargen(set.skill,%#,%0,val(%qs))]
+      [pemit(%#,[ansi(hb,>)] Increasing your [ansi(h,%qn)] skill to [ansi(h,+%qs)] at a cost of [ansi(h,%qc)] XP. [ansi(h,get(%#/char`xp`available))] available XP remaining.)]
+      [syslog(XPSPEND,%n spending %qc XP to increase their [ansi(h,%qn)] skill to [ansi(h,+%qs)]. [get(%#/char`xp`available)] available XP remaining.)]
+  )
+-
+
+&fn.raise.attribute #15=
+  switch(
+    [t(setr(n,chargen(attribute,%0,name)))]/@@ were we given a valid attribute? @@/
+    [gte(get(%#/char`xp`available),160)]/@@ does executor have at least one alevel to spend? @@/
+    [lt(setr(a,val(inc(chargen(get.attribute,%#,%0)))),7)],/@@ don't allow an attribute above 6 @@/
+    0*,pemit(%#,[ansi(hb,>)] Invalid attribute!),
+    10*,pemit(%#,[ansi(hb,>)] Raising an attribute costs [ansi(h,160)] available XP\, and you only have [ansi(h,get(%#/char`xp`available))].),
+    110,pemit(%#,[ansi(hb,>)] Sorry\, you can't have an attribute above 6.),
+    111,
+      /@@ decrease their remaining xp @@/
+      [attrib_set(%#/char`xp`available,val(sub(get(%#/char`xp`available),160)))]
+      /@@ increase their attribute @@/
+      [chargen(set.attribute,%#,%0,val(%qa))]
+      [pemit(%#,[ansi(hb,>)] Increasing your [ansi(h,%qn)] attribute to [ansi(h,%qa)] at a cost of [ansi(h,160)] available XP. [ansi(h,get(%#/char`xp`available))] remaining.)]
+      [syslog(XPSPEND,%n spending 160 XP to increase their [ansi(h,%qn)] attribute to [ansi(h,%qa)]. [get(%#/char`xp`available)] available XP remaining.)]
+  )
+-
+
+&subfn.skill.cost #15=
+  /@@ returns cost in XP to move from level %0 - 1 to %0. @@/
+  switch(%0,0,#-1,1,20,mul(dec(%0),20))
+-
+
+&cmd.+map #15=$+map:
+  @nspemit %#=
+    [titlebar(Universe Map)]%r
+    [u(data.map)]%r
+    [ansi(hy,center(For a graphical map\, see http://wcmush.com/pages/inhabited-systems,79))]%r
+    [footerbar()]
+-
+
+&data.map #15=[space(34)]Midgard O---------------+%r[space(42)]|[space(15)]|%r[space(33)]K'ta Mek O[space(6)]Ross 34F O%r[space(42)]|[space(15)]|%r[space(42)]|[space(8)]Epsilon|%r[space(34)]+-------O---------------O%r[space(34)]|[space(7)]|Granita[space(8)]|%r[space(34)]|[space(7)]|[space(15)]|%r[space(34)]|[space(7)]O Bistango[space(6)]|%r[space(12)]Speardon[space(14)]|[space(7)]|[space(15)]|%r[space(16)]O--------+[space(8)]|[space(7)]O---------------O--+%r[space(16)]|[space(8)]|[space(8)]|[space(4)]Cabrea[space(5)]Morpheus|%b%b|%r[space(10)]Vespus|[space(8)]|[space(8)]|[space(23)]|%b%b|%r[space(8)]+-------O--------O--------O-----------------------+%b%b|%r[space(8)]|[space(7)]|[space(5)]Pembroke%b%bChanel[space(23)]|%r[space(8)]O[space(7)]O--------------------------------------------+%r[space(5)]Damioyn%b%b%bCardell
+-
+&CMD.RACE/ROSTER #15=$race/roster:
+  @nspemit %#=[rpc(Shiprace.roster)]
+-
+&CMD.RACE/PURCHASE #15=$race/purchase:
+  @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling),10,0)]
+-
+&CMD.RACE/PURCHASE2 #15=$race/purchase *:
+  @switch [strmatch(%0,*=*)]=1,{@nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling),after(%0,=),before(%0,=))]},
+                                @nspemit %#=[rpc(Shiprace.purchase,%#,chargen(get.skill,%#,gambling),%0,0)]
+-
+&CMD.RACE/HISTORY #15=$race/history:
+  @nspemit %#=[rpc(Shiprace.history)]
+-
+&CMD.RACE/RECORD #15=$race/record *:
+  @nspemit %#=[rpc(Shiprace.record,%0)]
+-
+&cmd.+web/register #15=$+web/register *:
+  @nspemit %#=[rpc(Web.register,%0)]
+-
+&cmd.wanted #15=$wanted:@nspemit %#=[rpc(Dossier.wanted_list)]
+-
+&cmd.wanted/view #15=$wanted *:@nspemit %#=[rpc(Dossier.wanted_view,%0)]
+-
+&CMD.+911 #15=$+911 *:
+  @nspemit %#=[ansi(gh,>)] Your request has been sent.  Any available administrators will contact you shortly.;
+  @nscemit/noisy Admin=[ansi(rh,911 REQUEST)] by [ansi(wh,name(%#))]\(%#\) at [name(loc(%#))]\([loc(%#)]\) because: %0
+-
+&cmd.+coinflip #15=$+coinflip:
+  @remit [loc(%#)]=[ansi(hb,>)] [ansi(h,%n)] flips a coin: [ansi(hy,ifelse(rand(2),HEADS,TAILS))]
+-
+&cmd.+log/on #15=$+log/on:
+  &CHAR`LOGROLEPLAY %#=1;
+  @pemit %#=[ansi(h,> )] Roleplay logging enabled.
+-
+&cmd.+log/off #15=$+log/off:
+  &CHAR`LOGROLEPLAY %#=0;
+  @pemit %#=[ansi(h,> )] Roleplay logging disabled. You will no longer receive XP for roleplaying until logging is re-enabled.
+-
+&cmd.+log/last #15=$+log/last:
+  @nspemit %#=[rpc(Logs.roleplay_last,1)]
+-
+&cmd.+log/last2 #15=$+log/last page *:
+  @nspemit %#=[rpc(Logs.roleplay_last,%0)]
+-
+&cmd.contract/list #15=$contract/list:
+  @nspemit %#=[rpc(Contract.list)]
+-
+&cmd.contract/view #15=$contract *:
+  @nspemit %#=[rpc(Contract.view,%0)]
+-
+&cmd.contract/response #15=$contract/response *:
+  @nspemit %#=[rpc(Contract.response,%0)]
+-
+&cmd.contract/answer #15=$contract/answer */*=*:
+  @nspemit %#=[rpc(Contract.answer,%0,%1,%2)]
+-
+&cmd.contract/submit #15=$contract/submit *:
+  @nspemit %#=[rpc(Contract.submit,%0)]
+-
+&CMD.LOCK #15=$lock *:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+
+  @nsoemit %#=[name(%#)] locks [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @nspemit %#=[ansi(gh,>)] You lock [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @lock %q<exit>=haskey/1;
+  @lock [zones(exitreturn,%q<exit>)]=haskey/1;
+-
+&CMD.UNLOCK #15=$unlock *:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+
+  @nsoemit %#=[name(%#)] unlocks [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @nspemit %#=[ansi(gh,>)] You unlock [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @unlock %q<exit>;
+  @unlock [zones(exitreturn,%q<exit>)]
+-
+&CMD.LOCK/ADD #15=$lock/add *=*:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+  @assert [setr(target,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] No such character.;
+  @assert [not(zones(canlock,%q<exit>,%q<target>))]=@nspemit %#=[ansi(rh,>)] [name(%q<target>)] already has access to that lock.;
+
+  @nspemit %#=[ansi(gh,>)] You add [name(%q<target>)] to the permissions list for [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @set %q<exit>=keys:[trim([get(%q<exit>/keys)] %q<target>)];
+-
+&CMD.LOCK/REMOVE #15=$lock/remove *=*:
+  @assert [setr(exit,locate(%#,%0,eE))]=@nspemit %#=[ansi(rh,>)] Invalid exit.;
+  @assert [zones(canlock,%q<exit>,%#)]=@nspemit %#=[ansi(rh,>)] Insufficient access level.;
+  @assert [setr(target,pmatch(%1))]=@nspemit %#=[ansi(rh,>)] No such character.;
+  @assert [zones(canlock,%q<exit>,%q<target>)]=@nspemit %#=[ansi(rh,>)] [name(%q<target>)] doesn't have access to that lock.;
+
+  @nspemit %#=[ansi(gh,>)] You remove [name(%q<target>)] from the permissions list for [ansi(wh,<[name(%q<exit>)]>)] leading toward [ansi(wh,name(loc(%q<exit>)))].;
+  @set %q<exit>=keys:[remove(get(%q<exit>/keys),%q<target>)]
+-
+&CMD.SHIP/TRACK #15=$ship/track:
+  @assert [and(
+               t(setr(trackers,
+                      spacesys(list.trackers.player,%#)
+                )),
+               t(setr(trackers_checked,
+                      squish(
+                             iter(
+                                  %q<trackers>,
+                                  if(setinter(
+                                              spacesys(list.trackers,itext(0)),
+                                              %#
+                                             ),
+                                     itext(0)
+                                    )
+                                 )
+                            )
+                     ))
+              )]=@nspemit %#=[ansi(hr,>)] You aren't tracking anything.;
+  @nspemit %#=
+     [titlebar(Tracked Ships)]%r
+     [ansi(y,align(30 15 30,Name,Active,Location))]%r
+     [iter(%q<trackers_checked>,
+           align(30 15 30,
+                 [name(itext(0))],
+                 [ifelse(
+                         spacesys(isactive,itext(0)),
+                         [ansi(hg,Active)],
+                         Inactive
+                        )],
+                 [name(spacesys(getshiploc,itext(0)))]
+                ),
+          ,%r)]%r
+     [footerbar(words(%q<trackers_checked>) ships)]
+-
+&CMD.WIELD #15=$wield *:
+  think setq(Item,locate(%#,%0,iT));
+  think setq(Item.name,extract(name(%q<Item>),1,dec(words(name(%q<Item>)))));
+
+  @assert [t(%q<Item>)]=@nspemit %#=[ansi(rh,>)] No such item in your inventory.;
+  @assert [not(hasattrval(%#,char`wielding))]=[ansi(rh,>)] You're already wielding something.;
+  @assert [t(rpc(Items.attr_get,%q<Item>,is_weapon))]=@nspemit %#=[ansi(rh,>)] That's not a weapon.;
+
+  @nspemit %#=\[[ansi(rh,COMBAT)]\] You wield your [ansi(wh,%q<Item.name>)]!;
+  @nsoemit %#=\[[ansi(rh,COMBAT)]\] [name(%#)] wields [poss(%#)] [ansi(wh,%q<Item.name>)]!;
+  &wielded %#=%q<Item>;
+-
+&CMD.UNWIELD #15=$unwield:
+  think setq(Item,get(%#/wielded));
+  think setq(Item.name,extract(name(%q<Item>),1,dec(words(name(%q<Item>)))));
+
+  @assert [t(%q<Item>)]=@nspemit %#=[ansi(rh,>)] You're not wielding anything!;
+
+  @nspemit %#=\[[ansi(rh,COMBAT)]\] You unwield your [ansi(wh,%q<Item.name>)].;
+  @nsoemit %#=\[[ansi(rh,COMBAT)]\] [name(%#)] unwields [poss(%#)] [ansi(wh,%q<Item.name>)].;
+  &wielded %#;
+-

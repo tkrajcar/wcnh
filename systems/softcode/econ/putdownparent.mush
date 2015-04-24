@@ -1,0 +1,11 @@
+@desc #22=A small credit chip, with a balance showing of [ansi(h,v(amount))] credits.
+-
+
+@asuccess #22=
+  think [syslog(ECONPUTDOWN,%n picked up [name(me)]([num(me)]) in [loc(loc(me))].)];
+  think [rpc(Econ.grant,%#,v(amount))];
+  @tel #100;
+  @nuke me;
+-
+
+&amount #22=0

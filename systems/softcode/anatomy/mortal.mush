@@ -1,0 +1,13 @@
+&CMD.MED/SCAN #15=$med/scan *:
+  @assert [or(
+              setr(isAdmin,and(orflags(%#,Wr),pmatch(%0))),
+              setr(target,locate(%#,%0,nP))
+              )]=@nspemit %#=[ansi(rh,>)] Invalid target.;
+  @nspemit %#=[rpc(Anatomy.scan,ifelse(t(%q<isAdmin>),pmatch(%0),%q<target>))]
+-
+&CMD.MED/HEAL #15=$med/heal *=*:
+  @assert [setr(target,locate(%#,%0,nP))]=@nspemit %#=[ansi(rh,>)] I don't see that person here.;
+  
+  @nspemit %#=[rpc(Anatomy.heal,%#,%q<target>,%1,chargen(get.skill,%#,medicine),chargen(get.skill,%#,first-aid))]
+-
+

@@ -1,0 +1,9 @@
+&CMD.+BBNEWGROUP #15=$+bbnewgroup *:@nspemit %#=
+  [rpc(BBoard.category_create,%0)]
+-
+&CMD.+BBCONFIG #15=$+bbconfig */*=*:@nspemit %#=
+  [rpc(BBoard.category_config,%0,%1,%2)]
+-
+&CMD.+BBSTICKY #15=$+bbsticky */*=*:@nspemit %#=
+  [rpc(BBoard.sticky,%#,%0,%1,%2)]
+-

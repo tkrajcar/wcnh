@@ -1,0 +1,243 @@
+### DOCUMENTATION
+&DESCRIBE #112=
+  [center(Chargen\(\) Documentation,79,-)]%r
+  %b%b+[repeat(-,73)]+%r
+  [align(
+    2 20 18 33 2,
+    ,
+    [ansi(c,SUBFUNCTION)],
+    [ansi(c,ARGUMENTS)],
+    [ansi(c,DESCRIPTION)],
+    ,
+    ,
+    |)]%r
+  [map(
+    map.doc,
+    lattr(me/doc.*), ,%r)]%r
+  %b%b+[repeat(-,73)]+%r
+  [repeat(-,79)]
+-
+&MAP.DOC #112=
+  [align(2 20 18 33 2,
+  ,
+  ansi(h,after(%0,DOC.)),
+  iter(
+    extract(
+      v(%0),
+      1,
+      1,
+      |),
+    dec(inum(0)): [itext(0)],
+    :,%r),
+  [extract(
+    v(%0),
+    2,
+    1,
+    |)]
+  ,
+  ,
+  ,
+  |)]
+-
+
+### INITIALIZER
+&DOC.SET.INIT #112=victim|Initialize a new player, blanking their sheet based on their race.
+-
+&FN.SET.INIT #112=
+  [switch(
+    t(setr(0,pmatch(%0))),
+    0,#-1 INVALID VICTIM,
+    1,
+      [wipe(%q0/char`s*)]
+      [iter(REA PER WIL STR AGI HEA,
+        chargen(set.attribute,%q0,##,chargen(race,get(%q0/char`race),starting ##))
+      )]
+      [attrib_set(%q0/char`chargen`alevels,chargen(race,get(%q0/char`race),free attribute levels))]
+      [attrib_set(%q0/char`chargen`spoints,chargen(race,get(%q0/char`race),starting skill points))]
+      [attrib_set(%q0/char`xp`available,default(%q0/char`xp`total,0))]
+  )]
+-
+
+### ATTRIBUTES
+&DOC.ATTRIBUTE #112=target:property|Returns a property of an attribute.
+-
+&FN.ATTRIBUTE #112=[switch([hasattr(#111,attribute.[mid(%0,0,3)])][setr(1,match(get(#111/attribute_attributes),%1,|))],0*,#-1 INVALID ATTRIBUTE,10,#-1 INVALID PROPERTY,extract(get(#111/attribute.[mid(%0,0,3)]),%q1,1,|))]
+-
+
+&DOC.GET.ATTRIBUTE #112=victim:attribute|Get victim's attribute value.
+-
+&FN.GET.ATTRIBUTE #112=[switch(t(setr(0,pmatch(%0)))[t(chargen(attribute,%1,name))],0*,#-1 INVALID VICTIM,10,#-1 INVALID ATTRIBUTE,11,default(%q0/char`a`[mid(%1,0,3)],0))]
+-
+
+&DOC.SET.ATTRIBUTE #112=victim:attribute:value|Set victim's attribute to value.
+-
+&FN.SET.ATTRIBUTE #112=[switch(t(setr(0,pmatch(%0)))[t(chargen(attribute,[mid(%1,0,3)],name))][isnum(%2)],0*,#-1 INVALID VICTIM,10*,#-1 INVALID ATTRIBUTE,110,#-1 INVALID VALUE,111,set(%q0,char`a`[mid(%1,0,3)]:%2))]
+-
+
+
+### RACES
+&DOC.RACE #112=target:property|Return a property of a target race.
+-
+&FN.RACE #112=[switch([hasattr(#111,race.%0)][setr(1,match(get(#111/race_attributes),%1,|))],0*,#-1 INVALID RACE,10,#-1 INVALID RACIAL ATTRIBUTE,extract(get(#111/race.%0),%q1,1,|))]
+-
+
+&DOC.GET.RACE #112=victim|Return victim's race.
+-
+&FN.GET.RACE #112=[ifelse(setr(0,pmatch(%0)),default(%q0/char`race,Unset),#-1 INVALID VICTIM)]
+-
+
+&DOC.SET.RACE #112=victim:race|Set victim's race.
+-
+&FN.SET.RACE #112=[switch(hasattr(#111,race.%1)[t(setr(0,pmatch(%0)))],0*,#-1 INVALID RACE,10,#-1 INVALID VICTIM,11,set(%q0,char`race:[chargen(race,%1,name)]))]
+-
+
+
+### SKILLS
+&DOC.SKILL #112=target:property|Returns a property of a skill.
+-
+&FN.SKILL #112=[switch([t(setr(0,edit(regrabi(lattr(#111/skill.*),SKILL\\.%0),SKILL.,)))][setr(1,match(get(#111/skill_attributes),%1,|))],0*,#-1 INVALID SKILL,10,#-1 INVALID PROPERTY,extract(get(#111/skill.%q0),%q1,1,|))]
+-
+
+&DOC.GET.SKILL #112=victim:skill|Get victim's skill TOTAL (with base attribute applied).
+-
+&FN.GET.SKILL #112=[switch(t(setr(0,pmatch(%0)))[t(setr(1,chargen(skill,%1,name)))],0*,#-1 INVALID VICTIM,10,#-1 INVALID SKILL,11,max(0,ifelse(chargen(skill,%q1,complex),default(%q0/char`s`%q1,0),add(default(%q0/char`s`%q1,0)
+,default(%q0/char`a`[chargen(skill,%q1,base)],0),chargen(skill,%q1,modifier)))))]
+-
+
+&DOC.GET.SKILL.RAW #112=victim:skill|Get victim's skill modifier.
+-
+&FN.GET.SKILL.RAW #112=[switch(t(setr(0,pmatch(%0)))[t(chargen(skill,%1,name))],0*,#-1 INVALID VICTIM,10,#-1 INVALID SKILL,11,default(%q0/char`s`%1,0))]
+-
+
+&DOC.SET.SKILL #112=victim:skill:value|Set victim's skill modifier to value.
+-
+&FN.SET.SKILL #112=[switch(t(setr(0,pmatch(%0)))[t(setr(1,chargen(skill,%1,name)))][and(isnum(%2),gte(%2,0))],0*,#-1 INVALID VICTIM,10*,#-1 INVALID SKILL,110,#-1 INVALID VALUE,111,if(%2,attrib_set(%q0/char`s`%q1,%2),attrib_set(%q0/char`s`%q1))]
+-
+
+&DOC.LIST.SKILLGROUPS #112=|List valid skill groups.
+-
+&FN.LIST.SKILLGROUPS #112=Athletic Combat Scouting/Outdoor Covert/Urban Knowledge Professional Social
+-
+
+&DOC.LIST.SKILLSINGROUP #112=group|List skills in a group.
+-
+&FN.LIST.SKILLSINGROUP #112=[switch(edit(grepi(#111,skill.*,|%0|),SKILL.,),,#-1 INVALID SKILL GROUP,stext(0))]
+-
+
+### SHEET
+&DOC.SHEET #112=victim|Return ANSI sheet for victim.
+-
+&FN.SHEET #112=
+  [titlebar([ansi(h,Character Sheet:)] [ansi(hy,name(%0))])]%r
+  [align(
+    26 25 26,
+    Race: [ansi(h,chargen(get.race,%0))]%r
+    Available XP: [ansi(h,default(%0/char`xp`available,0))],
+    Age: [ansi(h,ifelse(hasattrval(%0/char`birthday),chargen(getage,get(%0/char`birthday)),Not Set))]%r
+    Total XP: [ansi(h,default(%0/char`xp`total,0))],
+    Birthday: [ansi(h,default(%0/char`birthday,Not Set))]
+  )]%r
+  [middlebar(ATTRIBUTES)]%r[align(26 25 26,u(#112/subfn.attrformat,rea,%0),u(#112/subfn.attrformat,per,%0),u(#112/subfn.attrformat,wil,%0))]%r[align(26 25 26,u(#112/subfn.attrformat,str,%0),u(#112/subfn.attrformat,agi,%0),u(#112/subfn.attrformat,hea,%0))]%r[middlebar(SKILLS)]%r[align(26 25 26,[u(#112/subfn.skillgroupformat,Athletic,%0)]%r%r[u(#112/subfn.skillgroupformat,Social,%0)],u(#112/subfn.skillgroupformat,Combat,%0)%r%r[u(#112/subfn.skillgroupformat,Knowledge,%0)],u(#112/subfn.skillgroupformat,Professional,%0)%r%r[u(#112/subfn.skillgroupformat,Outdoor,%0)])]%r[footerbar()]
+-
+### UTILITY
+&DOC.GETAGE #112=MMM DD YYYY|Return age indicated by Birthday.
+-
+&FN.GETAGE #112=
+  switch(
+        [t(setr(month,
+               element(
+                      setr(list_months,
+                          Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec),
+                      extract(
+                             %0,
+                             1
+                             ),
+                      |
+                      )
+               ))]
+        [lte(setr(year,
+                 last(%0)
+                 ),
+             setr(icyear,
+                 last(
+                     setr(ictime,
+                         ictime()
+                         )
+                     )
+                 )
+            )]
+        [lte(setr(day,
+                  extract(
+                         %0,
+                         2
+                         )
+                  ),
+                  ifelse(
+                        t(
+                         match(
+                              2,
+                              %q<month>
+                              )
+                         ),
+                        ifelse(
+                              t(
+                               mod(
+                                  %q<year>,
+                                  4
+                                  )
+                               ),
+                               28,
+                               29
+                              ),
+                        ifelse(
+                              t(
+                               match(
+                                    1|3|5|7|8|10|12,
+                                    %q<month>,
+                                    |
+                                    )
+                               ),
+                              31,
+                              30
+                              )
+                        )
+                 )],
+        0??,#-1 BAD MONTH,
+        10?,#-1 BAD YEAR,
+        111,
+           [setq(age,
+                sub(%q<icyear>,%q<year>)
+                )]
+           [switch(
+                  [eq(
+                     %q<month>,
+                     setr(icmonth,
+                         element(
+                                %q<list_months>,
+                                extract(
+                                       %q<ictime>,
+                                       2 
+                                       ),
+                                |
+                                )
+                         )
+                     )]
+                  [gt(
+                    %q<month>,
+                    %q<icmonth>
+                     )]
+                  [lte(
+                     %q<day>,
+                     extract(
+                            %q<ictime>,
+                            3
+                            )
+                     )],
+                  1?0,sub(%q<age>,1),
+                  1?1,%q<age>,
+                  01?,sub(%q<age>,1),
+                  00?,%q<age>,
+                  #-1 SOMETHING IS BROKEN #$
+                  )],
+        #-1 BAD DAY
+        )

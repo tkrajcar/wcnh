@@ -1,0 +1,21 @@
+@set #1250=!safe !no_command
+-
+@wipe #1250
+-
+@set #1250=safe
+-
+@desc #1250=Item system functions.
+-
+&FN.GET #1250=rpc(Items.attr_get,%0,show)
+-
+&SUBFN.CREATE #1250=create(%0)
+-
+&FN.VENDOR_LIST #1250=rpc(Items.vendor_list,%0)
+-
+&FN.VENDOR_STOCK #1250=rpc(Items.vendor_stock,%0,%1,%2)
+-
+&FN.VENDOR_PURCHASE #1250=rpc(Items.vendor_purchase,%0,%1,%2)
+-
+&FN.VENDOR_PREVIEW #1250=rpc(Items.vendor_preview,%0,%1)
+-
+

@@ -1,0 +1,105 @@
+# chargen room 1: age, race, concept, name, gender, alias, timezone.
+# +set age <years>
+# +set race <race>
+# +set gender <gender>
+# +set concept <concept>
+# +set name <firstname> <lastname>
+# +set tz <timezone>
+
+
+@desc #40=
+  Welcome to character generation! In here you will define the very essence of your character in our custom-designed system.
+  %r%r
+  [ansi(hr,Please read '[ansi(hru,help chargen)]'. Right now. :\))] 
+  And continue to read it throughout the chargen process. It will provide you with information, FAQs, and other helpful information.
+  %r%r
+  In this room you will set your age, race, concept, sex/gender, timezone, & name.
+  %r%r
+  [ansi(hy,For the commands\, see 'help chargen room 1'.)] 
+-
+
+&cmd.+setrace #40=$+set race *:
+  @assert setr(0,chargen(race,%0,name))=
+    @pemit %#=[ansi(hb,>)] That's not a valid race.;
+  @pemit %#=[ansi(hb,>)] Setting race to [ansi(h,%q0)].;
+  think [chargen(set.race,%#,%q0)][chargen(set.init,%#)];
+  @pemit %#=[ansi(hb,>)] Blank character sheet initialized.;
+-
+
+&cmd.+setage #40=$+set age *:
+  @assert and(gte(setr(0,val(%0)),18),lte(%q0,85))=
+    @pemit %#=[ansi(hb,>)] You absolutely cannot be any younger than 18 or older than 85.;
+  &char`birthday %#=[extract(ictime(),2,2)] [sub(last(ictime()),%q0)];
+  @pemit %#=[ansi(hb,>)] Age set to [ansi(h,%q0)] human years. Your birthday is [ansi(h,get(%#/char`birthday))]. If you'd like to change your birthday, type [ansi(h,+set birthday)] [ansi(c,MMM DD YYYY)], e.g. [ansi(c,+set birthday Mar 11 2671)].;
+-
+&cmd.+setbirthday #40=$+set birthday *:
+  @assert t(setr(a,chargen(getage,%0)))=@nspemit %#=[ansi(hb,>)] That's not a valid date. Be sure to use the format MMM DD YYYY, e.g. [ansi(c,+set birthday Mar 11 2671)].;
+  @assert and(gte(%qa,18),lte(%qa,85))=@nspemit %#=[ansi(hb,>)] you absolutely cannot be any younger than 18 or older than 85. Your chosen birthday makes you [ansi(c,%qa)].;
+  &char`birthday %#=%0;
+  @pemit %#=[ansi(hb,>)] Age set to [ansi(h,%qa)] years. Your birthday is [ansi(h,%0)].
+-
+
+&cmd.+setgender #40=$+set gender *:
+  @assert setr(0,grab(Male Female,mid(%0,0,1)*))=
+    @pemit %#=[ansi(hb,>)] Sorry, you must choose male or female.;
+  @pemit %#=[ansi(hb,>)] Gender set to [ansi(h,%q0)].;
+  @sex %#=%q0;
+-
+
+&cmd.+setconcept #40=$+set concept *:
+  @assert lt(words(%0),30)=
+    @pemit %#=[ansi(hb,>)] That's too long for a concept. They should be short\, one or two sentences.;
+  &char`concept %#=[decompose(%0)];
+  @pemit %#=[ansi(hb,>)] Concept set.
+-
+
+&cmd.+setalias #40=$+set alias *:
+  @assert lte(strlen(%0),5)=
+    @pemit %#=[ansi(hb,>)] That's a bit long for an alias. Try for 5 letters or less.;
+  @alias %#=%0;
+  @swi strmatch(get(%#/alias),%0)=
+    0,{@pemit %#=[ansi(hb,>)] That alias either contains invalid characters, or is already taken.}
+    ,{@pemit %#=[ansi(hb,>)] Alias set to [ansi(h,get(%#/alias))].}
+-
+
+&cmd.+setname #40=$+set name *:
+  @assert gte(words(%0),2)=
+    @pemit %#=[ansi(hb,>)] You need both a first name and last name.;
+  @assert lte(strlen(%0),config(player_name_len)))=
+    @pemit %#=[ansi(hb,>)] That's too long for a name.;
+  @name %#=%0;
+  @swi strmatch(name(%#),%0)=
+    0,{@pemit %#=[ansi(hb,>)] That name either contains invalid characters, or is already taken.}
+    ,{@pemit %#=[ansi(hb,>)] Name set to [ansi(h,name(%#))].}
+-
+
+&cmd.+settz #40=$+set tz *:
+  &tz %#=[setr(0,val(%0))];
+  @pemit %#=[ansi(hb,>)] UTC interval set to [ansi(hy,[if(gte(%q0,0),+)]%q0)]. Your local time should be: [time(%#)];
+
+# Exit from room 1 to room 2.
+@lock #212==#0 
+-
+@afail #212=
+  @pemit %#=[ansi(hb,>)] Checking character [ansi(h,%n)].;
+  @assert get(%#/char`race)=
+    @pemit %#=[ansi(hb,>)] You need to set your race.;
+  @assert get(%#/char`birthday)=
+    @pemit %#=[ansi(hb,>)] You need to set your age.;
+  @assert match(Male Female,get(%#/sex))=
+    @pemit %#=[ansi(hb,>)] You need to set your gender.;
+  @assert get(%#/char`concept)=
+    @pemit %#=[ansi(hb,>)] You need to set your concept.;
+  @assert get(%#/alias)=
+    @pemit %#=[ansi(hb,>)] You need to set your alias.;
+  @assert or(orflags(%#,Wr),gte(words(name(%#)),2))=
+    @pemit %#=[ansi(hb,>)] You need to set your name.;
+  @assert hasattr(%#,tz)=
+    @Pemit %#=[ansi(hb,>)] You need to set your timezone.;
+  @pemit %#=[ansi(hb,>)] Checks passed. Proceeding...;
+  @oemit %#=%n moves on to Room 2.;
+  @tel %#=loc(me);
+-
+# need a blank @fail to prevent the 'You failed to enter' message.
+@fail #212=
+

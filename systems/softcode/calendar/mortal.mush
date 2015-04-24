@@ -1,0 +1,65 @@
+@set #812=!safe !no_command
+-
+@wipe #812
+-
+@set #812=safe
+-
+@desc #812=Calendar System.
+-
+&TRIG.ACONNECT #812=@wait 1={@nspemit %0=[rpc(Calendar.list,%0,,)]}
+-
+&CMD.+CAL #812=$+cal:
+  @nspemit %#=[rpc(Calendar.list,%#,,)]
+-
+&CMD.+CAL_ARGS #812=$+cal *:
+  @assert [or(isnum(%0),eq(words(%0),2))]=@nspemit %#=[ansi(rh,>)] Try [ansi(yh,+cal <id>)] to see a specific event or 
+                                          [ansi(yh,+cal <month> <year>)] to see a list. I.e.\, +cal Jan 2012.;
+  @nspemit %#=[ifelse(isnum(%0),rpc(Calendar.event_view,%0),rpc(Calendar.list,%#,first(%0),last(%0)))]
+-
+&CMD.+CAL/VIEW #812=$+cal/view *:
+  @nspemit %#=[rpc(Calendar.event_view,%0)]
+-
+&CMD.+CAL/SEARCH #812=$+cal/search *:
+  @nspemit %#=[rpc(Calendar.search,%0)]
+-
+&CMD.+EVENT/NEW #812=$+event/new:
+  @nspemit %#=[rpc(Calendar.event_new,%#)]
+-
+&CMD.+EVENT/EDIT #812=$+event/edit *:
+  @nspemit %#=[rpc(Calendar.event_edit,%#,%0)]
+-
+&CMD.+EVENT/DATE #812=$+event/date *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  @nspemit %#=[rpc(Calendar.event_change,get(%#/event),date,%0)]
+-
+&CMD.+EVENT/TIME #812=$+event/time *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  @nspemit %#=[rpc(Calendar.event_change,get(%#/event),time,%0)]
+-
+&CMD.+EVENT/LOC #812=$+event/loc *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  @nspemit %#=[rpc(Calendar.event_change,get(%#/event),location,%0)]
+-
+&CMD.+EVENT/INFO #812=$+event/info *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  @nspemit %#=[rpc(Calendar.event_change,get(%#/event),info,%0)]
+-
+&CMD.+EVENT/TITLE #812=$+event/title *:
+  @assert [hasattrval(%#,event)]=@nspemit %#=[ansi(rh,>)] You are not currently editing a calendar event.;
+
+  @nspemit %#=[rpc(Calendar.event_change,get(%#/event),title,%0)]
+-
+&CMD.+EVENT/DELETE #812=$+event/delete *:
+  @nspemit %#=[rpc(Calendar.event_delete,%0)]
+-
+&CMD.+CAL/REGISTER #812=$+cal/register *:
+  @nspemit %#=[rpc(Calendar.register,%0,%#)]
+-
+&CMD.+CAL/UNREGISTER #812=$+cal/unregister *:
+  @nspemit %#=[rpc(Calendar.unregister,%0,%#)]
+-
+

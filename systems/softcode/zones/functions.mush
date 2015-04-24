@@ -1,0 +1,124 @@
+&DOC.LZONE #227=dbref|Return a lparent() like list of zones
+-
+&DOC.LIST.ZONES #227=|Ansi hierarchy of zones.  Optional ZMO dbref argument limits return.
+-
+&DATA #227=#228
+-
+@desc #227=
+  [center(Zones System\(\) Documentation,79,-)]%r
+  %b%b+[repeat(-,73)]+%r
+  [align(2 20 18 33 2,,[ansi(c,SUBFUNCTION)],[ansi(c,ARGUMENTS)],[ansi(c,DESCRIPTION)],,,|)]%r
+  [map(map.doc,[lattr(me/doc.*)], ,%r)]%r
+  %b%b+[repeat(-,73)]+%r
+  [repeat(-,79)]
+-
+&MAP.DOC #227=
+  [align(2 20 18 33 2,,[ansi(h,[after(%0,DOC.)])],[iter([extract([v(%0)],1,1,|)],dec(inum(0)): [itext(0)],:,%r)],[extract(v(%0),2,1,|)],,,|)]
+-
+&FN.LZONE #227=
+  lzone(%0)
+-
+&SUBFN.LZONE.LOOP #227=
+  [if(
+      not(strmatch(setr(a,zone(%0)),#-1)),
+      [setq(1,%q1 %qa)][u(subfn.lzone.loop,%qa)]
+      )]
+-
+&SORT.ZONES #227=
+  comp(words(lsearch(all,zone,%0)),words(lsearch(all,zone,%1))
+-
+&FN.LIST.ZONES #227=
+  [titlebar(Zone Hierarchy[if(not(strmatch(%0,get(v(data)/zones_master))),: [name(%0)])])]%r
+  %b[ansi(y,align(60 17,Zone,Builder))]%r
+  %b[ansi(r,repeat(-,77))]%r
+  [u(subfn.list.zones.loop,%0,1)]%r
+  [footerbar()]
+-
+&SUBFN.LIST.ZONES.LOOP #227=
+  [u(subfn.list.zones.parse,%0,%1)]
+  [if(t(setr(a,sortby(sort.zones,filter(filter.list.zones,lsearch(all,type,thing,zone,%0))))),%r)]
+  [iter(
+      %qa,
+      u(subfn.list.zones.loop,itext(0),inc(%1)),
+      ,%r)]
+-
+&FILTER.LIST.ZONES #227=
+  ifelse(
+      and(
+        t(match(locks(%0),zone)), 
+        elock(%0/zone,%0)
+        ),
+        1,
+        0
+        )
+-
+&SUBFN.LIST.ZONES.PARSE #227=
+  %b[setr(b,
+        [if(gt(%1,2),.)]
+        [if(gt(%1,1),[repeat(%b,mul(sub(%1,2),3))]|)][if(gt(%1,1),[repeat(_,3)])][name(%0)]\([ansi(c,%0)]\)
+        )]
+    [if(hasattrval(%0,bc),[repeat(.,sub(61,strlen(%qb)))][name(get(%0/bc))])]
+-
+&FN.BC.CHECKOUT #227=
+  switch(
+      [t(setr(0,ifelse(isdbref(%0),%0,lsearch(all,type,thing,name,%0))))]
+      [t(eq(words(%q0),1))]
+      [t(strmatch(last(zones(lzone,%q0)),get(v(data)/zones_master)))]
+      [t(hasattrval(%q0,bc))],
+
+      0???,#-1 NO RESULTS,
+      10??,#-1 MULTIPLE MATCHES,
+      110?,#-1 INVALID ZMO,
+      1110,#-1 NO BUILDER,
+      1111,get(%q0/bc)
+      )
+-
+&FN.BC.PWGEN #227=
+  iter(lnum(rand(7,15)),rand(0,9),,)
+-
+&FILTER.ZMO #227=
+  ifelse(not(strmatch(zones(lzone,%0),%0)),1,0)
+-
+&TRIG.ACONNECT #227=
+  @switch [haspower(%0,builder)]=1,@hide/on %0
+-
+&FN.FINDZONE #227=
+  lsearch(all,type,thing,name,ifelse(isdbref(trim(%0)),name(%0),%0),eval,\[member(locks(##),Zone)\])
+-
+&FN.ISZONE #227=
+  t(member(locks(%0),Zone))
+-
+&FN.EXITRETURN #227=
+  squish(
+      [ifelse(
+        not(hastype(%0,exit)),
+        #-1 INVALID EXIT,
+        [setq(return,#-1)]
+        [iter(
+            lexits(loc(%0)),
+            if(
+              strmatch(loc(itext(0)),home(%0)),
+              [setq(return,itext(0))][ibreak()]
+              )
+            )]
+        )]
+      %q<return>
+      )
+-
+&FN.CANLOCK #227=
+  [squish(
+        [setq(zonekeys,)]
+        [iter(lzone(zone(%0)),setq(zonekeys,[trim(%q<zonekeys>)] [get(itext(0)/keys)]))]
+        [iter(lzone(setr(return,zones(exitreturn,%0))),setq(zonekeys,[trim(%q<zonekeys>)] [get(itext(0)/keys)]))]
+        [setq(zonekeys,setunion(%q<zonekeys>,))]
+        [firstof(
+              orflags(%1,Wr),
+              t(member(get(%0/keys),%1)),
+              t(member(get(%q<return>/keys),%1)),
+              t(member(%q<zonekeys>,%0)),
+              spacesys(iscaptain,zone(%0),%1),
+              0
+              )]
+  )]              
+-
+
