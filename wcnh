@@ -4,7 +4,7 @@
 require 'rubygems'
 require 'bundler'
 Bundler.setup
-require File.expand_path('../lib/wcnh.rb', __FILE__)
+require File.expand_path('../systems/lib/wcnh.rb', __FILE__)
 require 'awesome_print'
 require 'pry'
 Pry.start

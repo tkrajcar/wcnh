@@ -12,7 +12,7 @@ curl -L https://get.rvm.io | bash -s stable --ruby=1.9.3 --autolibs=enable --aut
 source ~/.bash_profile
 rvm use 1.9.3 --default
 
-cd /mush/game/ruby && bundle install
+cd /mush && bundle install
 
 cd /mush && ./configure
 
