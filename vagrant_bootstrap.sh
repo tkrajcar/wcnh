@@ -12,8 +12,6 @@ curl -L https://get.rvm.io | bash -s stable --ruby=1.9.3 --autolibs=enable --aut
 source ~/.bash_profile
 rvm use 1.9.3 --default
 
-cd /systems && bundle install
-
 cd /mush/game/ruby && bundle install
 
 cd /mush && ./configure
@@ -22,7 +20,3 @@ cd /mush && make install
 
 cp -n /mush/database.gz.dist /mush/game/data/outdb.gz
 cp -n /mush/chatdb.gz.dist /mush/game/data/chatdb.gz
-
-echo "load_paths:" > /mush/game/ruby/config.yml
-echo "  - example" >> /mush/game/ruby/config.yml
-echo "  - /systems" >> /mush/game/ruby/config.yml

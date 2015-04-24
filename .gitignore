@@ -72,9 +72,6 @@ game/txt/events.txt
 game/txt/news.txt
 game/txt/ahelp.txt
 
-# Ruby implementation-specific files.
-game/ruby/config.yml
-
 .vagrant
 
 *.DS_Store

@@ -10,3 +10,4 @@
 # will search "pennmush-json".
 load_paths:
   - example
+  - ../../systems

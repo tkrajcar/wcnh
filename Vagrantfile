@@ -27,13 +27,5 @@ Vagrant::Config.run do |config|
   # folder, and the third is the path on the host to the actual folder.
   config.vm.share_folder "mush", "/mush", "."
 
-  # WCNH NOTE: If your 'systems' directory is somewhere other than
-  # ../systems or ../wcnh_systems, change this code.
-  if File.exists?("../systems")
-    config.vm.share_folder "systems", "/systems", "../systems"
-  elsif File.exists?("../wcnh_systems")
-    config.vm.share_folder "systems", "/systems", "../wcnh_systems"
-  end
-
   config.vm.provision :shell, :path => "vagrant_bootstrap.sh", privileged: false
 end
