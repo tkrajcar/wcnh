@@ -21,7 +21,7 @@ service mongodb restart
 # create user
 adduser myuser
 
-# we're done with root - logout and login as your new user 
+# we're done with root - logout and login as your new user
 
 # install rvm, a ruby version manager
 \curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
@@ -35,19 +35,10 @@ rvm install 1.9.3
 rvm use 1.9.3 --default
 
 # clone systems and mush repos
-git clone https://github.com/tkrajcar/wcnh_mush.git mush
-git clone https://github.com/tkrajcar/wcnh_systems.git systems
-
-# set up MUSH ruby config
-cp mush/game/ruby/config.yml.dist mush/game/ruby/config.yml
-
-# Edit mush/game/ruby/config.yml and add a line to the bottom of the file like:
-#  - /home/myuser/systems
-# Fix path as needed.
+git clone https://github.com/tkrajcar/wcnh.git mush
 
 # install gems
-cd ~/mush/game/ruby && bundle install
-cd ~/systems && bundle install
+cd ~/mush && bundle install
 
 # compile MUSH
 cd ~/mush && ./configure
