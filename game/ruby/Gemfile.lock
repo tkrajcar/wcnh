@@ -11,16 +11,7 @@ GEM
     bson (1.4.0)
     bson_ext (1.4.0)
     builder (3.0.0)
-    capistrano (2.9.0)
-      highline
-      net-scp (>= 1.0.0)
-      net-sftp (>= 2.0.0)
-      net-ssh (>= 2.0.14)
-      net-ssh-gateway (>= 1.1.0)
-    capistrano-ext (1.2.1)
-      capistrano (>= 1.0.0)
     coderay (1.0.9)
-    highline (1.6.2)
     httparty (0.8.1)
       multi_json
       multi_xml
@@ -34,18 +25,10 @@ GEM
       tzinfo (~> 0.3.22)
     multi_json (1.0.4)
     multi_xml (0.4.1)
-    net-scp (1.0.4)
-      net-ssh (>= 1.99.1)
-    net-sftp (2.0.5)
-      net-ssh (>= 2.0.9)
-    net-ssh (2.2.1)
-    net-ssh-gateway (1.1.0)
-      net-ssh (>= 1.99.1)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
-    railsless-deploy (1.0.2)
     require_all (1.2.0)
     slop (3.4.5)
     tzinfo (0.3.31)
@@ -57,11 +40,8 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   bson_ext (~> 1.4)
-  capistrano
-  capistrano-ext
   httparty
   mongoid (~> 2.3.3)
   pry
-  railsless-deploy
   require_all
   yajl-ruby (~> 1.0)
