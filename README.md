@@ -51,6 +51,10 @@ For development purposes, I highly recommend using [Vagrant](https://www.vagrant
 
 Setting up an actual server to run the game will vary depending on your choice of Linux distribution. If you can use Ubuntu 12.04, see [the README.WCNH.SERVER](https://github.com/tkrajcar/wcnh/blob/master/README.WCNH.SERVER) file for step-by-step instructions.
 
+## Creating A New System
+
+If you're interested in adding new Ruby code/systems, there's [a wiki page](https://github.com/tkrajcar/wcnh/wiki/Creating-A-New-Ruby-System-Walkthrough) that walks you through a simple example.
+
 ## Other Repositories
 
 There are two other repositories that might interest you:
