@@ -889,3 +889,18 @@ include alias.cnf
 include restrict.cnf
 ahelp_command ahelp txt/help.txt
 ahelp_command anews txt/news.txt
+
+# Text file shown when someone uses WHO/DOING/SESSION at the login
+# screen. If empty, the default WHO output is shown. If an obj/attr
+# is given, you can use a softcoded WHO at the login screen. %2 will
+# be the arg given (for 'WHO foo').
+# OPTIONAL
+# who_file 
+
+# OPTIONAL
+# who_html_file 
+
+# This is the dbref of the player that objects and channels belonging
+# to a nuked player are chowned to. If this is an invalid or
+# non-player dbref, GOD is used. See destroy_posessions.
+probate_judge 1

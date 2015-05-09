@@ -85,10 +85,6 @@ restrict_command warn_on_missing nobody
 
 # Some additional protection against spam attacks by guests
 restrict_command @dolist noguest
-restrict_function repeat noguest
-restrict_function iter noguest
-restrict_function map noguest
-restrict_function fold noguest
 
 # Don't allow kill (slay still works)
 restrict_command kill nobody
@@ -105,6 +101,13 @@ restrict_command @whereis nobody
 
 # Used to be cemit_power
 restrict_command @cemit pemit_all admin cemit " You can't @cemit without pemit_all @power.
+restrict_function repeat noguest
+restrict_function iter noguest
+restrict_function map noguest
+restrict_function fold noguest
+
+# We add a dummy here to make updating easier
+restrict_function lstats noguest
 
 # Turn off ansi().
 #restrict_function ansi nobody
@@ -116,30 +119,3 @@ restrict_command @cemit pemit_all admin cemit " You can't @cemit without pemit_a
 #restrict_function create nobody
 #restrict_function clone nobody
 #restrict_function tel nobody
-
-# We add a dummy here to make updating easier
-restrict_function lstats noguest
-
-# Remove the hardcode chat system by uncommenting these
-#restrict_command @cemit nobody
-#restrict_command @nscemit nobody
-#restrict_command @channel nobody
-#restrict_command @chat nobody
-#restrict_command @clock nobody
-#restrict_function cowner nobody
-#restrict_function ctitle nobody
-#restrict_function cwho nobody
-#restrict_function channels nobody
-#restrict_function cflags nobody
-#restrict_function cbuffer nobody
-#restrict_function cbufferadd nobody
-#restrict_function cdesc nobody
-#restrict_function cemit nobody
-#restrict_function clflags nobody
-#restrict_function clock nobody
-#restrict_function cmsgs nobody
-#restrict_function cowner nobody
-#restrict_function crecall nobody
-#restrict_function cstatus nobody
-#restrict_function cusers nobody
-#restrict_function cmogrifier nobody

@@ -1,3 +1,4 @@
+
 # +help
 command_alias help +help
 
@@ -5,6 +6,22 @@ command_alias help +help
 command_alias enter board
 command_alias leave disembark
 command_alias use man
+
+# You can also alias commands to other names.
+# command_alias EXISTING_COMMAND ALIAS
+# For example, a french-language game do the following:
+# command_alias think pensent
+# Some standard aliases:
+command_alias @edit @gedit
+command_alias look l
+command_alias inventory i
+command_alias @switch @sw
+command_alias page p
+command_alias whisper w
+command_alias goto move
+command_alias @atrlock @attrlock
+command_alias @atrchown @attrchown
+command_alias get take
 
 # Command aliases that you'd like reserved.
 # Normally, commands are autoaliased to their unique prefixes,
@@ -42,6 +59,14 @@ reserve_alias dummy_exit_alias
 # hook_command say override #123/cmd.say
 # hook_command say override/inplace #123/cmd.say
 
+# And hook commands, with
+# hook_command <cmd> <hook> [<obj>[/<attr>]]
+# as per @hook/<hook> <cmd>=[<obj>[/<attr>]]. See 'help @hook'.
+# inplace override hooks have use inplace/override as the hook.
+# OPTIONAL
+# hook_command say override #123/cmd.say
+# hook_command say override/inplace #123/cmd.say
+
 # RP logging system
 hook_command say after #21/hook.say
 hook_command pose after #21/hook.pose
@@ -57,22 +82,6 @@ hook_command drop after #21/hook.drop
 # and replaced with the user function (like @function/delete).
 # OPTIONAL
 # add_function foo #123/fun.foo 1 5
-
-# You can also alias commands to other names.
-# command_alias EXISTING_COMMAND ALIAS
-# For example, a french-language game do the following:
-# command_alias think pensent
-# Some standard aliases:
-command_alias @edit @gedit
-command_alias look l
-command_alias inventory i
-command_alias @switch @sw
-command_alias page p
-command_alias whisper w
-command_alias goto move
-command_alias @atrlock @attrlock
-command_alias @atrchown @attrchown
-command_alias get take
 
 # Alias read to look?
 #command_alias look read 
