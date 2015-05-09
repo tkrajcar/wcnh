@@ -66,8 +66,7 @@ O_FILES=access.o atr_tab.o attrib.o boolexp.o bsd.o bufferq.o chunk.o	\
 	wiz.o
 
 # WCNH-specific .o files
-O_FILES=$(O_FILES)json/server.o json/launch.o json/json.o
-
+O_FILES += json/server.o json/launch.o json/json.o
 
 # This is a dummy target, in case you type 'make' in the source
 # directory (likely for emacs users who M-x compile.)
