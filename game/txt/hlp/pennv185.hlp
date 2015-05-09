@@ -1,19 +1,15 @@
-This is the most current changes file for PennMUSH. Please look it
-over; each version contains new things which might significantly
-affect the function of your server.  Changes are reported in reverse
-chronological order (most recent first)
+& 1.8.5p1
+& changes
+This is a list of changes in this patchlevel which are probably of
+interest to players. More information about new commands and functions
+can probably be gotten via 'help <name of whatever>'. 'help credits'
+lists the [initials] of developers and porters that are used in the list 
+of changes.
 
-[SW] is Shawn Wagner, a PennMUSH developer (aka Raevnos), also
- responsible for most unattributed changes.
-[EEH] is Ervin Hearn III, a PennMUSH developer (aka Noltar)
-[GM] is Greg Millam, a PennMUSH developer (aka Walker)
-[MG] is Mike Griffiths, a PennMUSH developer (aka Talvo)
-[TAP] is T. Alexander Popiel, a former PennMUSH developer (aka Talek)
-[3] refers to code by (or inspired by) TinyMUSH 3.0
-[MUX] refers to code by (or inspired by) TinyMUX 2.x
-[Rhost] refers to code by (or inspired by) RhostMUSH
-
-==========================================================================
+Information about changes in prior releases can be found under
+help topics named for each release (e.g. 'help 1.7.2p30').
+A list of the patchlevels associated with each release can
+be read in 'help patchlevels'.
 
 Version 1.8.5 patchlevel 1                                 May 15, 2012
 
@@ -168,6 +164,7 @@ Functions:
  * When wrap() hyphenates a word, the hyphen will now share the ANSI of the
    first character of the newline. [MG]
    
+& 1.8.5p0
 Version 1.8.5 patchlevel 0                                 Feb 12, 2012
 
 Major changes:
